@@ -1,0 +1,50 @@
+# GitHub Actions - Deploy para Alibaba Cloud
+# Guarda em: .github/workflows/deploy.yml (em cada repo)
+
+name: Deploy to Alibaba Cloud
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Bailian CLI
+        run: npm install -g bailian-cli
+      
+      - name: Deploy to Alibaba Cloud
+        env:
+          DASHSCOPE_API_KEY: ${{ secrets.ALIBABA_API_KEY }}
+        run: |
+          # Configurar workspace
+          bl config set workspace ws-6od6zuvzyzvu6zlw
+          
+          # Deploy baseado no tipo de projeto
+          if [ -f "package.json" ]; then
+            # Projeto Node.js/Next.js
+            npm install
+            npm run build
+            bl app deploy --name "${{ github.event.repository.name }}"
+          elif [ -f "requirements.txt" ]; then
+            # Projeto Python
+            bl app deploy --name "${{ github.event.repository.name }}" --runtime python
+          else
+            # Static site
+            bl app deploy --name "${{ github.event.repository.name }}" --static
+          fi
+      
+      - name: Verify deployment
+        run: |
+          sleep 10
+          bl app status --name "${{ github.event.repository.name }}"

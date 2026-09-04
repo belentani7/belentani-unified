@@ -1,0 +1,16 @@
+{
+  "name": "Instituto Universal",
+  "short_name": "Instituto",
+  "description": "Universidad abierta: Lengua, Ciberseguridad e IA. Gratis y offline.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070d1a",
+  "theme_color": "#070d1a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23070d1a'/><text x='50' y='70' font-size='55' text-anchor='middle' fill='%23d4af37'>🜁</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0204">
+<meta name="description" content="JUDAS EXPERIENCE — Belentani. Dark Pop. La llave dorada, el traje rojo, la traición. Estreno 14.02.2027.">
+<title>JUDAS EXPERIENCE — BELENTANI</title>
+<link rel="stylesheet" href="judas.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚷</text></svg>">
+</head>
+<body data-lang="es">
+
+<canvas id="nebula" aria-hidden="true"></canvas>
+<div id="cursor-glow" aria-hidden="true"></div>
+
+<header id="nav">
+  <a class="brand" href="#top" data-i18n="brand">BELENTANI<span class="dot">✦</span>JUDAS</a>
+  <nav class="links">
+    <a href="#historia" data-i18n="nav_story">Historia</a>
+    <a href="#planos" data-i18n="nav_shots">Planos</a>
+    <a href="#audio" data-i18n="nav_audio">Audio Lab</a>
+    <a href="#galeria" data-i18n="nav_gallery">Galería</a>
+    <a href="#estreno" data-i18n="nav_premiere">Estreno</a>
+  </nav>
+  <div class="tools">
+    <button class="lang-btn" data-lang-switch="es" aria-label="Español">ES</button>
+    <button class="lang-btn" data-lang-switch="pt" aria-label="Português">PT</button>
+    <button class="lang-btn" data-lang-switch="en" aria-label="English">EN</button>
+    <span id="xp-pill" class="xp-pill" title="XP">⚷ 0</span>
+  </div>
+</header>
+
+<section id="gate" class="gate">
+  <div class="gate-inner">
+    <p class="gate-sigil">⚷</p>
+    <h1 data-i18n="gate_title">EL BARCO ESPERA</h1>
+    <p class="gate-sub" data-i18n="gate_sub">Una experiencia sonora y visual. Auriculares recomendados.</p>
+    <button id="gate-btn" class="cta red" data-i18n="gate_btn">ENTRAR EN EL BARCO</button>
+    <p class="gate-hint" data-i18n="gate_hint">Al entrar activas el motor de audio</p>
+  </div>
+</section>
+
+<main id="top" aria-hidden="true">
+
+  <section id="hero" class="hero">
+    <div class="hero-grid">
+      <div class="hero-title">
+        <p class="kicker" data-i18n="hero_kicker">DARK POP · ESPAÑA · 96 BPM</p>
+        <h1 class="mega">JUDAS</h1>
+        <p class="tagline" data-i18n="hero_tagline">El observador se convierte en traidor cuando toca la llave dorada.</p>
+        <div class="hero-actions">
+          <a href="#audio" class="cta red" data-i18n="hero_cta_audio">ESCUCHAR EL MOTOR</a>
+          <a href="#historia" class="cta ghost" data-i18n="hero_cta_story">LA HISTORIA</a>
+        </div>
+      </div>
+      <div class="hero-figure" aria-hidden="true">
+        <div class="figure-man">
+          <div class="figure-head"></div>
+          <div class="figure-body"></div>
+          <div class="figure-suit"></div>
+          <div class="figure-key">⚷</div>
+        </div>
+        <div class="figure-glow"></div>
+      </div>
+    </div>
+    <div class="hero-stats" id="hero-stats">
+      <div class="stat"><span class="stat-num">20</span><span class="stat-label" data-i18n="stat_shots">planos</span></div>
+      <div class="stat"><span class="stat-num">3:59</span><span class="stat-label" data-i18n="stat_duration">duración</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label" data-i18n="stat_langs">idiomas</span></div>
+      <div class="stat"><span class="stat-num">14.02</span><span class="stat-label" data-i18n="stat_date">estreno</span></div>
+    </div>
+  </section>
+
+  <section id="countdown" class="countdown">
+    <h2 data-i18n="cd_title">LA TRAICIÓN TIENE FECHA</h2>
+    <div class="cd-grid">
+      <div class="cd-cell"><span id="cd-d">0</span><label data-i18n="cd_days">días</label></div>
+      <div class="cd-cell"><span id="cd-h">0</span><label data-i18n="cd_hours">horas</label></div>
+      <div class="cd-cell"><span id="cd-m">0</span><label data-i18n="cd_mins">minutos</label></div>
+      <div class="cd-cell"><span id="cd-s">0</span><label data-i18n="cd_secs">segundos</label></div>
+    </div>
+  </section>
+
+  <section id="historia" class="story">
+    <h2 class="section-title"><span class="tick">01</span> <span data-i18n="story_title">LA HISTORIA</span></h2>
+    <div class="story-chapters" id="story-chapters"></div>
+  </section>
+
+  <section id="planos" class="shots">
+    <h2 class="section-title"><span class="tick">02</span> <span data-i18n="shots_title">LOS 20 PLANOS</span></h2>
+    <p class="section-sub" data-i18n="shots_sub">Storyboard completo del videoclip. Cada plano es una puerta.</p>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section id="audio" class="audiolab">
+    <h2 class="section-title"><span class="tick">03</span> <span data-i18n="audio_title">AUDIO LAB</span></h2>
+    <p class="section-sub" data-i18n="audio_sub">Motor sonoro sintetizado en vivo. Pulsa y siente el barco.</p>
+    <div class="audio-stage">
+      <canvas id="viz" width="640" height="160" aria-hidden="true"></canvas>
+      <div class="audio-controls">
+        <button id="play-btn" class="cta red" data-i18n="audio_play">ENCENDER MOTOR</button>
+        <input id="vol" type="range" min="0" max="100" value="70" aria-label="Volumen">
+        <span id="bpm-readout" class="bpm">96 BPM</span>
+      </div>
+      <div class="audio-notes" id="audio-notes" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section id="galeria" class="gallery">
+    <h2 class="section-title"><span class="tick">04</span> <span data-i18n="gallery_title">GALERÍA NEBULA</span></h2>
+    <p class="section-sub" data-i18n="gallery_sub">Diez fotogramas generados por el estudio: cuero rojo contra el cosmos.</p>
+    <div class="gallery-grid" id="gallery-grid" aria-hidden="true"></div>
+  </section>
+
+  <section id="estreno" class="preorder">
+    <div class="po-card">
+      <p class="kicker" data-i18n="po_kicker">14 DE FEBRERO DE 2027</p>
+      <h2 data-i18n="po_title">RESERVA TU BUTACA</h2>
+      <p data-i18n="po_sub">Versiones ES · PT · EN. Audio en producción. Sé el primero.</p>
+      <form id="po-form">
+        <input id="po-email" type="email" required placeholder="tu@correo.com" aria-label="Correo">
+        <button type="submit" class="cta red" data-i18n="po_btn">QUIERO VERLO</button>
+      </form>
+      <p id="po-msg" class="po-msg" hidden data-i18n="po_done">Reservado. La llave dorada te encontrará.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="sig">⚷ <span class="sig-name">BELENTANI</span> — <span class="sig-domain">belentani.eu</span> · <span class="sig-domain">noiacore.com</span></p>
+  <p class="sig-small" data-i18n="footer_rights">Nunca rompas el frente. Siempre deja la firma. Haz que respire.</p>
+</footer>
+
+<script src="judas.js"></script>
+</body>
+</html>

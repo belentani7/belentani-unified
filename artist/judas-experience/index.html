@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BELENTANI OS — Judas Experience</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://cdn.jsdelivr.net/fontsource/css/inter@latest/index.css');
+@import url('https://cdn.jsdelivr.net/fontsource/css/orbitron@latest/index.css');
+@import url('https://cdn.jsdelivr.net/fontsource/css/playfair-display@latest/index.css');
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; }
+body {
+  background: radial-gradient(1200px 700px at 50% 40%, #150007 0%, #000 70%);
+  display:flex; justify-content:center; align-items:center;
+  font-family:'Inter',sans-serif; overflow:hidden; user-select:none;
+}
+
+.phone-frame {
+  width:390px; height:844px; background:#161616; border-radius:55px; padding:12px;
+  position:relative; flex-shrink:0;
+  box-shadow:0 0 60px rgba(255,0,50,.28), 0 0 140px rgba(255,0,50,.10), inset 0 0 2px rgba(255,255,255,.12);
+  border:2px solid #2c2c2c;
+  transform-origin:center center;
+}
+.phone-screen { width:100%; height:100%; background:#000; border-radius:44px; overflow:hidden; position:relative; }
+
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:160px; height:34px; background:#000; border-radius:0 0 20px 20px; z-index:1000; }
+.notch-camera { position:absolute; top:8px; left:50%; transform:translateX(-50%); width:12px; height:12px; background:#101024; border-radius:50%; border:2px solid #2a2a2a; }
+
+.status-bar { position:absolute; top:0; left:0; right:0; height:50px; display:flex; justify-content:space-between; align-items:center; padding:14px 30px 0; z-index:999; color:#fff; font-weight:600; pointer-events:none; }
+.status-bar .time { font-family:'Orbitron',sans-serif; font-size:15px; letter-spacing:1px; }
+.status-bar .icons { display:flex; gap:6px; align-items:center; }
+.status-bar .icons svg { width:17px; height:17px; fill:#fff; }
+
+.gpu-stats { position:absolute; top:55px; right:10px; background:rgba(0,0,0,.85); border:1px solid rgba(255,0,50,.35); border-radius:8px; padding:6px 10px; font-size:9px; color:#ff2244; font-family:'Orbitron',sans-serif; z-index:999; display:none; letter-spacing:1px; }
+.gpu-stats.active { display:block; }
+
+/* ---------- LOCK ---------- */
+.lock-screen { position:absolute; inset:0; background:linear-gradient(180deg,#0a0000 0%,#1a0005 30%,#2d0010 60%,#0a0000 100%); display:flex; flex-direction:column; align-items:center; z-index:900; transition:transform .5s ease, opacity .5s ease; }
+.lock-screen::before { content:''; position:absolute; inset:0; background:url('WALLPAPER_URL') center/cover; opacity:.42; }
+.lock-time { margin-top:80px; font-family:'Orbitron',sans-serif; font-size:68px; font-weight:900; color:#fff; text-shadow:0 0 30px rgba(255,0,50,.85),0 0 70px rgba(255,0,50,.4); z-index:1; letter-spacing:4px; }
+.lock-date { font-size:17px; color:rgba(255,255,255,.72); margin-top:8px; z-index:1; font-weight:300; }
+.lock-notifications { margin-top:36px; width:86%; z-index:1; }
+.lock-notification { background:rgba(255,255,255,.09); backdrop-filter:blur(20px); border-radius:16px; padding:13px 15px; margin-bottom:10px; border:1px solid rgba(255,0,50,.3); animation:notifPulse 2.2s ease-in-out infinite; cursor:pointer; }
+@keyframes notifPulse { 0%,100%{border-color:rgba(255,0,50,.3);} 50%{border-color:rgba(255,0,50,.8);} }
+.notif-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.notif-icon { width:20px; height:20px; border-radius:5px; background:url('EMBLEM_URL') center/cover; }
+.notif-app { font-size:11px; color:rgba(255,255,255,.6); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.notif-time { font-size:11px; color:rgba(255,255,255,.4); margin-left:auto; }
+.notif-title { font-size:14px; color:#fff; font-weight:600; }
+.notif-body { font-size:13px; color:rgba(255,255,255,.7); margin-top:2px; }
+.swipe-indicator { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); z-index:1; text-align:center; cursor:pointer; }
+.swipe-indicator .bar { width:140px; height:5px; background:rgba(255,255,255,.5); border-radius:3px; margin:0 auto 10px; }
+.swipe-indicator span { font-size:12px; color:rgba(255,255,255,.55); }
+
+/* ---------- HOME ---------- */
+.home-screen { position:absolute; inset:0; display:none; flex-direction:column; padding-top:50px; }
+.home-screen.active { display:flex; }
+.home-wallpaper { position:absolute; inset:0; background:url('WALLPAPER_URL') center/cover; opacity:.28; }
+.weather-widget { background:rgba(255,255,255,.08); backdrop-filter:blur(20px); border-radius:20px; padding:14px 18px; margin:8px 20px 4px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,0,50,.22); position:relative; z-index:1; }
+.weather-temp { font-size:42px; font-weight:300; color:#fff; }
+.weather-info { text-align:right; }
+.weather-info .w-city { color:rgba(255,255,255,.75); font-size:14px; }
+.weather-info .w-cond { color:rgba(255,255,255,.5); font-size:12px; }
+
+.apps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px 8px; padding:18px 16px; position:relative; z-index:1; flex:1; align-content:start; }
+.app-icon { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:transform .15s; }
+.app-icon:active { transform:scale(.88); }
+.app-icon span { font-size:11px; color:#fff; text-align:center; font-weight:500; text-shadow:0 1px 3px rgba(0,0,0,.9); }
+.tile { width:60px; height:60px; border-radius:15px; display:flex; align-items:center; justify-content:center; background:linear-gradient(140deg,#2b000c,#10000a 70%); border:1px solid rgba(255,0,50,.35); box-shadow:0 4px 16px rgba(255,0,50,.28), inset 0 1px 0 rgba(255,255,255,.08); }
+.tile svg { width:28px; height:28px; fill:#ff2244; filter:drop-shadow(0 0 6px rgba(255,0,50,.85)); }
+.tile-img { width:60px; height:60px; border-radius:15px; object-fit:cover; box-shadow:0 4px 16px rgba(255,0,50,.3); border:1px solid rgba(255,0,50,.3); }
+.app-badge { position:relative; }
+.app-badge::after { content:attr(data-count); position:absolute; top:-6px; right:-6px; background:#ff0032; color:#fff; font-size:10px; font-weight:700; min-width:20px; height:20px; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px rgba(255,0,50,.7); z-index:2; }
+
+.dock { position:absolute; bottom:20px; left:10px; right:10px; height:88px; background:rgba(255,255,255,.08); backdrop-filter:blur(30px); border-radius:30px; display:flex; justify-content:space-around; align-items:center; padding:0 14px; z-index:2; border:1px solid rgba(255,255,255,.1); }
+.dock .tile, .dock .tile-img { width:55px; height:55px; }
+.dock .tile svg { width:26px; height:26px; }
+
+/* ---------- APPS ---------- */
+.app-screen { position:absolute; inset:0; background:#000; z-index:800; display:none; flex-direction:column; padding-top:50px; }
+.app-screen.active { display:flex; animation:slideUp .28s ease; }
+@keyframes slideUp { from{transform:translateY(6%); opacity:.4;} to{transform:translateY(0); opacity:1;} }
+.app-header { display:flex; align-items:center; padding:10px 16px; border-bottom:1px solid rgba(255,0,50,.2); background:rgba(0,0,0,.6); backdrop-filter:blur(10px); }
+.back-btn { color:#ff2244; font-size:15px; cursor:pointer; font-weight:600; }
+.app-header h2 { color:#fff; font-size:17px; font-weight:700; margin-left:10px; flex:1; letter-spacing:.5px; }
+
+/* phone */
+.phone-app { background:linear-gradient(180deg,#0a0000,#1a0005); }
+.call-screen { display:flex; flex-direction:column; align-items:center; padding:36px 20px; flex:1; }
+.call-avatar { width:120px; height:120px; border-radius:50%; background:url('EMBLEM_URL') center/cover; margin-bottom:20px; box-shadow:0 0 40px rgba(255,0,50,.6); animation:callPulse 1.6s ease-in-out infinite; border:2px solid rgba(255,0,50,.5); }
+@keyframes callPulse { 0%,100%{box-shadow:0 0 40px rgba(255,0,50,.55); transform:scale(1);} 50%{box-shadow:0 0 85px rgba(255,0,50,.9); transform:scale(1.04);} }
+.call-name { font-size:27px; color:#fff; font-weight:700; margin-bottom:8px; }
+.call-status { font-size:15px; color:rgba(255,255,255,.6); margin-bottom:20px; }
+.call-timer { font-family:'Orbitron',sans-serif; font-size:14px; color:rgba(255,255,255,.55); margin-bottom:40px; letter-spacing:2px; }
+.call-actions { display:flex; gap:38px; margin-top:auto; margin-bottom:34px; }
+.call-btn { width:68px; height:68px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:26px; transition:transform .15s; color:#fff; }
+.call-btn:active { transform:scale(.88); }
+.call-btn.decline { background:#ff3b30; }
+.call-btn.accept { background:#34c759; }
+.call-btn.mute, .call-btn.speaker { background:rgba(255,255,255,.15); }
+.call-btn-label { font-size:11px; color:rgba(255,255,255,.7); text-align:center; margin-top:8px; }
+
+/* messages */
+.message-list { flex:1; overflow-y:auto; padding:10px 16px; }
+.message-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05); cursor:pointer; }
+.message-avatar { width:50px; height:50px; border-radius:50%; background:url('EMBLEM_URL') center/cover; flex-shrink:0; border:1px solid rgba(255,0,50,.4); }
+.message-avatar.dim { background:linear-gradient(135deg,#2a2a2a,#111); display:flex; align-items:center; justify-content:center; font-size:20px; border:none; }
+.message-info { flex:1; min-width:0; }
+.msg-name { color:#fff; font-weight:600; font-size:15px; }
+.msg-preview { color:rgba(255,255,255,.5); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.msg-time { color:rgba(255,255,255,.4); font-size:12px; margin-top:2px; }
+.message-unread { width:12px; height:12px; background:#ff0032; border-radius:50%; flex-shrink:0; box-shadow:0 0 8px rgba(255,0,50,.8); }
+
+.chat-view { display:none; flex-direction:column; flex:1; background:#000; min-height:0; }
+.chat-view.active { display:flex; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
+.chat-bubble { max-width:80%; padding:11px 15px; border-radius:20px; font-size:14px; line-height:1.4; }
+.chat-bubble.received { background:rgba(255,255,255,.1); color:#fff; align-self:flex-start; border-bottom-left-radius:4px; }
+.chat-bubble.sent { background:#ff0032; color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.bubble-time { font-size:10px; color:rgba(255,255,255,.5); margin-top:4px; text-align:right; }
+.chat-input-area { display:flex; align-items:center; padding:10px 14px; border-top:1px solid rgba(255,255,255,.1); gap:10px; }
+.chat-input { flex:1; background:rgba(255,255,255,.1); border:none; border-radius:20px; padding:10px 16px; color:#fff; font-size:14px; outline:none; font-family:'Inter',sans-serif; }
+.chat-send { width:36px; height:36px; background:#ff0032; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#fff; font-size:17px; flex-shrink:0; }
+.typing-indicator { display:flex; gap:4px; padding:12px 16px; align-self:flex-start; background:rgba(255,255,255,.08); border-radius:20px; border-bottom-left-radius:4px; }
+.typing-dot { width:8px; height:8px; background:rgba(255,255,255,.45); border-radius:50%; animation:typingBounce 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2){animation-delay:.2s;} .typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-7px);} }
+
+/* gallery */
+.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:2px; flex:1; overflow-y:auto; align-content:start; }
+.gallery-item { aspect-ratio:1; overflow:hidden; cursor:pointer; position:relative; background:#111; }
+.gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform .3s; display:block; }
+.gallery-item:active img { transform:scale(1.1); }
+.gallery-item .g-label { position:absolute; bottom:0; left:0; right:0; font-size:9px; color:rgba(255,255,255,.85); padding:3px 6px; background:linear-gradient(transparent,rgba(0,0,0,.85)); letter-spacing:1px; text-transform:uppercase; }
+
+/* github */
+.github-app { background:#0d1117; }
+.repo-list { flex:1; overflow-y:auto; padding:6px 16px; }
+.repo-item { padding:13px 4px; border-bottom:1px solid rgba(255,255,255,.06); cursor:pointer; }
+.repo-name { color:#58a6ff; font-size:15px; font-weight:600; margin-bottom:4px; }
+.repo-desc { color:rgba(255,255,255,.5); font-size:12px; margin-bottom:8px; line-height:1.4; }
+.repo-meta { display:flex; gap:16px; font-size:11px; color:rgba(255,255,255,.4); }
+.repo-lang { display:flex; align-items:center; gap:5px; }
+.lang-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+/* 3d */
+.viewer-3d { background:#000; }
+#three-canvas { width:100%; flex:1; display:block; }
+.viewer-controls { padding:14px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.viewer-btn { background:rgba(255,0,50,.18); border:1px solid rgba(255,0,50,.5); color:#ff2244; padding:8px 15px; border-radius:20px; font-size:12px; cursor:pointer; font-weight:600; font-family:'Inter',sans-serif; }
+.viewer-btn.on { background:#ff0032; color:#fff; box-shadow:0 0 14px rgba(255,0,50,.7); }
+
+/* music */
+.music-app { background:linear-gradient(180deg,#1a0005,#000); }
+.music-player { display:flex; flex-direction:column; align-items:center; padding:24px 20px; flex:1; }
+.music-artwork { width:240px; height:240px; border-radius:14px; background:url('ALBUM_URL') center/cover; box-shadow:0 20px 60px rgba(255,0,50,.4); margin-bottom:26px; animation:rotateArtwork 22s linear infinite; animation-play-state:paused; border:1px solid rgba(255,0,50,.4); }
+.music-artwork.playing { animation-play-state:running; }
+@keyframes rotateArtwork { from{transform:rotate(0);} to{transform:rotate(360deg);} }
+.music-title { font-size:22px; color:#fff; font-weight:800; letter-spacing:3px; margin-bottom:4px; font-family:'Orbitron',sans-serif; }
+.music-artist { font-size:14px; color:rgba(255,255,255,.5); margin-bottom:24px; }
+.music-progress { width:100%; height:4px; background:rgba(255,255,255,.12); border-radius:2px; margin-bottom:8px; }
+.music-progress-fill { height:100%; background:#ff0032; border-radius:2px; width:0%; box-shadow:0 0 8px rgba(255,0,50,.8); }
+.music-times { display:flex; justify-content:space-between; width:100%; font-size:11px; color:rgba(255,255,255,.4); margin-bottom:18px; font-family:'Orbitron',sans-serif; }
+.music-controls { display:flex; align-items:center; gap:34px; }
+.music-btn { color:#fff; font-size:24px; cursor:pointer; opacity:.7; }
+.music-btn.play-btn { font-size:52px; opacity:1; text-shadow:0 0 20px rgba(255,0,50,.8); }
+
+/* browser */
+.browser-bar { display:flex; align-items:center; padding:8px 12px; background:rgba(255,255,255,.05); margin:10px 16px; border-radius:12px; }
+.browser-url { flex:1; background:rgba(255,255,255,.08); border:none; border-radius:8px; padding:8px 12px; color:#fff; font-size:12px; outline:none; }
+.browser-content { flex:1; padding:16px; overflow-y:auto; }
+.browser-content h3 { color:#ff2244; font-size:22px; margin-bottom:12px; font-family:'Playfair Display',serif; letter-spacing:2px; }
+.browser-content p { color:rgba(255,255,255,.7); font-size:14px; line-height:1.6; margin-bottom:12px; }
+
+/* settings */
+.settings-list { flex:1; overflow-y:auto; padding:12px 16px; }
+.settings-group { background:rgba(255,255,255,.05); border-radius:12px; margin-bottom:18px; overflow:hidden; }
+.settings-item { display:flex; align-items:center; padding:13px 16px; border-bottom:1px solid rgba(255,255,255,.05); }
+.settings-item:last-child { border-bottom:none; }
+.si-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; margin-right:12px; background:#331018; flex-shrink:0; }
+.si-icon img { width:100%; height:100%; border-radius:8px; object-fit:cover; }
+.si-label { color:#fff; font-size:15px; flex:1; }
+.si-value { color:rgba(255,255,255,.4); font-size:13px; }
+.toggle-switch { width:50px; height:30px; background:rgba(255,255,255,.2); border-radius:15px; position:relative; cursor:pointer; transition:background .3s; flex-shrink:0; }
+.toggle-switch.active { background:#ff0032; }
+.toggle-switch::after { content:''; position:absolute; top:2px; left:2px; width:26px; height:26px; background:#fff; border-radius:50%; transition:transform .3s; }
+.toggle-switch.active::after { transform:translateX(20px); }
+
+/* incoming */
+.incoming-call { position:absolute; inset:0; background:linear-gradient(180deg,#1a0005,#0a0000); z-index:950; display:none; flex-direction:column; align-items:center; padding-top:90px; }
+.incoming-call.active { display:flex; }
+.ring-animation { position:absolute; top:34%; left:50%; transform:translate(-50%,-50%); border:2px solid rgba(255,0,50,.35); border-radius:50%; animation:ringExpand 2s ease-out infinite; pointer-events:none; }
+.ring-animation:nth-child(2){animation-delay:.6s;} .ring-animation:nth-child(3){animation-delay:1.2s;}
+@keyframes ringExpand { 0%{width:120px;height:120px;opacity:1;} 100%{width:320px;height:320px;opacity:0;} }
+
+/* banner */
+.notif-banner { position:absolute; top:50px; left:10px; right:10px; background:rgba(28,28,28,.95); backdrop-filter:blur(20px); border-radius:14px; padding:12px 14px; z-index:960; display:none; align-items:center; gap:10px; border:1px solid rgba(255,0,50,.35); animation:slideDown .4s ease; }
+.notif-banner.active { display:flex; }
+@keyframes slideDown { from{transform:translateY(-110px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+.notif-banner-icon { width:36px; height:36px; border-radius:9px; background:url('EMBLEM_URL') center/cover; flex-shrink:0; }
+.nb-title { color:#fff; font-size:13px; font-weight:600; }
+.nb-body { color:rgba(255,255,255,.6); font-size:12px; }
+
+/* camera */
+.viewfinder { flex:1; position:relative; overflow:hidden; background:#000; }
+.viewfinder img { width:100%; height:100%; object-fit:cover; filter:saturate(.7) contrast(1.15) hue-rotate(-12deg); }
+.viewfinder::after { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 45%, transparent 40%, rgba(120,0,20,.45) 100%), repeating-linear-gradient(transparent 0 3px, rgba(0,0,0,.14) 3px 4px); }
+.vf-grid { position:absolute; inset:0; z-index:2; background:linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px) 0 33%/100% 33.4%, linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px) 33% 0/33.4% 100%; }
+.vf-tag { position:absolute; top:12px; left:14px; z-index:3; color:#ff2244; font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:2px; }
+.shutter-row { padding:18px 0 26px; display:flex; justify-content:center; align-items:center; gap:40px; background:#000; }
+.shutter { width:70px; height:70px; border-radius:50%; border:4px solid #fff; background:radial-gradient(circle,#fff 0 38%, rgba(255,0,50,.9) 42% 100%); cursor:pointer; transition:transform .12s; }
+.shutter:active { transform:scale(.86); }
+.capture-flash { position:absolute; inset:0; background:#fff; z-index:980; opacity:0; pointer-events:none; }
+.capture-flash.go { animation:flash .45s ease; }
+@keyframes flash { 0%{opacity:.95;} 100%{opacity:0;} }
+
+/* lightbox + toast */
+.lightbox { position:absolute; inset:0; background:rgba(0,0,0,.94); z-index:970; display:none; align-items:center; justify-content:center; flex-direction:column; padding:60px 20px 40px; }
+.lightbox.active { display:flex; }
+.lightbox img { max-width:100%; max-height:82%; border-radius:14px; border:1px solid rgba(255,0,50,.4); box-shadow:0 0 60px rgba(255,0,50,.35); }
+.lightbox .lb-label { color:rgba(255,255,255,.7); margin-top:16px; font-size:13px; letter-spacing:2px; text-transform:uppercase; }
+.toast { position:absolute; bottom:110px; left:50%; transform:translateX(-50%); background:rgba(30,30,30,.95); color:#fff; font-size:13px; padding:10px 18px; border-radius:20px; border:1px solid rgba(255,0,50,.4); z-index:1002; opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap; }
+.toast.show { opacity:1; }
+
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(255,255,255,.32); border-radius:3px; z-index:1001; cursor:pointer; }
+
+::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-thumb { background:rgba(255,0,50,.35); border-radius:2px; } ::-webkit-scrollbar-track { background:transparent; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="phoneFrame">
+  <div class="phone-screen" id="phoneScreen">
+    <div class="notch"><div class="notch-camera"></div></div>
+
+    <div class="status-bar">
+      <span class="time" id="statusTime">04:25</span>
+      <div class="icons">
+        <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+      </div>
+    </div>
+
+    <div class="gpu-stats" id="gpuStats">GPU: 98% | 60fps | 3D: OFF</div>
+
+    <!-- LOCK -->
+    <div class="lock-screen" id="lockScreen">
+      <div class="lock-time" id="lockTime">04:25</div>
+      <div class="lock-date" id="lockDate">Viernes, 23 de Enero</div>
+      <div class="lock-notifications">
+        <div class="lock-notification" onclick="showIncomingCall()">
+          <div class="notif-header"><div class="notif-icon"></div><span class="notif-app">Teléfono</span><span class="notif-time">ahora</span></div>
+          <div class="notif-title">Judas</div>
+          <div class="notif-body">Llamada entrante...</div>
+        </div>
+        <div class="lock-notification" onclick="unlockPhone(); setTimeout(function(){openApp('messages');},650);">
+          <div class="notif-header"><div class="notif-icon"></div><span class="notif-app">Mensajes</span><span class="notif-time">2 min</span></div>
+          <div class="notif-title">Judas</div>
+          <div class="notif-body">No voy a devolver la llave. No fui yo quien llamó a la policía.</div>
+        </div>
+      </div>
+      <div class="swipe-indicator" onclick="unlockPhone()">
+        <div class="bar"></div><span>Desliza o toca para desbloquear</span>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="home-screen" id="homeScreen">
+      <div class="home-wallpaper"></div>
+      <div class="weather-widget">
+        <div><div class="weather-temp">14°</div></div>
+        <div class="weather-info"><div class="w-city">Barcelona</div><div class="w-cond">Noche despejada · ETERNIA</div></div>
+      </div>
+      <div class="apps-grid">
+        <div class="app-icon" onclick="openApp('phone')"><div class="app-badge" data-count="1"><div class="tile"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.21c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div><span>Teléfono</span></div>
+        <div class="app-icon" onclick="openApp('messages')"><div class="app-badge" data-count="3"><div class="tile"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div></div><span>Mensajes</span></div>
+        <div class="app-icon" onclick="openApp('gallery')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span>Galería</span></div>
+        <div class="app-icon" onclick="openApp('github')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg></div><span>Repos</span></div>
+        <div class="app-icon" onclick="openApp('music')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><span>Música</span></div>
+        <div class="app-icon" onclick="openApp('viewer3d')"><div class="tile"><svg viewBox="0 0 24 24"><g fill="none" stroke="#ff2244" stroke-width="1.5"><circle cx="12" cy="12" r="7.2"/><ellipse cx="12" cy="12" rx="7.2" ry="2.7"/><ellipse cx="12" cy="12" rx="2.7" ry="7.2"/></g></svg></div><span>3D View</span></div>
+        <div class="app-icon" onclick="openApp('browser')"><div class="tile"><svg viewBox="0 0 24 24"><g fill="none" stroke="#ff2244" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 3.2 3 12.8 0 16-3-3.2-3-12.8 0-16z"/></g></svg></div><span>Judas Exp</span></div>
+        <div class="app-icon" onclick="openApp('settings')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div><span>Ajustes</span></div>
+        <div class="app-icon" onclick="openApp('judas')"><img class="tile-img" src="https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1e7ba99b1-9fe9-44a9-a767-e02cfbe25234.png" alt="Judas"><span>JUDAS</span></div>
+        <div class="app-icon" onclick="openApp('camera')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z"/><path d="M9 3 7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></div><span>Cámara</span></div>
+        <div class="app-icon" onclick="openApp('duck')"><img class="tile-img" src="https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1ff064a44-115a-4ab7-b56a-45ef238b3950.png" alt="Duck"><span>DUCK OS</span></div>
+        <div class="app-icon" onclick="openApp('noiacore')"><img class="tile-img" src="https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1428e6cb5-0011-4c01-a178-b2cba31b59c0.png" alt="Noiacore"><span>NOIACORE</span></div>
+      </div>
+      <div class="dock">
+        <div class="app-icon" onclick="openApp('phone')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.21c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div>
+        <div class="app-icon" onclick="openApp('messages')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div></div>
+        <div class="app-icon" onclick="openApp('browser')"><div class="tile"><svg viewBox="0 0 24 24"><g fill="none" stroke="#ff2244" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 3.2 3 12.8 0 16-3-3.2-3-12.8 0-16z"/></g></svg></div></div>
+        <div class="app-icon" onclick="openApp('music')"><div class="tile"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div></div>
+      </div>
+    </div>
+
+    <!-- INCOMING -->
+    <div class="incoming-call" id="incomingCall">
+      <div class="ring-animation"></div><div class="ring-animation"></div><div class="ring-animation"></div>
+      <div class="call-avatar"></div>
+      <div class="call-name">Judas</div>
+      <div class="call-status" id="callStatusText">llamando...</div>
+      <div class="call-timer" id="callTimer" style="display:none;">00:00</div>
+      <div class="call-actions">
+        <div><div class="call-btn mute">🔇</div><div class="call-btn-label">Silenciar</div></div>
+        <div><div class="call-btn decline" onclick="declineCall()">✕</div><div class="call-btn-label">Rechazar</div></div>
+        <div><div class="call-btn accept" onclick="acceptCall()">✓</div><div class="call-btn-label">Aceptar</div></div>
+      </div>
+    </div>
+
+    <div class="notif-banner" id="notifBanner">
+      <div class="notif-banner-icon"></div>
+      <div style="flex:1;"><div class="nb-title">Judas</div><div class="nb-body" id="notifBannerBody">No voy a devolver la llave...</div></div>
+    </div>
+
+    <!-- PHONE -->
+    <div class="app-screen phone-app" id="appPhone">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Teléfono</h2></div>
+      <div class="call-screen">
+        <div class="call-avatar"></div>
+        <div class="call-name">Judas</div>
+        <div class="call-status">Llamada en curso</div>
+        <div class="call-timer" id="activeCallTimer">00:00</div>
+        <div class="call-actions">
+          <div><div class="call-btn mute">🔇</div><div class="call-btn-label">Silenciar</div></div>
+          <div><div class="call-btn speaker">🔊</div><div class="call-btn-label">Altavoz</div></div>
+          <div><div class="call-btn decline" onclick="endCall()">📞</div><div class="call-btn-label">Colgar</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="app-screen" id="appMessages" style="background:#000;">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Mensajes</h2></div>
+      <div class="message-list" id="messageList">
+        <div class="message-item" onclick="openChat()">
+          <div class="message-avatar"></div>
+          <div class="message-info"><div class="msg-name">Judas</div><div class="msg-preview">Sé la verdad, Belentani.</div><div class="msg-time">04:23</div></div>
+          <div class="message-unread"></div>
+        </div>
+        <div class="message-item"><div class="message-avatar dim">🦆</div><div class="message-info"><div class="msg-name">DUCK Studio</div><div class="msg-preview">Producción completada ✓</div><div class="msg-time">03:15</div></div></div>
+        <div class="message-item"><div class="message-avatar dim">🛡</div><div class="message-info"><div class="msg-name">Trust &amp; Safety</div><div class="msg-preview">Audit log actualizado</div><div class="msg-time">02:40</div></div></div>
+        <div class="message-item"><div class="message-avatar dim" style="background:url('https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1428e6cb5-0011-4c01-a178-b2cba31b59c0.png') center/cover;"></div><div class="message-info"><div class="msg-name">NOIACORE</div><div class="msg-preview">Sistema operativo actualizado</div><div class="msg-time">01:20</div></div></div>
+      </div>
+      <div class="chat-view" id="chatView">
+        <div class="app-header"><span class="back-btn" onclick="closeChat()">← Mensajes</span><h2>Judas ✝</h2></div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-bubble received">No voy a devolver la llave.<div class="bubble-time">04:20</div></div>
+          <div class="chat-bubble received">No fui yo quien llamó a la policía.<div class="bubble-time">04:21</div></div>
+          <div class="chat-bubble received">Y no me creo que hayas creado las webs. Eso es demasiado para ti.<div class="bubble-time">04:22</div></div>
+          <div class="chat-bubble received">Sé la verdad, Belentani.<div class="bubble-time">04:23</div></div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" placeholder="iMessage" id="chatInput" onkeypress="handleChatKey(event)">
+          <div class="chat-send" onclick="sendMessage()">↑</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="app-screen" id="appGallery" style="background:#000;">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Galería</h2></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <!-- GITHUB -->
+    <div class="app-screen github-app" id="appGithub">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Repositorios</h2></div>
+      <div class="repo-list" id="repoList"></div>
+    </div>
+
+    <!-- 3D -->
+    <div class="app-screen viewer-3d" id="appViewer3d">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>3D Viewer — Judas Ring</h2></div>
+      <canvas id="three-canvas"></canvas>
+      <div class="viewer-controls">
+        <button class="viewer-btn on" id="btnRing" onclick="change3DShape('ring')">Anillo</button>
+        <button class="viewer-btn" id="btnCross" onclick="change3DShape('cross')">Cruz</button>
+        <button class="viewer-btn" id="btnSphere" onclick="change3DShape('sphere')">Esfera</button>
+        <button class="viewer-btn on" id="btnShader" onclick="toggleShader()">Shader FX</button>
+      </div>
+    </div>
+
+    <!-- MUSIC -->
+    <div class="app-screen music-app" id="appMusic">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Música</h2></div>
+      <div class="music-player">
+        <div class="music-artwork" id="musicArtwork"></div>
+        <div class="music-title">JUDAS</div>
+        <div class="music-artist">Belentani · Duck Prod. · ETERNIA</div>
+        <div class="music-progress"><div class="music-progress-fill" id="musicProgress"></div></div>
+        <div class="music-times"><span id="musicCurrentTime">0:00</span><span>3:47</span></div>
+        <div class="music-controls">
+          <span class="music-btn">⏮</span>
+          <span class="music-btn play-btn" id="playBtn" onclick="togglePlay()">▶</span>
+          <span class="music-btn">⏭</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BROWSER -->
+    <div class="app-screen" id="appBrowser" style="background:#000;">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Judas Experience</h2></div>
+      <div class="browser-bar"><input type="text" class="browser-url" value="https://judas-experience-13898.buildaispace.app/" readonly></div>
+      <div class="browser-content">
+        <h3>JUDAS EXPERIENCE</h3>
+        <p>Una experiencia musical inmersiva creada por Belentani. Producción DUCK. Barcelona 2026.</p>
+        <p style="color:#ff2244;font-weight:600;">"How can I protect something so perfect without evil"</p>
+        <p>ETERNIA — el álbum que redefine los límites entre lo sagrado y lo profano. Texturas electrónicas, narrativa cinematográfica y la oscilación serena del hombre andrógino consciente.</p>
+        <p style="font-size:12px;color:rgba(255,255,255,.4);margin-top:20px;">© 2026 Belentani · NOIACORE · DUCK Production</p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="app-screen" id="appSettings" style="background:#000;">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Ajustes</h2></div>
+      <div class="settings-list">
+        <div class="settings-group">
+          <div class="settings-item"><div class="si-icon" style="background:url('https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1e7ba99b1-9fe9-44a9-a767-e02cfbe25234.png') center/cover;"></div><span class="si-label">Modo Judas</span><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-item"><div class="si-icon">🔔</div><span class="si-label">Notificaciones</span><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-item"><div class="si-icon">📳</div><span class="si-label">Vibración</span><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-item"><div class="si-icon">🎨</div><span class="si-label">Tema</span><span class="si-value">Neon Rojo</span></div>
+          <div class="settings-item"><div class="si-icon">🎵</div><span class="si-label">Ringtone</span><span class="si-value">Judas Call</span></div>
+          <div class="settings-item"><div class="si-icon">🌐</div><span class="si-label">Idioma</span><span class="si-value">Español</span></div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-item"><div class="si-icon">⚡</div><span class="si-label">GPU Max Performance</span><div class="toggle-switch active" id="gpuToggle" onclick="toggleGPU(this)"></div></div>
+          <div class="settings-item"><div class="si-icon">🎮</div><span class="si-label">3D Renderer</span><span class="si-value">WebGL 2.0</span></div>
+          <div class="settings-item"><div class="si-icon">🔮</div><span class="si-label">Shaders</span><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-item"><div class="si-icon">👤</div><span class="si-label">Perfil</span><span class="si-value">Belentani</span></div>
+          <div class="settings-item"><div class="si-icon">🔒</div><span class="si-label">Privacidad</span><span class="si-value">›</span></div>
+          <div class="settings-item"><div class="si-icon">ℹ️</div><span class="si-label">Acerca de</span><span class="si-value">BELENTANI OS v3.0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUDAS -->
+    <div class="app-screen" id="appJudas" style="background:linear-gradient(180deg,#1a0005,#000);">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>JUDAS</h2></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+        <img src="https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1e7ba99b1-9fe9-44a9-a767-e02cfbe25234.png" style="width:130px;height:130px;border-radius:30px;object-fit:cover;margin-bottom:22px;box-shadow:0 0 50px rgba(255,0,50,.7);">
+        <h1 style="font-family:'Playfair Display',serif;font-size:46px;color:#fff;letter-spacing:12px;margin-bottom:10px;">JUDAS</h1>
+        <p style="color:rgba(255,255,255,.5);font-size:13px;letter-spacing:4px;">BELENTANI · DUCK PROD.</p>
+        <p style="color:rgba(255,255,255,.32);font-size:12px;margin-top:28px;text-align:center;font-style:italic;">"How can I protect something<br>so perfect without evil"</p>
+        <p style="color:#ff2244;font-size:22px;margin-top:18px;font-family:'Orbitron',sans-serif;letter-spacing:8px;text-shadow:0 0 20px rgba(255,0,50,.8);">ETERNIA</p>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="app-screen" id="appCamera" style="background:#000;">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>Cámara</h2></div>
+      <div class="viewfinder">
+        <img src="https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/165024ff5-365d-4cad-aacb-abd3b4b420f0.png" alt="viewfinder">
+        <div class="vf-grid"></div>
+        <div class="vf-tag">MODO NOCHE · NEON ROJO · REC ●</div>
+      </div>
+      <div class="shutter-row"><div class="shutter" onclick="capturePhoto()"></div></div>
+    </div>
+
+    <!-- DUCK -->
+    <div class="app-screen" id="appDuck" style="background:linear-gradient(180deg,#0a0010,#000);">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>DUCK OS</h2></div>
+      <div style="flex:1;padding:20px;overflow-y:auto;">
+        <h2 style="color:#ff2244;font-family:'Orbitron',sans-serif;font-size:22px;margin-bottom:18px;">🦆 DUCK UNIFIED MASTER</h2>
+        <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(255,0,50,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">DUCK Studio Suite</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Suite integrada de producción musical web</div></div>
+        <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(255,0,50,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">DUCK Full Studio Pro</div><div style="color:rgba(255,255,255,.5);font-size:12px;">FL Studio Ecosystem &amp; Vault (Audited 10/10)</div></div>
+        <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(255,0,50,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">DUCK ZION Apex</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Professional vocal production platform — Gate 57/60</div></div>
+        <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(255,0,50,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">DUCK Lab</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Laboratorio de prototipos del universo DUCK/Zion</div></div>
+        <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:15px;border:1px solid rgba(255,0,50,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">DUCK Ω-MAX Studio OS</div><div style="color:rgba(255,255,255,.5);font-size:12px;">CRM, producción musical, operaciones y automatizaciones</div></div>
+      </div>
+    </div>
+
+    <!-- NOIACORE -->
+    <div class="app-screen" id="appNoiacore" style="background:linear-gradient(180deg,#000a0a,#000);">
+      <div class="app-header"><span class="back-btn" onclick="closeApp()">← Atrás</span><h2>NOIACORE</h2></div>
+      <div style="flex:1;padding:20px;overflow-y:auto;">
+        <h2 style="color:#00ff88;font-family:'Orbitron',sans-serif;font-size:22px;margin-bottom:18px;">NOIACORE LAB</h2>
+        <div style="background:rgba(0,255,136,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(0,255,136,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">AI Systems &amp; Trust &amp; Safety</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Full-Stack TS/Python · Creative Tech · Barcelona</div></div>
+        <div style="background:rgba(0,255,136,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(0,255,136,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">Evidence Ledger</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Local-first evidence receipts for AI and Trust &amp; Safety decisions</div></div>
+        <div style="background:rgba(0,255,136,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(0,255,136,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">ProofMesh</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Evidence-first change intelligence with strict 6-criteria gates</div></div>
+        <div style="background:rgba(0,255,136,.05);border-radius:12px;padding:15px;margin-bottom:12px;border:1px solid rgba(0,255,136,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">OmniAgent</div><div style="color:rgba(255,255,255,.5);font-size:12px;">One CLI to route AI tasks to the best model</div></div>
+        <div style="background:rgba(0,255,136,.05);border-radius:12px;padding:15px;border:1px solid rgba(0,255,136,.2);"><div style="color:#fff;font-weight:600;margin-bottom:4px;">QBP Core</div><div style="color:rgba(255,255,255,.5);font-size:12px;">Core SDK for the Quadrachy Binding Protocol</div></div>
+      </div>
+    </div>
+
+    <!-- LIGHTBOX / TOAST / FLASH -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <img id="lightboxImg" src="" alt="">
+      <div class="lb-label" id="lightboxLabel"></div>
+    </div>
+    <div class="toast" id="toast">Foto guardada</div>
+    <div class="capture-flash" id="captureFlash"></div>
+
+    <div class="home-indicator" onclick="goHome()"></div>
+  </div>
+</div>
+
+<script>
+/* ============ STATE ============ */
+var currentApp = null;
+var unlocked = false;
+var isPlaying = false;
+var callTimerInterval = null;
+var callSeconds = 0;
+var musicInterval = null;
+var musicSeconds = 0;
+var gpuMax = true;
+var shaderOn = true;
+var threeActive = false;
+
+var IMG = {
+  wallpaper: 'https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/168914cde-a9bf-4a4a-892f-97b50cfff475.png',
+  emblem: 'https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1e7ba99b1-9fe9-44a9-a767-e02cfbe25234.png',
+  album: 'https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/1efe997bc-2e6e-456b-ae9d-0efc3ea015a0.png',
+  portrait: 'https://image.qwenlm.ai/public_source/1a0361c8-f90e-435c-93a3-9cee17e5e74b/165024ff5-365d-4cad-aacb-abd3b4b420f0.png'
+};
+
+var judasQuotes = [
+  'No voy a devolver la llave.',
+  'Yo no llamé a la policía. Busca al verdadero culpable.',
+  'Sé la verdad, Belentani. Siempre la sé.',
+  'El anillo lleva nuestros nombres. Es prueba suficiente.',
+  'Judas no traiciona. Judas revela la verdad.',
+  'Las webs son demasiado complejas para ti... ¿seguro que fueron tuyas?'
+];
+
+/* ============ SCALE ============ */
+function scalePhone() {
+  var frame = document.getElementById('phoneFrame');
+  var s = Math.min(1, (window.innerHeight - 16) / 880, (window.innerWidth - 16) / 420);
+  frame.style.transform = 'scale(' + s + ')';
+}
+window.addEventListener('resize', scalePhone);
+scalePhone();
+
+/* ============ AUDIO CORE ============ */
+var audioCtx = null;
+function ac() {
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+  return audioCtx;
+}
+document.addEventListener('pointerdown', function () { ac(); }, { once: true });
+
+/* ============ TIME ============ */
+function pad2(n) { return String(n).padStart(2, '0'); }
+function fmtNow(offsetMin) {
+  var d = new Date(Date.now() + (offsetMin || 0) * 60000);
+  return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+function updateTime() {
+  var now = new Date();
+  var t = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+  document.getElementById('statusTime').textContent = t;
+  document.getElementById('lockTime').textContent = t;
+  var days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('lockDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' de ' + months[now.getMonth()];
+}
+setInterval(updateTime, 1000); updateTime();
+
+/* ============ LOCK / UNLOCK ============ */
+var lockEl = document.getElementById('lockScreen');
+var dragStartY = null;
+lockEl.addEventListener('pointerdown', function (e) { dragStartY = e.clientY; });
+lockEl.addEventListener('pointermove', function (e) {
+  if (dragStartY === null) return;
+  var d = e.clientY - dragStartY;
+  if (d < 0) { lockEl.style.transition = 'none'; lockEl.style.transform = 'translateY(' + d + 'px)'; lockEl.style.opacity = String(1 + d / 500); }
+});
+lockEl.addEventListener('pointerup', function (e) {
+  if (dragStartY === null) return;
+  var d = e.clientY - dragStartY; dragStartY = null;
+  lockEl.style.transition = ''; 
+  if (d < -90) { unlockPhone(); } else { lockEl.style.transform = ''; lockEl.style.opacity = ''; }
+});
+function unlockPhone() {
+  if (unlocked) return;
+  unlocked = true;
+  lockEl.style.transform = 'translateY(-100%)';
+  lockEl.style.opacity = '0';
+  setTimeout(function () {
+    lockEl.style.display = 'none';
+    document.getElementById('homeScreen').classList.add('active');
+  }, 500);
+}
+
+/* ============ APPS ============ */
+var appMap = { phone:'appPhone', messages:'appMessages', gallery:'appGallery', github:'appGithub', viewer3d:'appViewer3d', music:'appMusic', browser:'appBrowser', settings:'appSettings', judas:'appJudas', camera:'appCamera', duck:'appDuck', noiacore:'appNoiacore' };
+function openApp(name) {
+  var id = appMap[name]; if (!id) return;
+  document.getElementById(id).classList.add('active');
+  currentApp = id;
+  if (name === 'viewer3d') setTimeout(initThreeJS, 80);
+  if (name === 'github') populateRepos();
+  if (name === 'gallery') renderGallery();
+}
+function closeApp() {
+  if (currentApp) {
+    if (currentApp === 'appViewer3d') stopThreeAnim();
+    document.getElementById(currentApp).classList.remove('active');
+    currentApp = null;
+  }
+}
+function goHome() {
+  closeApp();
+  document.getElementById('chatView').classList.remove('active');
+  document.getElementById('messageList').style.display = 'block';
+  closeLightbox();
+}
+
+/* ============ CHAT ============ */
+function openChat() {
+  document.getElementById('messageList').style.display = 'none';
+  document.getElementById('chatView').classList.add('active');
+  scrollChat();
+}
+function closeChat() {
+  document.getElementById('chatView').classList.remove('active');
+  document.getElementById('messageList').style.display = 'block';
+}
+function scrollChat() { var c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
+function sendMessage() {
+  var input = document.getElementById('chatInput');
+  var text = input.value.trim(); if (!text) return;
+  var chat = document.getElementById('chatMessages');
+  var b = document.createElement('div');
+  b.className = 'chat-bubble sent';
+  b.innerHTML = text.replace(/</g,'&lt;') + '<div class="bubble-time">' + fmtNow() + '</div>';
+  chat.appendChild(b); input.value = ''; scrollChat();
+  setTimeout(function () {
+    var ty = document.createElement('div');
+    ty.className = 'typing-indicator';
+    ty.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    chat.appendChild(ty); scrollChat();
+    setTimeout(function () {
+      ty.remove();
+      var r = document.createElement('div');
+      r.className = 'chat-bubble received';
+      r.innerHTML = judasQuotes[Math.floor(Math.random() * judasQuotes.length)] + '<div class="bubble-time">' + fmtNow() + '</div>';
+      chat.appendChild(r); scrollChat();
+    }, 1800);
+  }, 700);
+}
+function handleChatKey(e) { if (e.key === 'Enter') sendMessage(); }
+
+/* ============ CALLS ============ */
+function showIncomingCall() {
+  document.getElementById('incomingCall').classList.add('active');
+  document.getElementById('callStatusText').style.display = 'block';
+  document.getElementById('callTimer').style.display = 'none';
+  playRingtone();
+  if (navigator.vibrate) navigator.vibrate([500,200,500,200,500]);
+}
+function acceptCall() {
+  document.getElementById('incomingCall').classList.remove('active');
+  stopRingtone();
+  callSeconds = 0;
+  startCallTimer();
+  openApp('phone');
+}
+function declineCall() {
+  document.getElementById('incomingCall').classList.remove('active');
+  stopRingtone();
+}
+function endCall() { closeApp(); clearInterval(callTimerInterval); callTimerInterval = null; }
+function startCallTimer() {
+  if (callTimerInterval) clearInterval(callTimerInterval);
+  callTimerInterval = setInterval(function () {
+    callSeconds++;
+    var t = pad2(Math.floor(callSeconds / 60)) + ':' + pad2(callSeconds % 60);
+    document.getElementById('callTimer').textContent = t;
+    document.getElementById('activeCallTimer').textContent = t;
+  }, 1000);
+}
+var ringtoneInterval = null;
+function playRingtone() {
+  var c = ac(); if (!c) return;
+  stopRingtone();
+  function ring() {
+    var t = c.currentTime;
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.connect(g); g.connect(c.destination);
+    o.frequency.setValueAtTime(800, t);
+    o.frequency.setValueAtTime(1000, t + 0.2);
+    o.frequency.setValueAtTime(800, t + 0.4);
+    g.gain.setValueAtTime(0.22, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+    o.start(t); o.stop(t + 0.7);
+  }
+  ring(); ringtoneInterval = setInterval(ring, 1500);
+}
+function stopRingtone() { if (ringtoneInterval) { clearInterval(ringtoneInterval); ringtoneInterval = null; } }
+
+/* ============ MUSIC ENGINE (WebAudio beat) ============ */
+var MusicEngine = {
+  timer: null, next: 0, step: 0,
+  start: function () {
+    var c = ac(); if (!c) return;
+    this.next = c.currentTime + 0.06; this.step = 0;
+    var self = this;
+    this.timer = setInterval(function () { self.schedule(); }, 30);
+  },
+  schedule: function () {
+    var c = ac(); if (!c) return;
+    while (this.next < c.currentTime + 0.16) {
+      this.playStep(this.step % 16, this.next);
+      this.next += (60 / 92) / 4;
+      this.step++;
+    }
+  },
+  playStep: function (s, t) {
+    if (s % 4 === 0) this.kick(t);
+    if (s % 2 === 1) this.hat(t);
+    var seq = [55,0,55,0,65.41,0,49,0,55,0,55,0,65.41,0,73.42,0];
+    if (seq[s]) this.bass(t, seq[s]);
+  },
+  kick: function (t) {
+    var c = ac(), o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
+    g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.3);
+  },
+  hat: function (t) {
+    var c = ac(), o = c.createOscillator(), g = c.createGain();
+    o.type = 'square'; o.frequency.value = 6000;
+    g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.06);
+  },
+  bass: function (t, f) {
+    var c = ac(), o = c.createOscillator(), g = c.createGain(), fl = c.createBiquadFilter();
+    o.type = 'sawtooth'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 320;
+    g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.connect(fl); fl.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.32);
+  },
+  stop: function () { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
+};
+function togglePlay() {
+  isPlaying = !isPlaying;
+  document.getElementById('playBtn').textContent = isPlaying ? '⏸' : '▶';
+  document.getElementById('musicArtwork').classList.toggle('playing', isPlaying);
+  if (isPlaying) {
+    MusicEngine.start();
+    musicInterval = setInterval(function () {
+      musicSeconds++; if (musicSeconds > 227) musicSeconds = 0;
+      document.getElementById('musicCurrentTime').textContent = Math.floor(musicSeconds / 60) + ':' + pad2(musicSeconds % 60);
+      document.getElementById('musicProgress').style.width = (musicSeconds / 227 * 100) + '%';
+    }, 1000);
+  } else { MusicEngine.stop(); clearInterval(musicInterval); }
+}
+
+/* ============ THREE.JS ============ */
+var threeScene = null, threeCamera = null, threeRenderer = null, threeAnimFrame = null, meshGroup = null, threeInited = false, currentShape = 'ring';
+function initThreeJS() {
+  var canvas = document.getElementById('three-canvas');
+  if (!threeInited) {
+    threeScene = new THREE.Scene();
+    threeCamera = new THREE.PerspectiveCamera(70, 1, 0.1, 100);
+    threeCamera.position.z = 5;
+    threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    threeRenderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    var l1 = new THREE.PointLight(0xff0032, 2, 100); l1.position.set(5, 5, 5);
+    var l2 = new THREE.PointLight(0x8b0000, 1.2, 100); l2.position.set(-5, -5, 5);
+    var la = new THREE.AmbientLight(0x330011, 1.2);
+    threeScene.add(l1); threeScene.add(l2); threeScene.add(la);
+    buildShape(currentShape);
+    threeInited = true;
+  }
+  var w = canvas.clientWidth || 300, h = canvas.clientHeight || 400;
+  threeRenderer.setSize(w, h, false);
+  threeCamera.aspect = w / h; threeCamera.updateProjectionMatrix();
+  threeActive = true;
+  if (!threeAnimFrame) animateThree();
+}
+function buildShape(shape) {
+  if (meshGroup) { threeScene.remove(meshGroup); meshGroup = null; }
+  var mat = new THREE.MeshPhongMaterial({ color: 0xff0032, emissive: 0x66001a, specular: 0xffffff, shininess: 100 });
+  mat.wireframe = !shaderOn;
+  meshGroup = new THREE.Group();
+  if (shape === 'ring') {
+    meshGroup.add(new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.42, 20, 100), mat));
+  } else if (shape === 'cross') {
+    var v = new THREE.Mesh(new THREE.BoxGeometry(0.5, 3, 0.3), mat);
+    var hbar = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 0.3), mat);
+    hbar.position.y = 0.8;
+    meshGroup.add(v); meshGroup.add(hbar);
+  } else {
+    meshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), mat));
+  }
+  threeScene.add(meshGroup);
+}
+function animateThree() {
+  threeAnimFrame = requestAnimationFrame(animateThree);
+  if (meshGroup && threeActive) { meshGroup.rotation.x += 0.01; meshGroup.rotation.y += 0.015; }
+  if (threeRenderer && threeScene && threeCamera) threeRenderer.render(threeScene, threeCamera);
+}
+function stopThreeAnim() {
+  threeActive = false;
+  if (threeAnimFrame) { cancelAnimationFrame(threeAnimFrame); threeAnimFrame = null; }
+}
+function change3DShape(shape) {
+  currentShape = shape;
+  document.getElementById('btnRing').classList.toggle('on', shape === 'ring');
+  document.getElementById('btnCross').classList.toggle('on', shape === 'cross');
+  document.getElementById('btnSphere').classList.toggle('on', shape === 'sphere');
+  if (threeInited) buildShape(shape);
+}
+function toggleShader() {
+  shaderOn = !shaderOn;
+  document.getElementById('btnShader').classList.toggle('on', shaderOn);
+  if (meshGroup) meshGroup.traverse(function (ch) { if (ch.material) ch.material.wireframe = !shaderOn; });
+}
+
+/* ============ GPU STATS / FPS ============ */
+function toggleGPU(el) {
+  el.classList.toggle('active');
+  gpuMax = el.classList.contains('active');
+  document.getElementById('gpuStats').classList.toggle('active', gpuMax);
+}
+var fpsFrames = 0, fpsLast = performance.now();
+function fpsLoop(t) {
+  fpsFrames++;
+  if (t - fpsLast >= 1000) {
+    var fps = Math.round(fpsFrames * 1000 / (t - fpsLast));
+    fpsFrames = 0; fpsLast = t;
+    if (gpuMax) document.getElementById('gpuStats').textContent = 'GPU: ' + (95 + Math.floor(Math.random() * 4)) + '% | ' + fps + 'fps | 3D: ' + (threeActive ? 'ON' : 'OFF');
+  }
+  requestAnimationFrame(fpsLoop);
+}
+requestAnimationFrame(fpsLoop);
+
+/* ============ GALLERY ============ */
+var galleryImages = [
+  { src: IMG.wallpaper, label: 'Judas Cross' },
+  { src: IMG.emblem, label: 'Emblema' },
+  { src: IMG.album, label: 'ETERNIA' },
+  { src: IMG.portrait, label: 'Belentani' }
+];
+function renderGallery() {
+  var g = document.getElementById('galleryGrid');
+  g.innerHTML = galleryImages.map(function (im, i) {
+    return '<div class="gallery-item" onclick="openLightbox(' + i + ')"><img src="' + im.src + '" alt=""><div class="g-label">' + im.label + '</div></div>';
+  }).join('');
+}
+function openLightbox(i) {
+  var im = galleryImages[i]; if (!im) return;
+  document.getElementById('lightboxImg').src = im.src;
+  document.getElementById('lightboxLabel').textContent = im.label;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+
+/* ============ CAMERA ============ */
+function capturePhoto() {
+  var f = document.getElementById('captureFlash');
+  f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+  galleryImages.push({ src: IMG.portrait, label: 'Captura ' + fmtNow() });
+  showToast('📸 Foto guardada en Galería');
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function () { t.classList.remove('show'); }, 2200);
+}
+
+/* ============ REPOS ============ */
+var repos = [
+  { name:'manus-ai-skill-pack', desc:'Pack de skills para agentes de codigo (estilo Manus/Claude) listos para produccion.', lang:'Python', color:'#3572A5', updated:'18min' },
+  { name:'belentani-omega-template', desc:'BELENTANI OMEGA: Plantilla de experiencia web inmersiva y canon conceptual.', lang:'HTML', color:'#e34c26', updated:'19min' },
+  { name:'judas-experience', desc:'Proyecto Judas - experiencia musical demo', lang:'HTML', color:'#e34c26', updated:'19min' },
+  { name:'fashion-stylist-ai', desc:'AI-powered fashion styling assistant', lang:'TypeScript', color:'#3178c6', updated:'5h' },
+  { name:'duck-unified-master', desc:'DUCK Unified Master - Consolidação completa do ecossistema DUCK (9 repos, 1838 arquivos)', lang:'HTML', color:'#e34c26', updated:'17h' },
+  { name:'Cruzando-el-charco', desc:'Portal gratuito y confidencial de acogida para hombres migrantes LGBT+', lang:'JavaScript', color:'#f1e05a', updated:'1d' },
+  { name:'duck-music-lab', desc:'DUCK Music Lab - laboratorio de producción musical', lang:'Shell', color:'#89e051', updated:'2d' },
+  { name:'linguaforge', desc:'Forja linguistica: herramientas de traduccion y adaptacion multilingue.', lang:'TypeScript', color:'#3178c6', updated:'2d' },
+  { name:'ManosAbiertas', desc:'Plataforma educativa gratuita: cursos IA/Office, creador CV, guías derechos', lang:'HTML', color:'#e34c26', updated:'2d' },
+  { name:'duck-studio-suite', desc:'Duck Studio Suite - suite integrada de produccion musical web.', lang:'TypeScript', color:'#3178c6', updated:'2d' },
+  { name:'belentani7', desc:'Belentani + NOIACORE | Frontend, creative technology and educational platforms', lang:'TypeScript', color:'#3178c6', updated:'2d' },
+  { name:'belentani_Omega', desc:'Artist ecosystem', lang:'JavaScript', color:'#f1e05a', updated:'3d' },
+  { name:'duck-ecosystem', desc:'Ecosistema DUCK - herramientas, GUIs y apps del estudio creativo DUCK.', lang:'TypeScript', color:'#3178c6', updated:'3d' },
+  { name:'duck-full-studio-pro', desc:'DUCK Full Studio Pro - FL Studio Ecosystem & Vault (Audited 10/10)', lang:'HTML', color:'#e34c26', updated:'3d' },
+  { name:'meta-skill', desc:'Universal router and token budget guard for Claude Code', lang:'HTML', color:'#e34c26', updated:'3d' },
+  { name:'claude-skills-pack', desc:'20 production-ready skills for AI coding assistants.', lang:'HTML', color:'#e34c26', updated:'3d' },
+  { name:'judas-omega-static', desc:'JUDAS OMEGA - storyboard cinematografico estatico', lang:'HTML', color:'#e34c26', updated:'3d' },
+  { name:'heyduck', desc:'HEYDUCK - hub web del universo DUCK: apps, musica y herramientas', lang:'HTML', color:'#e34c26', updated:'4d' },
+  { name:'Belentani', desc:'NOIACORE LAB — plataforma digital de Pedro Belentani', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'omniagent', desc:'One CLI to route AI tasks to the best model.', lang:'Python', color:'#3572A5', updated:'4d' },
+  { name:'temporal-artifact-detector', desc:'Python tool for detecting flickering and temporal artifacts in AI-generated videos.', lang:'Python', color:'#3572A5', updated:'4d' },
+  { name:'comfyui-json-compiler', desc:'Translate natural language creative briefs into valid ComfyUI JSON workflows', lang:'Python', color:'#3572A5', updated:'4d' },
+  { name:'llm-vfx-orchestrator', desc:'Autonomous VFX pipeline orchestration using LLMs connected to ComfyUI APIs.', lang:'Python', color:'#3572A5', updated:'4d' },
+  { name:'cinematic-prompt-formatter', desc:'Translate cinematic language into optimized prompts for Stable Diffusion, Flux, and SDXL', lang:'Python', color:'#3572A5', updated:'4d' },
+  { name:'ai-command-center-level10', desc:'AI Command Center Level 10 - Unified Open Source Workspace', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'evidence-ledger', desc:'Local-first evidence receipts for AI and Trust & Safety decisions', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'Belentani.cv-ai', desc:'Belentani Document Studio - Crea CV, cartas y presentaciones con IA', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'Duck-Omega', desc:'DUCK Omega - ecosistema artistico y productivo del proyecto Duck/Zion', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'harmonia-hub', desc:'Harmonia Hub - plataforma de coordinacion y bienestar.', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'belentaniexperience', desc:'Portfolio premium de Pedro Belentani: Trust & Safety, sistemas de IA', lang:'TypeScript', color:'#3178c6', updated:'4d' },
+  { name:'DUCK-ZION-PREMIUM', desc:'DUCK/BELENTANI Canal Zion — Studio OS, Ecosystem y Toolkit', lang:'HTML', color:'#e34c26', updated:'4d' },
+  { name:'proofmesh', desc:'Evidence-first change intelligence with strict 6-criteria, 3-node, 3-level gates', lang:'TypeScript', color:'#3178c6', updated:'5d' },
+  { name:'omega-max-duck', desc:'DUCK Ω-MAX Studio OS — CRM, producción musical, operaciones', lang:'TypeScript', color:'#3178c6', updated:'5d' },
+  { name:'duck-zion-apex-public', desc:'DUCK ZION Apex — professional vocal production platform; audited 57/60', lang:'TypeScript', color:'#3178c6', updated:'5d' },
+  { name:'tender-words-connect', desc:'Mapa de comprension y herramientas sobre TLP, vinculos y gestion emocional.', lang:'TypeScript', color:'#3178c6', updated:'5d' }
+];
+function populateRepos() {
+  document.getElementById('repoList').innerHTML = repos.map(function (r) {
+    return '<div class="repo-item" onclick="window.open(\'https://github.com/belentani7/' + r.name + '\',\'_blank\')">' +
+      '<div class="repo-name">' + r.name + '</div><div class="repo-desc">' + r.desc + '</div>' +
+      '<div class="repo-meta"><span class="repo-lang"><span class="lang-dot" style="background:' + r.color + ';"></span> ' + r.lang + '</span><span>Updated ' + r.updated + '</span></div></div>';
+  }).join('');
+}
+
+/* ============ NOTIFICATIONS ============ */
+function showBanner(text) {
+  var b = document.getElementById('notifBanner');
+  document.getElementById('notifBannerBody').textContent = text;
+  b.classList.add('active');
+  setTimeout(function () { b.classList.remove('active'); }, 4500);
+}
+setTimeout(function () { showBanner('No voy a devolver la llave...'); }, 5000);
+setInterval(function () {
+  if (unlocked && !document.getElementById('incomingCall').classList.contains('active')) {
+    showBanner(judasQuotes[Math.floor(Math.random() * judasQuotes.length)]);
+  }
+}, 26000);
+setTimeout(function () { if (!unlocked) showIncomingCall(); }, 8000);
+
+/* ============ INIT ============ */
+populateRepos();
+renderGallery();
+</script>
+</body>
+</html>

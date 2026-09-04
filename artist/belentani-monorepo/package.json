@@ -1,0 +1,28 @@
+{
+  "name": "belentani-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo unificado: UX Academy + Manos Abiertas + Belentani Judas + más",
+  "packageManager": "pnpm@10.4.1",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "deploy": "turbo run deploy",
+    "clean": "turbo run clean && rm -rf node_modules .turbo dist",
+    "dashboard:dev": "turbo run dev --filter=dashboard",
+    "dashboard:build": "turbo run build --filter=dashboard"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.6",
+    "turbo": "^2.10.12",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

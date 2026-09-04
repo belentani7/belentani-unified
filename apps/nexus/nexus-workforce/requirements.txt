@@ -1,0 +1,6 @@
+# Nexus Enterprise - Dependencies
+# All are optional - the app works with stdlib only
+# For .exe compilation:
+pyinstaller>=6.0
+# For webview version (optional):
+# pywebview>=5.0

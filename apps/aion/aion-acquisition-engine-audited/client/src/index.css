@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.985 0.004 286);
+  --foreground: oklch(0.18 0.025 286);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.025 286);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.025 286);
+  --primary: oklch(0.36 0.18 286);
+  --primary-foreground: oklch(0.99 0.01 286);
+  --secondary: oklch(0.96 0.015 286);
+  --secondary-foreground: oklch(0.28 0.04 286);
+  --muted: oklch(0.96 0.01 286);
+  --muted-foreground: oklch(0.56 0.03 286);
+  --accent: oklch(0.95 0.03 286);
+  --accent-foreground: oklch(0.32 0.13 286);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border: oklch(0.91 0.015 286);
+  --input: oklch(0.91 0.015 286);
+  --ring: oklch(0.56 0.18 286);
+  --radius: 0.85rem;
+}
+
+* { border-color: var(--border); }
+html { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; background: var(--background); }
+body { margin: 0; min-width: 320px; background: var(--background); color: var(--foreground); }
+h1, h2, h3, h4, h5, h6 { font-family: 'Plus Jakarta Sans', 'DM Sans', ui-sans-serif, sans-serif; }
+button, input, textarea, select { font: inherit; }
+button { transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms ease, color 160ms ease, box-shadow 160ms ease; }
+button:active { transform: scale(0.98); }
+::selection { background: oklch(0.86 0.1 286); color: oklch(0.2 0.05 286); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Workforce Enterprise | Offline App</title>
+    <style>
+        :root {
+            --bg-dark: #0b1120;
+            --bg-panel: #111827;
+            --primary: #2563eb;
+            --secure: #10b981;
+            --alert: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #f3f4f6;
+            --text-muted: #6b7280;
+            --border: #1f2937;
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { box-sizing: border-box; outline: none; }
+        body { margin: 0; background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-family); display: flex; height: 100vh; overflow: hidden; }
+        aside { width: 260px; background-color: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; z-index: 10; }
+        .brand { font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+        .brand-dot { width: 10px; height: 10px; background: var(--secure); border-radius: 50%; box-shadow: 0 0 10px var(--secure); }
+        nav { display: flex; flex-direction: column; gap: 6px; }
+        nav button { background: transparent; border: none; color: var(--text-muted); width: 100%; padding: 12px 14px; text-align: left; cursor: pointer; border-radius: 8px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        nav button:hover { background-color: rgba(255,255,255,0.05); color: white; }
+        nav button.active { background-color: rgba(16, 185, 129, 0.1); color: var(--secure); border-left: 3px solid var(--secure); }
+        main { flex: 1; padding: 30px; overflow-y: auto; background: radial-gradient(circle at top right, #1e293b 0%, var(--bg-dark) 40%); }
+        h1 { margin: 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 25px; }
+        .card { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+        .btn:hover { filter: brightness(1.1); }
+        .btn-danger { background: var(--alert); }
+        .sim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
+        .sim-stat { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+        .sim-stat h4 { margin: 0 0 8px 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .sim-stat .val { font-size: 1.4rem; font-weight: 700; }
+        .progress-container { width: 100%; background: #333; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 15px; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+        .terminal { background: #000; color: #33ff00; font-family: 'Consolas', monospace; padding: 12px; border-radius: 8px; height: 250px; overflow-y: auto; font-size: 0.8rem; border: 1px solid #333; margin-top: 10px; }
+        .log-entry { margin-bottom: 3px; }
+        .ts { color: #666; margin-right: 6px; }
+        .view { display: none; animation: fadeIn 0.3s; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        input, select { background: var(--bg-dark); color: white; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; }
+        label { font-size: 0.85rem; color: var(--text-muted); }
+        .form-row { display: flex; gap: 15px; align-items: center; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="brand"><div class="brand-dot"></div>Nexus Enterprise</div>
+        <nav>
+            <button class="active" onclick="showView('dashboard', 'Dashboard Global')">Dashboard</button>
+            <button onclick="showView('simulation', 'Simulacion Masiva')">Simulacion</button>
+            <button onclick="showView('payroll', 'Nomina por Convenio')">Nomina</button>
+            <button onclick="showView('legal', 'Validador Legal')">Validador Legal</button>
+        </nav>
+        <div style="margin-top: auto; font-size: 0.7rem; color: var(--text-muted);">
+            <p>Estado: <span style="color: var(--secure);">En Linea (Offline)</span></p>
+            <p>Motor: HTML/JS Local</p>
+        </div>
+    </aside>
+
+    <main>
+        <header><h1 id="page-title">Dashboard Global</h1></header>
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="view active">
+            <div class="sim-grid">
+                <div class="sim-stat"><h4>Plantilla Activa</h4><div class="val" style="color:var(--secure);">1,245</div></div>
+                <div class="sim-stat"><h4>Horas Extra</h4><div class="val">320h</div></div>
+                <div class="sim-stat"><h4>Cumplimiento</h4><div class="val" style="color:var(--secure);">100%</div></div>
+                <div class="sim-stat"><h4>Coste Laboral</h4><div class="val">840K EUR</div></div>
+            </div>
+            <div class="card">
+                <h3 style="margin-top:0;">Resumen Operativo</h3>
+                <p style="color:var(--text-muted);">Sistema de gestion de RRHH offline. Use los modulos del menu izquierdo.</p>
+            </div>
+        </section>
+
+        <!-- SIMULATION -->
+        <section id="simulation" class="view">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+                    <div>
+                        <h3 style="margin-top:0;color:var(--warning);">Configuracion de Prueba</h3>
+                        <p style="color:var(--text-muted);font-size:0.85rem;">3,000 Empleados | 39 Semanas | Picos 34%</p>
+                    </div>
+                    <button class="btn btn-danger" id="startBtn" onclick="startSimulation()">INICIAR SIMULACION</button>
+                </div>
+                <div class="progress-container"><div class="progress-bar" id="sim-progress"></div></div>
+                <div class="sim-grid">
+                    <div class="sim-stat"><h4>Mes</h4><div class="val" id="disp-month">--</div></div>
+                    <div class="sim-stat"><h4>Activos</h4><div class="val" id="disp-active" style="color:var(--secure);">3000</div></div>
+                    <div class="sim-stat"><h4>Absentismo</h4><div class="val" id="disp-sick">0%</div></div>
+                    <div class="sim-stat"><h4>Gaps</h4><div class="val" id="disp-gaps" style="color:var(--alert);">0</div></div>
+                </div>
+                <div class="terminal" id="sim-log"><div class="log-entry"><span class="ts">[SYS]</span> Sistema preparado.</div></div>
+            </div>
+        </section>
+
+        <!-- PAYROLL -->
+        <section id="payroll" class="view">
+            <div class="card">
+                <h3 style="margin-top:0;">Calculadora de Nomina por Convenio</h3>
+                <div class="form-row">
+                    <label>ID Empleado:</label>
+                    <input type="number" id="pay-id" value="1001" width="80">
+                    <label>Convenio:</label>
+                    <select id="pay-conv">
+                        <option value="cc_bcn">Call Center BCN</option>
+                        <option value="comercio">Comercio BCN</option>
+                        <option value="oficinas">Oficinas</option>
+                        <option value="hosteleria">Hosteleria Catalunya</option>
+                    </select>
+                    <label>Turno:</label>
+                    <select id="pay-shift">
+                        <option value="Rotativo">Rotativo</option>
+                        <option value="Oficina">Oficina</option>
+                        <option value="Nocturno">Nocturno</option>
+                    </select>
+                    <label>Base (EUR):</label>
+                    <input type="number" id="pay-base" value="1500" width="100">
+                    <button class="btn" onclick="calcPayroll()">Calcular</button>
+                </div>
+                <div id="pay-result" style="background:#000;color:#33ff00;font-family:Consolas,monospace;padding:15px;border-radius:8px;min-height:150px;margin-top:15px;font-size:0.85rem;"></div>
+            </div>
+        </section>
+
+        <!-- LEGAL -->
+        <section id="legal" class="view">
+            <div class="card">
+                <h3 style="margin-top:0;">Validador Legal de Turnos</h3>
+                <p style="color:var(--text-muted);font-size:0.85rem;">Estatuto de los Trabajadores (RDL 2/2015) | Directiva UE 2003/88/CE</p>
+                <div class="form-row" style="margin-top:15px;">
+                    <label>Horas Jornada:</label>
+                    <input type="number" id="legal-horas" value="8" width="80">
+                    <label>Horas Descanso Previo:</label>
+                    <input type="number" id="legal-descanso" value="10" width="80">
+                    <button class="btn" onclick="validateLegal()">Validar</button>
+                </div>
+                <div id="legal-result" style="background:#000;color:#f59e0b;font-family:Consolas,monospace;padding:15px;border-radius:8px;min-height:200px;margin-top:15px;font-size:0.85rem;"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showView(id, title) {
+            document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('page-title').textContent = title;
+        }
+
+        // Simulation
+        const logEl = document.getElementById('sim-log');
+        const progressBar = document.getElementById('sim-progress');
+        const TOTAL_EMPLOYEES = 3000, TOTAL_WEEKS = 39;
+
+        function log(msg, color = '#33ff00') {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="ts">[SYS]</span> <span style="color:${color}">${msg}</span>`;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        async function startSimulation() {
+            document.getElementById('startBtn').disabled = true;
+            log("Iniciando motor de simulacion...", "#f59e0b");
+            for (let i = 0; i < TOTAL_WEEKS; i++) {
+                const monthIndex = Math.floor(i / 4.3);
+                const months = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                let sickRate = (monthIndex <= 1) && Math.random() > 0.5 ? 0.34 : 0.03;
+                let active = TOTAL_EMPLOYEES, sick = 0, gaps = 0;
+                for (let g = 0; g < 250; g++) {
+                    if (Math.random() < sickRate) { sick += 12; active -= 12; if (active < TOTAL_EMPLOYEES * 0.8) gaps++; }
+                }
+                progressBar.style.width = ((i / TOTAL_WEEKS) * 100) + '%';
+                document.getElementById('disp-month').textContent = months[monthIndex];
+                document.getElementById('disp-active').textContent = active;
+                document.getElementById('disp-sick').textContent = Math.floor((sick/TOTAL_EMPLOYEES)*100) + '%';
+                document.getElementById('disp-gaps').textContent = gaps;
+                log(`Semana ${i+1}: ${gaps > 0 ? 'Riesgo operativo' : 'Turnos OK'}`, gaps > 0 ? '#ef4444' : '#10b981');
+                await new Promise(r => setTimeout(r, 80));
+            }
+            log("SIMULACION FINALIZADA.", "#fff");
+            document.getElementById('startBtn').textContent = 'COMPLETADO';
+        }
+
+        // Payroll
+        const CONV = {
+            cc_bcn: { name:'Call Center BCN', np:0.18, irpf:0.14, vac:22, jorn:1752 },
+            comercio: { name:'Comercio BCN', np:0.0, irpf:0.15, vac:30, jorn:1764 },
+            oficinas: { name:'Oficinas', np:0.0, irpf:0.18, vac:23, jorn:1764 },
+            hosteleria: { name:'Hosteleria CAT', np:0.25, irpf:0.14, vac:30, jorn:1792 }
+        };
+
+        function calcPayroll() {
+            const conv = CONV[document.getElementById('pay-conv').value];
+            const shift = document.getElementById('pay-shift').value;
+            const base = parseFloat(document.getElementById('pay-base').value);
+            const noct = shift === 'Nocturno' ? base * conv.np : 0;
+            const bruto = base + noct;
+            const irpf = bruto * conv.irpf;
+            const ss = bruto * 0.0635;
+            const neto = bruto - irpf - ss;
+            document.getElementById('pay-result').innerHTML = `
+==================================================\n  NOMINA - ${conv.name}\n==================================================\n  Salario Base:      +${base.toFixed(2)} EUR\n  Plus Nocturnidad:  +${noct.toFixed(2)} EUR\n  -------------------------------------------\n  Bruto Total:        ${bruto.toFixed(2)} EUR\n  IRPF:              -${irpf.toFixed(2)} EUR\n  Seg. Social:       -${ss.toFixed(2)} EUR\n  ===========================================\n  NETO A PERCIBIR:    ${neto.toFixed(2)} EUR\n  ===========================================\n  Vacaciones: ${conv.vac} dias | Jornada Max: ${conv.jorn}h`;
+        }
+
+        // Legal Validator
+        function validateLegal() {
+            const horas = parseFloat(document.getElementById('legal-horas').value);
+            const descanso = parseFloat(document.getElementById('legal-descanso').value);
+            let result = `--- Validacion Legal ---\nJornada: ${horas}h | Descanso previo: ${descanso}h\n\n`;
+            if (descanso < 12) result += `[VIOLACION] Art. 34.3 ET: Descanso minimo 12h. Actual: ${descanso}h\n`;
+            if (horas > 6) result += `[REQUERIDO] Art. 34.4 ET: Pausa minima 15 min si jornada > 6h\n`;
+            if (descanso >= 12 && horas <= 6) result += `[OK] Turno valido. Sin violaciones legales.\n`;
+            else if (descanso >= 12) result += `[OK] Descanso entre jornadas cumple ET.\n`;
+            document.getElementById('legal-result').textContent = result;
+        }
+
+        calcPayroll();
+        validateLegal();
+    </script>
+</body>
+</html>

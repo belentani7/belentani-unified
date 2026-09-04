@@ -1,0 +1,21 @@
+flowchart LR
+    UI[Streamlit Dashboard] --> CFG[YAML Source Config]
+    UI --> ORCH[Async Orchestrator]
+    ORCH --> Q[Domain-aware Queue]
+    Q --> RL[Rate limiter: >=2s/domain]
+    RL --> HTTP[httpx Official API/HTML]
+    RL --> PW[Playwright only for authorized JS-heavy source]
+    HTTP --> RAW[Raw payload + provenance]
+    PW --> RAW
+    RAW --> CLEAN[Normalizer / Validator / Deduplicator]
+    CLEAN --> DB[(SQLite prototype)]
+    CLEAN --> MET[Source metrics]
+    CLEAN --> ANALYTICS[Niche analytics]
+    ANALYTICS --> LLM[LLM: classify, summarize, anomalies]
+    LLM --> REPORT[Actionable report]
+    DB --> UI
+    REPORT --> UI
+    UI --> EXPORT[CSV / JSON]
+    LOG[Structured JSON logging] --> ORCH
+    LOG --> CLEAN
+    LOG --> ANALYTICS

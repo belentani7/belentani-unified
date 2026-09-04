@@ -1,0 +1,47 @@
+flowchart LR
+  subgraph S[Fuentes públicas]
+    R[Remotive API]
+    A[Arbeitnow API]
+    J[Jobicy API]
+  end
+  subgraph N[NEXUS DATA]
+    C[Config YAML]
+    I[Ingesta: asyncio + Queue + httpx]
+    L[Rate limit por dominio >= 2s]
+    B[Retries 429/5xx con backoff]
+    U[User-Agent identificable]
+    Q[Calidad: normalización, validación, deduplicación]
+    P[(SQLite prototipo)]
+    T[PostgreSQL futuro]
+    X[Inteligencia: KPIs, skills, seniority, anomalías]
+    M[LLM opcional: gpt-5-mini]
+    V[Streamlit]
+    E[Export CSV / JSON]
+    O[Logging JSON y métricas]
+  end
+  subgraph K[Cumplimiento]
+    K1[robots.txt y ToS]
+    K2[No CAPTCHA bypass ni evasión]
+    K3[Atribución y procedencia]
+    K4[Análisis interno; no redistribución]
+  end
+  R --> I
+  A --> I
+  J --> I
+  C --> I
+  I --> L --> Q
+  I --> B --> Q
+  I --> U --> Q
+  Q --> P
+  P -. migración .-> T
+  P --> X
+  M --> X
+  X --> V
+  V --> E
+  I --> O
+  Q --> O
+  X --> O
+  K1 -.-> I
+  K2 -.-> I
+  K3 -.-> Q
+  K4 -.-> V

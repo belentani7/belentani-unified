@@ -1,0 +1,3 @@
+# No hay dependencias externas para el motor de cumplimiento: solo stdlib.
+# (El stack FastAPI/PostgreSQL del README es la arquitectura objetivo del
+#  producto; el motor agent.py corre sin ellas.)

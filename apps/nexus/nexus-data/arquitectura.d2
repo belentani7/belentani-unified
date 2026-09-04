@@ -1,0 +1,65 @@
+direction: right
+
+Fuentes públicas: {
+  Remotive API
+  Arbeitnow API
+  Jobicy API
+}
+
+Nexus Data: {
+  Config YAML: "sources.yaml"
+  Ingesta: {
+    "asyncio + Queue"
+    "httpx AsyncClient"
+    "Rate limit por dominio >= 2s"
+    "Retries 429/5xx con backoff"
+    "User-Agent identificable"
+  }
+  Calidad: {
+    "Pydantic schema"
+    "Normalización"
+    "Deduplicación"
+    "Validación"
+    "Procedencia + raw_hash"
+  }
+  Persistencia: {
+    SQLite: "prototipo"
+    PostgreSQL: "migración futura"
+  }
+  Inteligencia: {
+    "KPIs de empleo tech"
+    "Skills / seniority"
+    "Anomalías"
+    "Informe LLM opcional"
+  }
+  Presentación: {
+    Streamlit
+    "CSV / JSON"
+  }
+  Observabilidad: {
+    "Logging JSON"
+    "Éxito/error por fuente"
+    "Latencia, filas, duplicados"
+  }
+}
+
+Fuentes públicas -> Ingesta
+Ingesta -> Calidad
+Calidad -> Persistencia
+Persistencia -> Inteligencia
+Inteligencia -> Presentación
+Ingesta -> Observabilidad
+Calidad -> Observabilidad
+Inteligencia -> Observabilidad
+
+Compliance: {
+  "robots.txt / ToS"
+  "No CAPTCHA bypass"
+  "No evasión de bloqueos"
+  "Atribución obligatoria"
+  "Análisis interno, no redistribución"
+}
+Compliance -> Ingesta
+Compliance -> Presentación
+
+LLM: "API compatible OpenAI / gpt-5-mini" -> Inteligencia

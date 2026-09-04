@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Workforce Enterprise | SaaS HR Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --primary: #2563eb;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --font: 'Inter', system-ui, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font); background: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        aside { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; }
+        .brand { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+        .brand-dot { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
+        nav { display: flex; flex-direction: column; gap: 6px; }
+        nav button { background: transparent; border: none; color: var(--text-muted); padding: 12px 14px; text-align: left; cursor: pointer; border-radius: 8px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: 0.2s; font-family: var(--font); }
+        nav button:hover { background: rgba(255,255,255,0.05); color: white; }
+        nav button.active { background: var(--primary); color: white; }
+        main { flex: 1; padding: 32px; overflow-y: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        h1 { font-size: 1.5rem; font-weight: 700; }
+        .btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; font-family: var(--font); }
+        .btn:hover { filter: brightness(1.1); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-danger { background: var(--danger); }
+        .card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .grid-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .kpi-item h3 { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .kpi-item .value { font-size: 1.6rem; font-weight: 700; }
+        .kpi-item .delta { font-size: 0.8rem; margin-top: 4px; display: block; }
+        .up { color: var(--accent); } .down { color: var(--danger); }
+        .scheduler-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+        .scheduler-table th { text-align: left; padding: 10px; color: var(--text-muted); font-weight: 500; font-size: 0.8rem; }
+        .scheduler-table td { background: var(--bg-panel); padding: 10px; font-size: 0.85rem; }
+        .scheduler-table td:first-child { border-radius: 6px 0 0 6px; }
+        .scheduler-table td:last-child { border-radius: 0 6px 6px 0; }
+        .shift-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; min-width: 45px; text-align: center; }
+        .shift-M { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .shift-T { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .shift-N { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .shift-O { background: rgba(148,163,184,0.15); color: #94a3b8; border: 1px dashed #475569; }
+        .console-box { background: #000; color: #22c55e; font-family: 'Courier New', monospace; padding: 14px; border-radius: 8px; height: 250px; overflow-y: auto; font-size: 0.8rem; border: 1px solid #222; }
+        .log-line { margin-bottom: 4px; padding-bottom: 2px; border-bottom: 1px solid #111; }
+        .timestamp { color: #555; margin-right: 8px; }
+        .payroll-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .payroll-row:last-child { border-bottom: none; font-weight: 700; font-size: 1.1rem; margin-top: 8px; }
+        .amount { font-family: monospace; font-weight: 600; }
+        .view { display: none; animation: fadeIn 0.3s; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: var(--bg-panel); padding: 12px 20px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border-left: 4px solid var(--primary); animation: slideIn 0.3s; min-width: 260px; font-size: 0.85rem; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        select, input { background: var(--bg-dark); color: white; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; font-family: var(--font); font-size: 0.85rem; }
+        .sidebar-footer { margin-top: auto; font-size: 0.7rem; color: var(--text-muted); }
+        .sidebar-footer p { margin-bottom: 4px; }
+        .status-online { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="brand">
+            <div class="brand-dot"></div>
+            Nexus Enterprise
+        </div>
+        <nav>
+            <button class="active" onclick="showView('dashboard')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                Dashboard
+            </button>
+            <button onclick="showView('scheduler')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                Scheduler
+            </button>
+            <button onclick="showView('events')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                Incidents
+            </button>
+            <button onclick="showView('payroll')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                Payroll
+            </button>
+            <button onclick="showView('hr')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                HR Portal
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <p>Status: <span class="status-online">Online</span></p>
+            <p>Environment: Production</p>
+            <p>License: #NX-2024-EU</p>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <h1 id="page-title">Dashboard</h1>
+            <div style="display:flex;gap:8px;">
+                <button class="btn btn-outline" onclick="exportReport()">Export</button>
+                <button class="btn">Admin Users</button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="view active">
+            <div class="grid-kpi">
+                <div class="card kpi-item">
+                    <h3>Active Staff</h3>
+                    <div class="value" id="kpi-staff">1,245</div>
+                    <span class="delta up">98.5% Punctuality</span>
+                </div>
+                <div class="card kpi-item">
+                    <h3>Overtime Hours</h3>
+                    <div class="value" id="kpi-overtime">320h</div>
+                    <span class="delta down">-12% vs last month</span>
+                </div>
+                <div class="card kpi-item">
+                    <h3>Legal Compliance</h3>
+                    <div class="value" style="color:var(--accent)">100%</div>
+                    <span class="delta up">No PRL incidents</span>
+                </div>
+                <div class="card kpi-item">
+                    <h3>Monthly Cost</h3>
+                    <div class="value" id="kpi-cost">EUR 840k</div>
+                    <span class="delta">Within budget</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3 style="margin:0 0 16px 0;">Department Efficiency</h3>
+                <div style="display:flex;height:120px;gap:16px;align-items:flex-end;" id="dept-chart">
+                    <div style="flex:1;background:var(--primary);height:60%;opacity:.5;border-radius:4px;position:relative"><span style="position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;">IT</span></div>
+                    <div style="flex:1;background:var(--primary);height:85%;opacity:.8;border-radius:4px;position:relative"><span style="position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;">Logistics</span></div>
+                    <div style="flex:1;background:var(--primary);height:45%;opacity:.4;border-radius:4px;position:relative"><span style="position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;">Admin</span></div>
+                    <div style="flex:1;background:var(--primary);height:95%;border-radius:4px;position:relative"><span style="position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;">Customer Service</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCHEDULER -->
+        <section id="scheduler" class="view">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h3 style="margin:0">Weekly Schedule</h3>
+                    <button class="btn" onclick="autoGenerate()">Auto-Generate Shifts</button>
+                </div>
+                <table class="scheduler-table">
+                    <thead>
+                        <tr><th>Employee</th><th>Dept</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr>
+                    </thead>
+                    <tbody id="scheduler-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- INCIDENTS -->
+        <section id="events" class="view">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="card">
+                    <h3 style="margin:0 0 12px 0;">Incident Management</h3>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <label style="font-size:.85rem;font-weight:600;">Event Type</label>
+                        <select id="eventType">
+                            <option>Critical System Maintenance</option>
+                            <option>Security Patch Tuesday</option>
+                            <option>External Audit</option>
+                            <option>Equipment Change</option>
+                        </select>
+                        <label style="font-size:.85rem;font-weight:600;">Execution Window</label>
+                        <div style="display:flex;gap:8px;">
+                            <input type="time" value="09:00">
+                            <input type="time" value="18:00">
+                        </div>
+                        <label style="font-size:.85rem;font-weight:600;">Compensation Policy</label>
+                        <select>
+                            <option>TOIL (Time Off In Lieu)</option>
+                            <option>Overtime Pay (125%)</option>
+                            <option>No Compensation (Work Hours)</option>
+                        </select>
+                        <button class="btn btn-danger" onclick="runIncident()">Execute Auto-Assignment</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="margin:0 0 12px 0;">Audit Log</h3>
+                    <div class="console-box" id="console">
+                        <div class="log-line"><span class="timestamp">[System]</span> Waiting for admin input...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAYROLL -->
+        <section id="payroll" class="view">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h3 style="margin:0">Payroll Simulator</h3>
+                    <select id="payroll-emp" onchange="updatePayroll()" style="width:220px;"></select>
+                </div>
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+                    <div>
+                        <table style="width:100%">
+                            <thead>
+                                <tr style="border-bottom:1px solid var(--border);text-align:left;">
+                                    <th style="padding:8px 0;color:var(--text-muted);font-size:.8rem;">Concept</th>
+                                    <th style="padding:8px 0;color:var(--text-muted);font-size:.8rem;text-align:right;">Amount (EUR)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payroll-details"></tbody>
+                        </table>
+                    </div>
+                    <div style="background:rgba(37,99,235,.1);border:1px solid var(--primary);padding:16px;border-radius:8px;">
+                        <h4 style="margin:0 0 12px 0;color:var(--primary);font-size:.9rem;">Employee Summary</h4>
+                        <div class="payroll-row"><span>Gross Total</span><span class="amount" id="ps-gross">0.00</span></div>
+                        <div class="payroll-row" style="color:var(--danger)"><span>Deductions (IRPF + SS)</span><span class="amount" id="ps-ded">-0.00</span></div>
+                        <div class="payroll-row" style="margin-top:8px;font-size:1rem;"><span>Net Salary</span><span class="amount" id="ps-net">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HR PORTAL -->
+        <section id="hr" class="view">
+            <div class="card">
+                <h3 style="margin:0 0 16px 0;">Leave Request (Spanish Labor Law)</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:600px;">
+                    <div>
+                        <label style="font-size:.85rem;font-weight:600;display:block;margin-bottom:6px;">Employee ID</label>
+                        <input type="text" id="hr-emp-id" value="1001" style="width:100%">
+                    </div>
+                    <div>
+                        <label style="font-size:.85rem;font-weight:600;display:block;margin-bottom:6px;">Leave Type</label>
+                        <select id="hr-leave-type" style="width:100%">
+                            <option value="VACACIONES">Vacaciones</option>
+                            <option value="BODA">Boda (15 days - Art. 37 ET)</option>
+                            <option value="ENFERMEDAD_HIJO">Enfermedad Hijo (2 days)</option>
+                            <option value="NACIMIENTO_HIJO">Nacimiento Hijo (15 days)</option>
+                            <option value="MUERTE_PARIENTE">Fallecimiento Pariente (4 days)</option>
+                            <option value="MUDANZA">Mudanza (1 day)</option>
+                            <option value="ASUNTOS_PROPIOS">Asuntos Propios (varies)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:.85rem;font-weight:600;display:block;margin-bottom:6px;">Start Date</label>
+                        <input type="date" id="hr-start-date" style="width:100%">
+                    </div>
+                    <div>
+                        <label style="font-size:.85rem;font-weight:600;display:block;margin-bottom:6px;">Days</label>
+                        <input type="number" id="hr-days" value="5" min="1" style="width:100%">
+                    </div>
+                </div>
+                <button class="btn" style="margin-top:16px;" onclick="submitLeave()">Submit Request</button>
+                <div id="hr-result" style="margin-top:12px;font-size:.85rem;"></div>
+            </div>
+            <div class="card">
+                <h3 style="margin:0 0 12px 0;">Leave History</h3>
+                <table class="scheduler-table">
+                    <thead><tr><th>Employee</th><th>Type</th><th>Days</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody id="leave-history"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const DEPARTMENTS = {OPS:'Operations',IT:'Technology',HR:'Human Resources',LOG:'Logistics'};
+        const STAFF = [
+            {id:'1001',name:'Employee A',dept:'LOG',shiftType:'Rotativo',base:1450,conv:'call_center_bcn'},
+            {id:'1002',name:'Employee B',dept:'OPS',shiftType:'Rotativo',base:1850,conv:'call_center_bcn'},
+            {id:'1003',name:'Employee C',dept:'IT',shiftType:'Oficina',base:2400,conv:'oficinas_bcn'},
+            {id:'1004',name:'Employee D',dept:'HR',shiftType:'Oficina',base:1900,conv:'comercio_bcn'},
+            {id:'1005',name:'Employee E',dept:'LOG',shiftType:'Rotativo',base:1450,conv:'call_center_bcn'},
+        ];
+        const CONVENTIONS = {
+            call_center_bcn:{name:'Call Center BCN',vac:22,nightBonus:15.50,irpf:0.14},
+            comercio_bcn:{name:'Comercio BCN',vac:30,nightBonus:0,irpf:0.15},
+            oficinas_bcn:{name:'Oficinas BCN',vac:23,nightBonus:0,irpf:0.18}
+        };
+        const LEAVE_TYPES = {VACACIONES:'Vacation',BODA:'Wedding (15d)',ENFERMEDAD_HIJO:'Sick Child (2d)',NACIMIENTO_HIJO:'Birth (15d)',MUERTE_PARIENTE:'Death Relative (4d)',MUDANZA:'Moving (1d)',ASUNTOS_PROPIOS:'Own Affairs'};
+        let schedule={}, leaves=[];
+
+        function showView(id) {
+            document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const titles={dashboard:'Dashboard',scheduler:'Scheduler',events:'Incident Management',payroll:'Payroll Simulator',hr:'HR Portal'};
+            document.getElementById('page-title').textContent=titles[id]||id;
+        }
+
+        function toast(msg) {
+            const t=document.createElement('div');t.className='toast';t.textContent=msg;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(()=>t.remove(),3000);
+        }
+
+        function log(msg,color='#22c55e') {
+            const c=document.getElementById('console');
+            const ts=new Date().toLocaleTimeString();
+            c.innerHTML+=`<div class="log-line"><span class="timestamp">[${ts}]</span><span style="color:${color}">${msg}</span></div>`;
+            c.scrollTop=c.scrollHeight;
+        }
+
+        function autoGenerate() {
+            const shifts=['M','T','N','O'];
+            STAFF.forEach(s=>{
+                schedule[s.id]=[];
+                for(let d=0;d<7;d++){
+                    if(s.shiftType==='Oficina'){
+                        schedule[s.id].push(d<5?'M':'O');
+                    } else {
+                        schedule[s.id].push(shifts[Math.floor(Math.random()*3)]);
+                    }
+                }
+            });
+            renderScheduler();
+            toast('Shifts auto-generated');
+            log('AUTO-GENERATE: Shifts generated for '+STAFF.length+' employees');
+        }
+
+        function renderScheduler() {
+            const b=document.getElementById('scheduler-body');
+            b.innerHTML=STAFF.map(s=>{
+                const shifts=schedule[s.id]||['O','O','O','O','O','O','O'];
+                return `<tr><td style="font-weight:600">${s.name}</td><td>${DEPARTMENTS[s.dept]}</td>${shifts.map(sh=>`<td><span class="shift-badge shift-${sh}">${sh}</span></td>`).join('')}</tr>`;
+            }).join('');
+        }
+
+        function runIncident() {
+            const type=document.getElementById('eventType').value;
+            log(`INCIDENT: ${type} initiated`,'#f59e0b');
+            log('SCANNING: Detecting night shift workers...','#22c55e');
+            const nightWorkers=STAFF.filter(s=>s.shiftType==='Rotativo');
+            nightWorkers.forEach(w=>{
+                log(`ASSIGN: ${w.name} (night worker) -> slot 19:00 (before night shift)`, '#60a5fa');
+                log(`TOIL: ${w.name} credited +2h TOIL`, '#a78bfa');
+            });
+            log(`RESULT: ${nightWorkers.length} workers reassigned. Event complete.`,'#10b981');
+            toast('Incident processed - '+nightWorkers.length+' workers reassigned');
+        }
+
+        function populatePayroll() {
+            const sel=document.getElementById('payroll-emp');
+            sel.innerHTML=STAFF.map(s=>`<option value="${s.id}">${s.name} (${DEPARTMENTS[s.dept]})</option>`).join('');
+            updatePayroll();
+        }
+
+        function updatePayroll() {
+            const id=document.getElementById('payroll-emp').value;
+            const emp=STAFF.find(s=>s.id===id);
+            if(!emp)return;
+            const conv=CONVENTIONS[emp.conv];
+            const nightBonus=emp.shiftType==='Rotativo'?conv.nightBonus*22:0;
+            const edenred=9*22;
+            const gross=emp.base+nightBonus+edenred;
+            const irpf=gross*conv.irpf;
+            const ss=gross*0.0635;
+            const net=gross-irpf-ss;
+            const rows=[
+                ['Base Salary',emp.base],
+                ['Night Bonus (22 days)',nightBonus],
+                ['Edenred (22 days)',edenred],
+                ['Gross Total',gross],
+                ['IRPF ('+((conv.irpf*100).toFixed(1))+'%)',-irpf],
+                ['Social Security (6.35%)',-ss],
+                ['NET SALARY',net]
+            ];
+            document.getElementById('payroll-details').innerHTML=rows.map((r,i)=>{
+                const isLast=i===rows.length-1;
+                const isDed=r[1]<0;
+                return `<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;${isLast?'font-weight:700':''}">${r[0]}</td><td style="padding:8px 0;text-align:right;font-family:monospace;${isDed?'color:var(--danger)':''}${isLast?';font-weight:700;font-size:1.1rem':''}">${isDed?'-':''}${Math.abs(r[1]).toFixed(2)} EUR</td></tr>`;
+            }).join('');
+            document.getElementById('ps-gross').textContent=gross.toFixed(2)+' EUR';
+            document.getElementById('ps-ded').textContent='-'+(irpf+ss).toFixed(2)+' EUR';
+            document.getElementById('ps-net').textContent=net.toFixed(2)+' EUR';
+        }
+
+        function submitLeave() {
+            const empId=document.getElementById('hr-emp-id').value;
+            const type=document.getElementById('hr-leave-type').value;
+            const days=parseInt(document.getElementById('hr-days').value);
+            const emp=STAFF.find(s=>s.id===empId);
+            if(!emp){document.getElementById('hr-result').innerHTML='<span style="color:var(--danger)">Employee not found</span>';return;}
+            const isPaid=type!=='VACACIONES';
+            leaves.push({emp:emp.name,type:LEAVE_TYPES[type]||type,days,status:'Approved',date:new Date().toLocaleDateString()});
+            document.getElementById('hr-result').innerHTML=`<span style="color:var(--accent)">Request approved: ${LEAVE_TYPES[type]||type} - ${days} days ${isPaid?'(Statutory paid leave)':'(Deducted from vacation balance)'}</span>`;
+            renderLeaves();
+            toast('Leave request approved');
+        }
+
+        function renderLeaves() {
+            document.getElementById('leave-history').innerHTML=leaves.map(l=>`<tr><td>${l.emp}</td><td>${l.type}</td><td>${l.days}</td><td style="color:var(--accent)">${l.status}</td><td>${l.date}</td></tr>`).join('');
+        }
+
+        function exportReport() { toast('Report exported to CSV'); }
+
+        // Init
+        autoGenerate();
+        populatePayroll();
+    </script>
+</body>
+</html>

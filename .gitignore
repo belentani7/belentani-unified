@@ -1,0 +1,33 @@
+# Secrets / env
+.env
+*.env
+credentials.md
+email_config.json
+*settings.json
+
+# Keys
+*.key
+*.pem
+*.p12
+gitleaks.toml
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.next/
+dist/
+build/
+
+# Tooling
+.DS_Store
+Thumbs.db
+
+# Archives (mantener fuera de git)
+archive/*.zip
+*.zip
+*.tar
+*.7z

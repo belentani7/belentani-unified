@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Clock, BookOpen, CheckCircle2, ExternalLink, ChevronRight, ChevronLeft, Lock, Smartphone, Globe, Lightbulb, Target } from 'lucide-react';
+import { Sparkles, Clock, BookOpen, CheckCircle2, ExternalLink, ChevronRight, ChevronLeft, Lock, Smartphone, Globe, Lightbulb, Target, Trophy } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +18,11 @@ import { AIStudyTools } from './ai-study-tools';
 import { cn } from '@/lib/utils';
 import { AIToolDirectory } from './ai-tool-directory';
 import { isBoundedStringArray, parseStoredJson } from '@/lib/safe-content';
+import { useSpeech, getSpeechLang } from '@/hooks/use-speech';
+import QuizQuestion from './course-ui/QuizQuestion';
+import GamificationPanel from './course-ui/GamificationPanel';
+import { useGamification } from './course-ui/useGamification';
+import { getCongratsMessage, getCongratsCourseMessage } from '@/data/congrat-pool';
 
 export function LearnAISection() {
   const { language } = useAppStore();
@@ -27,6 +33,19 @@ export function LearnAISection() {
     if (typeof window === 'undefined') return new Set();
     return new Set(parseStoredJson(localStorage.getItem('manos-abiertas-ai-progress'), [], isBoundedStringArray));
   });
+  const gamification = useGamification();
+  const { speak, supported: speechSupported } = useSpeech();
+  const [showGamification, setShowGamification] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const stored = localStorage.getItem('manosabiertas-gamification');
+      if (!stored) return false;
+      const parsed = JSON.parse(stored) as { xp?: unknown };
+      return typeof parsed?.xp === 'number' && parsed.xp > 0;
+    } catch {
+      return false;
+    }
+  });
 
   // Persist completed lessons
   useEffect(() => {
@@ -34,6 +53,35 @@ export function LearnAISection() {
       localStorage.setItem('manos-abiertas-ai-progress', JSON.stringify([...completedLessons]));
     } catch { /* ignore */ }
   }, [completedLessons]);
+
+  function handleLessonComplete() {
+    if (!selectedCourse || !selectedLesson) return;
+    const id = `${selectedCourse.id}-${selectedLesson.id}`;
+    if (completedLessons.has(id)) return;
+
+    setCompletedLessons((prev) => new Set([...prev, id]));
+    gamification.completeLesson();
+
+    const courseCompleted = new Set([...completedLessons, id]);
+    const courseCount = selectedCourse.lessons.filter((l) =>
+      courseCompleted.has(`${selectedCourse.id}-${l.id}`)
+    ).length;
+    const courseFinished = courseCount >= selectedCourse.lessons.length;
+    if (courseFinished) {
+      gamification.completeCourse(selectedCourse.id);
+      const msg = getCongratsCourseMessage(language);
+      toast.success(msg);
+      if (speechSupported) speak(msg, { lang: getSpeechLang(language) });
+    } else {
+      const msg = getCongratsMessage(language, courseCount);
+      toast.success(msg);
+      if (speechSupported) speak(msg, { lang: getSpeechLang(language) });
+    }
+  }
+
+  function handleQuizAnswer(correct: boolean) {
+    if (correct) gamification.addXp(5);
+  }
 
   if (selectedLesson && selectedCourse) {
     return (
@@ -46,10 +94,8 @@ export function LearnAISection() {
           const lesson = selectedCourse.lessons.find((l) => l.id === lessonId);
           if (lesson) setSelectedLesson(lesson);
         }}
-        onComplete={() => {
-          const id = `${selectedCourse.id}-${selectedLesson.id}`;
-          setCompletedLessons((prev) => new Set([...prev, id]));
-        }}
+        onComplete={handleLessonComplete}
+        onQuizAnswer={handleQuizAnswer}
         onNext={() => {
           const idx = selectedCourse.lessons.findIndex((l) => l.id === selectedLesson.id);
           if (idx < selectedCourse.lessons.length - 1) {
@@ -192,6 +238,49 @@ export function LearnAISection() {
 
       <AIToolDirectory />
 
+      {completedLessons.size > 0 && (
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground">
+          <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+          <span>
+            {language === 'pt-BR'
+              ? `Bem-vindo de volta! Você continuou ${completedLessons.size} lições. Continue assim. 👋`
+              : `Bienvenido de nuevo, continuaste ${completedLessons.size} lecciones. ¡Sigue así! 👋`}
+          </span>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowGamification((v) => !v)}
+          className="gap-1.5"
+        >
+          <Trophy className="h-4 w-4" />
+          {showGamification ? 'Ocultar mi progreso' : 'Ver mi progreso y logros'}
+        </Button>
+        <AnimatePresence>
+          {showGamification && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4">
+                <GamificationPanel
+                  xp={gamification.xp}
+                  level={gamification.level}
+                  streak={gamification.streak}
+                  badges={gamification.badges}
+                  xpForNextLevel={gamification.xpForNextLevel}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {AI_COURSES.map((course, i) => {
           const completedCount = course.lessons.filter((l) =>
@@ -258,6 +347,7 @@ function LessonViewer({
   onBack,
   onSelectLesson,
   onComplete,
+  onQuizAnswer,
   onNext,
   onPrev,
   hasNext,
@@ -269,6 +359,7 @@ function LessonViewer({
   onBack: () => void;
   onSelectLesson: (lessonId: string) => void;
   onComplete: () => void;
+  onQuizAnswer: (correct: boolean) => void;
   onNext: () => void;
   onPrev: () => void;
   hasNext: boolean;
@@ -277,6 +368,7 @@ function LessonViewer({
   const { language } = useAppStore();
   const t = getTranslation(language);
   const idx = course.lessons.findIndex((l) => l.id === lesson.id);
+  const quiz = useMemo(() => buildTipsQuiz(course, lesson, language), [course, lesson, language]);
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -360,6 +452,21 @@ function LessonViewer({
               </div>
             )}
 
+            {quiz && (
+              <div className="mt-6 rounded-xl border border-primary/20 bg-card p-4">
+                <div className="flex items-center gap-2 mb-3 text-primary">
+                  <Trophy className="h-4 w-4" />
+                  <span className="text-sm font-semibold">Mini quiz</span>
+                </div>
+                <QuizQuestion
+                  question={quiz.question}
+                  options={quiz.options}
+                  explanation={quiz.explanation}
+                  onAnswer={onQuizAnswer}
+                />
+              </div>
+            )}
+
             {/* AI Playground - only for lessons that involve prompts/practice */}
             {(lesson.exercise || lesson.content.toLowerCase().includes('prompt')) && (
               <AIPlayground
@@ -403,6 +510,59 @@ function LessonViewer({
 }
 
 // Simple markdown renderer moved to shared component: SimpleMarkdown
+
+// Mini quiz generado de los tips de la lección (determinista, sin IA)
+interface QuizOptionShape {
+  id: string;
+  text: string;
+  correct: boolean;
+}
+
+function seededRandom(seed: string, salt: number): number {
+  let h = 2166136261;
+  const s = `${seed}:${salt}`;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 1000) / 1000;
+}
+
+function buildTipsQuiz(
+  course: AICourse,
+  lesson: Lesson,
+  language: string
+): { question: string; options: QuizOptionShape[]; explanation: string } | null {
+  const tips = lesson.tips ?? [];
+  if (tips.length === 0) return null;
+
+  const correctTip = tips[0];
+  const distractors = Array.from(
+    new Set(
+      course.lessons
+        .filter((l) => l.id !== lesson.id)
+        .flatMap((l) => l.tips ?? [])
+        .filter((tip) => tip !== correctTip)
+    )
+  ).slice(0, 3);
+
+  const pool = [correctTip, ...distractors];
+  const options = pool
+    .map((text, i) => ({ text, order: seededRandom(lesson.id, i) }))
+    .sort((a, b) => a.order - b.order)
+    .map((entry, i) => ({
+      id: String.fromCharCode(97 + i),
+      text: entry.text,
+      correct: entry.text === correctTip,
+    }));
+
+  const question =
+    language === 'pt-BR'
+      ? 'Revise: qual destes conselhos corresponde a esta lição?'
+      : 'Repasa: ¿cuál de estos consejos corresponde a esta lección?';
+
+  return { question, options, explanation: correctTip };
+}
 
 // Suggested prompts for AI Playground based on the AI model
 function getSuggestedPrompts(model: string): string[] {

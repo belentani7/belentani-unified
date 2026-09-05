@@ -254,6 +254,8 @@ export default defineConfig({
     fs: {
       strict: true,
       deny: ["**/.*"],
+      // Permite servir el motor educativo compartido (packages/edu-engine) en dev.
+      allow: [path.resolve(import.meta.dirname, "..", "..", "packages")],
     },
   },
 });

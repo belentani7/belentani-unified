@@ -31,3 +31,8 @@ archive/*.zip
 *.zip
 *.tar
 *.7z
+
+# BELENTANI legacy — seguridad
+.env.*
+!.env.example
+.vercel/

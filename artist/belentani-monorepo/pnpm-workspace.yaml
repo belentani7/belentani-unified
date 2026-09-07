@@ -1,8 +1,0 @@
-packages:
-  - packages/*
-
-allowBuilds:
-  - unrs-resolver
-
-minimumReleaseAgeExclude:
-  - postcss@8.5.28

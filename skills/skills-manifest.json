@@ -1,0 +1,16 @@
+{
+  "canon": "skills/",
+  "superpowers": { "path": "skills/superpowers/", "source": "https://github.com/obra/superpowers" },
+  "openclaw": {
+    "note": "~/.openclaw/skills y plugin-skills existen como carpetas; los skills se referencian desde ~/.agents y ~/.claude.",
+    "known_skills": ["bailian-cli", "bailian-docs-llm-wiki", "bailian-finetune", "bailian-gen", "bailian-managed-agent", "bailian-model-recommend", "bailian-protocol", "bailian-train-deploy", "bailian-web-search", "claude-api", "create-voltagent", "design-taste", "entra-agent-id", "financial-expert", "frontend-design", "frontend-design-review", "gemini-api", "gemini-live-api", "happyhorse-prompt-studio", "mcp-builder", "novel-game", "pdf", "skill-creator", "spark-video", "voltagent-best-practices", "vox-video-director", "web-artifacts-builder", "webapp-testing"],
+    "plugin_skills": ["browser-automation", "canvas"]
+  },
+  "legacy_local": {
+    ".agents": "C:\\Users\\USER\\.agents\\skills",
+    ".claude": "C:\\Users\\USER\\.claude\\skills",
+    ".qwen": "C:\\Users\\USER\\.qwen\\skills",
+    ".vibe": "C:\\Users\\USER\\.vibe\\skills",
+    "note": "Fuente de verdad canon = skills/. Estas copias legacy se mantienen por compatibilidad de cada CLI."
+  }
+}

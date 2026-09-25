@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three.js Essentials — Belentani Interactive Lab</title>
+<style>
+  :root {
+    --neon-red: #ff003c;
+    --neon-cyan: #00fff7;
+    --neon-gold: #ffd700;
+    --bg: #0a0a0f;
+    --panel-bg: rgba(10, 10, 20, 0.85);
+    --text: #e0e0e0;
+    --muted: #666;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); }
+  canvas { display: block; }
+
+  #ui {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 10;
+  }
+  #ui > * { pointer-events: auto; }
+
+  .topbar {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 12px; align-items: center;
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,0,60,0.3); border-radius: 14px;
+    padding: 10px 24px; box-shadow: 0 0 30px rgba(255,0,60,0.15);
+  }
+  .topbar h1 {
+    font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    background: linear-gradient(90deg, var(--neon-red), var(--neon-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .topbar .badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 20px;
+    background: rgba(255,0,60,0.2); color: var(--neon-red);
+    border: 1px solid rgba(255,0,60,0.4); font-weight: 600;
+  }
+
+  .scene-tabs {
+    position: absolute; top: 16px; right: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .scene-tab {
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,255,247,0.2); border-radius: 10px;
+    padding: 10px 18px; color: var(--text); cursor: pointer;
+    font-size: 12px; font-weight: 600; transition: all .25s;
+    min-width: 140px;
+  }
+  .scene-tab:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,255,247,0.2); }
+  .scene-tab.active { border-color: var(--neon-red); background: rgba(255,0,60,0.15); color: var(--neon-red); }
+  .scene-tab .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+
+  .control-panel {
+    position: absolute; bottom: 20px; left: 20px;
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,215,0,0.2); border-radius: 14px;
+    padding: 18px 22px; min-width: 260px;
+    box-shadow: 0 0 25px rgba(255,215,0,0.1);
+  }
+  .control-panel h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--neon-gold); margin-bottom: 14px; font-weight: 700;
+  }
+  .ctrl-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .ctrl-row label { font-size: 12px; color: var(--muted); }
+  .ctrl-row input[type=range] {
+    width: 120px; accent-color: var(--neon-red); cursor: pointer;
+  }
+  .ctrl-row .val { font-size: 11px; color: var(--neon-cyan); font-family: monospace; min-width: 36px; text-align: right; }
+  .ctrl-btn {
+    background: linear-gradient(135deg, rgba(255,0,60,0.3), rgba(255,215,0,0.2));
+    border: 1px solid var(--neon-red); border-radius: 8px;
+    color: var(--text); padding: 8px 16px; cursor: pointer;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; transition: all .2s; width: 100%; margin-top: 6px;
+  }
+  .ctrl-btn:hover { background: rgba(255,0,60,0.5); box-shadow: 0 0 20px rgba(255,0,60,0.4); }
+
+  .info-badge {
+    position: absolute; bottom: 20px; right: 20px;
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,255,247,0.2); border-radius: 10px;
+    padding: 12px 18px; font-size: 11px; font-family: monospace;
+    color: var(--neon-cyan); line-height: 1.8;
+  }
+  .info-badge .lbl { color: var(--muted); }
+
+  .toast-container {
+    position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+  }
+  .toast {
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid var(--neon-gold); border-radius: 10px;
+    padding: 10px 20px; font-size: 12px; color: var(--neon-gold);
+    animation: toastIn .4s ease, toastOut .4s ease 2.6s forwards;
+    box-shadow: 0 0 20px rgba(255,215,0,0.2);
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-20px); } }
+
+  .corner-label {
+    position: absolute; bottom: 8px; left: 8px;
+    font-size: 9px; color: var(--muted); font-family: monospace; opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- Import Map — Three.js desde CDN, cero instalacion -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<div id="ui">
+  <div class="topbar">
+    <h1>⟁ THREE.JS ESSENTIALS</h1>
+    <span class="badge">v0.160</span>
+    <span class="badge" id="fps-badge">-- FPS</span>
+  </div>
+
+  <div class="scene-tabs">
+    <button class="scene-tab active" data-scene="cosmos">🟣 <span class="dot" style="background:#ff003c"></span>Cosmos</button>
+    <button class="scene-tab" data-scene="prism">🔷 <span class="dot" style="background:#00fff7"></span>Prisma</button>
+    <button class="scene-tab" data-scene="terrain">🌋 <span class="dot" style="background:#ffd700"></span>Terreno</button>
+    <button class="scene-tab" data-scene="particles">✨ <span class="dot" style="background:#aa55ff"></span>Partículas</button>
+  </div>
+
+  <div class="control-panel">
+    <h3>⚙ Controls</h3>
+    <div class="ctrl-row"><label>Rotación</label><input type="range" id="sl-rotation" min="0" max="2" step="0.01" value="0.5"><span class="val" id="v-rotation">0.50</span></div>
+    <div class="ctrl-row"><label>Velocidad</label><input type="range" id="sl-speed" min="0" max="3" step="0.01" value="1.0"><span class="val" id="v-speed">1.00</span></div>
+    <div class="ctrl-row"><label>Luz</label><input type="range" id="sl-light" min="0" max="3" step="0.01" value="1.5"><span class="val" id="v-light">1.50</span></div>
+    <div class="ctrl-row"><label>Escala</label><input type="range" id="sl-scale" min="0.3" max="3" step="0.01" value="1.0"><span class="val" id="v-scale">1.00</span></div>
+    <button class="ctrl-btn" id="btn-pause">⏸ Pausar</button>
+    <button class="ctrl-btn" id="btn-reset">↺ Reset Cámaras</button>
+  </div>
+
+  <div class="info-badge">
+    <div><span class="lbl">OBJ: </span><span id="info-objs">0</span></div>
+    <div><span class="lbl">TRIS: </span><span id="info-tris">0</span></div>
+    <div><span class="lbl">DRAW: </span><span id="info-draws">0</span></div>
+    <div><span class="lbl">SCENE: </span><span id="info-scene">Cosmos</span></div>
+  </div>
+
+  <div class="toast-container" id="toasts"></div>
+  <div class="corner-label">Three.js · Import Map · CDN · 0 installs</div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+const sceneNames = { cosmos: 'Cosmos', prism: 'Prisma', terrain: 'Terreno', particles: 'Partículas' };
+const toastContainer = document.getElementById('toasts');
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  toastContainer.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+/* ============================================================
+   RENDERIZADOR GLOBAL
+   ============================================================ */
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a0f, 0.015);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(8, 6, 10);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 2;
+controls.maxDistance = 80;
+controls.target.set(0, 1, 0);
+
+/* Context lost/restored */
+renderer.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); toast('⚠ WebGL context lost — reintentando...'); });
+renderer.domElement.addEventListener('webglcontextrestored', () => { toast('✅ WebGL restaurado'); initCurrentScene(); });
+
+/* ============================================================
+   LUZES GLOBALES
+   ============================================================ */
+const ambientLight = new THREE.AmbientLight(0x222244, 0.5);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+dirLight.position.set(10, 15, 8);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.set(1024, 1024);
+scene.add(dirLight);
+const pointLight = new THREE.PointLight(0xff003c, 2, 30);
+pointLight.position.set(-3, 4, 3);
+scene.add(pointLight);
+const rimLight = new THREE.PointLight(0x00fff7, 1.5, 25);
+rimLight.position.set(5, 2, -5);
+scene.add(rimLight);
+
+/* ============================================================
+   ESCENAS
+   ============================================================ */
+const sceneGroups = {};
+let currentSceneName = 'cosmos';
+
+function clearSceneGroup() {
+  const g = sceneGroups[currentSceneName];
+  if (g) {
+    g.traverse((child) => {
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+        else child.material.dispose();
+      }
+    });
+    scene.remove(g);
+  }
+}
+
+/* ---------- COSMOS ---------- */
+function buildCosmos() {
+  const g = new THREE.Group(); g.name = 'cosmos';
+
+  // Estrella central neón roja
+  const coreGeo = new THREE.IcosahedronGeometry(1.2, 3);
+  const coreMat = new THREE.MeshBasicMaterial({ color: 0xff003c, wireframe: true });
+  const core = new THREE.Mesh(coreGeo, coreMat);
+  core.name = 'core'; g.add(core);
+
+  // Escamas internas
+  const innerGeo = new THREE.IcosahedronGeometry(1.5, 2);
+  const innerMat = new THREE.MeshStandardMaterial({ color: 0xff003c, emissive: 0xff003c, emissiveIntensity: 0.5, metalness: 0.9, roughness: 0.2, transparent: true, opacity: 0.3 });
+  const inner = new THREE.Mesh(innerGeo, innerMat);
+  inner.name = 'inner-shell'; g.add(inner);
+
+  // Orbits con objetos
+  const orbitData = [
+    { r: 3.5, size: 0.3, color: 0x00fff7, speed: 0.7, yOff: 0.5, tilt: 0.3 },
+    { r: 5, size: 0.5, color: 0xffd700, speed: 0.4, yOff: -0.3, tilt: -0.5 },
+    { r: 7, size: 0.4, color: 0xaa55ff, speed: 0.25, yOff: 0.8, tilt: 0.8 },
+    { r: 4, size: 0.2, color: 0xff6644, speed: 0.9, yOff: -0.6, tilt: 0.1 },
+    { r: 6, size: 0.6, color: 0x44ffaa, speed: 0.35, yOff: 0.2, tilt: -0.4 },
+  ];
+  const planets = orbitData.map((d, i) => {
+    const geo = new THREE.SphereGeometry(Math.max(0.01, d.size), 24, 24);
+    const mat = new THREE.MeshStandardMaterial({ color: d.color, emissive: d.color, emissiveIntensity: 0.4, metalness: 0.7, roughness: 0.3 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow = true;
+    const orbit = new THREE.Object3D();
+    const ringGeo = new THREE.RingGeometry(Math.max(0.01, d.r - 0.01), d.r + 0.01, 128);
+    const ringMat = new THREE.MeshBasicMaterial({ color: d.color, side: THREE.DoubleSide, transparent: true, opacity: 0.08 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2 + d.tilt;
+    g.add(ring);
+    g.add(mesh);
+    return { mesh, orbit, data: d };
+  });
+  planets.forEach(p => { p.orbit.add(p.mesh); g.add(p.orbit); });
+
+  // Partículas estrelladas
+  const starCount = 3000;
+  const starPositions = new Float32Array(starCount * 3);
+  const starSizes = new Float32Array(starCount);
+  for (let i = 0; i < starCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 20 + Math.random() * 80;
+    starPositions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    starPositions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    starPositions[i*3+2] = r * Math.cos(phi);
+    starSizes[i] = Math.random() * 2 + 0.5;
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
+  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, sizeAttenuation: true, transparent: true, opacity: 0.8 });
+  const stars = new THREE.Points(starGeo, starMat);
+  stars.name = 'stars'; g.add(stars);
+
+  // Nebulosa
+  const nebulaGeo = new THREE.SphereGeometry(8, 32, 32);
+  const nebulaMat = new THREE.MeshBasicMaterial({ color: 0xff003c, transparent: true, opacity: 0.03, side: THREE.BackSide });
+  const nebula = new THREE.Mesh(nebulaGeo, nebulaMat);
+  nebula.name = 'nebula'; g.add(nebula);
+
+  scene.add(g);
+  sceneGroups['cosmos'] = g;
+  return { planets, core, inner };
+}
+
+/* ---------- PRISMA ---------- */
+function buildPrism() {
+  const g = new THREE.Group(); g.name = 'prism';
+
+  // Piso reflectante
+  const floorGeo = new THREE.PlaneGeometry(30, 30);
+  const floorMat = new THREE.MeshStandardMaterial({ color: 0x111122, metalness: 0.8, roughness: 0.2 });
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  g.add(floor);
+
+  // Prismas de colores flotantes
+  const prismGeo = new THREE.OctahedronGeometry(0.6, 0);
+  const colors = [0xff003c, 0x00fff7, 0xffd700, 0xaa55ff, 0xff6644, 0x44ffaa];
+  const prisms = [];
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2;
+    const r = 3 + Math.sin(i * 1.7) * 1.5;
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: colors[i % colors.length],
+      metalness: 0.1, roughness: 0.05,
+      transmission: 0.85, thickness: 0.5,
+      ior: 1.5, envMapIntensity: 1,
+      clearcoat: 1.0, clearcoatRoughness: 0.1,
+    });
+    const mesh = new THREE.Mesh(prismGeo, mat);
+    mesh.position.set(Math.cos(angle) * r, 1.5 + Math.sin(i * 2.3) * 0.5, Math.sin(angle) * r);
+    mesh.castShadow = true;
+    mesh.userData = { angle, radius: r, baseY: mesh.position.y, phase: i * 0.5 };
+    g.add(mesh);
+    prisms.push(mesh);
+  }
+
+  // Columnas de luz
+  for (let i = 0; i < 6; i++) {
+    const angle = (i / 6) * Math.PI * 2;
+    const colGeo = new THREE.CylinderGeometry(0.03, 0.03, 8, 8);
+    const colMat = new THREE.MeshBasicMaterial({ color: colors[i % colors.length], transparent: true, opacity: 0.4 });
+    const col = new THREE.Mesh(colGeo, colMat);
+    col.position.set(Math.cos(angle) * 2.5, 4, Math.sin(angle) * 2.5);
+    g.add(col);
+  }
+
+  scene.add(g);
+  sceneGroups['prism'] = g;
+  return { prisms };
+}
+
+/* ---------- TERRENO ---------- */
+function buildTerrain() {
+  const g = new THREE.Group(); g.name = 'terrain';
+
+  // Terreno con ruido procedural
+  const size = 30;
+  const segs = 64;
+  const geo = new THREE.PlaneGeometry(size, size, segs, segs);
+  const pos = geo.attributes.position;
+  const colors = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const h = Math.sin(x * 0.3) * Math.cos(y * 0.3) * 1.5
+            + Math.sin(x * 0.7 + y * 0.5) * 0.8
+            + Math.cos(x * 1.2) * Math.sin(y * 0.9) * 0.5;
+    pos.setZ(i, h);
+    // Altura -> color gradiente
+    const t = Math.max(0, Math.min(1, (h + 3) / 6));
+    if (t < 0.2) { colors[i*3] = 0.1; colors[i*3+1] = 0.4 + t*1.5; colors[i*3+2] = 0.6; }
+    else if (t < 0.4) { colors[i*3] = 0.2; colors[i*3+1] = 0.6; colors[i*3+2] = 0.1 + t; }
+    else if (t < 0.6) { colors[i*3] = 0.3; colors[i*3+1] = 0.5; colors[i*3+2] = 0.15; }
+    else if (t < 0.8) { colors[i*3] = 0.5; colors[i*3+1] = 0.35; colors[i*3+2] = 0.2; }
+    else { colors[i*3] = 0.9; colors[i*3+1] = 0.9; colors[i*3+2] = 0.95; }
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, metalness: 0.1 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.receiveShadow = true;
+  mesh.castShadow = true;
+  g.add(mesh);
+
+  // Árboles/cubes como marcadores
+  const treeGeo = new THREE.ConeGeometry(0.3, 1.2, 6);
+  const trunkGeo = new THREE.CylinderGeometry(0.1, 0.15, 0.8, 6);
+  const treePositions = [[-5, 0, -5], [5, 0, -3], [-3, 0, 6], [7, 0, 4], [0, 0, -8]];
+  treePositions.forEach(([tx, ty, tz]) => {
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x553322 });
+    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+    trunk.position.set(tx, 0.4, tz);
+    g.add(trunk);
+    const leafMat = new THREE.MeshStandardMaterial({ color: 0x22aa44, emissive: 0x114422, emissiveIntensity: 0.3 });
+    const leaf = new THREE.Mesh(treeGeo, leafMat);
+    leaf.position.set(tx, 1.2, tz);
+    leaf.castShadow = true;
+    g.add(leaf);
+  });
+
+  // Partículas flotantes
+  const pCount = 500;
+  const pPos = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    pPos[i*3] = (Math.random() - 0.5) * 20;
+    pPos[i*3+1] = Math.random() * 3;
+    pPos[i*3+2] = (Math.random() - 0.5) * 20;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0xffd700, size: 0.06, sizeAttenuation: true, transparent: true, opacity: 0.6 });
+  const particles = new THREE.Points(pGeo, pMat);
+  particles.name = 'ground-particles'; g.add(particles);
+
+  scene.add(g);
+  sceneGroups['terrain'] = g;
+  return { mesh };
+}
+
+/* ---------- PARTÍCULAS ---------- */
+function buildParticles() {
+  const g = new THREE.Group(); g.name = 'particles';
+
+  // Sistema de partículas principal
+  const count = 10000;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+  const velocities = [];
+  for (let i = 0; i < count; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 1 + Math.random() * 12;
+    positions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    positions[i*3+2] = r * Math.cos(phi);
+    const c = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
+    colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+    sizes[i] = Math.random() * 3 + 0.5;
+    velocities.push({ theta, phi, r, speed: 0.005 + Math.random() * 0.02 });
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.08, sizeAttenuation: true, vertexColors: true,
+    transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  const points = new THREE.Points(geo, mat);
+  points.name = 'main-particles'; g.add(points);
+  g.userData = { velocities, positions, count };
+
+  // Anillo central
+  const ringGeo = new THREE.TorusGeometry(5, 0.03, 16, 100);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xff003c, transparent: true, opacity: 0.5 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2;
+  g.add(ring);
+
+  const ring2Geo = new THREE.TorusGeometry(7, 0.02, 16, 100);
+  const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x00fff7, transparent: true, opacity: 0.3 });
+  const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+  ring2.rotation.x = Math.PI / 2 + 0.5;
+  ring2.rotation.z = 0.3;
+  g.add(ring2);
+
+  scene.add(g);
+  sceneGroups['particles'] = g;
+  return { points, ring, ring2 };
+}
+
+/* ============================================================
+   INIT / SWITCH
+   ============================================================ */
+let currentData = null;
+let paused = false;
+let rotSpeed = 0.5, speedMul = 1.0, lightInt = 1.5, scaleMul = 1.0;
+
+function switchScene(name) {
+  clearSceneGroup();
+  currentSceneName = name;
+  document.getElementById('info-scene').textContent = sceneNames[name];
+  document.querySelectorAll('.scene-tab').forEach(t => t.classList.toggle('active', t.dataset.scene === name));
+  initCurrentScene();
+  toast(`🎬 Escena: ${sceneNames[name]}`);
+}
+
+function initCurrentScene() {
+  let data = null;
+  if (currentSceneName === 'cosmos') data = buildCosmos();
+  else if (currentSceneName === 'prism') data = buildPrism();
+  else if (currentSceneName === 'terrain') data = buildTerrain();
+  else if (currentSceneName === 'particles') data = buildParticles();
+  currentData = data;
+}
+
+/* ============================================================
+   POST-PROCESSING
+   ============================================================ */
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.4, 0.85
+);
+composer.addPass(bloomPass);
+
+/* ============================================================
+   ANIMACIÓN PRINCIPAL
+   ============================================================ */
+let frameCount = 0, lastFpsTime = performance.now();
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (paused) return;
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+
+  controls.update();
+
+  // FPS
+  frameCount++;
+  const now = performance.now();
+  if (now - lastFpsTime >= 500) {
+    const fps = Math.round(frameCount / ((now - lastFpsTime) / 1000));
+    document.getElementById('fps-badge').textContent = fps + ' FPS';
+    frameCount = 0; lastFpsTime = now;
+  }
+
+  // Luces
+  pointLight.intensity = lightInt;
+  ambientLight.intensity = 0.3 + lightInt * 0.2;
+
+  const g = sceneGroups[currentSceneName];
+  if (!g) return;
+
+  g.scale.setScalar(scaleMul);
+
+  if (currentSceneName === 'cosmos' && currentData) {
+    const { core, inner, planets } = currentData;
+    core.rotation.y += dt * rotSpeed * 0.5;
+    inner.rotation.y -= dt * rotSpeed * 0.3;
+    planets.forEach(p => {
+      p.orbit.rotation.y += dt * rotSpeed * p.data.speed * speedMul;
+      p.mesh.position.y = p.data.yOff + Math.sin(t * p.data.speed + p.orbit.rotation.y) * 0.3;
+    });
+    // Pulsar core
+    const pulse = 1 + Math.sin(t * 2) * 0.1;
+    core.scale.setScalar(pulse);
+    pointLight.intensity = lightInt * (1 + Math.sin(t * 3) * 0.3);
+  }
+
+  if (currentSceneName === 'prism' && currentData) {
+    currentData.prisms.forEach(m => {
+      const ud = m.userData;
+      m.rotation.y += dt * rotSpeed * speedMul * 0.5;
+      m.position.y = ud.baseY + Math.sin(t * 0.8 + ud.phase) * 0.4;
+      m.rotation.x += dt * rotSpeed * 0.2;
+    });
+  }
+
+  if (currentSceneName === 'terrain' && g.children.length > 0) {
+    const pp = g.getObjectByName('ground-particles');
+    if (pp) {
+      const arr = pp.geometry.attributes.position.array;
+      for (let i = 0; i < arr.length / 3; i++) {
+        arr[i*3+1] += Math.sin(t + i * 0.1) * 0.002;
+      }
+      pp.geometry.attributes.position.needsUpdate = true;
+    }
+  }
+
+  if (currentSceneName === 'particles' && currentData) {
+    const { points, ring, ring2 } = currentData;
+    const pos = points.geometry.attributes.position.array;
+    const vels = g.userData.velocities;
+    for (let i = 0; i < vels.length; i++) {
+      const v = vels[i];
+      v.theta += dt * v.speed * rotSpeed;
+      const newR = v.r + Math.sin(t * 0.5 + i) * 0.5;
+      pos[i*3] = Math.max(0.001, newR) * Math.sin(v.phi) * Math.cos(v.theta);
+      pos[i*3+1] = Math.max(0.001, newR) * Math.sin(v.phi) * Math.sin(v.theta);
+      pos[i*3+2] = Math.max(0.001, newR) * Math.cos(v.phi);
+    }
+    points.geometry.attributes.position.needsUpdate = true;
+    ring.rotation.z += dt * rotSpeed * 0.3;
+    ring2.rotation.z -= dt * rotSpeed * 0.2;
+    ring2.rotation.y += dt * rotSpeed * 0.15;
+  }
+
+  // Stats
+  const info = renderer.info;
+  document.getElementById('info-objs').textContent = info.render.calls;
+  document.getElementById('info-tris').textContent = (info.render.triangles / 1000).toFixed(1) + 'k';
+  document.getElementById('info-draws').textContent = info.render.calls;
+
+  composer.render();
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+// Tamaño ventana
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Tabs
+document.querySelectorAll('.scene-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchScene(tab.dataset.scene));
+});
+
+// Sliders
+const bindSlider = (id, valId, setter) => {
+  const sl = document.getElementById(id);
+  const vl = document.getElementById(valId);
+  sl.addEventListener('input', () => { const v = parseFloat(sl.value); vl.textContent = v.toFixed(2); setter(v); });
+};
+bindSlider('sl-rotation', 'v-rotation', v => rotSpeed = v);
+bindSlider('sl-speed', 'v-speed', v => speedMul = v);
+bindSlider('sl-light', 'v-light', v => lightInt = v);
+bindSlider('sl-scale', 'v-scale', v => scaleMul = v);
+
+// Botones
+document.getElementById('btn-pause').addEventListener('click', () => {
+  paused = !paused;
+  document.getElementById('btn-pause').textContent = paused ? '▶ Reanudar' : '⏸ Pausar';
+  toast(paused ? '⏸ Animación pausada' : '▶ Animación reanudada');
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  camera.position.set(8, 6, 10);
+  controls.target.set(0, 1, 0);
+  controls.update();
+  toast('↺ Cámaras reseteadas');
+});
+
+/* ============================================================
+   START
+   ============================================================ */
+initCurrentScene();
+animate();
+toast('🚀 Three.js Essentials cargado — presiona las escenas para explorar');
+</script>
+</body>
+</html>

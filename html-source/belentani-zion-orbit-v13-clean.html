@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BELENTANI // ZION ORBIT v13.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.19/dist/lenis.min.js"></script>
+    <style>
+        :root {
+            --neon-red: #ff1744;
+            --neon-gold: #ca8a04;
+            --gold-light: #eab308;
+            --bg-dark: #020000;
+            --metal-border: rgba(255, 23, 68, 0.3);
+            --neon-glow: 0 0 25px rgba(255, 23, 68, 0.85), 0 0 50px rgba(255, 23, 68, 0.45);
+            --gold-glow: 0 0 20px rgba(202, 138, 4, 0.6);
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            background: var(--bg-dark);
+            color: #ffffff;
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            height: 1200vh;
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        #sparks-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* --- NAVIGATION (CLEAN) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            letter-spacing: 2px;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            opacity: 1;
+            color: var(--neon-red);
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* --- HERO --- */
+        .hero-poster {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .giant-neon-title {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 18vw, 25rem);
+            font-weight: 900;
+            line-height: 0.75;
+            color: var(--neon-red);
+            text-shadow: var(--neon-glow);
+            text-transform: uppercase;
+            animation: engine-vibration 0.1s infinite alternate;
+        }
+
+        @keyframes engine-vibration {
+            0% { transform: translate(1px, 1px); }
+            100% { transform: translate(-1px, -1px); }
+        }
+
+        .poster-subtitle {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            letter-spacing: 0.6em;
+            color: var(--neon-gold);
+            margin-top: 2rem;
+            text-shadow: var(--gold-glow);
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .mission-sector {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15rem 10%;
+            position: relative;
+            z-index: 5;
+        }
+
+        .ship-console {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(10, 2, 2, 0.85);
+            border: 1px solid var(--metal-border);
+            padding: 5rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            clip-path: polygon(4% 0, 96% 0, 100% 6%, 100% 94%, 96% 100%, 4% 100%, 0 94%, 0 6%);
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            color: var(--neon-red);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- REACTOR GEMS --- */
+        .reactor-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 3rem;
+        }
+
+        .gem-capacitor {
+            background: rgba(20, 5, 5, 0.9);
+            border: 1px solid var(--metal-border);
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gem-capacitor:hover {
+            border-color: var(--neon-gold);
+            transform: translateY(-10px);
+            box-shadow: var(--gold-glow);
+        }
+
+        .gem-capacitor.activated {
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .gem-diamond {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 auto 1.5rem;
+            transform: rotate(45deg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s;
+        }
+
+        .gem-capacitor.activated .gem-diamond {
+            background: var(--neon-red);
+            border-color: #fff;
+            box-shadow: var(--neon-glow);
+            transform: rotate(225deg) scale(1.2);
+        }
+
+        /* --- TRANSLATOR --- */
+        .translator-panel {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 23, 68, 0.1);
+        }
+
+        .freq-tuner {
+            width: 80px; height: 80px;
+            border: 4px solid #200808;
+            border-radius: 50%;
+            position: relative;
+            background: #0a0202;
+            cursor: pointer;
+        }
+
+        .tuner-needle {
+            position: absolute;
+            top: 10px; left: 50%;
+            width: 3px; height: 35px;
+            background: var(--neon-red);
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(0deg);
+            box-shadow: var(--neon-glow);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- ORACLE TERMINAL --- */
+        .oracle-interface {
+            margin-top: 3rem;
+            opacity: 0.2;
+            pointer-events: none;
+            transition: all 0.8s;
+        }
+        .oracle-interface.unlocked {
+            opacity: 1;
+            pointer-events: auto;
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow);
+        }
+
+        .oracle-screen {
+            height: 350px;
+            background: #020000;
+            padding: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--neon-red);
+            overflow-y: auto;
+            border-bottom: 2px solid var(--neon-red);
+        }
+
+        .oracle-input-bar {
+            display: flex;
+            padding: 1.5rem;
+            gap: 1rem;
+        }
+
+        .oracle-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--metal-border);
+            padding: 1rem;
+            color: white;
+            font-family: var(--font-mono);
+            outline: none;
+        }
+
+        .oracle-input:focus { border-color: var(--neon-red); }
+
+        .btn-action {
+            background: var(--neon-red);
+            color: black;
+            border: none;
+            padding: 1rem 2rem;
+            font-family: var(--font-display);
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        /* Utilities */
+        .text-gold { color: var(--neon-gold); }
+        .text-mono { font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <canvas id="sparks-canvas"></canvas>
+
+    <nav class="nav-links" style="position: fixed; top: 2rem; right: 3rem; z-index: 1001;">
+        <a href="#hero" class="active">NUCLEUS</a>
+        <a href="#origin">BIOGRAPHY</a>
+        <a href="#parable">PARABLE</a>
+        <a href="#reactor-sector">REACTOR</a>
+    </nav>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero-poster" id="hero">
+            <div class="global-artist-badge" style="font-family: var(--font-mono); border: 1px solid var(--neon-red); padding: 0.5rem 1rem; margin-bottom: 2rem;">BELENTANI // ENTITY_ACTIVE</div>
+            <h1 class="giant-neon-title">BELENTANI</h1>
+            <div class="poster-subtitle">ZION ORBIT v13.0</div>
+        </section>
+
+        <!-- BIOGRAPHY -->
+        <section class="mission-sector" id="origin">
+            <div class="ship-console">
+                <div class="module-light"></div>
+                <div class="lore-content">
+                    <span class="text-mono" style="color: var(--neon-red);">// NEURO_PROFILE_ACCESS</span>
+                    <h2 style="margin: 1rem 0;">El Efecto Belentani</h2>
+                    <p>Pedro Belentani es el fenómeno del individuo improbable. Un sistema de alta capacidad que ha transmutado la hipervigilancia en metacognición avanzada.</p>
+                    <p>De la explosión emocional de los 21 años al florecimiento autodidacta en España, su mente opera como un puente entre el caos del trauma y la estructura de la inteligencia artificial.</p>
+                    
+                    <!-- TRANSLATOR -->
+                    <div class="translator-panel">
+                        <div class="freq-tuner" onclick="rotateTuner()">
+                            <div class="tuner-needle" id="tuner-line"></div>
+                        </div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem;">
+                            <div style="color: var(--neon-red);">TRANSLATION_DIAL</div>
+                            <div id="lang-label" style="color: var(--neon-gold);">ESPAÑOL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARABLE -->
+        <section class="mission-sector" id="parable">
+            <div class="ship-console">
+                <div class="module-light"></div>
+                <div class="lore-content">
+                    <span class="text-mono" style="color: var(--neon-red);">// ARCHIVE_PARABLE</span>
+                    <h2 style="margin: 1rem 0;">La Parábola de Judas</h2>
+                    <p>En la Torre de Piedra Alta, Pedro y Judas compartieron la intimidad bajo el lecho de mirra. La envidia de Judas por la llave dorada de Pedro desencadenó la crisis.</p>
+                    <p>Ante la provocación constante, Pedro permaneció como la roca inamovible. Ante el ataque inminente, la disonancia cognitiva de Judas colapsó su sistema. La llave fue entregada: un pacto de misericordia para un villano que solo buscaba poder.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- REACTOR -->
+        <section class="mission-sector" id="reactor-sector">
+            <div class="ship-console">
+                <div class="module-light"></div>
+                <div class="lore-content" style="text-align: center;">
+                    <h2 style="margin-bottom: 0.5rem;">Integración de Elementos</h2>
+                    <p>Activa los condensadores para desbloquear el Oráculo.</p>
+                    
+                    <div class            class="reactor-grid">
+                        <div class="gem-capacitor" data-gem="pedro"><div class="gem-diamond"></div><span class="text-mono">PEDRO</span></div>
+                        <div class="gem-capacitor" data-gem="marcos"><div class="gem-diamond"></div><span class="text-mono">MARCOS</span></div>
+                        <div class="gem-capacitor" data-gem="santos"><div class="gem-diamond"></div><span class="text-mono">SANTOS</span></div>
+                        <div class="gem-capacitor" data-gem="belentani"><div class="gem-diamond"></div><span class="text-mono">BELENTANI</span></div>
+                        <div class="gem-capacitor" data-gem="human"><div class="gem-diamond"></div><span class="text-mono">HUMAN</span></div>
+                    </div>
+
+                    <div class="oracle-interface" id="oracle-module">
+                        <div class="oracle-screen" id="oracle-output">
+                            > SISTEMA BLOQUEADO. <br>
+                            > REQUIERE INTEGRACIÓN DE LOS 5 ELEMENTOS.
+                        </div>
+                        <div class="oracle-input-bar">
+                            <input type="text" id="oracle-input" class="oracle-input" placeholder="Introduce comando...">
+                            <button id="oracle-send" class="analog-btn">EJECUTAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ============================================================
+        // 1. CORE ENGINE (THREE.JS)
+        // ============================================================
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Planet & Rings
+        const planetGeo = new THREE.SphereGeometry(100, 64, 64);
+        const planetMat = new THREE.MeshBasicMaterial({ color: 0x220000, wireframe: true, transparent: true, opacity: 0.3 });
+        const planet = new THREE.Mesh(planetGeo, planetMat);
+        planet.position.z = -2000;
+        scene.add(planet);
+
+        const ringGeo = new THREE.TorusGeometry(180, 2, 64, 128);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xff1744, transparent: true, opacity: 0.2 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.z = -1800;
+        scene.add(ring);
+
+        // Particles System
+        let particleCount = 12000;
+        const particlesGeo = new THREE.BufferGeometry();
+        const particlePos = new Float32Array(particleCount * 3);
+        const particleColors = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount; i++) {
+            particlePos[i*3] = (Math.random() - 0.5) * 2000;
+            particlePos[i*3+1] = (Math.random() - 0.5) * 2000;
+            particlePos[i*3+2] = (Math.random() - 0.5) * 3000;
+            particleColors[i*3] = 1; particleColors[i*3+1] = 0.1; particleColors[i*3+2] = 0.2;
+        }
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+        particlesGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        const particlesMat = new THREE.PointsMaterial({ size: 1.5, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+        const particleSystem = new THREE.Points(particlesGeo, particleMat);
+        scene.add(particleSystem);
+
+        camera.position.z = 500;
+
+        // Morphing Target Logic
+        const targetPositions = {
+            default: new Float32Array(particleCount * 3),
+            key: new Float32Array(particleCount * 3),
+            human: new Float32Array(particleCount * 3),
+            mic: new Float32Array(particleCount * 3),
+            comp: new Float32Array(particleCount * 3)
+        };
+
+        // Initialize defaults
+        for(let i=0; i<particleCount; i++) {
+            targetPositions.default[i*3] = (Math.random()-0.5)*1500;
+            targetPositions.default[i*3+1] = (Math.random()-0.5)*1500;
+            targetPositions.default[i*3+2] = (Math.random()-0.5)*1500;
+        }
+
+        // Shape Math
+        function buildShapes() {
+            for(let i=0; i<particleCount; i++) {
+                // Key
+                targetPositions.key[i*3] = (Math.random()-0.5) * 20;
+                targetPositions.key[i*3+1] = (Math.random()-0.5) * 100;
+                targetPositions.key[i*3+2] = 0;
+                // Human
+                targetPositions.human[i*3] = (Math.random()-0.5) * 30;
+                targetPositions.human[i*3+1] = (Math.random()-0.5) * 100;
+                targetPositions.human[i*3+2] = Math.sin(i) * 10;
+                // Mic
+                targetPositions.mic[i*3] = (Math.random()-0.5) * 10;
+                targetPositions.mic[i*3+1] = (Math.random()-0.5) * 150;
+                targetPositions.mic[i*3+2] = (Math.random()-0.5) * 10;
+                // Comp
+                targetPositions.comp[i*3] = (Math.random()-0.5) * 80;
+                targetPositions.comp[i*3+1] = (Math.random()-0.5) * 80;
+                targetPositions.comp[i*3+2] = (Math.random()-0.5) * 10;
+            }
+        }
+        buildShapes();
+
+        function morphTo(shapeName) {
+            const target = targetPositions[shapeName];
+            const posAttr = particles.geometry.attributes.position;
+            gsap.to(posAttr.array, {
+                duration: 2.5,
+                onUpdate: () => {
+                    for(let i=0; i<particleCount*3; i++) posAttr.array[i] = target[i];
+                    posAttr.needsUpdate = true;
+                }
+            });
+        }
+
+        // ======================== 2. SPARKS ENGINE ========================
+        const sparksCanvas = document.getElementById('sparks-canvas');
+        const sCtx = sparksCanvas.getContext('2d');
+        let sparks = [];
+
+        function resizeSparks() {
+            sparksCanvas.width = window.innerWidth;
+            sparksCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeSparks);
+        resizeSparks();
+
+        class Spark {
+            constructor(x, y, color) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random()-0.5)*15;
+                this.vy = (Math.random()-0.5)*15;
+                this.life = 1.0;
+                this.color = color || '#ff1744';
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.2; this.life -= 0.02; }
+            draw() {
+                sCtx.globalAlpha = this.life;
+                sCtx.fillStyle = this.color;
+                sCtx.fillRect(this.x, this.y, 3, 3);
+            }
+        }
+
+        function animateSparks() {
+            sCtx.clearRect(0,0,sparksCanvas.width, sparksCanvas.height);
+            sparks = sparks.filter(s => s.life > 0);
+            sparks.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animateSparks);
+        }
+        animateSparks();
+
+        // ======================== 3. TRANSLATOR & AUDIO ========================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const languages = {
+            'ESPAÑOL': { key: 'es', intro: 'Bienvenido al núcleo.' },
+            'ENGLISH': { key: 'en', intro: 'Welcome to the core.' },
+            'PORTUGUÊS': { key: 'pt', intro: 'Bem-vindo ao núcleo.' },
+            'CATALÀ': { key: 'ca', intro: 'Benvingut al nucli.' },
+            'FRANÇAIS': { key: 'fr', intro: 'Bienvenue au noyau.' },
+            'ITALIANO': { key: 'it', intro: 'Benvenuti al nucleo.' },
+            'DEUTSCH': { key: 'de', intro: 'Willkommen im Kern.' },
+            'SUOMI': { key: 'fi', intro: 'Tervetuloa ytimeen.' },
+            'NEDERLANDS': { key: 'nl', intro: 'Welkom bij de kern.' },
+            '中文': { key: 'zh', intro: '欢迎来到核心。' },
+            'हिन्दी': { key: 'hi', intro: 'कोर में आपका स्वागत है।' },
+            'ไทย': { key: 'th', intro: 'ยินดีต้อนต้อนรับสู่แกนกลาง' }
+        };
+        const langKeys = Object.keys(languages);
+        let currentLangIdx = 0;
+
+        function playStatic() {
+            const bufferSize = audioCtx.sampleRate * 0.5;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            noise.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start();
+        }
+
+        function rotateTuner() {
+            currentLangIdx = (currentLangIdx + 1) % langKeys.length;
+            document.getElementById('lang-label').innerText = langKeys[currentLangIdx];
+            document.getElementById('tuner-line').style.transform = `translateX(-50%) rotate(${currentLangIdx * 30}deg)`;
+            playStatic();
+        }
+
+        // ======================== 4. ORACLE & GEMS ========================
+        let activatedGems = new Set();
+        const oracleModule = document.getElementById('oracle-module');
+        const oracleScreen = document.getElementById('oracle-output');
+        const oracleInput = document.getElementById('oracle-input');
+        const oracleSend = document.getElementById('oracle-send');
+
+        document.querySelectorAll('.gem-capacitor').forEach(gem => {
+            gem.addEventListener('click', () => {
+                const name = gem.dataset.gem;
+                gem.classList.add('activated');
+                activatedGems.add(name);
+                for(let i=0; i<20; i++) sparks.push(new Spark(window.innerWidth/2, window.innerHeight/2, '#ffd700'));
+                
+                if(activatedGems.size === 1) morphTo('key');
+                if(activatedGems.size === 2) morphTo('human');
+                if(activatedGems.size === 3) morphTo('mic');
+                if(activatedGems.size === 4) morphTo('comp');
+                
+                if(activatedGems.size === 5) {
+                    document.getElementById('oracle-module').classList.add('unlocked');
+                    addOracleMsg("REACTOR STABILIZED. WELCOME COMMANDER.");
+                }
+            });
+        });
+
+        function addOracleMsg(txt) {
+            const p = document.createElement('p');
+            p.innerText = `> ${txt}`;
+            p.style.marginBottom = '10px';
+            oracleScreen.appendChild(p);
+            oracleScreen.scrollTop = oracleScreen.scrollHeight;
+        }
+
+        oracleSend.onclick = () => {
+            const cmd = oracleInput.value.toLowerCase().trim();
+            if(!cmd) return;
+            addOracleMsg(`USER: ${cmd}`, true);
+            oracleInput.value = '';
+
+            setTimeout(() => {
+                if(cmd === 'thiago') {
+                    document.body.classList.add('glitching');
+                    addOracleMsg("FATAL ERROR: THIAGO DETECTED. SYSTEM BREACH.");
+                    setTimeout(() => location.reload(), 3000);
+                } else if (cmd === 'lorena') {
+                    addOracleMsg("PURPLE PROTOCOL: LORENA HAS ARRIVED.");
+                } else {
+                    addOracleMsg("COMMAND PROCESSED. NO ANOMALIES DETECTED.");
+                }
+            }, 1000);
+        };
+
+        // ======================== 5. CORE LOOP & SCROLL ========================
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 3D Camera & Planet Animation
+            const scrollPos = window.scrollY;
+            camera.position.z = 500 - (scrollPos * 0.5);
+            ring.rotation.z += 0.002;
+            ring.rotation.x += 0.001;
+            
+            renderer.render(scene, camera);
+
+            // HUD depth sync
+            document.getElementById('coordinates-hud').innerText = `COORDS: 0.0, 0.0, ${Math.floor(camera.position.z)}`;
+            document.getElementById('depth-stat').innerText = `DEPTH: ${(scrollPos/10).toFixed(2)} LY`;
+        }
+        animate();
+
+        // Particles morphing tied to scroll
+        ScrollTrigger.create({
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            onUpdate: (self) => {
+                const p = self.progress;
+                if(p < 0.2) morphTo('key');
+                else if(p < 0.4) morphTo('human');
+                else if(p < 0.6) morphTo('mic');
+                else morphTo('comp');
+            }
+        });
+
+        // Resize handle
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mouse follow cursor
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            document.getElementById('spotlight').style.setProperty('--x', e.clientX + 'px');
+            document.getElementById('spotlight').style.setProperty('--y', e.clientY + 'px');
+        });
+
+    </script>
+</body>
+</html>

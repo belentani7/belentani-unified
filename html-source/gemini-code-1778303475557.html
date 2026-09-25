@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI // JUDAS ENGINE LIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-red: #ff1744;
+            --deep-red: #8b0000;
+            --bg: #000;
+            --font-mono: 'Space Mono', monospace;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+        }
+
+        /* 🧠 LAYER 1: SYSTEM HUD (UI INVISIBLE HASTA HOVER) */
+        .hud {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 15px 30px; font-family: var(--font-mono);
+            font-size: 10px; color: var(--neon-red);
+            display: flex; justify-content: space-between;
+            z-index: 1000; letter-spacing: 2px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            pointer-events: none;
+        }
+
+        /* 🌑 LAYER 2: ARTIST CORE (CINE PURO) */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+        }
+
+        .name {
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 900;
+            color: var(--neon-red);
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            line-height: 0.8;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.1s ease-out;
+            text-shadow: 0 0 40px rgba(255, 23, 68, 0.5);
+        }
+
+        .name::before {
+            content: "BELENTANI";
+            position: absolute; left: -2px; text-shadow: 2px 0 blue;
+            top: 0; color: white; background: black; overflow: hidden;
+            clip: rect(0, 900px, 0, 0); animation: glitch-1 3s infinite linear alternate-reverse;
+            opacity: 0.3;
+        }
+
+        @keyframes glitch-1 {
+            0% { clip: rect(20px, 9999px, 10px, 0); }
+            20% { clip: rect(80px, 9999px, 70px, 0); }
+            100% { clip: rect(40px, 9999px, 30px, 0); }
+        }
+
+        .tagline {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            margin-top: 20px;
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+            padding: 5px 20px;
+            transform: skew(-10deg);
+        }
+
+        /* 📖 LAYER 3: LIVE NARRATIVE (EL ARCHIVO QUE RESPIRA) */
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .reveal-text {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #888;
+            line-height: 1.8;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal-text.active {
+            opacity: 1;
+            transform: translateY(0);
+            color: #fff;
+        }
+
+        /* LIVE GRID: CARDS QUE REACCIONAN AL MOUSE */
+        .live-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 100px;
+        }
+
+        .live-card {
+            background: rgba(255, 23, 68, 0.03);
+            border-left: 1px solid var(--neon-red);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+
+        .live-card:hover {
+            background: rgba(255, 23, 68, 0.1);
+            transform: scale(1.02);
+        }
+
+        .live-card h3 {
+            font-family: var(--font-mono);
+            color: var(--neon-red);
+            font-size: 12px;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+
+        /* THE JUDAS VOID (SCROLL EFFECT) */
+        .void {
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .void-text {
+            font-size: 4vw;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            transition: 1s;
+        }
+
+        .void-text:hover {
+            color: #fff;
+            -webkit-text-stroke: 1px var(--neon-red);
+            text-shadow: 0 0 30px var(--neon-red);
+        }
+
+        canvas#particleCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+
+<div class="hud">
+    <div id="status">CORE_STATUS: RUNNING // EMOTIONAL_LOAD: 88%</div>
+    <div id="coords">X: 0.00 Y: 0.00</div>
+</div>
+
+<section class="hero">
+    <div class="glitch-wrapper">
+        <h1 class="name" id="main-name">BELENTANI</h1>
+    </div>
+    <div class="tagline">JUDAS ENGINE // LIVE SYSTEM</div>
+</section>
+
+<div class="section-container">
+    <p class="reveal-text">
+        El sistema no ha caído. Se ha rediseñado sobre las cenizas de la identidad previa.
+        Cada bit de sonido es una cicatriz procesada por el algoritmo.
+    </p>
+
+    <div class="live-grid">
+        <div class="live-card">
+            <h3>SOUND_CORE</h3>
+            <p>R&B cinematográfico. Distorsión emocional. Frecuencias que rompen el velo de la realidad urbana.</p>
+        </div>
+        <div class="live-card">
+            <h3>PROTOCOL_JUDAS</h3>
+            <p>La traición como arquitectura. El fallo estructural que permitió el nacimiento del Artista Global.</p>
+        </div>
+    </div>
+
+    <div class="void">
+        <h2 class="void-text">TRAICIÓN ES EVOLUCIÓN</h2>
+    </div>
+
+    <p class="reveal-text">
+        Peter y Judas. El guardián y la fractura. No hay música sin ruptura, no hay luz sin el fallo del sistema. 
+        Bienvenido al archivo vivo.
+    </p>
+</div>
+
+<script>
+    // 🧠 MOUSE TRACKING (COORDS & PERSPECTIVE)
+    const name = document.getElementById('main-name');
+    const coords = document.getElementById('coords');
+
+    document.addEventListener('mousemove', (e) => {
+        let x = (window.innerWidth / 2 - e.pageX) / 25;
+        let y = (window.innerHeight / 2 - e.pageY) / 25;
+        name.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        
+        coords.innerText = `X: ${e.pageX} Y: ${e.pageY}`;
+    });
+
+    // 🌊 REVEAL ON SCROLL LOGIC
+    const observerOptions = { threshold: 0.5 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal-text').forEach(p => observer.observe(p));
+
+    // ✨ PARTICLE SYSTEM (THE "RAM BURNER")
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2;
+            this.speedX = Math.random() * 3 - 1.5;
+            this.speedY = Math.random() * 3 - 1.5;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+            if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+        }
+        draw() {
+            ctx.fillStyle = 'rgba(255, 23, 68, 0.2)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        for (let i = 0; i < 100; i++) { particles.push(new Particle()); }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    // 🔴 SYSTEM ALERT LOGIC
+    setInterval(() => {
+        const load = Math.floor(Math.random() * (99 - 80 + 1) + 80);
+        document.getElementById('status').innerText = `CORE_STATUS: RUNNING // EMOTIONAL_LOAD: ${load}%`;
+    }, 2000);
+</script>
+
+</body>
+</html>

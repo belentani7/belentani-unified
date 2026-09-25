@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>belentani · estudi digital — SINGULARITY HERO</title>
+<style>
+  :root{
+    --bg:#0a0a0b; --bg-card:#111113; --bg-raised:#18181c;
+    --border:rgba(255,255,255,0.07); --border-hover:rgba(255,255,255,0.15);
+    --text:#f0ede8; --text-muted:rgba(240,237,232,0.5); --text-dim:rgba(240,237,232,0.28);
+    --accent:#c8f55a; --accent-dim:rgba(200,245,90,0.12); --accent-border:rgba(200,245,90,0.3);
+    --mono:'JetBrains Mono','Fira Code','Cascadia Code',monospace;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:rgba(200,245,90,0.2);color:var(--text)}
+  a{color:inherit;text-decoration:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+  #overlay-grad{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(circle at 50% 45%,transparent 20%,rgba(10,10,11,.55) 70%,rgba(10,10,11,.9) 100%)}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 0}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem}
+  .nav-logo{font-family:var(--mono);font-size:0.875rem;letter-spacing:0.04em;color:var(--text);display:flex;align-items:center;gap:0.5rem}
+  .nav-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:ping 2.4s ease-out infinite}
+  .nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+  .nav-links a{font-size:0.8125rem;color:var(--text-muted);transition:color .2s;letter-spacing:0.02em}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{font-family:var(--mono);font-size:0.75rem;padding:0.5rem 1.25rem;border:1px solid var(--accent-border);border-radius:6px;color:var(--accent);background:var(--accent-dim)}
+  .nav-cta:hover{background:rgba(200,245,90,0.18)}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(200,245,90,.6)}70%{box-shadow:0 0 0 11px rgba(200,245,90,0)}100%{box-shadow:0 0 0 0 rgba(200,245,90,0)}}
+
+  /* HERO */
+  .hero{position:relative;z-index:2;min-height:100svh;display:flex;align-items:center;padding:7rem 0 5rem}
+  .container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+  .hero-label{font-family:var(--mono);font-size:0.6875rem;color:var(--text-muted);letter-spacing:0.12em;text-transform:uppercase;display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem}
+  .hero-label .pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:ping 2.4s ease-out infinite}
+  h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.03em;line-height:1.05;color:#fff;margin-bottom:1.5rem}
+  h1 em{font-style:normal;color:var(--accent)}
+  .hero-sub{font-size:clamp(1rem,1.6vw,1.25rem);color:var(--text-muted);max-width:560px;line-height:1.7;margin-bottom:2rem}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn-primary{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.875rem;padding:0.875rem 1.75rem;border-radius:6px;background:var(--accent);color:#0a0a0b;font-weight:600;transition:transform .2s}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{display:inline-flex;align-items:center;font-family:var(--mono);font-size:0.875rem;padding:0.875rem 1.75rem;border-radius:6px;border:1px solid var(--border-hover);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--accent-border)}
+  .hero-stat-row{display:flex;gap:2rem;margin-top:3rem;flex-wrap:wrap}
+  .hero-stat{display:flex;flex-direction:column;gap:0.15rem}
+  .hero-stat span:first-child{font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--text)}
+  .hero-stat span:last-child{font-size:0.75rem;color:var(--text-dim)}
+  .hero-stat-divider{width:1px;background:var(--border);align-self:stretch}
+  @media(max-width:768px){.nav-links{display:none}.hero{padding:7rem 0 4rem}.hero-stat-row{gap:1.5rem}}
+  @media(prefers-reduced-motion:reduce){.pulse{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="overlay-grad" aria-hidden="true"></div>
+
+<nav role="navigation" aria-label="Navegació principal">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Belentani · estudi digital — inici">
+      <span class="dot" aria-hidden="true"></span>
+      belentani · estudi digital
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#com-funciona">Com funciona</a></li>
+      <li><a href="#serveis">Serveis</a></li>
+      <li><a href="#per-que">Per què nosaltres</a></li>
+      <li><a href="#contacte">Contacte</a></li>
+    </ul>
+    <a href="#contacte" class="nav-cta">Parlem →</a>
+  </div>
+</nav>
+
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container">
+    <div class="hero-label"><span class="pulse" aria-hidden="true"></span>Singularity engine · L'Hospitalet · Barcelona</div>
+    <h1 id="hero-heading">La teva web,<br>feta per <em>IA</em> real.<br>En 7 dies.</h1>
+    <p class="hero-sub">Agència unipersonal especialitzada en webs professionals per a negocis locals. Sense templates genèrics. Amb intel·ligència artificial que treballa per tu.</p>
+    <div class="hero-actions">
+      <a href="#contacte" class="btn-primary">Vull la meva web</a>
+      <a href="#com-funciona" class="btn-ghost">Com funciona</a>
+    </div>
+    <div class="hero-stat-row" role="list">
+      <div class="hero-stat" role="listitem"><span>7 dies</span><span>des de zero a en línia</span></div>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat" role="listitem"><span>100%</span><span>propietat teva sempre</span></div>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat" role="listitem"><span>RGPD</span><span>compliment legal inclòs</span></div>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat" role="listitem"><span>SEO</span><span>local optimitzat</span></div>
+    </div>
+  </div>
+</section>
+
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+      "gsap": "https://unpkg.com/gsap@3.12.5/index.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import gsap from 'gsap';
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0a0b);
+  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 26, 70);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.6;
+  document.getElementById('gl').appendChild(renderer.domElement);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.03;
+  controls.autoRotate = true; controls.autoRotateSpeed = 0.6;
+  controls.enableZoom = false; controls.enablePan = false;
+
+  const noiseChunk = `
+      vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+      vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+      float snoise(vec3 v) {
+          const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+          const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+          vec3 i  = floor(v + dot(v, C.yyy) );
+          vec3 x0 = v - i + dot(i, C.xxx) ;
+          vec3 g = step(x0.yzx, x0.xyz);
+          vec3 l = 1.0 - g;
+          vec3 i1 = min( g.xyz, l.zxy );
+          vec3 i2 = max( g.xyz, l.zxy );
+          vec3 x1 = x0 - i1 + C.xxx;
+          vec3 x2 = x0 - i2 + C.yyy;
+          vec3 x3 = x0 - D.yyy;
+          i = mod289(i);
+          vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+          float n_ = 0.142857142857;
+          vec3  ns = n_ * D.wyz - D.xzx;
+          vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+          vec4 x_ = floor(j * ns.z);
+          vec4 y_ = floor(j - 7.0 * x_ );
+          vec4 x = x_ *ns.x + ns.yyyy;
+          vec4 y = y_ *ns.x + ns.yyyy;
+          vec4 h = 1.0 - abs(x) - abs(y);
+          vec4 b0 = vec4( x.xy, y.xy );
+          vec4 b1 = vec4( x.zw, y.zw );
+          vec4 s0 = floor(b0)*2.0 + 1.0;
+          vec4 s1 = floor(b1)*2.0 + 1.0;
+          vec4 sh = -step(h, vec4(0.0));
+          vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+          vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+          vec3 p0 = vec3(a0.xy,h.x);
+          vec3 p1 = vec3(a0.zw,h.y);
+          vec3 p2 = vec3(a1.xy,h.z);
+          vec3 p3 = vec3(a1.zw,h.w);
+          vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+          p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+          vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+          m = m * m;
+          return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
+      }
+  `;
+
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(4,64,64), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+
+  const auraMat = new THREE.ShaderMaterial({
+    uniforms:{ uTime:{value:0}, uIntensity:{value:1.0} },
+    vertexShader:`
+      varying vec3 vNormal; varying vec3 vView;
+      void main(){
+        vNormal = normalize(normalMatrix * normal);
+        vView = normalize(-(modelViewMatrix * vec4(position,1.0)).xyz);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+      }`,
+    fragmentShader:`
+      uniform float uIntensity; varying vec3 vNormal; varying vec3 vView;
+      void main(){
+        float rim = pow(1.0 - max(dot(vNormal,vView),0.0), 4.0);
+        vec3 neon = vec3(1.0,0.05,0.12);
+        vec3 core = vec3(1.0,0.5,0.45);
+        gl_FragColor = vec4(mix(core,neon,0.55) * rim * uIntensity * 6.0, 1.0);
+      }`,
+    side:THREE.BackSide, transparent:true, blending:THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(4.25,64,64), auraMat));
+
+  const instanceCount = 5000;
+  const streakGeo = new THREE.CylinderGeometry(0.01, 0.12, 2.2, 3);
+  streakGeo.rotateX(Math.PI / 2);
+  const diskMaterial = new THREE.ShaderMaterial({
+    uniforms:{
+      uTime:{value:0}, uMorph:{value:0.1}, uCompression:{value:1.0},
+      uIntensity:{value:1.0}, uOrbitScale:{value:1.0}, uExplode:{value:0.0}
+    },
+    vertexShader:`
+      ${noiseChunk}
+      uniform float uTime; uniform float uMorph; uniform float uCompression;
+      uniform float uIntensity; uniform float uOrbitScale; uniform float uExplode;
+      varying vec3 vColor; varying float vOpacity;
+      void main() {
+        vec4 instPos = instanceMatrix * vec4(0.0,0.0,0.0,1.0);
+        float rOriginal = length(instPos.xz);
+        float r = rOriginal * uCompression;
+        float initialAngle = atan(instPos.z, instPos.x);
+        float orbitalVelocity = (1.5 / sqrt(rOriginal)) * uOrbitScale;
+        float currentAngle = initialAngle + (uTime * orbitalVelocity);
+        vec3 morphedWorldPos = vec3(cos(currentAngle)*r, instPos.y, sin(currentAngle)*r);
+        float noise = snoise(vec3(morphedWorldPos.x*0.08, morphedWorldPos.z*0.08, uTime*0.3));
+        morphedWorldPos.y += noise * uMorph * 4.0;
+        float ex = uExplode;
+        vec3 radial = normalize(morphedWorldPos + 1e-4);
+        float rShock = length(morphedWorldPos);
+        morphedWorldPos += radial * ex * (3.0 + rShock * 0.9);
+        morphedWorldPos.y += sin(morphedWorldPos.x*0.5 + uTime*8.0*ex) * ex * 2.5;
+        morphedWorldPos.y += cos(morphedWorldPos.z*0.5 - uTime*9.0*ex) * ex * 2.5;
+        vec3 viewDir = normalize(cameraPosition - morphedWorldPos);
+        vec3 orbitDir = normalize(vec3(-sin(currentAngle),0.0,cos(currentAngle)));
+        float doppler = dot(orbitDir, viewDir);
+        vec3 hot = vec3(1.0,0.95,0.9);
+        vec3 neon = vec3(1.0,0.03,0.10);
+        vec3 deep = vec3(0.55,0.0,0.22);
+        vec3 color = mix(deep, neon, smoothstep(45.0,12.0,r));
+        color = mix(color, hot, smoothstep(10.0,4.0,r));
+        color = mix(color, vec3(1.0,0.5,0.45), ex*0.6);
+        vColor = color * (1.5 + doppler*1.2) * uIntensity * (1.0 + ex*1.2);
+        vOpacity = (smoothstep(3.8,5.5,r) * (1.0 - smoothstep(38.0,48.0,r))) * 0.85 * (1.0 - ex*0.3);
+        float deltaAngle = currentAngle - initialAngle;
+        float c = cos(deltaAngle); float s = sin(deltaAngle);
+        mat3 rotY = mat3(c,0,s, 0,1,0, -s,0,c);
+        vec3 localPos = (instanceMatrix * vec4(position,0.0)).xyz;
+        vec3 rotatedLocalPos = rotY * localPos;
+        gl_Position = projectionMatrix * viewMatrix * vec4(morphedWorldPos + rotatedLocalPos, 1.0);
+      }`,
+    fragmentShader:`
+      varying vec3 vColor; varying float vOpacity;
+      void main(){ gl_FragColor = vec4(vColor, vOpacity); }`,
+    transparent:true, blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const instancedDisk = new THREE.InstancedMesh(streakGeo, diskMaterial, instanceCount);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < instanceCount; i++) {
+    const r = 5 + Math.pow(Math.random(), 1.3) * 40;
+    const angle = Math.random() * Math.PI * 2;
+    dummy.position.set(Math.cos(angle)*r, (Math.random()-0.5)*(8/r), Math.sin(angle)*r);
+    dummy.lookAt(dummy.position.x + Math.sin(angle), dummy.position.y, dummy.position.z - Math.cos(angle));
+    dummy.updateMatrix();
+    instancedDisk.setMatrixAt(i, dummy.matrix);
+  }
+  scene.add(instancedDisk);
+
+  /* bucle suave: pulsación de aura + morph lento, sin explosión violenta */
+  const clock = new THREE.Clock();
+  let tAcc = 0;
+  function animate() {
+    const t = clock.getElapsedTime();
+    tAcc += 0.016;
+    diskMaterial.uniforms.uTime.value = t;
+    auraMat.uniforms.uTime.value = t;
+    instancedDisk.rotation.y += 0.0004;
+    auraMat.uniforms.uIntensity.value = 1.0 + 0.3 * Math.sin(t * 0.6);
+    diskMaterial.uniforms.uMorph.value = 1.5 + Math.sin(t * 0.15) * 1.2;
+    diskMaterial.uniforms.uIntensity.value = 1.2 + Math.sin(t * 0.3) * 0.3;
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  animate();
+</script>
+</body>
+</html>

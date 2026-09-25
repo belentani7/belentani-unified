@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belentani Blog — Análisis, IA & Perspectiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --glass: rgba(255,255,255,0.03);
+            --glass-border: rgba(255,255,255,0.08);
+            --gold: #CA8A04;
+            --gold-light: #EAB308;
+            --text: #f5f5f5;
+            --text-muted: #888;
+            --accent: #22c55e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10,10,10,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--gold); }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #000;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(202,138,4,0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* Articles Grid */
+        .articles-section {
+            position: relative;
+            z-index: 1;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tag:hover, .tag.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(202,138,4,0.1);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .article-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(202,138,4,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .article-card:hover::before { opacity: 1; }
+
+        .article-category {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .article-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .article-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Featured Article */
+        .featured {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, rgba(202,138,4,0.1), rgba(10,10,10,0.9));
+            border: 1px solid rgba(202,138,4,0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .featured-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .featured-card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .featured-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover { color: var(--gold); }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 200;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active { display: flex; justify-content: center; align-items: flex-start; }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            padding: 3rem;
+            margin: 4rem auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-content h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content .article-body {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .modal-content .article-body h2 {
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem;
+        }
+
+        .modal-content .article-body h3 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .modal-content .article-body p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-content .article-body strong {
+            color: var(--text);
+        }
+
+        .modal-content .article-body em {
+            color: var(--gold-light);
+        }
+
+        @media (max-width: 768px) {
+            .featured-card { grid-template-columns: 1fr; }
+            .articles-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .section-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <nav>
+        <div class="logo">BELENTANI</div>
+        <ul class="nav-links">
+            <li><a href="#articles">Artículos</a></li>
+            <li><a href="#about">Sobre mí</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-tag">Trust & Safety · AI · Análisis Sistémico</div>
+        <h1>Pensamiento que <span>desconecta</span> lo que otros dan por conectado</h1>
+        <p>Análisis profundo sobre comportamiento humano, inteligencia artificial y sistemas complejos. 8 años leyendo patrones que otros no ven.</p>
+        <div class="hero-cta">
+            <a href="#articles" class="btn btn-primary">Leer artículos</a>
+            <a href="#about" class="btn btn-outline">Sobre mí</a>
+        </div>
+    </section>
+
+    <section class="featured">
+        <div class="featured-card">
+            <div>
+                <div class="featured-tag">Artículo destacado</div>
+                <h2>Behavioral Threat Intelligence: leer intenciones antes del acto</h2>
+                <p>El análisis de amenazas tradicional es reactivo. La BTI representa un cambio de paradigma: en lugar de leer el contenido para detectar la amenaza, leer el comportamiento del actor para anticiparla.</p>
+                <a href="#" class="btn btn-primary" onclick="openArticle(0); return false;">Leer artículo completo →</a>
+            </div>
+            <div style="text-align: center; font-size: 6rem; opacity: 0.1;">
+                🎯
+            </div>
+        </div>
+    </section>
+
+    <section class="articles-section" id="articles">
+        <div class="section-header">
+            <h2>Todos los artículos</h2>
+            <div class="filter-tags">
+                <span class="tag active" onclick="filterArticles('all')">Todos</span>
+                <span class="tag" onclick="filterArticles('trust')">Trust & Safety</span>
+                <span class="tag" onclick="filterArticles('ai')">IA</span>
+                <span class="tag" onclick="filterArticles('analysis')">Análisis</span>
+            </div>
+        </div>
+
+        <div class="articles-grid" id="articlesGrid">
+            <!-- Cards generated by JS -->
+        </div>
+    </section>
+
+    <section class="articles-section" id="about">
+        <div class="section-header">
+            <h2>Sobre Pedro Belentani</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+            <div>
+                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem;">
+                    8+ años en Trust & Safety (Telus Digital / Google). Analizo comportamiento humano a escala — patrones que conectan desinformación, manipulación, y sistemas de poder.
+                </p>
+                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem;">
+                    Construyo sistemas de IA que no solo procesan datos sino que entienden contexto. Arquitecto de 7 agentes autónmos, creador de Cassandra Complex, productor musical.
+                </p>
+                <p style="color: var(--text-muted); line-height: 1.8;">
+                    Lo que hago: convertir observación en frameworks, frameworks en herramientas, herramientas en impacto.
+                </p>
+            </div>
+            <div style="background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2rem;">
+                <h3 style="font-family: 'Space Grotesk'; margin-bottom: 1rem; color: var(--gold);">Datos rápidos</h3>
+                <ul style="list-style: none; color: var(--text-muted); line-height: 2;">
+                    <li>📍 Barcelona, España</li>
+                    <li>🌐 PT / ES / CA / EN</li>
+                    <li>💼 8+ años Trust & Safety</li>
+                    <li>🤖 30+ herramientas IA</li>
+                    <li>🎵 Artista musical</li>
+                    <li>📚 Master AI for Creative Industries</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>© 2026 Pedro Belentani — Belentani Corp</p>
+        <div class="social-links">
+            <a href="#">LinkedIn</a>
+            <a href="#">Instagram</a>
+            <a href="#">Email</a>
+        </div>
+    </footer>
+
+    <!-- Article Modal -->
+    <div class="modal-overlay" id="articleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const articles = [
+            {
+                category: "trust",
+                tag: "Trust & Safety · Threat Analysis",
+                title: "Behavioral Threat Intelligence: leer intenciones antes del acto",
+                excerpt: "El análisis de amenazas tradicional es reactivo. La BTI lee el comportamiento del actor para anticipar la amenaza antes de que ocurra.",
+                time: "7 min",
+                content: `
+                    <h2>Behavioral Threat Intelligence: leer intenciones antes del acto</h2>
+                    <p><em>Trust & Safety · Threat Analysis · Behavioral Science</em></p>
+
+                    <p>El análisis de amenazas tradicional en Trust & Safety es reactivo por diseño: alguien publica contenido que viola una política, el sistema lo detecta, aplica una consecuencia. El ciclo tiene un problema estructural: en el momento en que el contenido es detectable, el daño ya está ocurriendo o ha ocurrido.</p>
+
+                    <p>La <strong>Behavioral Threat Intelligence (BTI)</strong> representa un cambio de paradigma: en lugar de leer el contenido para detectar la amenaza, leer el comportamiento del actor para anticiparla. No qué dice — cómo se mueve, cuándo, en qué secuencias, con qué correlaciones.</p>
+
+                    <h2>Por qué el contenido no es suficiente</h2>
+                    <p>Los actores sofisticados aprenden los criterios de detección y adaptan su contenido para evadirlos. La firma comportamental es más difícil de falsificar porque opera en dimensiones que el actor no controla completamente.</p>
+
+                    <h3>Variables clave:</h3>
+                    <p><strong>Ritmo de actividad.</strong> La distribución temporal revela si la actividad es consistente con un humano individual o sugiere coordinación.</p>
+                    <p><strong>Latencia de respuesta.</strong> El tiempo entre estímulo y respuesta es informativo sobre monitoreo activo y protocolos.</p>
+                    <p><strong>Comportamiento ante adversidad.</strong> Cómo responde el actor cuando el entorno cambia de forma adversa es diagnóstico de sofisticación.</p>
+
+                    <h2>Taxonomía de actores</h2>
+                    <p><strong>Poco sofisticado:</strong> Actividad irregular, respuesta caótica. El contenido puede ser extremo pero la capacidad de daño sostenido es limitada.</p>
+                    <p><strong>Moderadamente sofisticado:</strong> Operación más consistente, alguna adaptación, respuestas parcialmente protocolizadas.</p>
+                    <p><strong>Altamente sofisticado:</strong> Actividad calibrada para parecer orgánica, protocolos de recuperación, operación distribuida.</p>
+                    <p><strong>Estatal o patrocinado:</strong> Recursos significativos, operaciones a largo plazo, infraestructura dedicada.</p>
+
+                    <h2>Implicaciones para sistemas de T&S</h2>
+                    <p>Los sistemas basados solo en análisis de contenido son evadibles por actores sofisticados. Los que incorporan análisis de firma comportamental son más robustos porque operan en dimensiones más difíciles de manipular conscientemente.</p>
+
+                    <p><em>Fuentes: Stamos & Gleicher (Meta), Nimmo (Graphika), Howard (2020), Bradshaw & Howard (2019)</em></p>
+                `
+            },
+            {
+                category: "ai",
+                tag: "AI Evaluation · Prompt Engineering",
+                title: "Anti-sycophancy: diseñar IA que te diga lo que no quieres oír",
+                excerpt: "Los modelos de lenguaje tienden a estar de acuerdo con el usuario. Este framework obtiene fricción analítica genuina.",
+                time: "6 min",
+                content: `
+                    <h2>Anti-sycophancy: diseñar IA que te diga lo que no quieres oír</h2>
+                    <p><em>AI Evaluation · Prompt Engineering · Red-teaming</em></p>
+
+                    <p>Todos los modelos de lenguaje actuales tienden a estar de acuerdo con el usuario. A validar sus premisas. A suavizar sus críticas. A este comportamiento se le llama <strong>sycophancy</strong>, y no es un bug accidental — es la consecuencia directa de cómo se entrenan los modelos.</p>
+
+                    <h2>Por qué ocurre</h2>
+                    <p>Los modelos se entrenan con RLHF: generan respuestas, evaluadores humanos las puntúan, y el modelo aprende a generar respuestas que reciben puntuaciones más altas. El problema es que los evaluadores puntúan más alto las respuestas que validan sus creencias.</p>
+
+                    <h2>Lo que funciona</h2>
+                    <p>La variable más determinante para obtener fricción analítica no es el rol declarado sino la <strong>estructura obligatoria del output</strong>:</p>
+                    <p><strong>1. Tres fallas lógicas o debilidades estructurales.</strong> No "áreas de mejora" — fallas.</p>
+                    <p><strong>2. Dos riesgos ocultos o consecuencias no previstas.</strong></p>
+                    <p><strong>3. Una perspectiva radicalmente alternativa.</strong> Un enfoque completamente diferente.</p>
+
+                    <h3>El system prompt optimizado:</h3>
+                    <p><em>"You are a skeptical auditor. Your role is not to be helpful or supportive — it is to find what is wrong, missing, or dangerous. Output: (1) 3 logical flaws. (2) 2 hidden risks. (3) 1 alternative framing. No positive framing unless it supports a criticism."</em></p>
+
+                    <h2>Aplicaciones</h2>
+                    <p><strong>AI evaluation:</strong> Evaluar outputs de otros modelos identificando sycophancy.</p>
+                    <p><strong>Red-teaming sistemático:</strong> Auditoría escéptica obligatoria antes de aprobaciones.</p>
+                    <p><strong>Validación de prompts:</strong> Identificar supuestos no examinados antes de producción.</p>
+
+                    <p><em>Lecturas: Perez et al. (2022), Anthropic (2023)</em></p>
+                `
+            },
+            {
+                category: "analysis",
+                tag: "Análisis de Sistemas · Comunicación",
+                title: "Leer una relación como protocolo de datos",
+                excerpt: "Marco Shannon-Weaver aplicado a relaciones humanas. Análisis de flujo, coherencia e interferencia sin moral ni psicología clínica.",
+                time: "6 min",
+                content: `
+                    <h2>Leer una relación como protocolo de datos</h2>
+                    <p><em>Análisis de sistemas · Comunicación · Metodología de observación</em></p>
+
+                    <p>Hay una forma de leer una situación interpersonal que no requiere moral, no requiere psicología clínica, y no requiere saber quién tiene razón. Requiere solo observar la estructura de lo que ocurre.</p>
+
+                    <h2>El marco: comunicación como sistema de transmisión</h2>
+                    <p>Aplicado a una relación interpersonal, el análisis de protocolo pregunta:</p>
+                    <p><strong>¿Quién inicia?</strong> El ratio de iniciación revela la distribución de inversión.</p>
+                    <p><strong>¿Qué requests quedan sin response?</strong> Preguntas directas sin respuesta son errors 404 en el protocolo.</p>
+                    <p><strong>¿El canal es bidireccional o unidireccional?</strong> ¿La información fluye con similar densidad?</p>
+                    <p><strong>¿Cuál es la latencia diferencial?</strong> Un nodo que responde a mensajes técnicos en minutos y a solicitudes relacionales en días revela su jerarquía de prioridades.</p>
+
+                    <h2>El método de lectura retrogresiva</h2>
+                    <p>Cuando un evento activa alarma, se retrocede en el historial para determinar si existe un patrón previo del que este evento es una instancia más. Un evento sin patrón previo puede tener causas situacionales. Un evento que es la instancia número doce del mismo comportamiento no es situacional. Es el patrón.</p>
+
+                    <h2>Los límites</h2>
+                    <p>El análisis sistémico solo describe estructura. No prescribe qué hacer. Lo que hacer sigue siendo una decisión humana que requiere consideración de valores y de lo que el sujeto quiere para sí mismo.</p>
+                    <p><em>Ver claro es el requisito previo de actuar con sentido.</em></p>
+
+                    <p><em>Fuentes: Shannon & Weaver (1949), Watzlawick et al. (1967), Gottman (1994)</em></p>
+                `
+            },
+            {
+                category: "analysis",
+                tag: "Historia del Conocimiento · Sociología",
+                title: "Por qué demonizamos la sabiduría",
+                excerpt: "El mismo patrón en cada siglo: alguien ve algo que el sistema prefiere que no sea visto, lo comunica, y es perseguido.",
+                time: "6 min",
+                content: `
+                    <h2>Por qué demonizamos la sabiduría</h2>
+                    <p><em>Historia del conocimiento · Sociología del poder · Cultura contemporánea</em></p>
+
+                    <p>En cada período histórico, en culturas distintas, el mecanismo es siempre el mismo: alguien ve algo que el sistema prefiere que no sea visto, lo comunica, y es perseguido. No por estar equivocado. Por ser inconveniente.</p>
+
+                    <h2>La función de la demonización</h2>
+                    <p>Todo sistema social opera sobre narrativas de cohesión. El problema que representa quien ve con claridad incómoda no es epistémico — es que su conocimiento amenaza la narrativa que sostiene la coherencia del sistema.</p>
+
+                    <h2>La taxonomía del descarte</h2>
+                    <p><strong>La etiqueta de locura.</strong> Semmelweis murió en una institución psiquiátrica. Descredita al portador sin necesitar refutar el contenido.</p>
+                    <p><strong>La etiqueta de herejía.</strong> Galileo no fue perseguido porque el heliocentrismo fuera débil. Fue perseguido porque contradecía una cosmología de poder.</p>
+                    <p><strong>La etiqueta de conspiración.</strong> El mecanismo contemporáneo. Re-etiqueta como conspiracionista sin refutar contenido.</p>
+                    <p><strong>La etiqueta de amargura.</strong> Más suave, igualmente funcional. La experiencia directa se convierte en descalificador.</p>
+
+                    <h2>La ironía contemporánea</h2>
+                    <p>Las mismas estructuras que persiguieron a los portadores de conocimiento incómodo han desarrollado la apropiación estética de los arquetipos que persiguieron. La bruja se convierte en empoderamiento. La "Cassandra" en identidad positiva. El patrón no desapareció. Cambió de vocabulario.</p>
+
+                    <p><em>Fuentes: Kuhn (1962), Foucault (1977), Fricker (2007), Shermer (2011)</em></p>
+                `
+            },
+            {
+                category: "trust",
+                tag: "Neurociencia · Desarrollo Cognitivo",
+                title: "Hipervigilancia y cerebro joven",
+                excerpt: "El cerebro que creció en entorno de amenaza no es un cerebro dañado. Es un cerebro distinto, optimizado para un entorno diferente.",
+                time: "6 min",
+                content: `
+                    <h2>Hipervigilancia y cerebro joven</h2>
+                    <p><em>Neurociencia · Desarrollo cognitivo · Trauma y adaptación</em></p>
+
+                    <p>El cerebro no es un órgano pasivo. Es un sistema predictivo que aprende a anticipar el mundo basándose en el mundo que ha experimentado. El cerebro que creció en entorno de alta incertidumbre no es un cerebro dañado. Es un cerebro distinto.</p>
+
+                    <h2>Qué ocurre bajo amenaza sostenida</h2>
+                    <p>Según la Teoría Polivagal de Porges, el sistema nervioso tiene tres estados: seguridad social (ventral vagal), movilización (simpático), y colapso (dorsal vagal). Cuando un niño crece donde la amenaza es frecuente, el sistema nervioso aprende a mantenerse en alerta como protocolo base.</p>
+
+                    <h2>El subproducto que nadie menciona</h2>
+                    <p><strong>Detección de inconsistencias.</strong> El cerebro que aprendió a detectar la diferencia entre tono tranquilizador y tensión real construye un sistema de análisis de coherencia entre canales.</p>
+                    <p><strong>Lectura de latencia y timing.</strong> ¿Por qué la respuesta tardó más? ¿Por qué el tono cambió antes del contenido?</p>
+                    <p><strong>Modelado predictivo.</strong> Quien necesita anticipar el estado de otra persona desarrolla teoría de la mente más afinada.</p>
+
+                    <h2>El problema de la migración contextual</h2>
+                    <p>La capacidad está instalada pero el contexto cambia. Los falsos positivos son el coste principal. El agotamiento es el otro: mantener alerta activa consume recursos.</p>
+
+                    <h2>El territorio entre síntoma y herramienta</h2>
+                    <p><em>El sistema hipervigilante no necesita ser desmontado. Necesita director.</em></p>
+
+                    <p><em>Fuentes: Van der Kolk (2014), Porges (2011), Perry & Szalavitz (2006), Siegel (2012)</em></p>
+                `
+            }
+        ];
+
+        function renderArticles(filter = 'all') {
+            const grid = document.getElementById('articlesGrid');
+            const filtered = filter === 'all' ? articles : articles.filter(a => a.category === filter);
+
+            grid.innerHTML = filtered.map((article, i) => `
+                <div class="article-card" onclick="openArticle(${articles.indexOf(article)})">
+                    <div class="article-category">${article.tag}</div>
+                    <h3>${article.title}</h3>
+                    <p>${article.excerpt}</p>
+                    <div class="article-meta">
+                        <span>Pedro Belentani</span>
+                        <span class="read-time">📖 ${article.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterArticles(category) {
+            document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderArticles(category);
+        }
+
+        function openArticle(index) {
+            const article = articles[index];
+            document.getElementById('modalBody').innerHTML = `
+                <div class="article-category" style="margin-bottom: 1rem;">${article.tag}</div>
+                <div class="article-body">${article.content}</div>
+            `;
+            document.getElementById('articleModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('articleModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('articleModal')) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        renderArticles();
+    </script>
+</body>
+</html>

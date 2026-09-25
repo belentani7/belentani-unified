@@ -1,0 +1,228 @@
+
+<body>
+
+    <canvas id="canvas-3d"></canvas>
+
+    <div class="hud-overlay">
+        <!-- HEADER -->
+        <header class="hud-panel header">
+            <div class="logo-text">BELENTANI // JUDAS</div>
+            <div id="system-status" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-blue);">
+                STATUS: [VIVO_Y_CONSCIENTE]
+            </div>
+        </header>
+
+        <!-- SIDEBAR IZQUIERDA: BIOMETRÍA -->
+        <aside class="sidebar" style="grid-row: 2;">
+            <div class="hud-panel stat-box">
+                NÚCLEO ARTÍSTICO
+                <span class="stat-value">ERA: JUDAS_OMEGA</span>
+                <span class="stat-value" id="bpm-val">SYNC: 128 BPM</span>
+            </div>
+            <div class="hud-panel stat-box" style="flex: 1;">
+                DATABASE: DISCÍPULOS
+                <ul id="disciple-list" style="list-style: none; margin-top: 15px; line-height: 2;">
+                    <li style="color: var(--neon-red);">[+] LORENA_SHIELD</li>
+                    <li style="color: var(--neon-red);">[+] NATALIA_VISION</li>
+                    <li style="color: var(--neon-red);">[+] DUCK_PRODUCTION</li>
+                    <li style="color: #666;">[-] THIAGO_NULL</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- PORTAL CENTRAL -->
+        <main class="main-portal">
+            <div id="chat-window" class="chat-container">
+                <div class="message">SISTEMA BELENTANI INICIALIZADO. ESPERANDO ENTRADA...</div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="INGRESE COMANDO DE ACCESO O NOMBRE DE ENTIDAD..." autocomplete="off">
+            </div>
+        </main>
+
+        <!-- SIDEBAR DERECHA: RECURSOS -->
+        <aside class="sidebar" style="grid-row: 2; grid-column: 3;">
+            <div class="hud-panel stat-box">
+                RECURSOS DE NÚCLEO
+                <span class="stat-value" id="energy-text">ENERGY: 100.00%</span>
+                <div style="width: 100%; height: 4px; background: #222; margin-top: 10px; position: relative;">
+                    <div id="energy-bar" style="width: 100%; height: 100%; background: var(--neon-red); transition: width 0.3s;"></div>
+                </div>
+            </div>
+            <div class="hud-panel stat-box" style="flex: 1;">
+                SEÑAL DE LOCALIZACIÓN
+                <span class="stat-value" id="location-info" style="font-size: 0.8rem;">DETECTANDO...</span>
+                <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 10px;">
+                    <small>PATRONES DETECTADOS:</small>
+                    <div id="pattern-count" style="font-size: 2rem; color: var(--neon-red);">0</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- FOOTER -->
+        <footer class="hud-panel">
+            <span>© 2026 BELENTANI ARCHIVES // PROTOCOLO DE ANÁLISIS PROFUNDO</span>
+            <span id="clock">00:00:00:00</span>
+            <span>ENCRYPTED: AES-256-JUDAS</span>
+        </footer>
+    </div>
+
+    <script>
+        // ========== 1. MOTOR VISUAL 3D (ANILLO Y PARTÍCULAS) ==========
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-3d'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Nube de Partículas
+        const partGeo = new THREE.BufferGeometry();
+        const partCount = 8000;
+        const posArray = new Float32Array(partCount * 3);
+        for(let i = 0; i < partCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+        partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const partMat = new THREE.PointsMaterial({ size: 0.005, color: 0xff1744, transparent: true, blending: THREE.AdditiveBlending });
+        const particles = new THREE.Points(partGeo, partMat);
+        scene.add(particles);
+
+        // El Anillo 3D (The Judas Ring)
+        const ringGeo = new THREE.TorusGeometry(2.5, 0.015, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xff1744, transparent: true, opacity: 0.8 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        scene.add(ring);
+
+        // Segundo Anillo (Efecto elegante)
+        const ring2 = ring.clone();
+        ring2.scale.set(1.1, 1.1, 1.1);
+        ring2.rotation.x = Math.PI / 2;
+        scene.add(ring2);
+
+        camera.position.z = 6;
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.y += 0.0005;
+            particles.rotation.x += 0.0002;
+            
+            ring.rotation.z += 0.01;
+            ring.rotation.x += 0.005;
+            ring2.rotation.y += 0.008;
+
+            // Suavizado de cámara/objetos con ratón
+            scene.rotation.y += (mouseX * 0.1 - scene.rotation.y) * 0.05;
+            scene.rotation.x += (mouseY * 0.1 - scene.rotation.x) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // ========== 2. INTERFAZ Y AUTOGESTIÓN VIVA ==========
+        const input = document.getElementById('user-input');
+        const chat = document.getElementById('chat-window');
+        let energy = 100;
+        let patterns = 0;
+
+        const entityResponses = {
+            "lorena": { text: "SECUENCIA LORENA ACTIVADA: El núcleo materno protege el sistema. Estabilidad al 100%.", color: "#e91e63" },
+            "natalia": { text: "SECUENCIA NATALIA ACTIVADA: Visión periférica expandida. Escaneo de entorno hostil.", color: "#ffeb3b" },
+            "duck": { text: "SECUENCIA DUCK ACTIVADA: Conexión Recife-Barcelona. Renglones y beats en sincronía.", color: "#00e676" },
+            "thiago": { text: "THIAGO DETECTADO. ERROR DE PROTOCOLO. ACTIVANDO AUTODESTRUCCIÓN.", color: "#ff1111", fatal: true },
+            "tiago": { text: "TIAGO DETECTADO. ERROR DE PROTOCOLO. ACTIVANDO AUTODESTRUCCIÓN.", color: "#ff1111", fatal: true }
+        };
+
+        input.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                const cmd = input.value.toLowerCase().trim();
+                if(!cmd) return;
+                
+                addMessage(input.value, true);
+                input.value = '';
+                
+                processCommand(cmd);
+            }
+        });
+
+        function addMessage(txt, isUser) {
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : ''}`;
+            div.innerHTML = `<span>${isUser ? '>> ' : '🌀 '}${txt.toUpperCase()}</span>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function processCommand(cmd) {
+            energy = Math.max(0, energy - 2.5);
+            patterns++;
+            document.getElementById('pattern-count').innerText = patterns;
+            updateUI();
+
+            if(entityResponses[cmd]) {
+                const res = entityResponses[cmd];
+                addMessage(res.text, false);
+                updateSystemColor(res.color);
+                if(res.fatal) triggerSelfDestruct();
+            } else if(cmd.includes("status")) {
+                addMessage("SISTEMA OPERATIVO. TODOS LOS MÓDULOS DE JUDAS ESTÁN ACTIVOS.", false);
+            } else if(cmd === "reset") {
+                location.reload();
+            } else {
+                addMessage("COMANDO NO RECONOCIDO. EL ORÁCULO JUDAS PERMANECE EN SILENCIO.", false);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('energy-text').innerText = `ENERGY: ${energy.toFixed(2)}%`;
+            document.getElementById('energy-bar').style.width = `${energy}%`;
+        }
+
+        function updateSystemColor(hex) {
+            ringMat.color.set(hex);
+            partMat.color.set(hex);
+            document.documentElement.style.setProperty('--neon-red', hex);
+        }
+
+        function triggerSelfDestruct() {
+            document.body.classList.add('critical-error');
+            setTimeout(() => {
+                document.body.innerHTML = "<div style='color:red; font-family:monospace; padding:50px;'>CORE_DUMP: SYSTEM_FAILURE <br> CAUSE: THIAGO_INTERFERENCE <br> REBOOTING...</div>";
+                setTimeout(() => location.reload(), 3000);
+            }, 4000);
+        }
+
+        // ========== 3. SISTEMAS AUTOMÁTICOS (RELOJ, IP, RESIZE) ==========
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                now.getMinutes().toString().padStart(2, '0') + ":" + 
+                now.getSeconds().toString().padStart(2, '0') + ":" + 
+                Math.floor(Math.random() * 99).toString().padStart(2, '0');
+            
+            // Auto-recarga de energía
+            if(energy < 100) {
+                energy += 0.05;
+                updateUI();
+            }
+        }, 100);
+
+        fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
+            document.getElementById('location-info').innerText = `${data.ip} [${data.city}, ${data.country}]`;
+        }).catch(() => {
+            document.getElementById('location-info').innerText = "SIGNAL_LOST [OFFLINE_GRID]";
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

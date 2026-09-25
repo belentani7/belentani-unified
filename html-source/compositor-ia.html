@@ -1,0 +1,982 @@
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-content">
+    <h2>⬡ EXPORTAR</h2>
+    <div class="btn-group" style="margin-bottom:15px">
+      <button class="btn btn-sm" onclick="exportMIDI()">⬡ MIDI (.mid)</button>
+      <button class="btn btn-sm" onclick="exportTXT()">⬡ TEXTO (.txt)</button>
+      <button class="btn btn-sm" onclick="exportJSON()">⬡ JSON</button>
+    </div>
+    <label>Vista previa:</label>
+    <textarea id="exportPreview" readonly></textarea>
+    <div class="btn-group">
+      <button class="btn btn-sm" onclick="copyExport()">⬡ COPIAR</button>
+      <button class="btn btn-sm" onclick="closeExport()">⬡ CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>⬡ COMPOSITOR IA</h1>
+  <p>BELENTANI // JUDAS EXPERIENCE // GENERATIVO</p>
+</header>
+
+<div class="grid">
+
+  <!-- CARD 1: Generador de Progresiones -->
+  <div class="card">
+    <div class="card-title"><span class="icon">♩</span> PROGRESIONES DE ACORDES</div>
+    <div class="row">
+      <div>
+        <label>Tonalidad</label>
+        <select id="keySelect">
+          <option value="C">C (Do Mayor)</option>
+          <option value="Db">Db (Reb Mayor)</option>
+          <option value="D">D (Re Mayor)</option>
+          <option value="Eb">Eb (Mib Mayor)</option>
+          <option value="E">E (Mi Mayor)</option>
+          <option value="F">F (Fa Mayor)</option>
+          <option value="F#">F# (Fa# Mayor)</option>
+          <option value="G">G (Sol Mayor)</option>
+          <option value="Ab">Ab (Lab Mayor)</option>
+          <option value="A">A (La Mayor)</option>
+          <option value="Bb">Bb (Sib Mayor)</option>
+          <option value="B">B (Si Mayor)</option>
+          <option value="Am">Am (Do Menor)</option>
+          <option value="Dm">Dm (Re Menor)</option>
+          <option value="Em">Em (Mi Menor)</option>
+          <option value="Gm">Gm (Sol Menor)</option>
+        </select>
+      </div>
+      <div>
+        <label>Estilo</label>
+        <select id="styleSelect">
+          <option value="classic">Clásico (I-IV-V-I)</option>
+          <option value="jazz">Jazz (ii-V-I)</option>
+          <option value="pop">Pop (I-V-vi-IV)</option>
+          <option value="rock">Rock (I-IV-V)</option>
+          <option value="blues">Blues (I-IV-V-IV-I-V)</option>
+          <option value="minor">Menor (i-iv-VII-III)</option>
+          <option value="ambient">Ambient (I-iii-IV-V)</option>
+          <option value="random">Aleatorio IA</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label># Acordes</label>
+        <select id="chordCount">
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8" selected>8</option>
+          <option value="12">12</option>
+          <option value="16">16</option>
+        </select>
+      </div>
+      <div>
+        <label>Compás</label>
+        <select id="timeSig">
+          <option value="4/4">4/4</option>
+          <option value="3/4">3/4</option>
+          <option value="6/8">6/8</option>
+          <option value="12/8">12/8</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-block" onclick="generateProgression()">⬡ GENERAR PROGRESIÓN</button>
+    <div class="output-box" id="progressionOutput">
+      <span class="label-top">PROGRESIÓN</span>
+      <div class="chord-display" id="chordDisplay">
+        <span style="color:#ff073a44;font-size:.8rem">Pulsa GENERAR para crear una progresión...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: Escala / Modo Sugerido -->
+  <div class="card">
+    <div class="card-title"><span class="icon">♮</span> ESCALA &amp; MODO SUGERIDO</div>
+    <div class="row">
+      <div>
+        <label>Tonalidad base</label>
+        <select id="scaleKey">
+          <option value="C">C</option><option value="Db">Db</option><option value="D">D</option>
+          <option value="Eb">Eb</option><option value="E">E</option><option value="F">F</option>
+          <option value="F#">F#</option><option value="G">G</option><option value="Ab">Ab</option>
+          <option value="A">A</option><option value="Bb">Bb</option><option value="B">B</option>
+        </select>
+      </div>
+      <div>
+        <label>Modo</label>
+        <select id="modeSelect">
+          <option value="ionian">Jónico (Mayor)</option>
+          <option value="dorian">Dórico</option>
+          <option value="phrygian">Frigio</option>
+          <option value="lydian">Lidio</option>
+          <option value="mixolydian">Mixolidio</option>
+          <option value="aeolian">Eólico (Menor)</option>
+          <option value="locrian">Locrio</option>
+          <option value="harmonic_minor">Menor Armónica</option>
+          <option value="melodic_minor">Menor Melódica</option>
+          <option value="pentatonic_major">Pentatónica Mayor</option>
+          <option value="pentatonic_minor">Pentatónica Menor</option>
+          <option value="blues">Blues</option>
+          <option value="whole_tone">Tono Entero</option>
+          <option value="diminished">Disminuida</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-block" onclick="suggestScale()">⬡ SUGERIR ESCALA</button>
+    <div class="output-box" id="scaleOutput">
+      <span class="label-top">ESCALA</span>
+      <div id="scaleInfo" style="color:#ff073a44;font-size:.8rem">Pulsa SUGERIR para obtener una escala...</div>
+      <div id="scaleNotes" class="chord-display" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- CARD 3: Estructura de Canción -->
+  <div class="card">
+    <div class="card-title"><span class="icon">≡</span> ESTRUCTURA DE CANCIÓN</div>
+    <div class="row">
+      <div>
+        <label>Género</label>
+        <select id="genreSelect">
+          <option value="pop">Pop</option>
+          <option value="rock">Rock</option>
+          <option value="electronic">Electrónica</option>
+          <option value="hiphop">Hip-Hop / Trap</option>
+          <option value="r&b">R&amp;B</option>
+          <option value="latin">Latino / Reguetón</option>
+          <option value="ballad">Balada</option>
+          <option value="jazz">Jazz</option>
+          <option value="experimental">Experimental</option>
+        </select>
+      </div>
+      <div>
+        <label>Duración (compases)</label>
+        <select id="durationSelect">
+          <option value="16">16 (corto)</option>
+          <option value="32" selected>32 (medio)</option>
+          <option value="48">48 (largo)</option>
+          <option value="64">64 (extendido)</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-block" onclick="generateStructure()">⬡ GENERAR ESTRUCTURA</button>
+    <div class="output-box" id="structureOutput">
+      <span class="label-top">ESTRUCTURA</span>
+      <div id="structureInfo" style="color:#ff073a44;font-size:.8rem">Pulsa GENERAR para crear una estructura...</div>
+      <div class="structure-bar" id="structureBar" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <!-- CARD 4: Piano Roll / Teclado -->
+  <div class="card fullwidth">
+    <div class="card-title"><span class="icon">♬</span> PIANO ROLL — VISUALIZADOR</div>
+    <div class="row">
+      <div style="flex:2">
+        <label>Acorde a visualizar</label>
+        <select id="vizChordSelect"></select>
+      </div>
+      <div style="flex:1">
+        <label>Octava</label>
+        <select id="octaveSelect">
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div style="flex:1;display:flex;align-items:flex-end">
+        <button class="btn btn-sm btn-block" onclick="playCurrentChord()">⬡ REPRODUCIR</button>
+      </div>
+    </div>
+    <div class="piano-roll" id="pianoRoll"></div>
+    <div class="status-bar">
+      <span id="statusChordName">—</span>
+      <span id="statusNoteNames">—</span>
+      <span id="statusInterval">—</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Botones globales -->
+<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+  <button class="btn" onclick="generateAll()" style="flex:2">⬡ GENERAR TODO (IA COMPOSITOR)</button>
+  <button class="btn" onclick="openExport()" style="flex:1">⬡ EXPORTAR</button>
+  <button class="btn" onclick="randomizeAll()" style="flex:1">⬡ ALEATORIZAR TODO</button>
+  <div class="tempo-control" style="flex:1;justify-content:flex-end">
+    <label style="margin:0;white-space:nowrap">BPM</label>
+    <input type="range" id="bpmSlider" min="40" max="200" value="120">
+    <span id="bpmDisplay" style="color:#ff073a;font-size:.8rem;min-width:30px">120</span>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:30px 0 10px;border-top:1px solid #ff073a22;margin-top:30px">
+  <p style="color:#ff073a44;font-size:.7rem;letter-spacing:2px">
+    ⬡ COMPOSITOR IA v1.0 // BELENTANI // JUDAS EXPERIENCE ⬡
+  </p>
+  <p style="color:#ff073a22;font-size:.6rem;margin-top:5px">
+    TODOS LOS DERECHOS RESERVADOS // GENERATIVO // NEON
+  </p>
+</footer>
+
+</div>
+
+<script>
+// ============================================================
+// TEORÍA MUSICAL
+// ============================================================
+const NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const CHORD_TYPES = {
+  '':   [0,4,7],        // Mayor
+  'm':  [0,3,7],        // menor
+  'dim':[0,3,6],        // disminuido
+  'aug':[0,4,8],        // aumentado
+  '7':  [0,4,7,10],     // dominante 7
+  'maj7':[0,4,7,11],   // mayor 7
+  'm7': [0,3,7,10],    // menor 7
+  'dim7':[0,3,6,9],    // disminuido 7
+  'm7b5':[0,3,6,10],   // semidisminuido
+  'sus4':[0,5,7],      // suspendido 4
+  'sus2':[0,2,7],      // suspendido 2
+  '6':  [0,4,7,9],     // sexta
+  'm6': [0,3,7,9],     // menor sexta
+  '9':  [0,4,7,10,14], // novena
+  'm9': [0,3,7,10,14], // menor novena
+};
+
+// Escalas (intervalos)
+const SCALES = {
+  ionian:         [0,2,4,5,7,9,11],
+  dorian:         [0,2,3,5,7,9,10],
+  phrygian:       [0,1,3,5,7,8,10],
+  lydian:         [0,2,4,6,7,9,11],
+  mixolydian:     [0,2,4,5,7,9,10],
+  aeolian:        [0,2,3,5,7,8,10],
+  locrian:        [0,1,3,5,6,8,10],
+  harmonic_minor: [0,2,3,5,7,8,11],
+  melodic_minor:  [0,2,3,5,7,9,11],
+  pentatonic_major:[0,2,4,7,9],
+  pentatonic_minor:[0,3,5,7,10],
+  blues:          [0,3,5,6,7,10],
+  whole_tone:     [0,2,4,6,8,10],
+  diminished:     [0,2,3,5,6,8,9,11],
+};
+
+const SCALE_NAMES = {
+  ionian:'Jónico (Mayor)', dorian:'Dórico', phrygian:'Frigio',
+  lydian:'Lidio', mixolydian:'Mixolidio', aeolian:'Eólico (Menor)',
+  locrian:'Locrio', harmonic_minor:'Menor Armónica', melodic_minor:'Menor Melódica',
+  pentatonic_major:'Pentatónica Mayor', pentatonic_minor:'Pentatónica Menor',
+  blues:'Blues', whole_tone:'Tono Entero', diminished:'Disminuida',
+};
+
+// Grados -> intervalos desde la tónica
+const DEGREE_INTERVALS_MAJOR = {
+  'I':0, 'II':2, 'III':4, 'IV':5, 'V':7, 'VI':9, 'VII':11,
+  'i':0, 'ii':2, 'iii':3, 'iv':5, 'v':7, 'vi':8, 'vii':10,
+};
+const DEGREE_INTERVALS_MINOR = {
+  'i':0, 'II':2, 'III':3, 'iv':5, 'v':7, 'VI':8, 'VII':10,
+  'I':0, 'ii':2, 'iii':3, 'IV':5, 'V':7, 'vi':8, 'vii':10,
+};
+
+function noteToIndex(note){
+  return NOTES.indexOf(note.replace(/[bm]/g,'').replace(/[0-9]/g,''));
+}
+function indexToNote(idx){return NOTES[((idx%12)+12)%12]}
+
+// ============================================================
+// PROGRESIONES
+// ============================================================
+const PROGRESSION_PATTERNS = {
+  classic: ['I','IV','V','I'],
+  jazz:    ['ii','V','I','vi','ii','V','I','I'],
+  pop:     ['I','V','vi','IV','I','V','vi','IV'],
+  rock:    ['I','IV','V','IV','I','IV','V','I'],
+  blues:   ['I','IV','V','IV','I','V','I','I'],
+  minor:   ['i','iv','VII','III','VI','ii','V','i'],
+  ambient: ['I','iii','IV','V','I','iii','IV','V'],
+};
+
+function generateProgression(){
+  const keyRaw = document.getElementById('keySelect').value;
+  const style = document.getElementById('styleSelect').value;
+  const count = parseInt(document.getElementById('chordCount').value);
+
+  const isMinor = keyRaw.endsWith('m');
+  const key = keyRaw.replace('m','');
+  const keyIdx = noteToIndex(key);
+
+  let degrees;
+  if(style === 'random'){
+    const allDegrees = isMinor
+      ? ['i','II','III','iv','v','VI','VII','VII']
+      : ['I','ii','iii','IV','V','vi','vii'];
+    degrees = [];
+    for(let i=0;i<count;i++){
+      degrees.push(allDegrees[Math.floor(Math.random()*allDegrees.length)]);
+      // Empieza y termina con tónica si es posible
+      if(i===0) degrees[i]=isMinor?'i':'I';
+    }
+    degrees[degrees.length-1]=isMinor?'i':'I';
+  } else {
+    const pattern = PROGRESSION_PATTERNS[style] || PROGRESSION_PATTERNS.classic;
+    degrees = [];
+    for(let i=0;i<count;i++){
+      degrees.push(pattern[i%pattern.length]);
+    }
+  }
+
+  const degInts = isMinor ? DEGREE_INTERVALS_MINOR : DEGREE_INTERVALS_MAJOR;
+  const chords = degrees.map(deg => {
+    const interval = degInts[deg] || 0;
+    const baseIdx = (keyIdx + interval) % 12;
+    const baseNote = NOTES[baseIdx];
+    let suffix = '';
+    if(deg === deg.toUpperCase() && deg !== deg.toLowerCase()){
+      // Mayor
+      if(deg==='VII' && !isMinor) suffix='dim';
+      else if(deg==='vii' && isMinor) suffix='dim';
+      else suffix='';
+    } else if(deg === deg.toLowerCase() && deg !== deg.toUpperCase()){
+      suffix='m';
+    }
+    // Ajustes por estilo
+    if(deg==='V' && isMinor) suffix='7';
+    if(deg==='VII' && isMinor) suffix='7';
+    if(deg==='II' && isMinor) suffix='7';
+
+    let chordType = CHORD_TYPES[suffix] || CHORD_TYPES[''];
+    return {note:baseNote, suffix, full:baseNote+suffix, degree:deg, type:chordType};
+  });
+
+  window.currentProgression = chords;
+  renderChords(chords);
+  updateVizSelect(chords);
+  showToast('⬡ PROGRESIÓN GENERADA • '+style.toUpperCase());
+}
+
+function renderChords(chords){
+  const display = document.getElementById('chordDisplay');
+  display.innerHTML = chords.map((c,i)=>`
+    <span class="chord-tag" onclick="highlightChord(${i})" data-idx="${i}">
+      ${c.full}
+      <span style="font-size:.55rem;opacity:.5;display:block;text-align:center">${c.degree}</span>
+    </span>
+  `).join('');
+  // Mostrar también como texto roman numeral
+  const out = document.getElementById('progressionOutput');
+  const label = out.querySelector('.label-top');
+  // También mostrar en formato texto
+}
+
+function highlightChord(idx){
+  document.querySelectorAll('.chord-tag').forEach(el=>el.classList.remove('active'));
+  const el = document.querySelector(`.chord-tag[data-idx="${idx}"]`);
+  if(el) el.classList.add('active');
+  if(window.currentProgression && window.currentProgression[idx]){
+    visualizeChord(window.currentProgression[idx], document.getElementById('octaveSelect').value);
+  }
+}
+
+function updateVizSelect(chords){
+  const sel = document.getElementById('vizChordSelect');
+  sel.innerHTML = chords.map((c,i)=>`<option value="${i}">${c.full} (${c.degree})</option>`).join('');
+  sel.onchange = ()=>{
+    const idx = parseInt(sel.value);
+    highlightChord(idx);
+  };
+  if(chords.length) visualizeChord(chords[0], document.getElementById('octaveSelect').value);
+}
+
+// ============================================================
+// ESCALAS
+// ============================================================
+function suggestScale(){
+  const key = document.getElementById('scaleKey').value;
+  const mode = document.getElementById('modeSelect').value;
+  const keyIdx = noteToIndex(key);
+  const intervals = SCALES[mode] || SCALES.ionian;
+
+  const notes = intervals.map(inter=>indexToNote(keyIdx+inter));
+  const uniqueNotes = [...new Set(notes)];
+
+  document.getElementById('scaleInfo').innerHTML = `
+    <span style="color:#ff073a;font-size:.9rem">${key} ${SCALE_NAMES[mode]||mode}</span>
+    <span style="color:#ff073a44;font-size:.7rem;display:block;margin-top:4px">
+      ${notes.length} notas • Característica: ${getScaleCharacter(mode)}
+    </span>
+  `;
+  const display = document.getElementById('scaleNotes');
+  display.innerHTML = uniqueNotes.map(n=>`<span class="chord-tag">${n}</span>`).join('');
+  showToast('⬡ ESCALA SUGERIDA • '+key+' '+SCALE_NAMES[mode]);
+}
+
+function getScaleCharacter(mode){
+  const chars = {
+    ionian:'Estable, alegre, fundamental',
+    dorian:'Jazzy, melancólica, versátil',
+    phrygian:'Oscura, española, exótica',
+    lydian:'Soñadora, elevada, flotante',
+    mixolydian:'Bluesera, rockera, relajada',
+    aeolian:'Triste, dramática, emocional',
+    locrian:'Inestable, tensa, disonante',
+    harmonic_minor:'Exótica, clásica, dramática',
+    melodic_minor:'Jazzística, ascendente, sofisticada',
+    pentatonic_major:'Popular, alegre, simple',
+    pentatonic_minor:'Blues, rock, melancólica',
+    blues:'Expresiva, soul, callejera',
+    whole_tone:'Onírica, impresionista, ambigua',
+    diminished:'Tensa, cinematográfica, misteriosa',
+  };
+  return chars[mode]||'—';
+}
+
+// ============================================================
+// ESTRUCTURA
+// ============================================================
+const STRUCTURE_TEMPLATES = {
+  pop:     {parts:['intro','verso','coro','verso','coro','puente','coro','outro'], weights:{intro:2,verso:4,coro:4,puente:4,outro:2}},
+  rock:    {parts:['intro','verso','coro','verso','coro','solo','coro','outro'], weights:{intro:2,verso:4,coro:4,solo:4,outro:2}},
+  electronic:{parts:['intro','build','drop','break','build','drop','outro'], weights:{intro:4,build:4,drop:4,break:2,outro:4}},
+  hiphop:  {parts:['intro','verso','hook','verso','hook','puente','hook','outro'], weights:{intro:2,verso:4,hook:4,puente:4,outro:2}},
+  'r&b':   {parts:['intro','verso','pre-coro','coro','verso','pre-coro','coro','outro'], weights:{intro:2,verso:4,'pre-coro':2,coro:4,outro:2}},
+  latin:   {parts:['intro','verso','coro','verso','coro','puente','coro','outro'], weights:{intro:2,verso:4,coro:4,puente:4,outro:2}},
+  ballad:  {parts:['intro','verso','coro','verso','coro','puente','coro','outro'], weights:{intro:2,verso:4,coro:4,puente:4,outro:4}},
+  jazz:    {parts:['intro','tema','tema','impro','tema','outro'], weights:{intro:2,tema:4,impro:4,outro:2}},
+  experimental:{parts:['intro','seccion-a','seccion-b','seccion-c','seccion-a','seccion-d','outro'], weights:{intro:2,'seccion-a':4,'seccion-b':4,'seccion-c':4,'seccion-d':4,outro:2}},
+};
+
+function generateStructure(){
+  const genre = document.getElementById('genreSelect').value;
+  const totalBars = parseInt(document.getElementById('durationSelect').value);
+  const template = STRUCTURE_TEMPLATES[genre] || STRUCTURE_TEMPLATES.pop;
+
+  // Distribuir compases entre partes
+  const parts = template.parts;
+  const weights = template.weights;
+  let totalWeight = parts.reduce((s,p)=>s+(weights[p]||4),0);
+  let assigned = 0;
+  const segments = parts.map((part,i)=>{
+    const w = weights[part]||4;
+    const bars = i===parts.length-1
+      ? totalBars - assigned
+      : Math.round((w/totalWeight)*totalBars);
+    assigned += bars;
+    return {part, bars:Math.max(bars,1)};
+  });
+
+  window.currentStructure = segments;
+
+  const info = document.getElementById('structureInfo');
+  info.innerHTML = `<span style="color:#ff073a;font-size:.9rem">${genre.toUpperCase()} • ${totalBars} compases</span>`;
+
+  const bar = document.getElementById('structureBar');
+  bar.innerHTML = segments.map(s=>{
+    const cls = s.part.replace(/[^a-zA-Z0-9-]/g,'');
+    const label = s.part.toUpperCase();
+    return `<div class="structure-segment ${cls}" title="${s.bars} compases">
+      ${label} <span style="opacity:.5;font-size:.6rem">${s.bars}</span>
+    </div>`;
+  }).join('');
+
+  // Texto descriptivo
+  const desc = segments.map(s=>`${s.part.toUpperCase()} (${s.bars} comp.)`).join(' → ');
+  info.innerHTML += `<span style="display:block;color:#ff073a66;font-size:.7rem;margin-top:6px">${desc}</span>`;
+  showToast('⬡ ESTRUCTURA GENERADA • '+genre.toUpperCase());
+}
+
+// ============================================================
+// PIANO ROLL
+// ============================================================
+function visualizeChord(chord, octave){
+  if(!chord) return;
+  const oct = parseInt(octave) || 3;
+  const rootIdx = noteToIndex(chord.note);
+  const intervals = chord.type || CHORD_TYPES[chord.suffix] || CHORD_TYPES[''];
+
+  // Build the notes
+  const noteIndices = intervals.map(inter=>{
+    const noteIdx = (rootIdx + inter) % 12;
+    const noteOct = oct + Math.floor((rootIdx + inter) / 12);
+    return {idx:noteIdx, oct:noteOct, note:NOTES[noteIdx], full:NOTES[noteIdx]+noteOct};
+  });
+
+  renderPianoRoll(noteIndices, chord.full);
+  updateStatus(chord, noteIndices);
+}
+
+function renderPianoRoll(activeNotes, chordName){
+  const container = document.getElementById('pianoRoll');
+  const whiteKeys = ['C','D','E','F','G','A','B'];
+  const blackKeys = ['C#','D#','F#','G#','A#'];
+  const whiteCount = 14; // 2 octavas
+  const blackCount = 10;
+
+  const keyWidth = 36;
+  const keyHeight = 120;
+  const blackWidth = 22;
+  const blackHeight = 72;
+  const margin = 20;
+
+  const svgWidth = whiteCount * keyWidth + margin*2;
+  const svgHeight = keyHeight + 80; // extra space for roll
+
+  let svg = `<svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Draw white keys
+  let whiteIdx = 0;
+  const noteToPos = {};
+  const startNote = 24; // C2
+  for(let i=0;i<whiteCount*2;i++){
+    const noteNum = startNote + i;
+    const noteName = NOTES[noteNum % 12];
+    if(noteName.includes('#')) continue;
+    const x = margin + whiteIdx * keyWidth;
+    const isActive = activeNotes.some(n=>n.note===noteName && Math.floor(noteNum/12)===n.oct);
+    // Check if note is in active notes (consider octave)
+    const act = activeNotes.some(n=>{
+      const absIdx = n.oct*12 + NOTES.indexOf(n.note);
+      return absIdx === noteNum;
+    });
+    svg += `<rect class="piano-key white${act?' active':''}" x="${x}" y="10" width="${keyWidth-1}" height="${keyHeight}" rx="2" data-note="${noteName}" data-note-num="${noteNum}"/>`;
+    if(whiteIdx%7===0){
+      svg += `<text class="note-label" x="${x+keyWidth/2}" y="${keyHeight+25}">${noteName}${Math.floor(noteNum/12)}</text>`;
+    }
+    noteToPos[noteNum] = {x, w:keyWidth-1, y:10, h:keyHeight};
+    whiteIdx++;
+  }
+
+  // Draw black keys
+  let blackIdx = 0;
+  const blackOffsets = {'C#':0,'D#':1,'F#':3,'G#':4,'A#':5};
+  for(let i=0;i<whiteCount*2;i++){
+    const noteNum = startNote + i;
+    const noteName = NOTES[noteNum % 12];
+    if(!noteName.includes('#')) continue;
+    // Find position: after the previous white key
+    const prevWhite = NOTES[(noteNum-1) % 12];
+    // Calculate which white key this black key belongs to
+    let whitePos = 0;
+    let wIdx = startNote;
+    for(let j=0;j<whiteCount*2;j++){
+      const wn = NOTES[wIdx%12];
+      if(!wn.includes('#')){
+        if(wn === prevWhite){
+          whitePos = j;
+          break;
+        }
+        whitePos++;
+      }
+      wIdx++;
+    }
+    // Actually calculate properly
+    let whiteBefore = 0;
+    for(let n=startNote; n<noteNum; n++){
+      if(!NOTES[n%12].includes('#')) whiteBefore++;
+    }
+    const x = margin + whiteBefore * keyWidth - blackWidth/2;
+    const isActive = activeNotes.some(n=>n.note===noteName);
+    const act = activeNotes.some(n=>{
+      const absIdx = n.oct*12 + NOTES.indexOf(n.note);
+      return absIdx === noteNum;
+    });
+    svg += `<rect class="piano-key black${act?' active':''}" x="${x}" y="10" width="${blackWidth}" height="${blackHeight}" rx="2" data-note="${noteName}" data-note-num="${noteNum}"/>`;
+    noteToPos[noteNum] = {x, w:blackWidth, y:10, h:blackHeight};
+    blackIdx++;
+  }
+
+  // Piano roll section: draw active notes on a horizontal grid
+  const rollY = keyHeight + 40;
+  const rollHeight = 60;
+  const rollNoteNames = ['C','D','E','F','G','A','B'];
+  const cellH = rollHeight / 7;
+
+  // Background grid lines
+  rollNoteNames.forEach((name,i)=>{
+    const y = rollY + i * cellH;
+    svg += `<line x1="${margin}" y1="${y}" x2="${margin+whiteCount*keyWidth}" y2="${y}" stroke="#ff073a11" stroke-width=".5"/>`;
+    svg += `<text x="${margin-5}" y="${y+cellH/2+3}" fill="#ff073a44" font-size="7" font-family="'Share Tech Mono',monospace" text-anchor="end">${name}</text>`;
+  });
+
+  // Draw active notes on the roll
+  activeNotes.forEach(n=>{
+    const whiteIdx = rollNoteNames.indexOf(n.note);
+    if(whiteIdx===-1) return;
+    const y = rollY + whiteIdx * cellH + 2;
+    // Find the position on the keyboard
+    const noteNum = n.oct*12 + NOTES.indexOf(n.note);
+    const pos = noteToPos[noteNum] || noteToPos[n.oct*12+NOTES.indexOf(n.note)];
+    if(!pos) return;
+    const x = pos.x;
+    const w = pos.w;
+    svg += `<rect class="roll-note active" x="${x}" y="${y}" width="${w}" height="${cellH-4}" rx="3"/>`;
+    svg += `<text x="${x+w/2}" y="${y+cellH/2+3}" fill="#000" font-size="7" font-family="'Share Tech Mono',monospace" text-anchor="middle">${n.full}</text>`;
+  });
+
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+function updateStatus(chord, noteIndices){
+  document.getElementById('statusChordName').textContent = `ACORDE: ${chord.full}`;
+  document.getElementById('statusNoteNames').textContent = `NOTAS: ${noteIndices.map(n=>n.full).join(' • ')}`;
+  const root = noteIndices[0]?.full || '—';
+  document.getElementById('statusInterval').textContent = `FUNDAMENTAL: ${root}`;
+}
+
+// ============================================================
+// REPRODUCCIÓN (Web Audio API)
+// ============================================================
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playNote(freq, duration, time){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(freq, time);
+  gain.gain.setValueAtTime(0.2, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(time);
+  osc.stop(time + duration);
+}
+
+function freqFromNote(noteName, octave){
+  const noteIdx = NOTES.indexOf(noteName);
+  if(noteIdx===-1) return 440;
+  const semitone = noteIdx + (parseInt(octave)||3)*12;
+  return 440 * Math.pow(2, (semitone-69)/12);
+}
+
+function playCurrentChord(){
+  const sel = document.getElementById('vizChordSelect');
+  const idx = parseInt(sel.value);
+  if(!window.currentProgression || !window.currentProgression[idx]){
+    showToast('⬡ Genera una progresión primero');
+    return;
+  }
+  const chord = window.currentProgression[idx];
+  const oct = parseInt(document.getElementById('octaveSelect').value);
+  const intervals = chord.type || CHORD_TYPES[chord.suffix] || CHORD_TYPES[''];
+  const rootIdx = noteToIndex(chord.note);
+  const bpm = parseInt(document.getElementById('bpmSlider').value);
+  const duration = 60 / bpm * 2;
+
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+
+  intervals.forEach((inter,i)=>{
+    const noteIdx = (rootIdx + inter) % 12;
+    const noteOct = oct + Math.floor((rootIdx + inter) / 12);
+    const noteName = NOTES[noteIdx];
+    const freq = freqFromNote(noteName, noteOct);
+    playNote(freq, duration, now + i*0.05);
+  });
+
+  showToast(`⬡ REPRODUCIENDO: ${chord.full}`);
+}
+
+// ============================================================
+// EXPORTACIÓN
+// ============================================================
+function openExport(){
+  const modal = document.getElementById('exportModal');
+  modal.classList.add('show');
+  const preview = document.getElementById('exportPreview');
+  preview.value = buildExportText();
+}
+
+function closeExport(){
+  document.getElementById('exportModal').classList.remove('show');
+}
+
+function copyExport(){
+  const preview = document.getElementById('exportPreview');
+  navigator.clipboard.writeText(preview.value).then(()=>{
+    showToast('⬡ COPIADO AL PORTAPAPELES');
+  });
+}
+
+function buildExportText(){
+  let txt = '╔══════════════════════════════════════╗\n';
+  txt += '║  COMPOSITOR IA — BELENTANI            ║\n';
+  txt += '║  JUDAS EXPERIENCE                      ║\n';
+  txt += '╚══════════════════════════════════════╝\n\n';
+
+  // Progresión
+  txt += '▶ PROGRESIÓN DE ACORDES\n';
+  if(window.currentProgression){
+    txt += '  ' + window.currentProgression.map(c=>c.full).join('  |  ') + '\n';
+    txt += '  ' + window.currentProgression.map(c=>c.degree).join('    ') + '\n';
+  } else {
+    txt += '  (no generada)\n';
+  }
+
+  // Escala
+  txt += '\n▶ ESCALA / MODO\n';
+  const key = document.getElementById('scaleKey').value;
+  const mode = document.getElementById('modeSelect').value;
+  txt += `  ${key} ${SCALE_NAMES[mode]||mode}\n`;
+
+  // Estructura
+  txt += '\n▶ ESTRUCTURA\n';
+  if(window.currentStructure){
+    txt += '  ' + window.currentStructure.map(s=>`${s.part.toUpperCase()}(${s.bars}comp)`).join(' → ') + '\n';
+  } else {
+    txt += '  (no generada)\n';
+  }
+
+  // Config
+  txt += '\n▶ CONFIGURACIÓN\n';
+  txt += `  Tonalidad: ${document.getElementById('keySelect').value}\n`;
+  txt += `  Estilo: ${document.getElementById('styleSelect').value}\n`;
+  txt += `  Compás: ${document.getElementById('timeSig').value}\n`;
+  txt += `  BPM: ${document.getElementById('bpmSlider').value}\n`;
+  txt += `  Género: ${document.getElementById('genreSelect').value}\n`;
+
+  txt += '\n╔══════════════════════════════════════╗\n';
+  txt += '║  GENERADO POR COMPOSITOR IA v1.0    ║\n';
+  txt += '╚══════════════════════════════════════╝\n';
+  return txt;
+}
+
+// ============================================================
+// EXPORT MIDI REAL
+// ============================================================
+function exportMIDI(){
+  if(!window.currentProgression || window.currentProgression.length===0){
+    showToast('⬡ Genera una progresión primero');
+    return;
+  }
+
+  const bpm = parseInt(document.getElementById('bpmSlider').value);
+  const ticksPerBeat = 480;
+  const ticksPerChord = ticksPerBeat * 2; // 2 beats per chord
+
+  // Build MIDI bytes
+  const notes = [];
+  window.currentProgression.forEach((chord, ci)=>{
+    const oct = 3;
+    const rootIdx = noteToIndex(chord.note);
+    const intervals = chord.type || CHORD_TYPES[chord.suffix] || CHORD_TYPES[''];
+    intervals.forEach((inter,i)=>{
+      const absNote = rootIdx + inter + oct*12;
+      const startTick = ci * ticksPerChord;
+      const durTick = ticksPerChord - 10;
+      notes.push({note:absNote, startTick, durTick, channel:0});
+    });
+  });
+
+  const midiBytes = buildMIDI(notes, bpm, ticksPerBeat);
+  const blob = new Blob([midiBytes], {type:'audio/midi'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'compositor-ia-progresion.mid';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬡ MIDI EXPORTADO');
+}
+
+function buildMIDI(notes, bpm, tpb){
+  // MIDI file format
+  const trackEvents = [];
+  // Tempo event
+  const microsecPerBeat = Math.round(60000000 / bpm);
+  trackEvents.push({delta:0, data:[0xFF,0x51,0x03,
+    (microsecPerBeat>>16)&0xFF, (microsecPerBeat>>8)&0xFF, microsecPerBeat&0xFF]});
+  // Track name
+  const nameBytes = [0xFF,0x03];
+  const name = 'COMPOSITOR IA';
+  nameBytes.push(name.length);
+  for(let i=0;i<name.length;i++) nameBytes.push(name.charCodeAt(i));
+  trackEvents.push({delta:0, data:nameBytes});
+
+  // Sort notes by start time
+  notes.sort((a,b)=>a.startTick-b.startTick);
+  // Generate note on/off events
+  const noteEvents = [];
+  notes.forEach(n=>{
+    noteEvents.push({delta:n.startTick, data:[0x90|n.channel, n.note, 100], absTick:n.startTick});
+    noteEvents.push({delta:n.startTick+n.durTick, data:[0x80|n.channel, n.note, 0], absTick:n.startTick+n.durTick});
+  });
+  noteEvents.sort((a,b)=>a.absTick-b.absTick);
+
+  // Convert to delta time
+  let lastTick = 0;
+  noteEvents.forEach(e=>{
+    e.delta = e.absTick - lastTick;
+    lastTick = e.absTick;
+  });
+
+  trackEvents.push(...noteEvents);
+
+  // End of track
+  trackEvents.push({delta:0, data:[0xFF,0x2F,0x00]});
+
+  // Build track data
+  const trackData = [];
+  trackEvents.forEach(e=>{
+    trackData.push(...writeVarLen(e.delta), ...e.data);
+  });
+
+  // MIDI header
+  const header = [
+    0x4D,0x54,0x68,0x64, // MThd
+    0x00,0x00,0x00,0x06, // header length
+    0x00,0x00,            // format 0
+    0x00,0x01,            // 1 track
+    (tpb>>8)&0xFF, tpb&0xFF // ticks per beat
+  ];
+
+  // Track chunk
+  const trackChunk = [
+    0x4D,0x54,0x72,0x6B, // MTrk
+    (trackData.length>>24)&0xFF,
+    (trackData.length>>16)&0xFF,
+    (trackData.length>>8)&0xFF,
+    trackData.length&0xFF,
+    ...trackData
+  ];
+
+  const full = new Uint8Array([...header, ...trackChunk]);
+  return full.buffer;
+}
+
+function writeVarLen(value){
+  const bytes = [];
+  if(value === 0) return [0];
+  while(value > 0){
+    bytes.unshift(value & 0x7F);
+    value >>= 7;
+  }
+  for(let i=0;i<bytes.length-1;i++) bytes[i] |= 0x80;
+  return bytes;
+}
+
+// ============================================================
+// EXPORT TXT
+// ============================================================
+function exportTXT(){
+  const text = buildExportText();
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'compositor-ia-composicion.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  const preview = document.getElementById('exportPreview');
+  preview.value = text;
+  showToast('⬡ TEXTO EXPORTADO');
+}
+
+function exportJSON(){
+  const data = {
+    composer: 'COMPOSITOR IA v1.0',
+    artist: 'BELENTANI',
+    project: 'JUDAS EXPERIENCE',
+    timestamp: new Date().toISOString(),
+    config: {
+      key: document.getElementById('keySelect').value,
+      style: document.getElementById('styleSelect').value,
+      timeSig: document.getElementById('timeSig').value,
+      bpm: parseInt(document.getElementById('bpmSlider').value),
+      genre: document.getElementById('genreSelect').value,
+    },
+    progression: window.currentProgression?.map(c=>({chord:c.full, degree:c.degree})) || [],
+    structure: window.currentStructure?.map(s=>({part:s.part, bars:s.bars})) || [],
+    scale: {
+      key: document.getElementById('scaleKey').value,
+      mode: document.getElementById('modeSelect').value,
+    },
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'compositor-ia.json';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  const preview = document.getElementById('exportPreview');
+  preview.value = json;
+  showToast('⬡ JSON EXPORTADO');
+}
+
+// ============================================================
+// ACCIONES GLOBALES
+// ============================================================
+function generateAll(){
+  generateProgression();
+  suggestScale();
+  generateStructure();
+  showToast('⬡ COMPOSICIÓN COMPLETA GENERADA');
+}
+
+function randomizeAll(){
+  // Random key
+  const keys = ['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B','Am','Dm','Em','Gm'];
+  document.getElementById('keySelect').value = keys[Math.floor(Math.random()*keys.length)];
+  // Random style
+  const styles = ['classic','jazz','pop','rock','blues','minor','ambient','random'];
+  document.getElementById('styleSelect').value = styles[Math.floor(Math.random()*styles.length)];
+  // Random genre
+  const genres = ['pop','rock','electronic','hiphop','r&b','latin','ballad','jazz','experimental'];
+  document.getElementById('genreSelect').value = genres[Math.floor(Math.random()*genres.length)];
+  // Random scale mode
+  const modes = Object.keys(SCALES);
+  document.getElementById('modeSelect').value = modes[Math.floor(Math.random()*modes.length)];
+  // Random BPM
+  const bpm = 60 + Math.floor(Math.random()*100);
+  document.getElementById('bpmSlider').value = bpm;
+  document.getElementById('bpmDisplay').textContent = bpm;
+
+  generateAll();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._hide);
+  el._hide = setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// BPM SLIDER
+// ============================================================
+document.addEventListener('DOMContentLoaded',()=>{
+  const slider = document.getElementById('bpmSlider');
+  const display = document.getElementById('bpmDisplay');
+  slider.addEventListener('input',()=>{
+    display.textContent = slider.value;
+  });
+
+  // Init
+  generateProgression();
+  suggestScale();
+  generateStructure();
+});
+</script>
+</body>
+</html>

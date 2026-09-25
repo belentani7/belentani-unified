@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI — Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --bg2: #0f0f0f;
+  --bg3: #161616;
+  --border: #1e1e1e;
+  --border2: #2a2a2a;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --text: #d4d4d4;
+  --dim: #555;
+  --green: #3ecf8e;
+  --red: #e05c5c;
+  --purple: #8b6ff5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+/* LAYOUT */
+.shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 0;
+  position: sticky; top: 0; height: 100vh;
+}
+.logo-area {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 0.12em;
+  color: var(--gold);
+  line-height: 1;
+}
+.logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: 0.25em; text-transform: uppercase;
+  margin-top: 4px;
+}
+.nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 6px;
+  font-size: 13px; color: var(--dim);
+  cursor: pointer; border: none; background: none;
+  text-align: left; width: 100%;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: var(--bg3); color: var(--gold); border-left: 2px solid var(--gold); padding-left: 10px; }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-section { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--border2); letter-spacing: 0.2em; text-transform: uppercase; padding: 16px 12px 6px; }
+
+.status-bar {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim);
+}
+.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* MAIN */
+.main { overflow-y: auto; }
+.page { display: none; padding: 36px 40px; }
+.page.active { display: block; }
+
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px; letter-spacing: 0.08em;
+  color: var(--gold); line-height: 1;
+  margin-bottom: 4px;
+}
+.page-sub { font-size: 13px; color: var(--dim); margin-bottom: 32px; }
+
+/* CARDS */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px;
+}
+.card-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+.card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.card-desc { font-size: 12px; color: var(--dim); line-height: 1.6; }
+
+/* STEPS */
+.step {
+  display: flex; gap: 16px;
+  padding: 18px 20px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 10px;
+  cursor: pointer; transition: border-color 0.15s;
+}
+.step:hover { border-color: var(--border2); }
+.step.done { border-color: var(--green); opacity: 0.6; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--dim);
+  flex-shrink: 0;
+}
+.step.done .step-num { background: var(--green); color: #000; border-color: var(--green); }
+.step-body { flex: 1; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.step-time { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); }
+.step-detail { display: none; margin-top: 12px; }
+.step.open .step-detail { display: block; }
+.step-list { list-style: none; padding: 0; }
+.step-list li { font-size: 12px; color: var(--dim); padding: 3px 0; padding-left: 14px; position: relative; }
+.step-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); }
+
+/* CMD */
+.cmd-block {
+  background: #000; border: 1px solid var(--border2);
+  border-radius: 6px; padding: 12px 14px; margin-top: 10px;
+  font-family: 'DM Mono', monospace; font-size: 12px; color: var(--green);
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+  white-space: pre-wrap; word-break: break-all;
+}
+.copy-btn {
+  background: var(--border); border: none; color: var(--dim);
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 4px 8px; border-radius: 4px; cursor: pointer;
+  flex-shrink: 0; transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--gold); color: #000; }
+
+/* TAG */
+.tag {
+  display: inline-block; font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 7px; border-radius: 3px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--border2); color: var(--dim);
+  margin-left: 8px;
+}
+.tag.free { border-color: var(--green); color: var(--green); }
+.tag.local { border-color: var(--purple); color: var(--purple); }
+.tag.gpu { border-color: var(--red); color: var(--red); }
+.tag.key { border-color: var(--gold); color: var(--gold); }
+
+/* TOOLS */
+.tool-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: 8px;
+  text-decoration: none; color: inherit;
+  transition: border-color 0.15s;
+}
+.tool-row:hover { border-color: var(--border2); }
+.tool-icon { font-size: 18px; width: 28px; text-align: center; }
+.tool-info { flex: 1; }
+.tool-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.tool-desc { font-size: 11px; color: var(--dim); margin-top: 2px; }
+.tool-cat { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--dim); width: 52px; }
+
+/* AGENT */
+.agent-chat {
+  background: #000; border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 16px;
+}
+.agent-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+}
+.agent-orb {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); animation: blink 2s infinite;
+}
+.agent-name { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+.agent-model { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); margin-left: auto; }
+.chat-body { padding: 16px; min-height: 200px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 85%; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.msg.user { align-self: flex-end; background: var(--bg3); border: 1px solid var(--border2); }
+.msg.agent { align-self: flex-start; background: var(--bg2); border: 1px solid var(--border); color: var(--text); }
+.msg.thinking { color: var(--dim); font-family: 'DM Mono', monospace; font-size: 11px; border-style: dashed; }
+.msg pre { font-family: 'DM Mono', monospace; font-size: 11px; background: #000; padding: 8px; border-radius: 4px; margin-top: 6px; overflow-x: auto; white-space: pre-wrap; }
+.chat-input-area { border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 10px; }
+#chat-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  padding: 9px 12px; border-radius: 6px; outline: none; resize: none;
+  min-height: 38px; max-height: 120px;
+}
+#chat-input:focus { border-color: var(--gold); }
+#chat-input::placeholder { color: var(--dim); }
+.send-btn {
+  background: var(--gold); color: #000; border: none;
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 9px 16px; border-radius: 6px; cursor: pointer;
+  font-weight: 500;
+}
+.send-btn:hover { background: var(--gold2); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.preset-btn {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 5px 12px; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--dim); cursor: pointer;
+  transition: all 0.15s;
+}
+.preset-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* CODE OUTPUT */
+.code-out {
+  background: #000; border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px;
+  font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--green);
+  max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+  display: none; margin-top: 12px;
+}
+.code-out.visible { display: block; }
+.output-actions { display: flex; gap: 8px; margin-top: 10px; display: none; }
+.output-actions.visible { display: flex; }
+.out-btn {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 6px 14px; border-radius: 5px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); cursor: pointer;
+}
+.out-btn:hover { border-color: var(--gold); color: var(--gold); }
+.out-btn.primary { background: var(--gold); color: #000; border-color: var(--gold); }
+.out-btn.primary:hover { background: var(--gold2); }
+
+/* DIVIDER */
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase;
+  margin: 28px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; }
+  .logo-area { border-bottom: none; padding: 16px; }
+  .nav { flex-direction: row; flex-wrap: wrap; padding: 8px; }
+  .page { padding: 20px 16px; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-area">
+    <div class="logo">BELENTANI</div>
+    <div class="logo-sub">agent control · v1</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">inicio</div>
+    <button class="nav-item active" onclick="go('start')"><span class="nav-icon">⚡</span> Start Here</button>
+    <button class="nav-item" onclick="go('agent')"><span class="nav-icon">🤖</span> Agente IA</button>
+
+    <div class="nav-section">recursos</div>
+    <button class="nav-item" onclick="go('tools')"><span class="nav-icon">🛠</span> Herramientas</button>
+    <button class="nav-item" onclick="go('commands')"><span class="nav-icon">⌨️</span> Comandos</button>
+    <button class="nav-item" onclick="go('setup')"><span class="nav-icon">📦</span> Setup Guía</button>
+  </nav>
+  <div class="status-bar">
+    <span class="status-dot"></span>sistema activo
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ===== START HERE ===== -->
+  <div id="page-start" class="page active">
+    <div class="page-title">START HERE</div>
+    <div class="page-sub">Tu base de operaciones. Todo desde cero.</div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-label">agente</div>
+        <div class="card-title">🤖 Agente IA</div>
+        <div class="card-desc">Da una idea. El agente genera la web completa. Copia y abre.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">stack</div>
+        <div class="card-title">🔑 OpenRouter</div>
+        <div class="card-desc">openrouter.ai/keys — gratis. Qwen3, DeepSeek, Llama3 sin coste.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">agente local</div>
+        <div class="card-title">💻 OpenCode</div>
+        <div class="card-desc">Terminal → opencode. Escribe tu idea. Él construye los archivos.</div>
+      </div>
+    </div>
+
+    <div class="section-label">cómo correr una app (desde cero)</div>
+
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Abrir PowerShell <span class="tag key">siempre</span></div>
+        <div class="step-time">10 segundos</div>
+        <div class="step-detail">
+          <ul class="step-list">
+            <li>Tecla Windows → escribe "powershell"</li>
+            <li>Click derecho → "Ejecutar como administrador"</li>
+            <li>Verás una ventana azul/negra con cursor parpadeante</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Ir a tu carpeta Belentani</div>
+        <div class="step-time">5 segundos</div>
+        <div class="step-detail">
+          <ul class="step-list">
+            <li>Escribe el comando de abajo y pulsa Enter</li>
+          </ul>
+          <div class="cmd-block">cd C:\Belentani<button class="copy-btn" onclick="cp(this,'cd C:\\Belentani')">copiar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Lanzar el agente OpenCode</div>
+        <div class="step-time">5 segundos</div>
+        <div class="step-detail">
+          <ul class="step-list">
+            <li>Escribe el comando abajo</li>
+            <li>Se abre una interfaz en la terminal</li>
+            <li>Ya puedes hablarle en español</li>
+          </ul>
+          <div class="cmd-block">opencode<button class="copy-btn" onclick="cp(this,'opencode')">copiar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Decirle qué construir</div>
+        <div class="step-time">tú hablas, él hace</div>
+        <div class="step-detail">
+          <ul class="step-list">
+            <li>Escribe en la terminal lo que quieres</li>
+            <li>Ejemplo: "crea una landing page para mi música JUDAS"</li>
+            <li>Él crea los archivos en C:\Belentani\projects</li>
+          </ul>
+          <div class="cmd-block">crea una landing page para mi música. artista: BELENTANI. tema oscuro, cyberpunk, sección con reproductor, bio y contacto. guárdala en projects/landing<button class="copy-btn" onclick="cp(this,'crea una landing page para mi música. artista: BELENTANI. tema oscuro, cyberpunk, sección con reproductor, bio y contacto. guárdala en projects/landing')">copiar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Abrir el resultado en el navegador</div>
+        <div class="step-time">2 segundos</div>
+        <div class="step-detail">
+          <ul class="step-list">
+            <li>Ve a C:\Belentani\projects\landing en el explorador de archivos</li>
+            <li>Doble click en index.html</li>
+            <li>Se abre en Chrome/Edge — eso es tu web funcionando</li>
+            <li>Para subir online gratis → arrastra la carpeta a vercel.com/new</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AGENTE IA ===== -->
+  <div id="page-agent" class="page">
+    <div class="page-title">AGENTE IA</div>
+    <div class="page-sub">Da tu idea. El agente decide todo y genera el código.</div>
+
+    <div class="presets" id="presets"></div>
+
+    <div class="agent-chat">
+      <div class="agent-header">
+        <div class="agent-orb"></div>
+        <div class="agent-name">BELENTANI AGENT</div>
+        <div class="agent-model">claude-sonnet-4 · web builder</div>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="msg agent">Dame tu idea. Yo decido el tipo, diseño, stack y genero el código completo.</div>
+      </div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="ej: una web para mi música JUDAS, oscura y cyberpunk..." rows="1" onkeydown="chatKey(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
+
+    <div id="code-out" class="code-out"></div>
+    <div id="output-actions" class="output-actions">
+      <button class="out-btn primary" onclick="copyCode()">copiar código</button>
+      <button class="out-btn" onclick="downloadCode()">descargar .html</button>
+      <button class="out-btn" onclick="clearChat()">nueva idea</button>
+    </div>
+  </div>
+
+  <!-- ===== HERRAMIENTAS ===== -->
+  <div id="page-tools" class="page">
+    <div class="page-title">HERRAMIENTAS</div>
+    <div class="page-sub">Todo gratis o de pago mínimo que necesitas.</div>
+
+    <div class="section-label">agentes</div>
+    <a class="tool-row" href="https://openrouter.ai/keys" target="_blank">
+      <div class="tool-cat">KEY</div>
+      <div class="tool-icon">🔑</div>
+      <div class="tool-info"><div class="tool-name">OpenRouter <span class="tag free">free</span></div><div class="tool-desc">50+ modelos gratis: Qwen3, DeepSeek, Llama3. Tu API key central.</div></div>
+    </a>
+    <a class="tool-row" href="https://github.com/anomalyco/opencode" target="_blank">
+      <div class="tool-cat">AGENT</div>
+      <div class="tool-icon">💻</div>
+      <div class="tool-info"><div class="tool-name">OpenCode <span class="tag free">free</span></div><div class="tool-desc">Claude Code open-source. Instala: npm install -g opencode-ai</div></div>
+    </a>
+    <a class="tool-row" href="https://github.com/cline/cline" target="_blank">
+      <div class="tool-cat">AGENT</div>
+      <div class="tool-icon">🧩</div>
+      <div class="tool-info"><div class="tool-name">Cline (VSCode) <span class="tag free">free</span></div><div class="tool-desc">Extensión VSCode. Codea y ejecuta por ti. Conecta a OpenRouter.</div></div>
+    </a>
+    <a class="tool-row" href="https://github.com/FlowiseAI/Flowise" target="_blank">
+      <div class="tool-cat">AGENT</div>
+      <div class="tool-icon">🌊</div>
+      <div class="tool-info"><div class="tool-name">Flowise <span class="tag free">free</span></div><div class="tool-desc">Drag & drop para crear agentes. Sin código. npm install -g flowise</div></div>
+    </a>
+    <a class="tool-row" href="https://openclaw.ai" target="_blank">
+      <div class="tool-cat">AGENT</div>
+      <div class="tool-icon">🦞</div>
+      <div class="tool-info"><div class="tool-name">OpenClaw <span class="tag free">free</span></div><div class="tool-desc">Agente autónomo. Hablas por Telegram/WhatsApp. Ejecuta tareas.</div></div>
+    </a>
+
+    <div class="section-label">audio (local, gratis)</div>
+    <a class="tool-row" href="https://github.com/facebookresearch/demucs" target="_blank">
+      <div class="tool-cat">AUDIO</div>
+      <div class="tool-icon">🎵</div>
+      <div class="tool-info"><div class="tool-name">Demucs <span class="tag local">local</span></div><div class="tool-desc">Separa voces e instrumentos de cualquier canción.</div></div>
+    </a>
+    <a class="tool-row" href="https://github.com/SWivid/F5-TTS" target="_blank">
+      <div class="tool-cat">AUDIO</div>
+      <div class="tool-icon">🎙</div>
+      <div class="tool-info"><div class="tool-name">F5-TTS <span class="tag local">local</span></div><div class="tool-desc">Clona tu voz con 10 segundos de audio. pip install f5-tts</div></div>
+    </a>
+    <a class="tool-row" href="https://github.com/sergree/matchering" target="_blank">
+      <div class="tool-cat">AUDIO</div>
+      <div class="tool-icon">🎚</div>
+      <div class="tool-info"><div class="tool-name">Matchering <span class="tag local">local</span></div><div class="tool-desc">Masteriza tu track al nivel de referencia. pip install matchering</div></div>
+    </a>
+
+    <div class="section-label">deploy</div>
+    <a class="tool-row" href="https://vercel.com" target="_blank">
+      <div class="tool-cat">DEPLOY</div>
+      <div class="tool-icon">▲</div>
+      <div class="tool-info"><div class="tool-name">Vercel <span class="tag free">free</span></div><div class="tool-desc">Arrastra carpeta → URL online en 30 segundos. Gratis.</div></div>
+    </a>
+    <a class="tool-row" href="https://pages.github.com" target="_blank">
+      <div class="tool-cat">DEPLOY</div>
+      <div class="tool-icon">🐙</div>
+      <div class="tool-info"><div class="tool-name">GitHub Pages <span class="tag free">free</span></div><div class="tool-desc">Host estático gratis. tuusuario.github.io/proyecto</div></div>
+    </a>
+  </div>
+
+  <!-- ===== COMANDOS ===== -->
+  <div id="page-commands" class="page">
+    <div class="page-title">COMANDOS</div>
+    <div class="page-sub">Copia y pega en PowerShell.</div>
+
+    <div class="section-label">instalar todo (una vez)</div>
+    <div class="cmd-block">npm install -g opencode-ai<button class="copy-btn" onclick="cp(this,'npm install -g opencode-ai')">copiar</button></div>
+    <div class="cmd-block">npm install -g flowise<button class="copy-btn" onclick="cp(this,'npm install -g flowise')">copiar</button></div>
+    <div class="cmd-block">pip install demucs f5-tts matchering<button class="copy-btn" onclick="cp(this,'pip install demucs f5-tts matchering')">copiar</button></div>
+
+    <div class="section-label">uso diario</div>
+    <div class="cmd-block">cd C:\Belentani && opencode<button class="copy-btn" onclick="cp(this,'cd C:\\Belentani && opencode')">copiar</button></div>
+    <div class="cmd-block">flowise start<button class="copy-btn" onclick="cp(this,'flowise start')">copiar</button></div>
+
+    <div class="section-label">crear proyecto nuevo</div>
+    <div class="cmd-block">mkdir C:\Belentani\projects\mi-proyecto && cd C:\Belentani\projects\mi-proyecto && opencode<button class="copy-btn" onclick="cp(this,'mkdir C:\\Belentani\\projects\\mi-proyecto && cd C:\\Belentani\\projects\\mi-proyecto && opencode')">copiar</button></div>
+
+    <div class="section-label">separar voces con demucs</div>
+    <div class="cmd-block">python -m demucs --two-stems=vocals "C:\ruta\a\tu\cancion.mp3"<button class="copy-btn" onclick="cp(this,'python -m demucs --two-stems=vocals \"C:\\ruta\\a\\tu\\cancion.mp3\"')">copiar</button></div>
+
+    <div class="section-label">lanzar agente openclaw</div>
+    <div class="cmd-block">cd C:\Belentani && openclaw start<button class="copy-btn" onclick="cp(this,'cd C:\\Belentani && openclaw start')">copiar</button></div>
+
+    <div class="section-label">script completo de setup (PowerShell admin)</div>
+    <div class="cmd-block" style="color:#aaa">
+# Pega esto en PowerShell como Administrador
+Set-ExecutionPolicy Bypass -Scope Process -Force
+winget install OpenJS.NodeJS.LTS --silent
+winget install Python.Python.3.11 --silent
+npm install -g opencode-ai flowise
+pip install demucs f5-tts
+New-Item -ItemType Directory -Force -Path "C:\Belentani\projects"
+New-Item -ItemType Directory -Force -Path "C:\Belentani\audio"
+Write-Host "LISTO" -ForegroundColor Green<button class="copy-btn" onclick="cp(this,`Set-ExecutionPolicy Bypass -Scope Process -Force\nwinget install OpenJS.NodeJS.LTS --silent\nwinget install Python.Python.3.11 --silent\nnpm install -g opencode-ai flowise\npip install demucs f5-tts\nNew-Item -ItemType Directory -Force -Path \"C:\\Belentani\\projects\"\nNew-Item -ItemType Directory -Force -Path \"C:\\Belentani\\audio\"\nWrite-Host \"LISTO\" -ForegroundColor Green`)">copiar</button>
+    </div>
+  </div>
+
+  <!-- ===== SETUP GUÍA ===== -->
+  <div id="page-setup" class="page">
+    <div class="page-title">SETUP</div>
+    <div class="page-sub">Guía completa de configuración. Haz click en cada paso.</div>
+
+    <div id="steps-container"></div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// NAV
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// STEPS
+function toggleStep(el) {
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+  } else {
+    document.querySelectorAll('.step.open').forEach(s => s.classList.remove('open'));
+    el.classList.add('open');
+  }
+}
+
+// COPY
+function cp(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓';
+    btn.style.background = '#3ecf8e';
+    btn.style.color = '#000';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 1500);
+  });
+}
+
+// SETUP STEPS
+const STEPS = [
+  { num:1, time:'5 min', title:'Conseguir API key gratis (OpenRouter)', tag:'key',
+    items:['Ve a openrouter.ai/keys','Regístrate gratis (sin tarjeta)','Click "Create API key" → copia la key (empieza con sk-or-v1-...)','Guárdala en un txt, la necesitas para todo'],
+    cmd: null },
+  { num:2, time:'10 min', title:'Instalar Node.js (necesario para opencode)', tag:'',
+    items:['Ve a nodejs.org','Descarga la versión LTS','Instala con todos los defaults','Abre PowerShell nuevo y escribe: node --version (debe salir un número)'],
+    cmd: 'node --version' },
+  { num:3, time:'2 min', title:'Instalar OpenCode (tu agente principal)', tag:'free',
+    items:['Abre PowerShell como admin','Pega el comando de abajo','Espera que termine','Escribe: opencode --version para verificar'],
+    cmd: 'npm install -g opencode-ai' },
+  { num:4, time:'3 min', title:'Crear carpeta Belentani y configurar agente', tag:'',
+    items:['Pega el comando de abajo en PowerShell como admin','Cuando pregunte por la key: pega tu key de OpenRouter','Crea un acceso directo en el escritorio automáticamente'],
+    cmd: 'powershell -ExecutionPolicy Bypass -File "C:\\Users\\TU_USUARIO\\Downloads\\CREATE-AGENT.ps1"' },
+  { num:5, time:'2 min', title:'Lanzar el agente por primera vez', tag:'',
+    items:['Abre PowerShell','Navega a tu carpeta','Lanza opencode','Escríbele en español lo que quieres construir'],
+    cmd: 'cd C:\\Belentani && opencode' },
+  { num:6, time:'30 min', title:'Instalar Flowise (agente visual sin código)', tag:'free',
+    items:['Pega el comando de instalación','Luego lanza con: flowise start','Abre en navegador: localhost:3001','Conecta tu key de OpenRouter en Settings'],
+    cmd: 'npm install -g flowise' },
+  { num:7, time:'5 min', title:'Descargar e instalar Python (para audio)', tag:'',
+    items:['Ve a python.org/downloads','Descarga Python 3.11','IMPORTANTE: marca "Add to PATH" durante instalación','Verifica: python --version en PowerShell'],
+    cmd: 'python --version' },
+  { num:8, time:'3 min', title:'Instalar herramientas de audio', tag:'local',
+    items:['Con Python instalado, pega el comando de abajo','Demucs separa voces de canciones','F5-TTS clona tu voz','Matchering masteriza tus tracks'],
+    cmd: 'pip install demucs f5-tts matchering' },
+];
+
+const container = document.getElementById('steps-container');
+STEPS.forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'step';
+  div.onclick = function() { toggleStep(this); };
+  div.innerHTML = `
+    <div class="step-num">${s.num}</div>
+    <div class="step-body">
+      <div class="step-title">${s.title} <span class="tag ${s.tag}">${s.tag || 'setup'}</span></div>
+      <div class="step-time">${s.time}</div>
+      <div class="step-detail">
+        <ul class="step-list">${s.items.map(i => `<li>${i}</li>`).join('')}</ul>
+        ${s.cmd ? `<div class="cmd-block">${s.cmd}<button class="copy-btn" onclick="event.stopPropagation();cp(this,'${s.cmd.replace(/'/g,"\\'")}')">copiar</button></div>` : ''}
+      </div>
+    </div>`;
+  container.appendChild(div);
+});
+
+// AGENT
+const PRESETS_DATA = [
+  { label:'Landing música', text:'landing page para artista musical BELENTANI. cyberpunk, oscuro, oro y negro. hero con nombre animado, sección bio, reproductor UI, contacto.' },
+  { label:'Dashboard', text:'dashboard de estadísticas de música. streams, oyentes, ingresos. dark theme, gráficas animadas.' },
+  { label:'Portfolio', text:'portfolio para ingeniero IA y músico. secciones: proyectos, skills, música, contacto. minimal y oscuro.' },
+  { label:'Tienda', text:'tienda online minimalista para vender beats y merch. carrito, productos, checkout.' },
+  { label:'Snake game', text:'juego snake con diseño neón sobre negro, puntuación alta guardada, niveles de velocidad.' },
+  { label:'App notas', text:'app de notas tipo Notion pero minimalista. crear, editar, borrar. guarda en localStorage.' },
+];
+
+const presetsEl = document.getElementById('presets');
+PRESETS_DATA.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'preset-btn';
+  btn.textContent = p.label;
+  btn.onclick = () => { document.getElementById('chat-input').value = p.text; };
+  presetsEl.appendChild(btn);
+});
+
+const SYSTEM = `Eres un agente autónomo de desarrollo web de élite para BELENTANI.
+Recibes una idea y generas el HTML/CSS/JS completo en un solo archivo.
+
+FORMATO DE RESPUESTA:
+Primero 3-4 líneas decidiendo: tipo de web, paleta, tipografía, funciones clave.
+Luego escribe exactamente: ===CODIGO===
+Luego el código HTML completo (sin backticks, empieza con <!DOCTYPE html>)
+Luego escribe exactamente: ===FIN===
+
+CALIDAD: diseño único y memorable, Google Fonts, animaciones, responsive, datos realistas.`;
+
+let chatHistory = [];
+let generatedCode = '';
+let isBusy = false;
+
+function chatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function addMsg(text, role, isThinking) {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role + (isThinking ? ' thinking' : '');
+  div.textContent = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+  return div;
+}
+
+async function sendChat() {
+  if (isBusy) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  isBusy = true;
+  document.getElementById('send-btn').disabled = true;
+  input.value = '';
+
+  addMsg(text, 'user');
+  chatHistory.push({ role: 'user', content: text });
+
+  const thinking = addMsg('agente analizando y construyendo…', 'agent', true);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    chatHistory.push({ role: 'assistant', content: raw });
+    thinking.remove();
+
+    const codeMatch = raw.match(/===CODIGO===([\s\S]*?)===FIN===/);
+    const beforeCode = raw.split('===CODIGO===')[0].trim();
+
+    if (beforeCode) addMsg(beforeCode, 'agent');
+
+    if (codeMatch) {
+      generatedCode = codeMatch[1].trim();
+      document.getElementById('code-out').textContent = generatedCode;
+      document.getElementById('code-out').classList.add('visible');
+      document.getElementById('output-actions').classList.add('visible');
+      addMsg('✓ Código generado (' + generatedCode.split('\n').length + ' líneas). Copia o descarga abajo.', 'agent');
+    } else {
+      addMsg(raw, 'agent');
+    }
+  } catch(e) {
+    thinking.remove();
+    addMsg('Error: ' + e.message, 'agent');
+  }
+
+  isBusy = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function copyCode() {
+  if (!generatedCode) return;
+  navigator.clipboard.writeText(generatedCode).then(() => {
+    const btn = document.querySelector('.out-btn.primary');
+    btn.textContent = '✓ copiado';
+    setTimeout(() => { btn.textContent = 'copiar código'; }, 2000);
+  });
+}
+
+function downloadCode() {
+  if (!generatedCode) return;
+  const blob = new Blob([generatedCode], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'belentani-project.html';
+  a.click();
+}
+
+function clearChat() {
+  chatHistory = [];
+  generatedCode = '';
+  document.getElementById('chat-body').innerHTML = '<div class="msg agent">Dame tu idea. Yo decido el tipo, diseño, stack y genero el código completo.</div>';
+  document.getElementById('code-out').classList.remove('visible');
+  document.getElementById('output-actions').classList.remove('visible');
+}
+</script>
+</body>
+</html>

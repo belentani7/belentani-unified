@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="BELENTANI OMEGA Display Pedestal: visor 3D interactivo.">
+  <title>BELENTANI // DISPLAY PEDESTAL</title>
+  <style>
+    :root{--void:#050506;--ink:#e9e5df;--red:#ff003c;--gold:#ffd700;--cyan:#00ffff;--line:rgba(255,255,255,.16)}
+    *{box-sizing:border-box}html,body{margin:0;background:var(--void);color:var(--ink);font-family:"Trebuchet MS",system-ui,sans-serif}body{overflow:hidden}canvas{position:fixed;inset:0;width:100%;height:100%}
+    #hud{position:fixed;inset:0;z-index:2;pointer-events:none;padding:clamp(18px,4vw,52px);display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 50% 48%,transparent 20%,rgba(0,0,0,.35) 68%,rgba(0,0,0,.86) 100%)}
+    .top,.bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}.brand{font:700 clamp(13px,1.4vw,18px)/1 "Courier New",monospace;letter-spacing:.24em}.brand span{color:var(--red)}.eyebrow,.status{font:11px/1.5 "Courier New",monospace;letter-spacing:.16em;color:rgba(233,229,223,.7)}.status{color:var(--cyan);text-align:right}.title{max-width:630px;font-size:clamp(34px,7vw,98px);font-weight:900;line-height:.82;letter-spacing:-.07em;text-transform:uppercase;margin:0}.title em{display:block;color:var(--gold);font-family:Georgia,serif;font-size:.52em;font-weight:400;letter-spacing:.08em;margin:.28em 0 0}.guide{max-width:360px;font:12px/1.65 "Courier New",monospace;color:rgba(233,229,223,.72);border-left:1px solid var(--red);padding-left:14px}.commands{font:10px/1.7 "Courier New",monospace;letter-spacing:.1em;color:rgba(233,229,223,.62);text-align:right}
+    #drop{position:fixed;inset:0;z-index:4;display:none;place-items:center;background:rgba(5,5,6,.86);border:2px dashed var(--cyan);color:var(--cyan);font:700 16px "Courier New",monospace;letter-spacing:.15em;text-align:center}#drop.visible{display:grid}button{pointer-events:auto;background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 12px;font:10px "Courier New",monospace;letter-spacing:.1em;cursor:pointer}button:hover,button:focus-visible{border-color:var(--gold);color:var(--gold);outline:none}
+    @media(max-width:640px){#hud{padding:22px}.top{align-items:flex-start}.bottom{align-items:flex-end}.title{font-size:48px}.guide{font-size:10px;max-width:220px}.commands{display:none}.eyebrow{font-size:9px}}
+    @media(prefers-reduced-motion:reduce){#hud{background:rgba(5,5,6,.28)}}
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <header class="top"><div><div class="brand">BELENTANI<span>//</span>OMEGA</div><p class="eyebrow">DISPLAY PEDESTAL / 01</p></div><div class="status" id="status">RENDER: INITIALIZING</div></header>
+    <main><p class="eyebrow">ARCHIVE OBJECT / INTERACTIVE STUDY</p><h1 class="title">The<br>artifact <em>Judas Era</em></h1></main>
+    <footer class="bottom"><div class="guide">Arrastra un archivo <b>.glb</b> sobre la escena para cargarlo. Clic sobre el artefacto para alternar su forma.</div><div class="commands"><button id="reset">R / REENCADRAR</button><br>ESPACIO / ALTERNAR &nbsp; B / BLOOM &nbsp; G / RETÍCULA</div></footer>
+  </div>
+  <div id="drop">SUELTA EL MODELO GLB<br><small>se procesa localmente en este navegador</small></div>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+    import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+    const RED=0xff003c,GOLD=0xffd700,CYAN=0x00ffff, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canvas=document.createElement('canvas');document.body.prepend(canvas);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false}); renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+    const scene=new THREE.Scene();scene.background=new THREE.Color(0x050506);scene.fog=new THREE.FogExp2(0x050506,.09);
+    const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,100);camera.position.set(5,3.3,7.5);
+    const controls=new OrbitControls(camera,canvas);controls.target.set(0,1.35,0);controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.045;controls.autoRotate=!reduce;controls.autoRotateSpeed=.32;controls.maxPolarAngle=Math.PI*.48;controls.minDistance=4;controls.maxDistance=11;
+    const root=new THREE.Group();scene.add(root); const artifact=new THREE.Group();root.add(artifact);
+    const hemi=new THREE.HemisphereLight(0x13202b,0x020202,1.1);scene.add(hemi);
+    const key=new THREE.SpotLight(RED,900,18,.48,.6,1);key.position.set(3,6,4);key.castShadow=true;scene.add(key);
+    const rim=new THREE.SpotLight(GOLD,700,18,.6,.7,1);rim.position.set(-4,5,-3);rim.target=artifact;scene.add(rim);
+    const fill=new THREE.PointLight(CYAN,34,8);fill.position.set(0,3,3);scene.add(fill);
+    const floor=new THREE.Mesh(new THREE.CircleGeometry(14,96),new THREE.MeshStandardMaterial({color:0x08090b,metalness:.72,roughness:.29}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+    const grid=new THREE.GridHelper(20,30,0x242934,0x13151b);grid.position.y=.006;scene.add(grid);
+    function hexShape(r){const s=new THREE.Shape();for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3,x=Math.cos(a)*r,z=Math.sin(a)*r;i?s.lineTo(x,z):s.moveTo(x,z)}s.closePath();return s}
+    const baseGeo=new THREE.ExtrudeGeometry(hexShape(1.55),{depth:.36,bevelEnabled:true,bevelSize:.035,bevelThickness:.035,bevelSegments:2});baseGeo.rotateX(Math.PI/2);baseGeo.translate(0,.18,0);
+    const base=new THREE.Mesh(baseGeo,new THREE.MeshStandardMaterial({color:0x090a0c,metalness:.42,roughness:.68}));base.castShadow=base.receiveShadow=true;root.add(base);
+    const edge=new THREE.LineSegments(new THREE.EdgesGeometry(baseGeo),new THREE.LineBasicMaterial({color:RED,transparent:true,opacity:.82}));root.add(edge);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(1.18,.024,8,6),new THREE.MeshStandardMaterial({color:RED,emissive:RED,emissiveIntensity:3,metalness:.7}));ring.rotation.x=Math.PI/2;ring.position.y=.39;root.add(ring);
+    const glassMat=new THREE.MeshPhysicalMaterial({color:0x9fefff,transparent:true,opacity:.15,roughness:.04,metalness:0,transmission:.45,thickness:.28,ior:1.52,side:THREE.DoubleSide,depthWrite:false});
+    const frame=new THREE.Group();root.add(frame); const neon=[];
+    for(let i=0;i<4;i++){const a=Math.PI/4+i*Math.PI/2,x=Math.cos(a)*1.05,z=Math.sin(a)*1.05;const post=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,2.65,12),glassMat);post.position.set(x,1.72,z);frame.add(post);const strip=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,2.55,8),new THREE.MeshStandardMaterial({color:i%3===0?RED:i%3===1?CYAN:GOLD,emissive:i%3===0?RED:i%3===1?CYAN:GOLD,emissiveIntensity:2}));strip.position.set(x*1.035,1.72,z*1.035);frame.add(strip);neon.push(strip)}
+    const top=new THREE.Mesh(new THREE.TorusGeometry(1.3,.018,8,6),new THREE.MeshStandardMaterial({color:CYAN,emissive:CYAN,emissiveIntensity:2.2}));top.rotation.x=Math.PI/2;top.position.y=3.05;frame.add(top);
+    const holoMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{time:{value:0},color:{value:new THREE.Color(CYAN)}},vertexShader:`varying vec3 vN;varying vec3 vP;uniform float time;void main(){vec3 p=position+normal*sin(position.y*9.0+time*2.5)*.012;vN=normalMatrix*normal;vP=(modelViewMatrix*vec4(p,1.)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;uniform vec3 color;varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.-abs(dot(normalize(vN),normalize(-vP))),2.4);float scan=.72+.28*sin(vP.y*30.-time*9.);float grid=step(.92,fract(vP.y*3.+vP.x*3.));gl_FragColor=vec4(color*(f*1.6+grid*.55)*scan,f*.64+.12);}`});
+    const cube=new THREE.Mesh(new THREE.BoxGeometry(1.05,1.05,1.05,14,14,14),holoMat);cube.position.y=1.72;artifact.add(cube);const wire=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:CYAN,transparent:true,opacity:.85}));wire.position.copy(cube.position);artifact.add(wire);const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.24,2),new THREE.MeshStandardMaterial({color:RED,emissive:RED,emissiveIntensity:5,metalness:.2,roughness:.25}));core.position.y=1.72;artifact.add(core);
+    const dustGeo=new THREE.BufferGeometry(),dust=new Float32Array(600*3);for(let i=0;i<600;i++){const r=2+Math.random()*7,a=Math.random()*Math.PI*2;dust.set([Math.cos(a)*r,(Math.random()-.5)*5+2,Math.sin(a)*r],i*3)}dustGeo.setAttribute('position',new THREE.BufferAttribute(dust,3));scene.add(new THREE.Points(dustGeo,new THREE.PointsMaterial({size:.018,color:0x9ed9ff,transparent:true,opacity:.55})));
+    const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let hover=false,showAlt=false,userModel=null,bloom=true;const status=document.querySelector('#status');
+    function swap(){showAlt=!showAlt;cube.visible=wire.visible=!showAlt;if(userModel)userModel.visible=showAlt;else core.geometry.dispose(),core.geometry=showAlt?new THREE.TorusKnotGeometry(.34,.11,90,10):new THREE.IcosahedronGeometry(.24,2);status.textContent=showAlt?'RENDER: ALTERNATE FORM':'RENDER: HOLOGRAM';}
+    addEventListener('pointermove',e=>{pointer.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1)});addEventListener('click',()=>{if(hover)swap()});
+    addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();swap()}if(e.key.toLowerCase()==='r'){camera.position.set(5,3.3,7.5);controls.target.set(0,1.35,0)}if(e.key.toLowerCase()==='g')grid.visible=!grid.visible;if(e.key.toLowerCase()==='b')bloom=!bloom});document.querySelector('#reset').onclick=()=>{camera.position.set(5,3.3,7.5);controls.target.set(0,1.35,0)};
+    const drop=document.querySelector('#drop');['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{e.preventDefault();drop.classList.add('visible')}));['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();drop.classList.remove('visible')}));addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(!f||!f.name.toLowerCase().endsWith('.glb')){status.textContent='RENDER: SOLO ARCHIVOS .GLB';return}new FileReader().onload=ev=>new GLTFLoader().parse(ev.target.result,'',g=>{if(userModel)artifact.remove(userModel);userModel=g.scene;const box=new THREE.Box3().setFromObject(userModel),s=1.25/Math.max(...box.getSize(new THREE.Vector3()).toArray());userModel.scale.setScalar(s);userModel.position.y=1.72-(box.min.y*s);userModel.visible=showAlt;artifact.add(userModel);status.textContent='RENDER: '+f.name.toUpperCase()},()=>status.textContent='RENDER: NO SE PUDO LEER EL MODELO');const reader=new FileReader();reader.onload=ev=>new GLTFLoader().parse(ev.target.result,'',g=>{if(userModel)artifact.remove(userModel);userModel=g.scene;const b=new THREE.Box3().setFromObject(userModel),size=b.getSize(new THREE.Vector3()),scale=1.25/Math.max(size.x,size.y,size.z);userModel.scale.setScalar(scale);userModel.position.y=1.72-b.min.y*scale;userModel.visible=showAlt;artifact.add(userModel);status.textContent='RENDER: '+f.name.toUpperCase()});reader.readAsArrayBuffer(f)});
+    const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();holoMat.uniforms.time.value=t;artifact.rotation.y=t*.24;cube.position.y=wire.position.y=core.position.y=1.72+Math.sin(t*1.4)*.08;core.scale.setScalar(1+Math.sin(t*3)*.08);ray.setFromCamera(pointer,camera);hover=ray.intersectObject(cube).length>0||ray.intersectObject(core).length>0;canvas.style.cursor=hover?'pointer':'grab';const target=hover?6:2;neon.forEach(x=>x.material.emissiveIntensity+= (target-x.material.emissiveIntensity)*.08);ring.material.emissiveIntensity=(bloom?3:1)*(hover?1.65:1);frame.position.y=Math.sin(t*.7)*.025;controls.update();renderer.render(scene,camera)}animate();
+    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight)});status.textContent='RENDER: WEBGL ONLINE';
+  </script>
+</body></html>

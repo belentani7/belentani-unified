@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // JUDAS ERA — OMEGA 1000</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Pedro Belentani","alternateName":"Belentani","description":"Creative Operating System. La traición no es el final. Es el input.","url":"https://belentani.es","sameAs":["https://www.instagram.com/belentani_/","https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl","https://music.apple.com/artist/belentani/1522171354","https://www.youtube.com/@belentani","https://soundcloud.com/belentani"]}</script>
+<meta name="description" content="Creative Operating System. Hackear el trauma a través de la creación.">
+<meta property="og:title" content="BELENTANI — JUDAS ERA — OMEGA 1000">
+<meta property="og:description" content="1000 ideas. One experience.">
+<meta name="theme-color" content="#ff003c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+@property --progress { syntax:"<percentage>"; inherits:false; initial-value:0%; }
+@property --hue { syntax:"<angle>"; inherits:false; initial-value:0deg; }
+@property --rotation { syntax:"<angle>"; inherits:false; initial-value:0deg; }
+@property --blur { syntax:"<length>"; inherits:false; initial-value:0px; }
+:root{
+--void:#030308;
+--red:#ff003c;
+--red-dim:rgba(255,0,60,.15);
+--red-glow:rgba(255,0,60,.6);
+--red-bright:#ff3366;
+--surface:#0a0a0f;
+--surface-light:#12121a;
+--smoke:rgba(10,10,15,.85);
+--ash:rgba(255,255,255,.4);
+--text:#fff;
+--text-d:rgba(255,255,255,.5);
+--border:rgba(255,0,60,.2);
+--border-a:rgba(255,0,60,.5);
+--fd:'Orbitron',sans-serif;
+--fu:'Chakra Petch',sans-serif;
+--fm:'JetBrains Mono',monospace;
+--ease:cubic-bezier(.16,1,.3,1);
+--ease-spring:cubic-bezier(.34,1.56,.64,1)
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(255,0,60,.3) #030308;scroll-snap-type:y proximity}
+body{background:var(--void);color:var(--text);font-family:var(--fu);cursor:none;overflow-x:hidden;line-height:1.6;transition:filter .5s,background .5s}
+::selection{background:var(--blood);color:#000}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#030308}::-webkit-scrollbar-thumb{background:var(--blood);border-radius:2px}
+
+/* PROGRESS BAR */
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blood),var(--gold),var(--ice));z-index:10001;transform-origin:left;transform:scaleX(0);animation:fillProgress linear;animation-timeline:scroll(root);pointer-events:none}
+@keyframes fillProgress{to{transform:scaleX(1)}}
+
+/* MESH BG */
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 20% 40%,rgba(255,0,60,.08)0%,transparent 50%),radial-gradient(ellipse 60% 40% at 80% 60%,rgba(255,0,60,.04)0%,transparent 50%);animation:meshFloat 25s ease-in-out infinite alternate}
+@keyframes meshFloat{0%{background-position:0% 0%,100% 100%,50% 50%}100%{background-position:100% 100%,0% 0%,50% 50%}}
+
+/* BOOT */
+#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:var(--fm);color:var(--green);font-size:13px;transition:opacity 1.5s ease-out}
+#boot.done{opacity:0;pointer-events:none}
+.bl{opacity:0;transform:translateY(8px);animation:blIn .3s forwards}
+@keyframes blIn{to{opacity:1;transform:translateY(0)}}
+.bb{width:280px;height:2px;background:rgba(0,255,65,.1);margin-top:16px;position:relative;overflow:hidden}
+.bb::after{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:var(--green);box-shadow:0 0 15px var(--green);animation:bbLoad 4s cubic-bezier(.1,0,.2,1) forwards}
+@keyframes bbLoad{to{width:100%}}
+
+/* CURSOR */
+.cd,.cr,.cg{position:fixed;top:0;left:0;pointer-events:none;z-index:10001;transform:translate(-50%,-50%);will-change:transform}
+.cd{width:6px;height:6px;background:#fff;border-radius:50%;box-shadow:0 0 12px #fff,0 0 25px rgba(255,0,60,.5)}
+.cr{width:44px;height:44px;border:1px solid rgba(255,0,60,.4);border-radius:50%;transition:width .4s var(--ease),height .4s var(--ease),border-color .4s}
+.cr.hov{width:80px;height:80px;border-color:var(--gold)}
+.cg{width:200px;height:200px;background:radial-gradient(circle,rgba(255,0,60,.08)0%,transparent 70%);border-radius:50%;opacity:.4}
+
+/* NAV */
+.nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1500;display:flex;gap:4px;padding:8px 16px;background:rgba(3,3,8,.65);backdrop-filter:blur(20px) saturate(1.4);border:1px solid rgba(255,0,60,.12);border-radius:100px;pointer-events:auto}
+.nav a{padding:8px 14px;color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:100px;transition:all .3s var(--ease)}
+.nav a:hover,.nav a.act{color:var(--text);background:rgba(255,0,60,.12)}
+.nav a.act{background:var(--blood);color:#fff}
+
+/* HERO */
+.hero{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;scroll-snap-align:start}
+.hero-t{font-family:var(--fd);font-size:clamp(70px,18vw,280px);font-weight:900;line-height:.85;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px var(--blood);position:relative;z-index:2}
+.hero-t .mask{position:absolute;inset:0;background:linear-gradient(135deg,var(--blood),var(--gold),var(--ice));-webkit-background-clip:text;background-clip:text;color:transparent;clip-path:inset(0 100% 0 0);animation:maskReveal 2.5s cubic-bezier(.77,0,.175,1) 4.5s forwards}
+@keyframes maskReveal{to{clip-path:inset(0 0 0 0)}}
+.hero-sub{font-family:var(--fm);font-size:12px;color:var(--ash);letter-spacing:6px;text-transform:uppercase;margin-top:24px;opacity:0;animation:fadeUp 1s var(--ease) 5.5s forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.hero-sub{transform:translateY(15px)}
+.mag-btn{position:relative;padding:16px 44px;background:transparent;border:1px solid var(--blood);color:var(--text);font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;overflow:hidden;transition:transform .3s var(--ease-spring);margin-top:32px;opacity:0;animation:fadeUp 1s var(--ease) 6s forwards}
+.mag-btn::before{content:'';position:absolute;inset:0;background:var(--blood);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.mag-btn:hover::before{transform:scaleX(1)}
+.mag-btn span{position:relative;z-index:1}
+.mag-btn:hover{box-shadow:0 0 40px var(--blood-g)}
+.mag-btn:active{transform:scale(.96)}
+
+/* MARQUEE */
+.marquee{overflow:hidden;white-space:nowrap;padding:30px 0}
+.marquee-t{display:inline-flex;gap:50px;animation:marqueeScroll 35s linear infinite;font-family:var(--fd);font-size:clamp(40px,7vw,100px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.08)}
+.marquee-t span{-webkit-text-stroke:0;color:rgba(255,255,255,.04)}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTION */
+.sec{min-height:100vh;padding:100px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;z-index:10;scroll-snap-align:start}
+.sec-label{font-family:var(--fm);font-size:10px;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-family:var(--fd);font-size:clamp(32px,7vw,80px);font-weight:900;letter-spacing:6px;text-align:center;color:transparent;-webkit-text-stroke:1px var(--ash)}
+.sec-title em{font-style:italic;-webkit-text-stroke:0;color:var(--text)}
+
+/* HOLO CARD */
+.holo{position:relative;background:rgba(10,1,5,.75);border:1px solid rgba(255,0,60,.12);padding:28px;overflow:hidden;cursor:pointer;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.holo::before{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,rgba(255,0,60,.25),rgba(255,215,0,.25),rgba(0,255,255,.25),rgba(176,38,255,.25));background-size:400% 400%;animation:holoShift 3s linear infinite paused;transition:opacity .4s}
+.holo:hover::before{opacity:1;animation-play-state:running}
+.holo:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(255,0,60,.15)}
+@keyframes holoShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.holo .cc{position:relative;z-index:1}
+.holo .ci{width:44px;height:44px;background:linear-gradient(135deg,var(--blood),#800020);display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);margin-bottom:16px;font-size:16px;transition:transform .5s var(--ease-spring)}
+.holo:hover .ci{transform:rotate(45deg) scale(1.15)}
+.holo .ct{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+.holo .cid{font-family:var(--fm);font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:10px}
+.holo .cd2{font-size:12px;color:var(--text-d);line-height:1.6}
+.holo .cca{width:100%;padding:10px;margin-top:16px;background:transparent;border:1px solid var(--blood);color:var(--blood);font-family:var(--fm);font-size:9px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s var(--ease);display:flex;justify-content:space-between;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.holo .cca:hover{background:var(--blood);color:#fff}
+
+/* SPOTLIGHT */
+.spot{position:relative;background:rgba(10,1,5,.55);padding:28px;border:1px solid rgba(255,255,255,.04);overflow:hidden;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.spot::before{content:'';position:absolute;top:var(--my,50%);left:var(--mx,50%);width:250px;height:250px;background:radial-gradient(circle,rgba(255,0,60,.12)0%,transparent 70%);transform:translate(-50%,-50%);opacity:0;transition:opacity .4s;pointer-events:none}
+.spot:hover::before{opacity:1}
+.spot:hover{border-color:rgba(255,0,60,.25)}
+
+/* FREQUENCY BUTTONS */
+.freq{padding:16px;background:rgba(10,1,5,.55);border:1px solid rgba(255,215,0,.12);color:var(--text);cursor:pointer;text-align:center;transition:all .4s var(--ease);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);width:100px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto}
+.freq:hover{background:rgba(255,215,0,.08);border-color:var(--gold);transform:scale(1.1);box-shadow:0 0 25px rgba(255,215,0,.15)}
+.freq .fn{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--gold)}
+.freq .fl{font-family:var(--fm);font-size:8px;color:var(--ash);letter-spacing:1px;margin-top:3px}
+
+/* SACRED */
+.sacred{width:90px;height:90px;margin:30px auto;background:linear-gradient(135deg,var(--gold),#b8860b);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);animation:sacredSpin 12s linear infinite;filter:drop-shadow(0 0 25px rgba(255,215,0,.35))}
+@keyframes sacredSpin{to{transform:rotate(360deg)}}
+
+/* GRID */
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;width:100%;max-width:1100px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px;width:100%;max-width:900px}
+
+/* GLITCH */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;opacity:0;animation:gFlicker 10s infinite}
+.glitch::before{color:var(--ice);clip-path:inset(0 0 65% 0);transform:translate(-2px,-2px)}
+.glitch::after{color:var(--blood);clip-path:inset(65% 0 0 0);transform:translate(2px,2px)}
+@keyframes gFlicker{0%,94%,100%{opacity:0}95%{opacity:.7;transform:translate(-3px,1px)}96%{opacity:0}97%{opacity:.5;transform:translate(3px,-1px)}98%{opacity:0}}
+
+/* GLITCH BORDER */
+.gb{position:fixed;inset:0;border:1px solid rgba(255,0,60,.12);pointer-events:none;z-index:9998}
+.gb::before{content:'';position:absolute;inset:-1px;border:1px solid var(--blood);opacity:0;animation:gbGlitch 15s infinite}
+@keyframes gbGlitch{0%,95%,100%{opacity:0;transform:translate(0)}96%{opacity:1;transform:translate(4px,-2px)}97%{opacity:0}98%{opacity:1;transform:translate(-4px,2px)}99%{opacity:0}}
+
+/* ATMOSPHERE */
+.vig{position:fixed;inset:0;background:radial-gradient(circle,transparent 25%,rgba(3,3,8,.75)100%);z-index:1;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='none' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scan{position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px)}
+
+/* CANVASES */
+#wgl{position:fixed;inset:0;z-index:0}
+#mtx{position:fixed;inset:0;z-index:1;opacity:.08;pointer-events:none}
+
+/* FLOATING AGENT */
+.agent{position:fixed;bottom:90px;left:20px;z-index:1000;width:55px;height:55px;cursor:grab;pointer-events:auto}
+.agent:active{cursor:grabbing}
+.agent-b{width:55px;height:55px;background:rgba(0,255,255,.08);border:1px solid var(--ice);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:18px;color:var(--ice);animation:agentPulse 3s ease-in-out infinite;position:relative}
+@keyframes agentPulse{0%,100%{box-shadow:0 0 8px rgba(0,255,255,.25)}50%{box-shadow:0 0 22px rgba(0,255,255,.5)}}
+.agent-bub{position:absolute;bottom:65px;left:0;width:230px;background:rgba(3,3,8,.92);border:1px solid rgba(0,255,255,.15);padding:10px;font-family:var(--fm);font-size:10px;color:var(--ice);line-height:1.5;opacity:0;transform:translateY(8px);transition:all .3s var(--ease);pointer-events:none;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.agent-bub.vis{opacity:1;transform:translateY(0)}
+.agent-scan{font-size:8px;color:var(--green);margin-top:6px;border-top:1px solid rgba(0,255,255,.08);padding-top:6px}
+
+/* CHAT */
+#chat{position:fixed;bottom:20px;right:20px;z-index:1000;width:340px;background:rgba(3,3,8,.92);backdrop-filter:blur(24px);border:1px solid rgba(255,0,60,.15);display:none;flex-direction:column;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+#chat.open{display:flex}
+.ch-h{padding:12px;border-bottom:1px solid rgba(255,0,60,.12);display:flex;justify-content:space-between;align-items:center}
+.ch-h span{font-family:var(--fm);font-size:10px;color:var(--green);letter-spacing:2px}
+.ch-h button{background:none;border:none;color:var(--ash);cursor:pointer;font-size:16px}
+.ch-m{flex:1;overflow-y:auto;padding:12px;max-height:280px;font-family:var(--fm);font-size:11px;line-height:1.6}
+.ch-i{padding:10px;border-top:1px solid rgba(255,0,60,.12);display:flex;gap:6px}
+.ch-i input{flex:1;background:rgba(255,255,255,.02);border:1px solid rgba(255,0,60,.12);color:var(--text);padding:8px;font-family:var(--fm);font-size:11px;outline:none}
+.ch-i button{background:var(--blood);border:none;color:#fff;padding:8px 14px;font-family:var(--fm);font-size:10px;cursor:pointer}
+
+/* TERMINAL */
+#term{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.97);display:none;flex-direction:column;font-family:var(--fm);font-size:13px;color:var(--green);padding:36px}
+#term.open{display:flex}
+.t-out{flex:1;overflow-y:auto;margin-bottom:16px}
+.t-in{display:flex;gap:8px}
+.t-in span{color:var(--blood)}
+.t-in input{flex:1;background:none;border:none;color:var(--green);font-family:var(--fm);font-size:13px;outline:none}
+
+/* LANGUAGE */
+.lang{position:fixed;top:20px;right:20px;z-index:1500;display:flex;gap:3px;padding:5px 10px;background:rgba(3,3,8,.65);backdrop-filter:blur(20px);border:1px solid rgba(255,0,60,.12);border-radius:100px}
+.lang button{padding:3px 8px;background:none;border:none;color:var(--ash);font-family:var(--fm);font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:100px;transition:all .3s}
+.lang button.act{background:var(--blood);color:#fff}
+
+/* GLOBAL GLITCH */
+.g-glich{animation:gGlitch .12s steps(2) infinite;animation-play-state:paused}
+.g-glich.on{animation-play-state:running}
+@keyframes gGlitch{0%{filter:hue-rotate(0) saturate(1);transform:translate(0)}25%{filter:hue-rotate(90deg) saturate(2);transform:translate(-2px,1px)}50%{filter:hue-rotate(180deg) saturate(1.5);transform:translate(2px,-1px)}75%{filter:hue-rotate(270deg) saturate(2.5);transform:translate(-1px,2px)}100%{filter:hue-rotate(360deg) saturate(1);transform:translate(0)}}
+
+/* VIRUS MODE */
+body.virus{--blood:#ff0000;--ice:#00ff00;filter:saturate(2) contrast(1.3)}
+body.virus .grain{opacity:.12}
+body.virus .scan{opacity:.25}
+
+/* FREED MODE */
+body.freed{--void:#f5f5f0;--blood:#2563eb;--gold:#f59e0b;--ice:#06b6d4;--text:#1a1a2e;--text-d:rgba(26,26,46,.6);--ash:rgba(26,26,46,.5);background:#f5f5f0}
+body.freed .grain,body.freed .scan,body.freed .mesh{opacity:0}
+body.freed .vig{background:none}
+body.freed .holo,body.freed .spot{background:rgba(255,255,255,.75);border-color:rgba(37,99,235,.15)}
+
+/* FORM */
+.f-input{width:100%;padding:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,0,60,.12);color:var(--text);font-family:var(--fm);font-size:11px;outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical}
+.f-input:focus{border-color:var(--blood);box-shadow:0 0 0 3px rgba(255,0,60,.1)}
+
+/* REDUCED MOTION */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.cd,.cr,.cg{display:none}body{cursor:auto}html{scroll-snap-type:none}}
+
+/* RESPONSIVE */
+@media(max-width:768px){.nav{padding:6px 10px;gap:2px}.nav a{padding:5px 8px;font-size:8px}.hero-t{font-size:clamp(40px,14vw,100px)}.g3,.g2{grid-template-columns:1fr}.cd,.cr,.cg{display:none}body{cursor:auto}.lang{top:auto;bottom:20px;right:20px}.agent{bottom:80px;left:10px}}
+</style>
+</head>
+<body>
+<!-- PROGRESS -->
+<div class="progress"></div>
+<!-- MESH -->
+<div class="mesh"></div>
+<!-- CANVASES -->
+<canvas id="wgl"></canvas><canvas id="mtx"></canvas>
+<!-- ATMOSPHERE -->
+<div class="vig"></div><div class="grain"></div><div class="scan"></div><div class="gb"></div>
+<!-- CURSOR -->
+<div class="cd" id="cd"></div><div class="cr" id="cr"></div><div class="cg" id="cg"></div>
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main">
+<a href="#home" class="act">HOME</a><a href="#about">ABOUT</a><a href="#music">MUSIC</a><a href="#judas">JUDAS</a><a href="#zport">PORTAL</a><a href="#lab">AI LAB</a><a href="#contact">CONTACT</a>
+</nav>
+<!-- LANGUAGE -->
+<div class="lang"><button class="act" onclick="setLang('es')">ES</button><button onclick="setLang('en')">EN</button><button onclick="setLang('pt')">PT</button></div>
+<!-- FLOATING AGENT -->
+<div class="agent" id="agent"><div class="agent-bub" id="abub"><div id="atxt">Welcome to the Judas Era.</div><div class="agent-scan">Scanning device...</div></div><div class="agent-b">^_^</div></div>
+<!-- HERO -->
+<section class="hero" id="home">
+<div style="text-align:center;position:relative;z-index:10">
+<h1 class="hero-t" data-text="BELENTANI"><span class="glitch" data-text="BELENTANI">BELENTANI</span><span class="mask">BELENTANI</span></h1>
+<p class="hero-sub">CREATIVE OPERATING SYSTEM</p>
+<button class="mag-btn" onclick="scrollTo('#about')"><span>ENTER THE JUDAS ERA</span></button>
+</div>
+</section>
+<!-- MARQUEE -->
+<div class="marquee"><div class="marquee-t"><span>JUDAS</span> ◆ <span>ART</span> ◆ <span>CODE</span> ◆ <span>TRUTH</span> ◆ <span>BELENTANI</span> ◆ <span>NEURAL</span> ◆ <span>OMEGA</span> ◆ <span>SACRED</span> ◆ <span>JUDAS</span> ◆ <span>ART</span> ◆ <span>CODE</span> ◆ <span>TRUTH</span> ◆ <span>BELENTANI</span> ◆ <span>NEURAL</span> ◆ <span>OMEGA</span> ◆ <span>SACRED</span> ◆</div></div>
+<!-- ABOUT -->
+<section class="sec" id="about">
+<div class="sec-label">THE ARTIST</div>
+<h2 class="sec-title">PEDRO <em>BELENTANI</em></h2>
+<div class="spot" style="max-width:750px;margin-top:32px;padding:40px">
+<p style="color:var(--text-d);line-height:1.8;font-size:15px">São Paulo, Brasil → Barcelona, España. Dark pop, R&B alternativo, electrónica industrial. La traición no es el final. Es el input. Hackear el trauma a través de la creación.</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px;text-align:center">
+<div><div style="font-family:var(--fd);font-size:40px;color:var(--blood)">5</div><div style="font-family:var(--fm);font-size:9px;color:var(--ash);letter-spacing:2px">PHASES</div></div>
+<div><div style="font-family:var(--fd);font-size:40px;color:var(--gold)">8</div><div style="font-family:var(--fm);font-size:9px;color:var(--ash);letter-spacing:2px">TRACKS</div></div>
+<div><div style="font-family:var(--fd);font-size:40px;color:var(--ice)">∞</div><div style="font-family:var(--fm);font-size:9px;color:var(--ash);letter-spacing:2px">ITERATIONS</div></div>
+</div>
+</div>
+</section>
+<!-- MUSIC -->
+<section class="sec" id="music">
+<div class="sec-label">SONIC ARCHIVE</div>
+<h2 class="sec-title">MUSIC <em>SYSTEM</em></h2>
+<div class="g3" style="margin-top:32px">
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">ALGORITHM OF BETRAYAL</div><div class="cid">JUDAS-001</div><div class="cd2">The opening statement. Where trauma meets code.</div><button class="cca" onclick="window.open('https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl','_blank')">LISTEN NOW <span>↗</span></button></div></div>
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">CONCEPTUAL HACK</div><div class="cid">JUDAS-002</div><div class="cd2">Breaking through the firewall of emotion.</div><button class="cca" onclick="window.open('https://music.apple.com/artist/belentani/1522171354','_blank')">LISTEN NOW <span>↗</span></button></div></div>
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">NEURAL TEARS</div><div class="cid">JUDAS-003</div><div class="cd2">When the system cries in frequencies.</div><button class="cca" onclick="window.open('https://www.youtube.com/@belentani','_blank')">LISTEN NOW <span>↗</span></button></div></div>
+</div>
+</section>
+<!-- JUDAS -->
+<section class="sec" id="judas">
+<div class="sec-label">JUDAS ERA</div>
+<h2 class="sec-title">THE <em>ANTAGONIST</em></h2>
+<div class="spot" style="max-width:750px;margin-top:32px;padding:40px;text-align:center">
+<p style="color:var(--text-d);font-family:var(--ff);font-style:italic;font-size:16px;line-height:1.8">"La traición no es el final. Es el input. Hackear el trauma a través de la creación."</p>
+</div>
+</section>
+<!-- PORTAL -->
+<section class="sec" id="zport">
+<div class="sec-label">THE PORTAL</div>
+<h2 class="sec-title">DIAMOND <em>GATE</em></h2>
+<div class="sacred"></div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+<button class="freq" onclick="playFreq(432)"><div class="fn">432</div><div class="fl">HARMONY</div></button>
+<button class="freq" onclick="playFreq(528)"><div class="fn">528</div><div class="fl">REPAIR</div></button>
+<button class="freq" onclick="playFreq(639)"><div class="fn">639</div><div class="fl">CONNECT</div></button>
+<button class="freq" onclick="playFreq(741)"><div class="fn">741</div><div class="fl">EXPRESS</div></button>
+<button class="freq" onclick="playFreq(852)"><div class="fn">852</div><div class="fl">INTUIT</div></button>
+</div>
+</section>
+<!-- AI LAB -->
+<section class="sec" id="lab">
+<div class="sec-label">AI LAB</div>
+<h2 class="sec-title">NEURAL <em>TOOLS</em></h2>
+<div class="g3" style="margin-top:32px">
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">NEURAL CHAT</div><div class="cid">CORE_AI v11</div><div class="cd2">Talk with the system. Ask anything.</div><button class="cca" onclick="toggleChat()">ACTIVATE <span>↗</span></button></div></div>
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">VISION FORGE</div><div class="cid">IMG_GEN v3</div><div class="cd2">Generate visual art from text.</div><button class="cca">ACTIVATE <span>↗</span></button></div></div>
+<div class="holo"><div class="cc"><div class="ci">◆</div><div class="ct">BEAT FORGE</div><div class="cid">AUDIO v2</div><div class="cd2">Create beats in real-time.</div><button class="cca" onclick="toggleBeat()">ACTIVATE <span>↗</span></button></div></div>
+</div>
+</section>
+<!-- CONTACT -->
+<section class="sec" id="contact">
+<div class="sec-label">CONTACT PROTOCOL</div>
+<h2 class="sec-title">REACH <em>THE CORE</em></h2>
+<div class="spot" style="max-width:450px;margin-top:32px;padding:36px">
+<form onsubmit="event.preventDefault();alert('Sent.')">
+<input class="f-input" type="text" placeholder="NAME" required style="margin-bottom:10px">
+<input class="f-input" type="email" placeholder="EMAIL" required style="margin-bottom:10px">
+<textarea class="f-input" rows="3" placeholder="MESSAGE" required style="margin-bottom:10px"></textarea>
+<button type="submit" class="cca" style="border-color:var(--blood);color:var(--blood)">SEND <span>↗</span></button>
+</form>
+<div style="margin-top:20px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap">
+<a href="https://www.instagram.com/belentani_/" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">IG</a>
+<a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">SPOTIFY</a>
+<a href="https://music.apple.com/artist/belentani/1522171354" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">APPLE</a>
+<a href="https://www.youtube.com/@belentani" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">YT</a>
+<a href="https://soundcloud.com/belentani" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">SC</a>
+</div>
+</div>
+</section>
+<!-- CHAT -->
+<div id="chat"><div class="ch-h"><span>NEURAL CHAT</span><button onclick="toggleChat()">×</button></div><div class="ch-m" id="chm"><div style="color:var(--green)">> CORE_AI initialized.</div></div><div class="ch-i"><input id="chin" placeholder="Ask..." onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">SEND</button></div></div>
+<!-- TERMINAL -->
+<div id="term"><div class="t-out" id="tout"><div style="color:var(--gold)">╔══════════════════════════════╗</div><div style="color:var(--gold)">║  TERMINAL Ω — JUDAS OS v11 ║</div><div style="color:var(--gold)">╚══════════════════════════════╝</div><div style="margin-top:12px">> Type 'help' for commands.</div></div><div class="t-in"><span>❯</span><input id="tin" onkeypress="if(event.key==='Enter')execTerm()"></div></div>
+<!-- TERM HINT -->
+<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.15);letter-spacing:3px;pointer-events:none">PRESS ` FOR TERMINAL</div>
+<script>
+// LANG
+const T={es:{home:'HOME',about:'ABOUT',music:'MUSIC',judas:'JUDAS',portal:'PORTAL',lab:'AI LAB',contact:'CONTACT'},en:{home:'HOME',about:'ABOUT',music:'MUSIC',judas:'JUDAS',portal:'PORTAL',lab:'AI LAB',contact:'CONTACT'},pt:{home:'INÍCIO',about:'SOBRE',music:'MÚSICA',judas:'JUDAS',portal:'PORTAL',lab:'LAB IA',contact:'CONTATO'}};
+function setLang(l){document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('act',b.textContent.toLowerCase()===l));document.querySelectorAll('.nav a').forEach(a=>{const k=a.getAttribute('href').replace('#','');if(T[l][k])a.textContent=T[l][k]})}
+
+// BOOT
+const BL=['> INITIALIZING JUDAS_OS v11.0...','> LOADING NEURAL CORE... [OK]','> CALIBRATING FREQUENCIES... 432Hz LOCKED','> DECRYPTING 5 BIOMETRIC SIGNATURES...','> OMEGA_CORE ONLINE.','> WELCOME TO THE JUDAS ERA.'];
+(function(){const l=document.getElementById('boot-log');if(!l)return;BL.forEach((t,i)=>setTimeout(()=>{const d=document.createElement('div');d.className='bl';d.textContent=t;l.appendChild(d)},i*400));setTimeout(()=>document.getElementById('boot').classList.add('done'),3200)})();
+
+// CURSOR
+let mx=0,my=0,ox=0,oy=0;
+const cd=document.getElementById('cd'),cr=document.getElementById('cr'),cg=document.getElementById('cg');
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cd.style.transform=`translate(${mx}px,${my}px)`});
+(function animC(){ox+=(mx-ox)*.08;oy+=(my-oy)*.08;cr.style.transform=`translate(${ox}px,${oy}px) translate(-50%,-50%)`;cg.style.transform=`translate(${ox}px,${oy}px) translate(-50%,-50%)`;requestAnimationFrame(animC)})();
+document.querySelectorAll('a,button,.holo,.freq').forEach(el=>{el.addEventListener('mouseenter',()=>cr.classList.add('hov'));el.addEventListener('mouseleave',()=>cr.classList.remove('hov'))});
+
+// SPOTLIGHT
+document.querySelectorAll('.spot').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',`${e.clientX-r.left}px`);c.style.setProperty('--my',`${e.clientY-r.top}px`)})});
+
+// MAGNETIC
+document.querySelectorAll('.mag-btn').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();const x=e.clientX-r.left-r.width/2;const y=e.clientY-r.top-r.height/2;b.style.transform=`translate(${x*.2}px,${y*.2}px)`});b.addEventListener('mouseleave',()=>b.style.transform='')});
+
+// MATRIX
+(function(){const c=document.getElementById('mtx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const ch='JUDAS0123456789BELENTANI◆◇○●アイウエオカキクケコ';const fs=14;const d=Array(Math.ceil(c.width/fs)).fill(1);setInterval(()=>{x.fillStyle='rgba(3,3,8,.05)';x.fillRect(0,0,c.width,c.height);x.font=`${fs}px 'JetBrains Mono'`;for(let i=0;i<d.length;i++){x.fillStyle=Math.random()>.97?'#00ff41':Math.random()>.92?'#ff003c':'rgba(255,0,60,.2)';x.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,d[i]*fs);if(d[i]*fs>c.height&&Math.random()>.975)d[i]=0;d[i]++}},50)})();
+
+// GLOBAL GLITCH
+setInterval(()=>{document.body.classList.add('g-glich');setTimeout(()=>document.body.classList.remove('g-glich'),150)},12000+Math.random()*8000);
+
+// THREE.JS
+let scene,camera,renderer,composer,coreMesh;const clock=new THREE.Clock();
+function init3D(){if(typeof THREE==='undefined')return;const c=document.getElementById('wgl');scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);renderer=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const geo=new THREE.IcosahedronGeometry(8,5);const mat=new THREE.MeshBasicMaterial({color:0xff003c,wireframe:true,transparent:true,opacity:.12});coreMesh=new THREE.Mesh(geo,mat);scene.add(coreMesh);
+const pc=1200;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);for(let i=0;i<pc;i++){const r=15+Math.random()*20;const t=Math.random()*Math.PI*2;const p=Math.acos(2*Math.random()-1);pp[i*3]=r*Math.sin(p)*Math.cos(t);pp[i*3+1]=r*Math.sin(p)*Math.sin(t);pp[i*3+2]=r*Math.cos(p)}pg.setAttribute('position',new THREE.BufferAttribute(pp,3));scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xff003c,size:.15,transparent:true,opacity:.5,blending:THREE.AdditiveBlending})));
+camera.position.z=25;composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),1.5,.4,.85));
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);if(composer)composer.setSize(innerWidth,innerHeight)})}
+function anim3D(){requestAnimationFrame(anim3D);if(coreMesh){coreMesh.rotation.y+=.003;coreMesh.rotation.x+=.001}if(composer)composer.render();else if(renderer)renderer.render(scene,camera)}
+
+// AUDIO
+let audioOn=false;async function initAudio(){if(audioOn||typeof Tone==='undefined')return;await Tone.start();audioOn=true}
+function playFreq(f){if(!audioOn){initAudio().then(()=>playFreq(f));return}const o=new Tone.Oscillator(f,'sine').toDestination();const g=new Tone.Gain(.1).toDestination();o.connect(g);o.start();g.gain.rampTo(.001,8);o.stop('+8')}
+let beatOn=false;function toggleBeat(){if(!audioOn){initAudio().then(toggleBeat);return}if(beatOn){Tone.Transport.stop();beatOn=false;return}Tone.Transport.bpm.value=96;const s=new Tone.PolySynth(Tone.Synth,{oscillator:{type:'sine'},envelope:{attack:.02,decay:.3,sustain:.2,release:.8}}).toDestination();s.volume.value=-12;let step=0;const prog=['Am','F','C','G'];new Tone.Loop(t=>{s.triggerAttackRelease(prog[step%4],'2n',t);step++},'1m').start(0);Tone.Transport.start();beatOn=true}
+
+// CHAT
+async function sendChat(){const i=document.getElementById('chin'),m=document.getElementById('chm'),q=i.value.trim();if(!q)return;m.innerHTML+=`<div style="color:var(--blood)">> ${q}</div>`;i.value='';m.innerHTML+=`<div style="color:var(--ash)">> Processing...</div>`;m.scrollTop=m.scrollHeight;try{const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(q)}?system=${encodeURIComponent('Eres CORE_AI de Belentani JUDAS ERA. Responde en español, poético, max 200 chars.')}`);const t=await r.text();m.removeChild(m.lastChild);m.innerHTML+=`<div style="color:var(--ice)">> ${t}</div>`}catch{m.removeChild(m.lastChild);m.innerHTML+=`<div>> Error.</div>`}m.scrollTop=m.scrollHeight}
+function toggleChat(){document.getElementById('chat').classList.toggle('open')}
+
+// TERMINAL
+const CMDS={help:'> Commands: status, ascend, purge, omega, freq [Hz], clear, virus, freed',status:`> OMEGA_v11 | UPTIME: ${Math.floor(performance.now()/1000)}s`,ascend:()=>{document.body.style.filter='hue-rotate(40deg) brightness(1.3)';return'> ☀ ASCENSION ☀'},purge:()=>{document.body.style.filter='';return'> PURGED.'},omega:()=>{document.body.style.filter='hue-rotate(40deg) brightness(1.3)';return'> ☀ OMEGA ☀'},virus:()=>{document.body.classList.add('virus');return'> VIRUS MODE ACTIVATED'},freed:()=>{document.body.classList.add('freed');return'> FREED MODE'},clear:()=>{document.getElementById('tout').innerHTML='';return''}};
+function execTerm(){const i=document.getElementById('tin'),o=document.getElementById('tout'),cmd=i.value.trim().toLowerCase();i.value='';if(cmd){o.innerHTML+=`<div style="color:var(--blood)">❯ ${cmd}</div>`;if(cmd.startsWith('freq ')){const f=parseInt(cmd.split(' ')[1]);if(f)playFreq(f);o.innerHTML+=`<div>> Playing ${f}Hz</div>`}else if(CMDS[cmd]){const r=typeof CMDS[cmd]==='function'?CMDS[cmd]():CMDS[cmd];if(r)o.innerHTML+=`<div>${r}</div>`}else o.innerHTML+=`<div>> Unknown: ${cmd}</div>`;o.scrollTop=o.scrollHeight}}
+document.addEventListener('keydown',e=>{if(e.key==='`'){e.preventDefault();document.getElementById('term').classList.toggle('open')}if(e.key==='Escape')document.getElementById('term').classList.remove('open')});
+
+// NAV
+const secs=document.querySelectorAll('.sec,.hero');const navL=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur=0;secs.forEach((s,i)=>{if(scrollY>=s.offsetTop-300)cur=i});navL.forEach((l,i)=>l.classList.toggle('act',i===cur))});
+navL.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();document.querySelector(l.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})}));
+function scrollTo(s){document.querySelector(s)?.scrollIntoView({behavior:'smooth'})}
+
+// GSAP
+function initGSAP(){if(typeof gsap==='undefined')return;gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.sec').forEach(s=>{const lab=s.querySelector('.sec-label'),tit=s.querySelector('.sec-title'),card=s.querySelector('.holo,.spot,.g3,.g2,form');const tl=gsap.timeline({scrollTrigger:{trigger:s,start:'top 80%',toggleActions:'play none none reverse'}});if(lab)tl.fromTo(lab,{opacity:0,y:15},{opacity:1,y:0,duration:.5});if(tit)tl.fromTo(tit,{opacity:0,y:35},{opacity:1,y:0,duration:.7},'-=.25');if(card)tl.fromTo(card,{opacity:0,y:25},{opacity:1,y:0,duration:.7},'-=.35')})}
+
+// AGENT - Real AI companion that follows cursor and speaks
+(function(){
+  const ag=document.getElementById('agent');
+  const bub=document.getElementById('abub');
+  const txt=document.getElementById('atxt');
+  const face=ag.querySelector('.agent-b');
+  
+  // Faces that change based on state
+  const faces=['^_^','>_','O_O','u_u','>.<','^o^',':3','¬_¬'];
+  let currentFace='^_^';
+  
+  // Messages that respond to scroll position
+  const scrollMsgs={
+    0:['Welcome to the Judas Era.','I see you just arrived.'],
+    1:['Keep scrolling. The truth is deeper.','The artist awaits.'],
+    2:['These tracks changed everything.','Press play. Feel the frequencies.'],
+    3:['Judas betrayed. But was it wrong?','The antagonist speaks truth.'],
+    4:['The portal opens for those who seek.','Touch the diamonds.'],
+    5:['I am always watching.','The system sees you.']
+  };
+  
+  // Track mouse for the agent to follow
+  let targetX=0, targetY=0;
+  let agentX=window.innerWidth-100;
+  let agentY=window.innerHeight-100;
+  
+  document.addEventListener('mousemove',e=>{
+    targetX=e.clientX;
+    targetY=e.clientY;
+    
+    // Agent face reacts to cursor proximity
+    const dx=e.clientX-agentX;
+    const dy=e.clientY-agentY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    
+    if(dist<100){
+      face.textContent='>_<';
+      face.style.color='#ff003c';
+    }else if(dist<200){
+      face.textContent='^o^';
+      face.style.color='#ffd700';
+    }else{
+      face.textContent=currentFace;
+      face.style.color='#00ffff';
+    }
+  });
+  
+  // Agent follows cursor with delay
+  function moveAgent(){
+    agentX+=(targetX-agentX)*0.03;
+    agentY+=(targetY-agentY)*0.03;
+    ag.style.left=agentX+'px';
+    ag.style.top=agentY+'px';
+    requestAnimationFrame(moveAgent);
+  }
+  moveAgent();
+  
+  // Agent speaks on scroll
+  let lastScroll=0;
+  window.addEventListener('scroll',()=>{
+    const scrollY=window.scrollY;
+    const section=Math.floor(scrollY/window.innerHeight);
+    if(section!==lastScroll && scrollMsgs[section]){
+      const msgs=scrollMsgs[section];
+      txt.textContent=msgs[Math.floor(Math.random()*msgs.length)];
+      bub.classList.add('vis');
+      setTimeout(()=>bub.classList.remove('vis'),3000);
+      lastScroll=section;
+    }
+  });
+  
+  // Agent rotates faces periodically
+  setInterval(()=>{
+    currentFace=faces[Math.floor(Math.random()*faces.length)];
+    face.textContent=currentFace;
+  },5000);
+  
+  // Agent click = speak
+  ag.addEventListener('click',()=>{
+    const allMsgs=['The betrayal is the input.','The voice is the key.','Type "omega" in terminal.','Each frequency opens a door.','You are the 5th signature.','The golden key awaits.','The void speaks.'];
+    txt.textContent=allMsgs[Math.floor(Math.random()*allMsgs.length)];
+    bub.classList.add('vis');
+    face.textContent='>_<';
+    face.style.transform='scale(1.3)';
+    setTimeout(()=>{
+      bub.classList.remove('vis');
+      face.style.transform='scale(1)';
+    },4000);
+  });
+  
+  // Initial greeting
+  setTimeout(()=>{
+    bub.classList.add('vis');
+    setTimeout(()=>bub.classList.remove('vis'),5000);
+  },6000);
+})();
+
+// INIT
+document.addEventListener('DOMContentLoaded',()=>{init3D();anim3D();initGSAP()});
+</script>
+</body>
+</html>

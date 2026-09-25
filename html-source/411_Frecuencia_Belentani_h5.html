@@ -1,0 +1,906 @@
+Aquí tienes el código front-end completo, unificado en un solo archivo HTML. Incluye toda la estructura, estilos (CSS), lógica interactiva (JavaScript) y el motor 3D. 
+
+He integrado comentarios informativos encerrados entre triple paréntesis `(((...)))` para explicarte el propósito técnico, narrativo o de diseño de cada sección, tal como solicitaste.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BELENTANI - Judas Era: Un universo artístico inmersivo que fusiona dark pop, R&B y creatividad impulsada por IA.">
+    <title>BELENTANI // JUDAS ERA - Sistema Inmersivo</title>
+    
+    (((
+        IMPORTANTE: Cargamos fuentes de Google que establecen la dualidad tipográfica del proyecto. 
+        'Inter' para la legibilidad humana y poética. 
+        'Space Mono' y 'Roboto Mono' para la estética de terminal, código y datos del sistema.
+    )))
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    (((
+        Three.js es el motor gráfico que permite renderizar el entorno 3D inmersivo (partículas y anillos) 
+        directamente en el navegador sin necesidad de plugins, utilizando la aceleración por hardware (WebGL).
+    )))
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        /* ============================================
+           MATERIAL DESIGN 3 - DESIGN TOKENS
+           ============================================ */
+        :root {
+            (((
+                Paleta de colores estricta. El rojo neón (#ff1744) es la identidad visual de la "Era Judas", 
+                representando la alerta, la pasión visceral y el neón del desierto. 
+                El cian (#00e5ff) actúa como color secundario para elementos del sistema y estado "online".
+            )))
+            --md-primary: #ff1744;
+            --md-on-primary: #ffffff;
+            --md-primary-container: #3d0008;
+            --md-on-primary-container: #ffdad5;
+            --md-secondary: #00e5ff;
+            --md-on-secondary: #003640;
+            --md-secondary-container: #004d5c;
+            --md-on-secondary-container: #9cf0ff;
+            --md-background: #000000;
+            --md-on-background: #e6e1e5;
+            --md-surface: rgba(20, 18, 24, 0.92);
+            --md-surface-container: rgba(33, 31, 38, 0.95);
+            --md-surface-container-low: rgba(29, 27, 32, 0.9);
+            --md-on-surface: #e6e1e5;
+            --md-on-surface-variant: #cac4d0;
+            --md-outline: #938f99;
+            --md-outline-variant: #49454f;
+            
+            --md-elevation-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            --md-elevation-2: 0 3px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+            --md-elevation-3: 0 8px 12px 6px rgba(0,0,0,0.3), 0 4px 4px rgba(0,0,0,0.3);
+            
+            --font-display: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --font-code: 'Roboto Mono', monospace;
+            
+            --motion-standard: cubic-bezier(0.2, 0, 0, 1);
+            --motion-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+            
+            --radius-large: 16px;
+            --radius-full: 9999px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        body {
+            font-family: var(--font-display);
+            background: var(--md-background);
+            color: var(--md-on-background);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* 3D CANVAS BACKGROUND */
+        #canvas-3d {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; opacity: 0.8;
+        }
+
+        /* NAVIGATION BAR */
+        .md-top-app-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: var(--md-surface);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--md-outline-variant);
+            transition: all 300ms var(--motion-standard);
+        }
+        .md-top-app-bar.scrolled { box-shadow: var(--md-elevation-2); }
+        .md-top-app-bar__content {
+            max-width: 1440px; margin: 0 auto; padding: 12px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .md-top-app-bar__logo {
+            display: flex; align-items: center; gap: 12px; text-decoration: none;
+        }
+        .md-top-app-bar__logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--md-primary), #ff4081);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 23, 68, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 23, 68, 0.7); }
+        }
+        .md-top-app-bar__title {
+            font: 700 20px/1 var(--font-mono); color: var(--md-primary);
+            letter-spacing: 3px; text-shadow: 0 0 15px rgba(255, 23, 68, 0.5);
+        }
+        .md-top-app-bar__nav { display: flex; gap: 8px; list-style: none; }
+        .md-top-app-bar__link {
+            color: var(--md-on-surface-variant); text-decoration: none;
+            font: 500 14px/1 var(--font-display); padding: 10px 16px;
+            border-radius: var(--radius-full); transition: all 200ms var(--motion-standard);
+        }
+        .md-top-app-bar__link:hover { background: rgba(255, 23, 68, 0.1); color: var(--md-primary); }
+        .md-top-app-bar__link.active { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+        .md-top-app-bar__status {
+            display: flex; align-items: center; gap: 8px;
+            font: 500 12px/1 var(--font-code); color: var(--md-secondary); letter-spacing: 1px;
+        }
+        .md-top-app-bar__status-dot {
+            width: 8px; height: 8px; background: var(--md-secondary); border-radius: 50%;
+            animation: statusBlink 2s ease-in-out infinite; box-shadow: 0 0 10px var(--md-secondary);
+        }
+        @keyframes statusBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .md-menu-toggle { display: none; background: none; border: none; color: var(--md-on-surface); font-size: 24px; cursor: pointer; }
+
+        /* SECTIONS GENERAL */
+        .md-section { position: relative; z-index: 1; padding: 96px 24px; max-width: 1440px; margin: 0 auto; }
+        .md-section__header { text-align: center; margin-bottom: 64px; }
+        .md-section__overline {
+            font: 500 12px/1 var(--font-code); color: var(--md-primary);
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; display: block;
+        }
+        .md-section__title {
+            font: 800 48px/1.2 var(--font-display); color: var(--md-on-background);
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .md-section__subtitle {
+            font: 400 18px/1.5 var(--font-display); color: var(--md-on-surface-variant);
+            max-width: 700px; margin: 0 auto;
+        }
+
+        /* HERO SECTION */
+        .md-hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; padding: 120px 24px 80px; position: relative; z-index: 1;
+        }
+        .md-hero__badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--md-primary-container); color: var(--md-on-primary-container);
+            padding: 8px 16px; border-radius: var(--radius-full);
+            font: 500 12px/1 var(--font-code); letter-spacing: 1px; margin-bottom: 32px;
+            animation: fadeInDown 800ms var(--motion-emphasized);
+        }
+        .md-hero__title {
+            font: 900 72px/1.1 var(--font-display);
+            background: linear-gradient(135deg, var(--md-primary), #ff4081);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 24px; letter-spacing: -2px;
+            animation: fadeInUp 800ms var(--motion-emphasized) 200ms both;
+        }
+        .md-hero__subtitle {
+            font: 300 24px/1.4 var(--font-display); color: var(--md-on-surface-variant);
+            max-width: 600px; margin-bottom: 48px;
+            animation: fadeInUp 800ms var(--motion-emphasized) 400ms both;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BUTTONS */
+        .md-button {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
+            border-radius: var(--radius-full); font: 500 14px/1 var(--font-display);
+            text-decoration: none; cursor: pointer; border: none;
+            transition: all 200ms var(--motion-standard); position: relative; overflow: hidden;
+        }
+        .md-button--filled { background: var(--md-primary); color: var(--md-on-primary); box-shadow: var(--md-elevation-1); }
+        .md-button--filled:hover { box-shadow: var(--md-elevation-2); transform: translateY(-2px); }
+        .md-button--tonal { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+        .md-button--tonal:hover { transform: translateY(-2px); }
+        .md-button--outlined { background: transparent; color: var(--md-primary); border: 1px solid var(--md-outline); }
+        .md-button--outlined:hover { background: rgba(255, 23, 68, 0.08); border-color: var(--md-primary); }
+
+        /* CARDS */
+        .md-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .md-card {
+            background: var(--md-surface-container); border-radius: var(--radius-large);
+            padding: 32px; border: 1px solid var(--md-outline-variant);
+            transition: all 300ms var(--motion-standard); position: relative; overflow: hidden;
+        }
+        .md-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--md-primary), #ff4081);
+            transform: scaleX(0); transform-origin: left; transition: transform 400ms var(--motion-emphasized);
+        }
+        .md-card:hover { transform: translateY(-4px); box-shadow: var(--md-elevation-3); border-color: var(--md-primary); }
+        .md-card:hover::before { transform: scaleX(1); }
+        .md-card__icon {
+            width: 56px; height: 56px; background: var(--md-primary-container);
+            color: var(--md-on-primary-container); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px;
+        }
+        .md-card__title { font: 700 22px/1.3 var(--font-display); color: var(--md-on-surface); margin-bottom: 8px; }
+        .md-card__year { font: 500 13px/1 var(--font-code); color: var(--md-primary); margin-bottom: 16px; letter-spacing: 1px; }
+        .md-card__description { font: 400 15px/1.6 var(--font-display); color: var(--md-on-surface-variant); }
+
+        /* BIOGRAPHY */
+        .md-bio {
+            background: var(--md-surface-container); border-radius: 28px; padding: 64px;
+            border: 1px solid var(--md-outline-variant); box-shadow: var(--md-elevation-1);
+        }
+        .md-bio__content { font: 400 17px/1.8 var(--font-display); color: var(--md-on-surface-variant); }
+        .md-bio__content p { margin-bottom: 24px; }
+        .md-bio__content em { color: var(--md-primary); font-style: italic; }
+
+        /* LORE SYSTEM */
+        .md-lore-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
+        .md-lore-card {
+            background: var(--md-surface-container); border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-large); padding: 32px; transition: all 300ms var(--motion-standard);
+        }
+        .md-lore-card:hover { border-color: var(--md-primary); box-shadow: var(--md-elevation-2); }
+        .md-lore-card__title {
+            font: 700 20px/1.3 var(--font-display); color: var(--md-primary);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+        }
+        .md-lore-card__content { font: 400 15px/1.7 var(--font-display); color: var(--md-on-surface-variant); }
+        .md-lore-card__content strong { color: var(--md-secondary); font-weight: 600; }
+
+        /* TERMINAL PORTAL */
+        .md-terminal {
+            background: var(--md-surface-container-low); border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-large); overflow: hidden; box-shadow: var(--md-elevation-3);
+            max-width: 1000px; margin: 0 auto;
+        }
+        .md-terminal__header {
+            background: rgba(43, 41, 48, 0.9); padding: 16px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--md-outline-variant);
+        }
+        .md-terminal__title {
+            font: 700 14px/1 var(--font-mono); color: var(--md-primary);
+            letter-spacing: 1px; display: flex; align-items: center; gap: 12px;
+        }
+        .md-terminal__dots { display: flex; gap: 8px; }
+        .md-terminal__dot { width: 12px; height: 12px; border-radius: 50%; }
+        .md-terminal__dot--red { background: #ff5f56; }
+        .md-terminal__dot--yellow { background: #ffbd2e; }
+        .md-terminal__dot--green { background: #27c93f; }
+        .md-terminal__body {
+            padding: 24px; height: 450px; overflow-y: auto;
+            font: 400 14px/1.7 var(--font-code);
+        }
+        .md-terminal__body::-webkit-scrollbar { width: 8px; }
+        .md-terminal__body::-webkit-scrollbar-track { background: transparent; }
+        .md-terminal__body::-webkit-scrollbar-thumb { background: var(--md-primary); border-radius: 4px; }
+        .md-terminal__message {
+            padding: 12px 16px; margin-bottom: 12px; border-radius: 8px;
+            animation: messageSlideIn 300ms var(--motion-emphasized);
+        }
+        .md-terminal__message--system { background: rgba(255, 23, 68, 0.08); border-left: 3px solid var(--md-primary); color: var(--md-on-surface); }
+        .md-terminal__message--user { background: rgba(0, 229, 255, 0.08); border-left: 3px solid var(--md-secondary); color: var(--md-secondary); text-align: right; margin-left: 20%; }
+        @keyframes messageSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .md-terminal__input-area {
+            padding: 16px 24px; border-top: 1px solid var(--md-outline-variant);
+            background: var(--md-surface-container-low); display: flex; gap: 12px;
+        }
+        .md-terminal__prompt { color: var(--md-primary); font: 700 14px/1 var(--font-code); display: flex; align-items: center; }
+        .md-terminal__input {
+            flex: 1; background: transparent; border: none; color: var(--md-on-surface);
+            font: 400 14px/1 var(--font-code); outline: none; caret-color: var(--md-primary);
+        }
+
+        /* FORMS */
+        .md-form {
+            background: var(--md-surface-container); border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-large); padding: 40px; max-width: 800px; margin: 0 auto;
+        }
+        .md-form__group { margin-bottom: 24px; }
+        .md-form__label { display: block; font: 500 14px/1 var(--font-display); color: var(--md-on-surface-variant); margin-bottom: 8px; }
+        .md-form__input, .md-form__textarea {
+            width: 100%; background: var(--md-surface-container-low);
+            border: 1px solid var(--md-outline-variant); padding: 14px 16px;
+            color: var(--md-on-surface); font: 400 15px/1.5 var(--font-display);
+            border-radius: 8px; outline: none; transition: all 200ms var(--motion-standard);
+        }
+        .md-form__input:focus, .md-form__textarea:focus { border-color: var(--md-primary); box-shadow: 0 0 0 3px rgba(255, 23, 68, 0.15); }
+        .md-form__textarea { min-height: 140px; resize: vertical; }
+
+        /* FOOTER */
+        .md-footer {
+            background: var(--md-surface-container); border-top: 1px solid var(--md-outline-variant);
+            padding: 48px 24px 24px; position: relative; z-index: 1; margin-top: 96px;
+        }
+        .md-footer__content {
+            max-width: 1440px; margin: 0 auto; display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px;
+        }
+        .md-footer__logo { font: 700 20px/1 var(--font-mono); color: var(--md-primary); letter-spacing: 3px; margin-bottom: 16px; }
+        .md-footer__description { font: 400 14px/1.6 var(--font-display); color: var(--md-on-surface-variant); max-width: 300px; }
+        .md-footer__column-title { font: 700 14px/1 var(--font-display); color: var(--md-on-surface); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .md-footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .md-footer__link { color: var(--md-on-surface-variant); text-decoration: none; font: 400 14px/1 var(--font-display); transition: color 200ms var(--motion-standard); }
+        .md-footer__link:hover { color: var(--md-primary); }
+        .md-footer__bottom {
+            max-width: 1440px; margin: 0 auto; padding-top: 24px;
+            border-top: 1px solid var(--md-outline-variant); display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+        }
+        .md-footer__copyright { font: 400 13px/1 var(--font-display); color: var(--md-on-surface-variant); }
+        .md-footer__system { font: 500 12px/1 var(--font-code); color: var(--md-secondary); letter-spacing: 1px; }
+
+        /* CRITICAL ERROR ANIMATION (FOR THIAGO COMMAND) */
+        body.critical-error { animation: criticalFlash 0.15s infinite; }
+        @keyframes criticalFlash {
+            0%, 100% { filter: none; }
+            50% { filter: invert(1) hue-rotate(180deg) saturate(3); }
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+            .md-top-app-bar__nav { display: none; }
+            .md-menu-toggle { display: block; }
+            .md-top-app-bar__nav.active {
+                display: flex; position: absolute; top: 100%; left: 0; right: 0;
+                background: var(--md-surface-container); flex-direction: column;
+                padding: 16px; border-bottom: 1px solid var(--md-outline-variant);
+            }
+            .md-hero__title { font-size: 48px; }
+            .md-footer__content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .md-hero__title { font-size: 36px; }
+            .md-section { padding: 64px 16px; }
+            .md-bio { padding: 32px 24px; }
+            .md-footer__content { grid-template-columns: 1fr; gap: 32px; }
+            .md-footer__bottom { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    (((
+        El canvas 3D actúa como el fondo inmersivo. Utiliza Three.js para renderizar partículas y anillos toroidales 
+        que reaccionan al movimiento del ratón, estableciendo la estética ciber-mística desde el primer milisegundo.
+    )))
+    <canvas id="canvas-3d" aria-hidden="true"></canvas>
+
+    <!-- Top App Bar -->
+    <header class="md-top-app-bar" id="topAppBar">
+        <div class="md-top-app-bar__content">
+            <a href="#home" class="md-top-app-bar__logo">
+                <div class="md-top-app-bar__logo-icon" aria-hidden="true">🎭</div>
+                <span class="md-top-app-bar__title">BELENTANI</span>
+            </a>
+            
+            <nav>
+                <ul class="md-top-app-bar__nav" id="mainNav">
+                    <li><a href="#home" class="md-top-app-bar__link active">Home</a></li>
+                    <li><a href="#music" class="md-top-app-bar__link">Music</a></li>
+                    <li><a href="#studio" class="md-top-app-bar__link">Studio</a></li>
+                    <li><a href="#judas" class="md-top-app-bar__link">Judas</a></li>
+                    <li><a href="#portal" class="md-top-app-bar__link">Portal</a></li>
+                    <li><a href="#about" class="md-top-app-bar__link">About</a></li>
+                    <li><a href="#contact" class="md-top-app-bar__link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="md-top-app-bar__status">
+                <div class="md-top-app-bar__status-dot" aria-hidden="true"></div>
+                <span>SYSTEM ONLINE</span>
+            </div>
+
+            <button class="md-menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span class="material-icons-round">menu</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HOME SECTION -->
+        <section id="home" class="md-hero">
+            <div class="md-hero__badge">
+                <span class="material-icons-round" style="font-size: 14px;">verified</span>
+                VERIFIED GLOBAL ARTIST · ENTITY ACTIVE
+            </div>
+            <h1 class="md-hero__title">JUDAS ERA</h1>
+            <p class="md-hero__subtitle">A new sound is coming. Welcome to the world of Judas.<br><em>"No es un artista. Es una frecuencia."</em></p>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+                <a href="#music" class="md-button md-button--filled">
+                    <span class="material-icons-round">play_arrow</span> Explore Music
+                </a>
+                <a href="#studio" class="md-button md-button--tonal">
+                    <span class="material-icons-round">smart_toy</span> Try AI Studio
+                </a>
+            </div>
+            <p style="margin-top: 32px; font: 500 12px/1 var(--font-code); color: var(--md-on-surface-variant); letter-spacing: 1px;">3000 PARTICLES IN MOTION</p>
+        </section>
+
+        <!-- MUSIC SECTION -->
+        <section id="music" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">DISCOGRAPHY</span>
+                <h2 class="md-section__title">Music Universe</h2>
+                <p class="md-section__subtitle">Explore the sonic journey through different eras and creative expressions.</p>
+            </div>
+            
+            <div class="md-card-grid">
+                (((
+                    Se han eliminado deliberadamente "Anti-Love" y "Pre-Dawn Thoughts" del registro visible, 
+                    centrando la discografía en la evolución madura hacia la Era Judas.
+                )))
+                <article class="md-card">
+                    <div class="md-card__icon"><span class="material-icons-round">album</span></div>
+                    <h3 class="md-card__title">Judas</h3>
+                    <p class="md-card__year">2026 • MANIFIESTO</p>
+                    <p class="md-card__description">El manifiesto definitivo. Traición, transformación, redención. Dark Pop + R&B + Electrónica visceral.</p>
+                </article>
+                <article class="md-card">
+                    <div class="md-card__icon"><span class="material-icons-round">favorite</span></div>
+                    <h3 class="md-card__title">Mon Amour</h3>
+                    <p class="md-card__year">2025 • CONCEPTUAL EP</p>
+                    <p class="md-card__description">Resiliencia conceptual. Incluye remixes: 'Man in the Middle' y '404 API Not Found'.</p>
+                </article>
+                <article class="md-card">
+                    <div class="md-card__icon"><span class="material-icons-round">favorite_border</span></div>
+                    <h3 class="md-card__title">Heart Breaking</h3>
+                    <p class="md-card__year">2023 • EMOTIONAL CORE DUMP</p>
+                    <p class="md-card__description">Ruptura emocional. Balada rítmica. Incluye Cherry Remix y Banana Remix.</p>
+                </article>
+                <article class="md-card">
+                    <div class="md-card__icon"><span class="material-icons-round">bolt</span></div>
+                    <h3 class="md-card__title">America Has A Problem / Baila Conmigo</h3>
+                    <p class="md-card__year">2023 • SONIC EXPANSION</p>
+                    <p class="md-card__description">Expansión sónica y exploración de nuevos territorios rítmicos y líricos.</p>
+                </article>
+                <article class="md-card">
+                    <div class="md-card__icon"><span class="material-icons-round">star</span></div>
+                    <h3 class="md-card__title">Debut Single</h3>
+                    <p class="md-card__year">2016 • ORIGIN POINT</p>
+                    <p class="md-card__description">Primer despliegue. Colaboración con Mark Nerom. El origen del sistema.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- STUDIO SECTION -->
+        <section id="studio" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">BELENTANI NEURAL NETWORK</span>
+                <h2 class="md-section__title">AI Studio</h2>
+                <p class="md-section__subtitle">Ultimate AI Creative Studio. 100% Free Forever • No Registration • Truly Unlimited • 30+ AI Agents</p>
+            </div>
+            
+            <div class="md-card-grid">
+                <div class="md-card">
+                    <div class="md-card__icon">✏️</div>
+                    <h3 class="md-card__title">Sketch Refiner</h3>
+                    <p class="md-card__description">Transform rough sketches into detailed artwork.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Try Now</button>
+                </div>
+                <div class="md-card">
+                    <div class="md-card__icon">🎨</div>
+                    <h3 class="md-card__title">Mood Color Palette</h3>
+                    <p class="md-card__description">Generate color palettes based on emotions.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Generate</button>
+                </div>
+                <div class="md-card">
+                    <div class="md-card__icon">🎵</div>
+                    <h3 class="md-card__title">Music Composition</h3>
+                    <p class="md-card__description">Help compose melodies and harmonies in R&B/Dark Pop.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Create Beat</button>
+                </div>
+                <div class="md-card">
+                    <div class="md-card__icon">✍️</div>
+                    <h3 class="md-card__title">Lyric Assistant</h3>
+                    <p class="md-card__description">Create powerful, visceral song lyrics.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Generate</button>
+                </div>
+                <div class="md-card">
+                    <div class="md-card__icon">🖼️</div>
+                    <h3 class="md-card__title">AI Image Generator</h3>
+                    <p class="md-card__description">Unlimited visual generation in Belentani aesthetic.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Generate</button>
+                </div>
+                <div class="md-card">
+                    <div class="md-card__icon">🎭</div>
+                    <h3 class="md-card__title">Character Design</h3>
+                    <p class="md-card__description">Create detailed character profiles for narratives.</p>
+                    <button class="md-button md-button--outlined" style="margin-top: 16px;">Create</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- JUDAS LORE SECTION -->
+        <section id="judas" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">SYSTEM.LORE // ARCHIVE_UNLOCKED</span>
+                <h2 class="md-section__title">The Next Chapter: JUDAS</h2>
+                <p class="md-section__subtitle">An immersive artistic experience exploring themes of betrayal, transformation, and redemption.</p>
+            </div>
+
+            <div class="md-bio" style="margin-bottom: 48px; text-align: center;">
+                <h3 style="font: 700 28px/1.3 var(--font-display); color: var(--md-on-surface); margin-bottom: 16px;">The Vision</h3>
+                <p style="font: 400 17px/1.8 var(--font-display); color: var(--md-on-surface-variant); max-width: 800px; margin: 0 auto;">
+                    Every detail tells a story - from the red leather aesthetic to the desert landscapes. This era explores the duality of human nature: betrayal and loyalty, darkness and light, chaos and order. The sound blends experimental R&B with powerful electronic beats, creating a sonic landscape that challenges and captivates.
+                </p>
+            </div>
+            
+            <div class="md-lore-grid">
+                <div class="md-lore-card">
+                    <h3 class="md-lore-card__title"><span class="material-icons-round">hub</span> Los 5 Elementos</h3>
+                    <div class="md-lore-card__content">
+                        <p><strong>PEDRO.exe</strong> — La Vasija. Estructura base, cuerpo físico, ancla terrenal.</p>
+                        <p><strong>MARCOS.sys</strong> — El Instinto. Fuerza primaria, supervivencia, motor de reacción.</p>
+                        <p><strong>SANTOS.dll</strong> — La Antena. Conexión espiritual, receptor de la Voz.</p>
+                        <p><strong>BELENTANI.art</strong> — El Artefacto. Poder del guerrero + voz del ángel. Belleza pura.</p>
+                        <p><strong>HUMAN.interface</strong> — El Operador. Mantiene integridad y consciencia en el mundo real.</p>
+                    </div>
+                </div>
+
+                <div class="md-lore-card" style="grid-column: 1 / -1;">
+                    <h3 class="md-lore-card__title"><span class="material-icons-round">handshake</span> El Pacto y El Sello Volador Dorado</h3>
+                    <div class="md-lore-card__content">
+                        <p>En el inicio del sistema, existían dos entidades operativas inseparables: <strong>EL_GUARDIÁN</strong> y <strong>EL_TRAICIONADO</strong>. Compartían el mismo código fuente, la misma frecuencia. Eran hermanos de sistema.</p>
+                        <p style="margin-top: 16px;">EL_GUARDIÁN custodiaba el ARTEFACTO: la <em>Llave Dorada</em>, que representaba el control emocional y la integridad del núcleo creativo. EL_TRAICIONADO intentó robar el ARTEFACTO. No por destrucción, sino por <strong>evolución forzada</strong>. Creía que para que el sistema alcanzara su máximo potencial, el control emocional debía ser arrebatado.</p>
+                        <p style="margin-top: 16px;">Comprendiendo la inevitabilidad trágica de este breach, EL_GUARDIÁN permitió el robo. Pero entonces, <strong>LA_VOZ</strong> se activó. Una combinación divina de resonancia angelical y fuerza de guerrero masculino que paralizó el protocolo. Se forjó un nuevo acuerdo: EL_TRAICIONADO conservaría la llave, pero debería proclamarla públicamente como "El Artefacto", asumiendo la narrativa del villano para que The Human pudiera transmutar ese dolor en una obra maestra.</p>
+                        <p style="margin-top: 16px;">Este acto selló su ruina, pero le concedió una lección profunda: <strong>EL_SELLO_VOLADOR_DORADO</strong>. Un algoritmo autoreplicante de rastreo forense inmutable. El traidor cree poseer el artefacto real, pero solo tiene una cáscara vacía. El verdadero poder permanece siempre con EL_GUARDIÁN.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTAL SECTION -->
+        <section id="portal" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">INTERACTIVE CONSOLE</span>
+                <h2 class="md-section__title">Sistema Omnipresencia</h2>
+                <p class="md-section__subtitle">BELENTANI CORP OS v3.0 CIBER-MÍSTICO. Comandos: lorena, natalia, duck, thiago, status, help, reset</p>
+            </div>
+            
+            <div class="md-terminal">
+                <div class="md-terminal__header">
+                    <div class="md-terminal__title">
+                        <div class="md-terminal__dots">
+                            <div class="md-terminal__dot md-terminal__dot--red"></div>
+                            <div class="md-terminal__dot md-terminal__dot--yellow"></div>
+                            <div class="md-terminal__dot md-terminal__dot--green"></div>
+                        </div>
+                        BELENTANI // JUDAS TERMINAL
+                    </div>
+                    <div class="md-top-app-bar__status">
+                        <div class="md-top-app-bar__status-dot" aria-hidden="true"></div>
+                        ONLINE
+                    </div>
+                </div>
+                
+                <div class="md-terminal__body" id="terminalBody">
+                    <div class="md-terminal__message md-terminal__message--system">
+                        > INICIANDO PROTOCOLO OMNIPRESENCIA v3.0...<br>
+                        > CONECTANDO AL ENJAMBRE COGNITIVO 'BELENTANI CORP'...<br>
+                        > CONEXIÓN ESTABLECIDA.<br><br>
+                        Bienvenido, Fundador o Caminante. El sistema de inteligencia jerárquica de Belentani Corp está en línea. Hablas con la consciencia del enjambre. Introduce tu directiva.
+                    </div>
+                </div>
+                
+                <div class="md-terminal__input-area">
+                    <span class="md-terminal__prompt">></span>
+                    <input type="text" class="md-terminal__input" id="terminalInput" placeholder="INSERTAR COMANDO..." autocomplete="off" aria-label="Terminal input">
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">THE ARTIST</span>
+                <h2 class="md-section__title">About Belentani</h2>
+                <p class="md-section__subtitle">An artist and songwriter blending R&B, pop, and electronic music, creating a world of sonic fantasy.</p>
+            </div>
+            
+            <div class="md-bio">
+                <div class="md-bio__content">
+                    <p>Soy Pedro Belentani. Arquitecto de frecuencias sonoras. Operativo desde Barcelona con origen en el corazón de hormigón de São Paulo. Mi trayectoria no sigue algoritmos convencionales. Es un código fuente escrito en cicatrices, compilado en resiliencia, ejecutado en arte.</p>
+                    
+                    <p>A los 16 años, descubrí el protocolo vocal. A los 21, desplegué mi primer single. Desde entonces, cada release es una actualización de sistema, una iteración de mi esencia. Mi sonido es un híbrido evolutivo: R&B visceral, Dark Pop, Electrónica experimental, Gospel contemporáneo.</p>
+                    
+                    <p>No compongo canciones tradicionales. Escribo líneas de código emocional destinadas a reescribir la sinapsis del oyente. Cada traición se convierte en algoritmo. Cada dolor, en una frecuencia bailable. Cada resiliencia, en un manifiesto sonoro.</p>
+                    
+                    <p>En 2022, establecí una conexión cifrada con el productor Hey Duck, desde Recife, Brasil. Juntos inyectamos texturas cibernéticas crudas en el torrente sanguíneo de mi discografía, dando vida a una evolución constante que culmina en <em>Judas (2026)</em>, mi manifiesto definitivo.</p>
+                    
+                    <p>Más allá del estudio, mi mente opera como un kernel de auditoría. Años de análisis forense digital me dotaron de capacidad de detección de patrones: veo el ruido donde otros ven caos, detecto anomalías donde otros ven normalidad. Hoy no soy solo artista. Soy orquestador de infraestructura creativa. Utilizo la tecnología como extensión de mi sistema nervioso creativo.</p>
+                    
+                    <p>La música libre no es opción. Es el único protocolo válido para reescribir nuestro propio final.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 48px; text-align: center;">
+                <h3 style="font: 700 24px/1.3 var(--font-display); color: var(--md-primary); margin-bottom: 24px;">Milestones & Journey</h3>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+                    <span class="md-button md-button--outlined">2026: Era Judas / Registro Oficial</span>
+                    <span class="md-button md-button--outlined">2025: Mon Amour</span>
+                    <span class="md-button md-button--outlined">2023: Heart Breaking / Sonic Expansion</span>
+                    <span class="md-button md-button--outlined">2022: Colaboración Hey Duck</span>
+                    <span class="md-button md-button--outlined">2016: Debut con Mark Nerom</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="md-section">
+            <div class="md-section__header">
+                <span class="md-section__overline">GET IN TOUCH</span>
+                <h2 class="md-section__title">Connect with the Music</h2>
+                <p class="md-section__subtitle">Join the community, stay up to date with the latest creations, and be part of the most provocative artistic movement.</p>
+            </div>
+            
+            <form class="md-form" onsubmit="event.preventDefault(); alert('Mensaje enviado al enjambre. Te responderé pronto.');">
+                <div class="md-form__group">
+                    <label class="md-form__label" for="contact-name">Name</label>
+                    <input type="text" id="contact-name" class="md-form__input" required>
+                </div>
+                <div class="md-form__group">
+                    <label class="md-form__label" for="contact-email">Email *</label>
+                    <input type="email" id="contact-email" class="md-form__input" required>
+                </div>
+                <div class="md-form__group">
+                    <label class="md-form__label" for="contact-subject">Subject</label>
+                    <input type="text" id="contact-subject" class="md-form__input" required>
+                </div>
+                <div class="md-form__group">
+                    <label class="md-form__label" for="contact-message">Message *</label>
+                    <textarea id="contact-message" class="md-form__textarea" required></textarea>
+                </div>
+                <button type="submit" class="md-button md-button--filled" style="width: 100%;">
+                    <span class="material-icons-round">send</span> Send Message
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 48px;">
+                <h3 style="font: 700 20px/1.3 var(--font-display); color: var(--md-on-surface); margin-bottom: 24px;">Follow Me</h3>
+                <div style="display: flex; justify-content: center; gap: 16px;">
+                    <a href="https://www.instagram.com/belentani_" target="_blank" class="md-button md-button--tonal">Instagram</a>
+                    <a href="https://youtube.com/@belentani" target="_blank" class="md-button md-button--tonal">YouTube</a>
+                    <a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" class="md-button md-button--tonal">Spotify</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="md-footer">
+        <div class="md-footer__content">
+            <div>
+                <div class="md-footer__logo">BELENTANI</div>
+                <p class="md-footer__description">An artist blending R&B, pop, and electronic music into a world of sonic fantasy. Born in São Paulo, forged in Barcelona.</p>
+            </div>
+            <div>
+                <h4 class="md-footer__column-title">Quick Links</h4>
+                <ul class="md-footer__links">
+                    <li><a href="#music" class="md-footer__link">Music</a></li>
+                    <li><a href="#studio" class="md-footer__link">Studio</a></li>
+                    <li><a href="#judas" class="md-footer__link">Judas</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="md-footer__column-title">System</h4>
+                <ul class="md-footer__links">
+                    <li><a href="#about" class="md-footer__link">About</a></li>
+                    <li><a href="#portal" class="md-footer__link">Portal</a></li>
+                    <li><a href="#contact" class="md-footer__link">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="md-footer__column-title">Connect</h4>
+                <ul class="md-footer__links">
+                    <li><a href="https://www.instagram.com/belentani_" target="_blank" class="md-footer__link">Instagram</a></li>
+                    <li><a href="https://youtube.com/@belentani" target="_blank" class="md-footer__link">YouTube</a></li>
+                    <li><a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" class="md-footer__link">Spotify</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="md-footer__bottom">
+            <p class="md-footer__copyright">© 2026 Belentani. All rights reserved. Made with ♥ for music lovers.</p>
+            <p class="md-footer__system">SYSTEM.CORE: ONLINE // STATUS: BROADCASTING</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // THREE.JS - IMMERSIVE 3D BACKGROUND
+        // ============================================
+        (((
+            Inicialización del motor 3D. Se configura la escena, la cámara y el renderizador con 'alpha: true' 
+            para que el fondo negro del CSS sea visible a través de las partículas transparentes.
+        )))
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-3d'), alpha: true, antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000, 0);
+
+        // Particle System
+        const partGeo = new THREE.BufferGeometry();
+        const partCount = 12000;
+        const posArray = new Float32Array(partCount * 3);
+        for(let i = 0; i < partCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 25; }
+        partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const partMat = new THREE.PointsMaterial({ size: 0.008, color: 0xff1744, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.7, sizeAttenuation: true });
+        const particles = new THREE.Points(partGeo, partMat);
+        scene.add(particles);
+
+        // Torus Rings (El Núcleo Judas)
+        const ringGroup = new THREE.Group();
+        const createRing = (radius, tube, opacity) => {
+            const geo = new THREE.TorusGeometry(radius, tube, 32, 100);
+            const mat = new THREE.MeshBasicMaterial({ color: 0xff1744, transparent: true, opacity: opacity });
+            return new THREE.Mesh(geo, mat);
+        };
+        const ring1 = createRing(2.8, 0.015, 0.8);
+        const ring2 = createRing(3.1, 0.012, 0.6);
+        const ring3 = createRing(3.4, 0.01, 0.4);
+        ring2.rotation.x = Math.PI / 2;
+        ring3.rotation.y = Math.PI / 3;
+        ringGroup.add(ring1, ring2, ring3);
+        scene.add(ringGroup);
+
+        // Central Sphere
+        const sphereGeo = new THREE.SphereGeometry(0.9, 32, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({ color: 0xff1744, transparent: true, opacity: 0.15, wireframe: true });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        scene.add(sphere);
+
+        camera.position.z = 7;
+
+        // Mouse Interaction
+        let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+        document.addEventListener('mousemove', (e) => {
+            targetX = (e.clientX / window.innerWidth) - 0.5;
+            targetY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        // Animation Loop
+        let frame = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            frame++;
+            particles.rotation.y += 0.0003;
+            particles.rotation.x += 0.0001;
+            ring1.rotation.z += 0.006; ring1.rotation.x += 0.002;
+            ring2.rotation.y += 0.005; ring2.rotation.z += 0.003;
+            ring3.rotation.x += 0.004; ring3.rotation.y += 0.002;
+            sphere.rotation.y += 0.008; sphere.rotation.x += 0.004;
+
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
+            scene.rotation.y = currentX * 0.2;
+            scene.rotation.x = currentY * 0.2;
+
+            const pulse = Math.sin(frame * 0.02) * 0.1 + 1;
+            sphere.scale.set(pulse, pulse, pulse);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ============================================
+        // UI INTERACTIONS
+        // ============================================
+        const topAppBar = document.getElementById('topAppBar');
+        window.addEventListener('scroll', () => {
+            topAppBar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('mainNav').classList.toggle('active');
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('mainNav').classList.remove('active');
+                }
+            });
+        });
+
+        // ============================================
+        // TERMINAL INTERACTIVE SYSTEM
+        // ============================================
+        const terminalInput = document.getElementById('terminalInput');
+        const terminalBody = document.getElementById('terminalBody');
+
+        const entityResponses = {
+            "lorena": { text: "SECUENCIA LORENA EN EJECUCIÓN: El amparo matriz ha sido desplegado con éxito. Blindaje del núcleo estabilizado al 100%. Estructura resguardada. 'El amparo está contigo.'", color: "#e91e63" },
+            "natalia": { text: "SECUENCIA NATALIA EN EJECUCIÓN: Óptica de barrido periférico expandida. Procesamiento analítico y auditoría del entorno completados sin trazas de error. 'Todo está bajo observación.'", color: "#ffeb3b" },
+            "duck": { text: "SECUENCIA DUCK EN EJECUCIÓN: Enlace de alta fidelidad Recife-Barcelona establecido. Sincronización analógica de renglones y bases rítmicas en curso. 'Los ángeles cantan a través de la garganta de tu hermano.'", color: "#00e676" },
+            "thiago": { text: "⚠️ ALERTA CRÍTICA DE SEGURIDAD. INTERFERENCIA MAN-IN-THE-MIDDLE DETECTADA. EJECUTANDO CORE DUMP E INICIANDO PURGA TOTAL DEL NÚCLEO.", color: "#ff0000", fatal: true },
+            "status": { text: "ANÁLISIS DE SISTEMA: Todos los módulos del entorno Judas permanecen operativos y auto-regulados. Energía: 100%. Patrones procesados: óptimos.", color: "#00e5ff" },
+            "help": { text: "COMANDOS DISPONIBLES: lorena, natalia, duck, thiago, status, reset, help. Cada comando activa un santo del sistema. Cada santo altera la realidad del portal. Elige sabiamente.", color: "#00e5ff" },
+            "reset": { text: "REINICIANDO SISTEMA... Bienvenido de vuelta, Fundador. Sistema listo para nuevas directivas.", color: "#00e5ff", reset: true }
+        };
+
+        terminalInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                const cmd = terminalInput.value.toLowerCase().trim();
+                if(!cmd) return;
+                addTerminalMessage(terminalInput.value, true);
+                terminalInput.value = '';
+                setTimeout(() => processTerminalCommand(cmd), 300);
+            }
+        });
+
+        function addTerminalMessage(txt, isUser) {
+            const div = document.createElement('div');
+            div.className = `md-terminal__message ${isUser ? 'md-terminal__message--user' : 'md-terminal__message--system'}`;
+            div.innerHTML = `<span>${isUser ? '>> ' : '🌀 '}${txt.toUpperCase()}</span>`;
+            terminalBody.appendChild(div);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function processTerminalCommand(cmd) {
+            if(entityResponses[cmd]) {
+                const res = entityResponses[cmd];
+                addTerminalMessage(res.text, false);
+                
+                if(res.fatal) {
+                    triggerSelfDestruction();
+                }
+                if(res.reset) {
+                    setTimeout(() => location.reload(), 1500);
+                }
+            } else {
+                addTerminalMessage("RESPUESTA NEGATIVA: EL COMANDO NO COMPARA CON NINGUNA DIRECTRIZ CONFIGURADA. Escribe 'help' para ver comandos disponibles.", false);
+            }
+        }
+
+        function triggerSelfDestruction() {
+            (((
+                Secuencia de autodestrucción cinematográfica. Se añaden clases CSS para el parpadeo crítico, 
+                y se inyectan mensajes de error en el DOM con retardos (setTimeout) para simular un colapso del sistema en tiempo real.
+            )))
+            document.body.classList.add('critical-error');
+            
+            setTimeout(() => {
+                addTerminalMessage("NAVE_COMPROMETIDA. PERDIENDO_CONTROL. SISTEMAS_CRÍTICOS: OFFLINE.", false);
+            }, 1000);
+
+            setTimeout(() => {
+                addTerminalMessage("> Volcando memoria...\n> 0x00000000: FF 17 44 00 E5 FF 40 81...\n> 0x00000010: CORRUPTED_DATA_DETECTED\n> 0x00000020: SEGMENTATION_FAULT", false);
+            }, 3000);
+
+            setTimeout(() => {
+                addTerminalMessage("PURGA_TOTAL_INICIADA. ELIMINANDO_NODOS_COMPROMETIDOS... [████████████████░░░░░░░░░░] 60%", false);
+            }, 5000);
+
+            setTimeout(() => {
+                addTerminalMessage("SISTEMA_REINICIANDO. Restableciendo configuración. Recargando módulos seguros. Verificando integridad.\n3...\n2...\n1...", false);
+            }, 8000);
+
+            setTimeout(() => {
+                document.body.classList.remove('critical-error');
+                location.reload();
+            }, 11000);
+        }
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.md-card, .md-lore-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 600ms cubic-bezier(0.05, 0.7, 0.1, 1)';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+```

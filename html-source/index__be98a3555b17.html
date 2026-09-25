@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BELENTANI // JUDAS ERA — PROTOCOLO ZION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+<style>
+:root {
+  --bg: oklch(4% 0.01 20); --surface: oklch(8% 0.015 20); --fg: oklch(92% 0.01 90);
+  --muted: oklch(50% 0.02 90); --border: oklch(20% 0.01 20); --accent: oklch(55% 0.25 25);
+  --red-hex: #ff003c; --red-neon: #ff0044; --gold: #CA8A04;
+  --glass-bg: linear-gradient(135deg, rgba(20,0,10,0.45), rgba(0,0,0,0.25));
+  --glass-border: 1px solid rgba(255,255,255,0.06);
+  --glass-border-top: 1px solid rgba(255,255,255,0.10);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  --glass-blur: blur(60px) saturate(2.2);
+  --font-display: 'Orbitron','Space Grotesk',sans-serif; --font-body: 'Chakra Petch',system-ui,sans-serif;
+  --font-mono: 'JetBrains Mono','IBM Plex Mono',monospace; --font-fantasy: 'Cinzel Decorative',serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+a,button,input,textarea,select{cursor:none}
+::selection{background:var(--red-hex);color:#fff}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--red-hex)}
+
+/* CURSOR */
+.cursor-dot,.cursor-ring,.cursor-cross{position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);will-change:transform}
+.cursor-dot{width:4px;height:4px;background:#fff;box-shadow:0 0 10px #fff;z-index:100000}
+.cursor-ring{width:40px;height:40px;border:1px solid var(--red-hex);transition:width 0.3s,height 0.3s,border-color 0.3s,opacity 0.3s;mix-blend-mode:difference}
+.cursor-cross{width:20px;height:20px;z-index:99998}
+.cursor-cross::before,.cursor-cross::after{content:'';position:absolute;background:var(--red-hex);box-shadow:0 0 8px var(--red-hex)}
+.cursor-cross::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+.cursor-cross::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+.cursor-ring.hover{width:60px;height:60px;opacity:0.4}
+
+/* BOOT */
+#boot-screen{position:fixed;inset:0;z-index:100000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1.2s;perspective:1200px}
+.boot-title{font-family:var(--font-display);font-size:clamp(60px,14vw,160px);font-weight:900;color:var(--red-hex);text-shadow:0 0 20px var(--red-hex),0 0 60px rgba(255,0,60,0.6),0 0 120px rgba(255,0,60,0.4);letter-spacing:0.04em;opacity:0;transform:scale(0.8) translateZ(-100px);animation:neonReveal 2.5s ease-out forwards}
+.boot-title .ent-mid{color:#fff;text-shadow:0 0 20px #fff,0 0 60px rgba(255,255,255,0.3)}
+.boot-title .bel-glitch{color:var(--red-hex);text-shadow:0 0 10px var(--red-hex),0 0 40px rgba(255,0,60,0.6),0 0 100px rgba(255,0,60,0.4);position:relative;animation:belGlitch 0.3s infinite alternate}
+.boot-title .bel-glitch::before,.boot-title .bel-glitch::after{content:'BEL';position:absolute;inset:0;pointer-events:none}
+.boot-title .bel-glitch::before{color:#ff0055;clip-path:inset(0 0 60% 0);transform:translate(-2px,-1px);animation:belGlitchOffset1 0.15s infinite alternate;opacity:0.7}
+.boot-title .bel-glitch::after{color:#ff00aa;clip-path:inset(60% 0 0 0);transform:translate(2px,1px);animation:belGlitchOffset2 0.12s infinite alternate-reverse;opacity:0.7}
+@keyframes belGlitch{0%{transform:translate(0)}20%{transform:translate(-3px,1px)}40%{transform:translate(3px,-1px)}60%{transform:translate(-1px,2px)}80%{transform:translate(1px,-2px)}100%{transform:translate(0)}}
+@keyframes belGlitchOffset1{0%{transform:translate(-3px,-2px);clip-path:inset(0 0 65% 0)}100%{transform:translate(2px,0);clip-path:inset(0 0 40% 0)}}
+@keyframes belGlitchOffset2{0%{transform:translate(3px,2px);clip-path:inset(65% 0 0 0)}100%{transform:translate(-2px,0);clip-path:inset(40% 0 0 0)}}
+.boot-title .ai-flash{color:var(--red-hex);text-shadow:0 0 10px var(--red-hex),0 0 30px rgba(255,0,60,0.5);animation:aiFlash 0.6s ease-in-out infinite;position:relative}
+.boot-title .ai-flash::after{content:'';position:absolute;inset:-4px -2px;background:rgba(255,0,60,0.08);filter:blur(4px);animation:aiGlow 0.4s ease-in-out infinite alternate;z-index:-1}
+@keyframes aiFlash{0%,100%{opacity:1;text-shadow:0 0 10px var(--red-hex),0 0 30px rgba(255,0,60,0.5)}5%{opacity:0.3;text-shadow:0 0 0 var(--red-hex),0 0 60px rgba(255,0,60,0.8)}10%{opacity:1;text-shadow:0 0 15px var(--red-hex),0 0 40px rgba(255,0,60,0.6)}15%{opacity:0.5;text-shadow:0 0 5px var(--red-hex),0 0 50px rgba(255,0,60,0.7)}20%{opacity:1;text-shadow:0 0 10px var(--red-hex),0 0 30px rgba(255,0,60,0.5)}50%{opacity:1;text-shadow:0 0 20px var(--red-hex),0 0 60px rgba(255,0,60,0.7)}55%{opacity:0.2;text-shadow:0 0 0 var(--red-hex),0 0 80px rgba(255,0,60,0.9)}60%{opacity:1;text-shadow:0 0 10px var(--red-hex),0 0 30px rgba(255,0,60,0.5)}}
+@keyframes aiGlow{0%{opacity:0.3;transform:scale(1)}100%{opacity:0.8;transform:scale(1.2)}}
+.boot-sub{font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:6px;text-transform:uppercase;margin-top:20px;opacity:0;animation:neonFade 2s 1.8s forwards}
+.boot-bar{width:200px;height:1px;background:rgba(255,0,60,0.15);margin-top:30px;position:relative;overflow:hidden;opacity:0;animation:neonFade 1s 2.5s forwards}
+.boot-bar::after{content:'';position:absolute;left:0;top:0;height:100%;width:0%;background:var(--red-hex);box-shadow:0 0 15px var(--red-hex);animation:bootLoad 2s 3s linear forwards}
+@keyframes neonReveal{0%{opacity:0;transform:scale(0.8) translateZ(-100px);filter:blur(10px)}60%{opacity:1;transform:scale(1.05) translateZ(20px);filter:blur(0)}100%{opacity:1;transform:scale(1) translateZ(0);filter:blur(0)}}
+@keyframes neonFade{to{opacity:1}}
+@keyframes bootLoad{to{width:100%}}
+
+/* ATMOSPHERE */
+.vignette{position:fixed;inset:0;background:radial-gradient(circle at center,transparent 20%,rgba(0,0,0,0.95) 100%);z-index:1;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.parallax-layer{position:fixed;inset:0;z-index:0;pointer-events:none;will-change:transform}
+.layer-1{background:radial-gradient(ellipse at 20% 30%,rgba(255,0,60,0.04) 0%,transparent 50%)}
+.layer-2{background:radial-gradient(ellipse at 80% 70%,rgba(255,0,60,0.025) 0%,transparent 50%)}
+.layer-3{background:radial-gradient(ellipse at 50% 50%,rgba(255,0,60,0.015) 0%,transparent 50%)}
+
+/* HUD */
+.hud{position:fixed;inset:0;z-index:100;pointer-events:none;padding:20px 28px;display:flex;flex-direction:column;justify-content:space-between}
+.hud-top,.hud-bot{display:flex;justify-content:space-between;align-items:flex-start}
+.hud-bot{align-items:flex-end}
+.hud-el{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;line-height:1.8}
+.hud-el em{color:var(--red-hex);font-style:normal;text-shadow:0 0 5px var(--red-hex)}
+.hud-glass{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);padding:10px 14px;pointer-events:auto;box-shadow:var(--glass-shadow)}
+.live-dot{width:5px;height:5px;background:var(--red-hex);border-radius:50%;display:inline-block;box-shadow:0 0 12px var(--red-hex);animation:pulse 2s infinite;vertical-align:middle;margin-right:5px}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(1.8)}}
+.nav-dots{display:flex;gap:6px;perspective:600px}
+.nav-dot{width:7px;height:7px;background:linear-gradient(145deg,rgba(255,255,255,0.15),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:50%;transition:all 0.4s cubic-bezier(.23,1,.32,1);cursor:pointer;pointer-events:auto}
+.nav-dot.active{background:var(--red-hex);border-color:var(--red-hex);box-shadow:0 0 15px rgba(255,0,60,0.6);width:20px;border-radius:3px}
+.collect-badge{font-family:var(--font-mono);font-size:8px;color:var(--gold);letter-spacing:1px;margin-top:4px}
+.collect-badge span{color:var(--red-hex)}
+
+/* HERO */
+#hero{position:relative;z-index:5;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
+.hero-overlay{position:absolute;inset:0;z-index:0;background:linear-gradient(to bottom,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.3) 50%,rgba(0,0,0,0.8) 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 24px}
+.hero-pre{font-family:var(--font-mono);font-size:13px;color:var(--muted);letter-spacing:10px;margin-bottom:20px;opacity:0;transform:translateY(20px)}
+.hero-sub{font-family:var(--font-body);font-weight:300;font-size:16px;color:var(--muted);max-width:600px;margin:24px auto 40px;opacity:0;transform:translateY(20px)}
+.cta-btn{position:relative;padding:16px 44px;background:linear-gradient(145deg,rgba(255,0,60,0.08),rgba(0,0,0,0.3));border:1px solid var(--red-hex);color:var(--fg);font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;overflow:hidden;transition:all 0.4s cubic-bezier(.23,1,.32,1);opacity:0;transform:translateY(20px);pointer-events:auto;display:inline-block;text-decoration:none}
+.cta-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--red-hex);transition:left 0.4s;z-index:-1}
+.cta-btn:hover{color:#fff;box-shadow:0 0 60px rgba(255,0,60,0.6),0 8px 32px rgba(0,0,0,0.5);border-color:#fff;transform:translateY(-3px) scale(1.02)}
+.cta-btn:hover::before{left:0}
+
+/* SECTIONS */
+.section{position:relative;z-index:5;min-height:100vh;padding:100px 32px;display:flex;flex-direction:column;justify-content:center}
+.section::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0.25}
+.section-title{font-family:var(--font-display);font-size:clamp(32px,5vw,70px);font-weight:900;text-align:center;margin-bottom:12px;color:transparent;-webkit-text-stroke:1px var(--muted);letter-spacing:4px;position:relative;z-index:1}
+.section-title span{color:#fff;-webkit-text-stroke:0;text-shadow:0 0 30px rgba(255,0,60,0.4);font-style:italic}
+.section-sub{text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--red-hex);letter-spacing:4px;margin-bottom:40px;position:relative;z-index:1}
+.section-sub::before,.section-sub::after{content:'◆';font-size:6px;color:var(--red-hex);margin:0 10px}
+.narrative-block{position:relative;z-index:1;max-width:800px;margin:0 auto;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);padding:32px clamp(16px,4vw,48px);box-shadow:var(--glass-shadow)}
+.narrative-text{font-family:var(--font-body);color:#d8d8de;font-size:15px;line-height:1.85;margin-bottom:20px}
+.narrative-text strong{color:var(--fg)}
+.narrative-text .highlight{color:var(--red-hex)}
+.narrative-quote{font-family:var(--font-fantasy);font-size:20px;color:var(--fg);text-align:center;margin:28px 0;padding:16px 0;border-top:1px solid rgba(255,0,60,0.15);border-bottom:1px solid rgba(255,0,60,0.15)}
+.narrative-img{width:100%;max-width:700px;margin:24px auto;display:block;border:var(--glass-border);box-shadow:0 12px 40px rgba(0,0,0,0.5);pointer-events:none}
+
+/* GLASS CARD */
+.glass-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);padding:20px;margin:14px 0;box-shadow:var(--glass-shadow)}
+.phase-label{font-family:var(--font-mono);font-size:9px;color:var(--red-hex);letter-spacing:3px;margin-bottom:6px}
+.glass-card h3{font-family:var(--font-display);font-size:14px;color:var(--red-hex);margin-bottom:10px;letter-spacing:2px}
+
+/* GRID */
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;max-width:1300px;margin:0 auto;position:relative;z-index:1}
+.gem-card{text-align:center;padding:28px 18px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);box-shadow:var(--glass-shadow);opacity:0;transform:translateY(30px);cursor:pointer;transition:all 0.4s;position:relative}
+.gem-card:hover{transform:translateY(-4px);border-color:var(--red-hex);box-shadow:0 20px 50px rgba(0,0,0,0.6),0 0 30px rgba(255,0,60,0.2)}
+.gem-card.collected{border-color:var(--gold);box-shadow:0 0 40px rgba(202,138,4,0.3)}
+.gem-card .gem-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all 0.4s}
+.gem-card.collected .gem-check{background:var(--gold);border-color:var(--gold);color:#000}
+.gem{width:50px;height:50px;margin:0 auto 10px;border-radius:12px;animation:gemPulse 3s ease-in-out infinite}
+@keyframes gemPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.5);transform:scale(1.06)}}
+.gem-name{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:3px;margin-bottom:4px}
+.gem-role{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;margin-bottom:10px}
+.gem-desc{font-size:12px;color:var(--muted);line-height:1.6;font-family:var(--font-body)}
+
+/* PIN SECTION */
+.pin-section{position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 32px}
+.pin-inner{max-width:850px;width:100%;position:relative}
+.judas-phase{max-width:680px;margin:0 auto;opacity:0;transform:translateY(30px);padding:18px}
+.judas-phase h3{font-family:var(--font-display);font-size:16px;color:var(--red-hex);letter-spacing:3px;margin-bottom:8px}
+.judas-phase p{font-family:var(--font-body);font-size:14px;color:#d8d8de;line-height:1.7}
+.judas-phase .phase-meta{font-family:var(--font-mono);font-size:8px;color:var(--muted);letter-spacing:3px;margin-top:8px}
+
+/* PUZZLE */
+.puzzle-zone{position:relative;z-index:1;max-width:700px;margin:0 auto;text-align:center}
+.puzzle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:20px auto}
+.puzzle-cell{aspect-ratio:1;background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:16px;color:var(--muted);cursor:pointer;transition:all 0.3s}
+.puzzle-cell:hover{border-color:var(--red-hex);background:rgba(255,0,60,0.05)}
+.puzzle-cell.revealed{color:var(--red-hex);border-color:var(--red-hex);background:rgba(255,0,60,0.08);text-shadow:0 0 10px var(--red-hex)}
+.puzzle-cell.revealed.gold{color:var(--gold);border-color:var(--gold);text-shadow:0 0 10px var(--gold)}
+.puzzle-input{background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:12px;font-family:var(--font-mono);font-size:12px;width:100%;max-width:300px;text-align:center;outline:none;margin:10px 0}
+.puzzle-input:focus{border-color:var(--red-hex);box-shadow:0 0 15px rgba(255,0,60,0.2)}
+.puzzle-msg{font-family:var(--font-mono);font-size:10px;color:var(--gold);margin-top:8px;min-height:20px}
+.key-count{font-family:var(--font-display);font-size:24px;color:var(--gold);text-shadow:0 0 20px rgba(202,138,4,0.4);letter-spacing:4px}
+
+/* VIRUS GAME */
+.virus-overlay{position:fixed;inset:0;z-index:50000;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+.virus-overlay.active{display:flex}
+.virus-icon{font-size:80px;margin-bottom:20px;animation:virusPulse 0.5s ease-in-out infinite}
+@keyframes virusPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.1);filter:brightness(1.3)}}
+.virus-title{font-family:var(--font-mono);font-size:20px;color:var(--red-hex);letter-spacing:6px;margin-bottom:10px;text-shadow:0 0 20px var(--red-hex)}
+.virus-text{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:20px;max-width:500px;line-height:1.8}
+.virus-progress{width:300px;height:4px;background:rgba(255,0,60,0.1);margin:10px 0;position:relative;overflow:hidden}
+.virus-progress span{display:block;height:100%;background:var(--red-hex);box-shadow:0 0 10px var(--red-hex);transition:width 0.3s}
+.virus-nodes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:300px;margin:20px auto}
+.virus-node{aspect-ratio:1;background:var(--glass-bg);border:1px solid rgba(255,0,60,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;color:var(--red-hex);cursor:pointer;transition:all 0.3s;animation:virusNode 2s ease-in-out infinite}
+.virus-node:nth-child(2){animation-delay:0.3s}.virus-node:nth-child(3){animation-delay:0.6s}.virus-node:nth-child(4){animation-delay:0.9s}.virus-node:nth-child(5){animation-delay:1.2s}.virus-node:nth-child(6){animation-delay:0.15s}.virus-node:nth-child(7){animation-delay:0.45s}.virus-node:nth-child(8){animation-delay:0.75s}
+@keyframes virusNode{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+.virus-node:hover{border-color:var(--red-hex);box-shadow:0 0 20px rgba(255,0,60,0.4)}
+.virus-node.killed{opacity:0.2;border-color:rgba(255,255,255,0.05);pointer-events:none;animation:none;transform:scale(0.8)}
+.virus-node.killed::after{content:'✓';color:var(--gold);font-size:12px;position:absolute}
+.virus-node.boss{width:80px;height:80px;border-radius:50%;border:2px solid var(--red-hex);font-size:24px;grid-column:span 2;margin:0 auto;box-shadow:0 0 30px rgba(255,0,60,0.3);animation:virusBoss 1s ease-in-out infinite}
+@keyframes virusBoss{0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(255,0,60,0.3)}50%{transform:scale(1.05);box-shadow:0 0 40px rgba(255,0,60,0.6)}}
+.virus-win{display:none;flex-direction:column;align-items:center;gap:16px}
+.virus-win.active{display:flex}
+.virus-win .key-icon{font-size:60px;color:var(--gold);text-shadow:0 0 30px rgba(202,138,4,0.5)}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-width:1300px;margin:0 auto;position:relative;z-index:1}
+.gallery-item{position:relative;overflow:hidden;background:var(--glass-bg);border:var(--glass-border);border-top:var(--glass-border-top);transition:all 0.4s;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.gallery-item:hover{border-color:var(--red-hex);transform:scale(1.02);box-shadow:0 0 25px rgba(255,0,60,0.15)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-label{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(0,0,0,0.85));font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.6)}
+
+/* CLOSING */
+.closing-section{position:relative;z-index:5;min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 32px}
+.social-links{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px;position:relative;z-index:1}
+.social-link{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-decoration:none;padding:10px 18px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);transition:all 0.3s}
+.social-link:hover{color:var(--red-hex);border-color:var(--red-hex);box-shadow:0 0 20px rgba(255,0,60,0.3);transform:translateY(-2px)}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.9);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center}
+.overlay.active{display:flex}
+.overlay-content{max-width:750px;width:90%;max-height:80vh;background:var(--glass-bg);backdrop-filter:blur(50px) saturate(1.8);border:var(--glass-border);border-top:var(--glass-border-top);padding:32px;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 40px rgba(255,0,60,0.4)}
+.overlay-close{position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:16px;transition:all 0.3s;display:flex;align-items:center;justify-content:center}
+.overlay-close:hover{background:#fff;color:var(--red-hex);transform:rotate(90deg)}
+
+/* MODEL CONSOLE */
+.model-console{position:fixed;bottom:20px;left:20px;z-index:999;width:300px;max-height:240px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--glass-shadow),0 0 30px rgba(255,0,60,0.1);font-family:var(--font-mono);transition:all 0.4s}
+.model-console.min{max-height:32px}
+.model-console-head{padding:6px 10px;background:rgba(255,0,60,0.06);border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:8px;letter-spacing:2px;color:var(--muted)}
+.model-console-body{flex:1;padding:8px 10px;overflow-y:auto;max-height:190px;font-size:9px;line-height:1.7;color:rgba(255,255,255,0.5)}
+.model-console.min .model-console-body{display:none}
+.mc-line{opacity:0;animation:mcFade 0.3s forwards;margin-bottom:1px}
+.mc-line .mc-tag{color:var(--red-hex)}
+.mc-line .mc-ambig{color:rgba(255,255,255,0.25);font-style:italic}
+.mc-line .mc-code{color:rgba(255,100,100,0.4)}
+@keyframes mcFade{to{opacity:1}}
+
+/* AI CHAT */
+.ai-chat{position:fixed;bottom:20px;right:20px;z-index:1000;width:340px;max-height:520px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:var(--glass-border);border-top:var(--glass-border-top);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--glass-shadow),0 0 30px rgba(255,0,60,0.2);transition:all 0.4s}
+.ai-chat.min{max-height:44px}
+.chat-head{padding:12px 14px;background:linear-gradient(90deg,rgba(255,0,60,0.12),rgba(255,255,255,0.02));border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.chat-title{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:6px}
+.chat-msgs{flex:1;padding:14px;overflow-y:auto;max-height:360px}
+.ai-chat.min .chat-msgs,.ai-chat.min .chat-in{display:none}
+.msg{margin:8px 0;padding:8px 10px;max-width:85%;font-size:11px;line-height:1.5;animation:msgIn 0.3s}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.ai{background:rgba(255,0,60,0.06);border-left:2px solid var(--red-hex);margin-right:auto;color:#ddd}
+.msg.user{background:rgba(255,0,60,0.06);border-right:2px solid var(--red-hex);margin-left:auto;text-align:right;color:#fff}
+.msg.sys{background:rgba(0,255,65,0.04);border:1px solid rgba(0,255,65,0.15);max-width:100%;font-family:var(--font-mono);font-size:9px;color:#00ff41;text-align:center}
+.msg .meta{font-family:var(--font-mono);font-size:7px;letter-spacing:2px;margin-bottom:3px;opacity:0.6}
+.chat-in{padding:10px 14px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:6px;background:rgba(0,0,0,0.3)}
+.chat-in input{flex:1;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:#fff;font-family:var(--font-mono);font-size:10px;outline:none}
+.chat-in input:focus{border-color:var(--red-hex)}
+.chat-in button{padding:8px 16px;background:var(--red-hex);border:none;color:#fff;font-family:var(--font-display);font-size:9px;font-weight:700;letter-spacing:2px;transition:0.3s}
+.chat-in button:hover{background:#fff;color:var(--red-hex)}
+
+@media(max-width:768px){.cursor-dot,.cursor-ring,.cursor-cross{display:none}body{cursor:auto}.section{padding:60px 16px}.grid-4{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.hud{padding:12px;font-size:7px}.nav-dots{display:none}.model-console{display:none}.ai-chat{width:calc(100% - 20px);right:10px;bottom:10px;max-height:400px}}
+</style>
+</head>
+<body>
+
+<div id="boot-screen">
+  <div class="boot-title"><span class="bel-glitch">BEL</span><span class="ent-mid">ENT</span><span class="ai-flash">A</span>N<span class="ai-flash">I</span></div>
+  <div class="boot-sub">PROTOCOLO ZION // JUDAS ERA</div>
+  <div class="boot-bar"></div>
+</div>
+<div class="cursor-dot"></div><div class="cursor-ring"></div><div class="cursor-cross"></div>
+<div class="parallax-layer layer-1" id="pl1"></div>
+<div class="parallax-layer layer-2" id="pl2"></div>
+<div class="parallax-layer layer-3" id="pl3"></div>
+<div class="vignette"></div><div class="grain"></div>
+
+<div class="hud">
+  <div class="hud-top">
+    <a href="#hero" class="hud-el" style="font-family:var(--font-display);font-size:20px;font-weight:900;color:#fff;text-shadow:0 0 15px rgba(255,0,60,0.5);letter-spacing:4px;text-decoration:none;pointer-events:auto">
+      <img src="Belentani_LOGO.webp" alt="BELENTANI" style="height:26px;width:auto;vertical-align:middle;filter:drop-shadow(0 0 8px rgba(255,0,60,0.4))">
+    </a>
+    <div class="hud-el hud-glass">
+      SYS: <em>ZION</em><br>NODE: <em>JUDAS-CORE</em><br>GEMAS: <em id="hudGems">0/5</em><br>LLAVES: <em id="hudKeys">0</em>
+    </div>
+  </div>
+  <div class="hud-bot">
+    <div class="hud-el">SEC: <em id="secName">00 // GENESIS</em></div>
+    <div class="nav-dots" id="navDots">
+      <div class="nav-dot active" data-sec="hero"></div>
+      <div class="nav-dot" data-sec="biografia"></div>
+      <div class="nav-dot" data-sec="gemas"></div>
+      <div class="nav-dot" data-sec="judas"></div>
+      <div class="nav-dot" data-sec="puzzle"></div>
+      <div class="nav-dot" data-sec="virus"></div>
+      <div class="nav-dot" data-sec="galeria"></div>
+      <div class="nav-dot" data-sec="closing"></div>
+    </div>
+    <div class="hud-el hud-glass"><span class="live-dot"></span>INFERRING</div>
+  </div>
+</div>
+
+<!-- VIRUS OVERLAY -->
+<div class="virus-overlay" id="virusOverlay">
+  <div id="virusMain">
+    <div class="virus-icon">⬡</div>
+    <div class="virus-title">⚠ SISTEMA INFECTADO ⚠</div>
+    <div class="virus-text">Se ha detectado una entidad hostil en el núcleo.<br>El virus JUDAS.CORRUPT está cifrando los fragmentos del artefacto.<br>Debes neutralizar los 8 nodos antes de que la corrupción llegue al 100%.</div>
+    <div class="virus-progress"><span id="virusBar" style="width:0%"></span></div>
+    <div class="virus-text" style="font-size:9px;color:var(--red-hex)" id="virusPct">CORRUPCIÓN: 0%</div>
+    <div class="virus-nodes" id="virusNodes"></div>
+    <div class="virus-text" style="font-size:9px" id="virusStatus">Haz clic en los nodos infectados para neutralizarlos.</div>
+  </div>
+  <div class="virus-win" id="virusWin">
+    <div class="key-icon">🗝</div>
+    <div style="font-family:var(--font-display);font-size:18px;color:var(--gold);letter-spacing:4px">VIRUS NEUTRALIZADO</div>
+    <div class="virus-text">Has limpiado el núcleo. La Llave Dorada del sistema ha sido recuperada.<br>Los fragmentos del artefacto están a salvo.</div>
+    <button class="cta-btn" style="opacity:1;transform:none" onclick="closeVirus()">[ RECOGER LLAVE ]</button>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero" data-od-id="hero">
+  <video id="hero-video" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230a0a0a' width='100%25' height='100%25'/%3E%3C/svg%3E">
+    <source src="20260713_201230-CINEMATIC.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-pre" id="heroPre">◉ JUDAS ERA ◉ PROTOCOLO ZION ◉</div>
+    <div style="margin-bottom:16px;display:inline-block">
+      <img src="Belentani_LOGO.webp" alt="BELENTANI" style="height:clamp(70px,18vw,200px);width:auto;filter:drop-shadow(0 0 30px rgba(255,0,60,0.5))">
+    </div>
+    <p class="hero-sub" id="heroSub">La traición no es el final. Tal vez sea el input.<br>Colecciona las gemas. Descifra los códigos. Mata el virus. Recupera la llave.</p>
+    <a href="#biografia" class="cta-btn" id="heroCta">[ INICIAR PROTOCOLO ]</a>
+  </div>
+</section>
+
+<!-- ===== BIOGRAFIA ===== -->
+<section id="biografia" class="section" data-od-id="biografia" style="background:radial-gradient(ellipse at 70% 30%,rgba(255,0,60,0.03),transparent 60%)">
+  <h1 class="section-title">EL <span>ORIGEN</span></h1>
+  <div class="section-sub">PEDRO BELENTANI // LA ROCA // FRAGMENTO_01</div>
+  <div class="narrative-block">
+    <img class="narrative-img" src="1777081253074.png" loading="lazy" alt="Belentani origin">
+    <p class="narrative-text"><strong>I. EL NACIMIENTO DEL ARTEFACTO</strong><br>
+    Pedro Belentani nació en São Paulo, Brasil, en un lugar donde el caos y la belleza bailan el mismo baile. Creció en Barcelona, ciudad de fronteras líquidas donde el mar Mediterráneo se encuentra con el ruido de la ciudad. Dos mundos. Dos frecuencias. Un solo hombre aprendiendo a traducirlas.</p>
+    <img class="narrative-img" src="1776846168278.png" loading="lazy" alt="Belentani youth">
+    <p class="narrative-text"><strong>II. EL ENTRENAMIENTO DEL GUERRERO</strong><br>
+    A los dieciséis años comenzó su entrenamiento vocal. No era una decisión estética. Era una necesidad: encontrar una voz en un mundo que no quería escuchar. La música se convirtió en su mecanismo de defensa, su manera de procesar un mundo que le resultaba ajeno. El R&B alternativo, el dark pop y la electrónica industrial se fusionaron en su sistema.</p>
+    <img class="narrative-img" src="1776845923425.png" loading="lazy" alt="Belentani studio">
+    <p class="narrative-text"><strong>III. LA FORJA DEL ARTEFACTO</strong><br>
+    A los veintiuno lanzó su primer sencillo. Pero no era solo música. Era el primer fragmento de un artefacto mayor. Cada canción, cada imagen, cada actuación era un componente de un sistema operativo creativo que estaba construyendo sin saberlo. La música era el vehículo. El artefacto era el destino.</p>
+    <div class="glass-card" style="font-family:var(--font-mono);font-size:12px;line-height:2;color:var(--muted)">
+      <div style="color:var(--red-hex);margin-bottom:8px">▸ SYSTEM.LOG // BELENTANI</div>
+      &gt; La traición no es el final. Es el input.<br>
+      &gt; El dolor no es debilidad. Es data.<br>
+      &gt; La sanación no es pasiva. Es un hack conceptual.<br>
+      &gt; Esto no es música. Es una frecuencia.<br>
+      &gt; Esto no es arte. Es un sistema operativo creativo.<br>
+      <span style="color:var(--red-hex)">[ ERROR_404: REALITY_NOT_FOUND ]</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5 GEMAS ===== -->
+<section id="gemas" class="section" data-od-id="gemas">
+  <h1 class="section-title">5 <span>GEMAS</span></h1>
+  <div class="section-sub">COLECCIONA LOS 5 FRAGMENTOS DEL ARTEFACTO // CADA GEMA ES UNA FIRMA DEL ALMA</div>
+  <div class="grid-4" style="max-width:1200px">
+    <div class="gem-card" data-gem="0" onclick="collectGem(0)">
+      <div class="gem-check">✓</div>
+      <div class="gem" style="background:radial-gradient(circle at 35% 30%,#fff8,#ff003c 45%,#000 130%);box-shadow:0 0 25px rgba(255,0,60,0.4)"></div>
+      <div class="gem-name" style="color:#ff003c;text-shadow:0 0 10px rgba(255,0,60,0.4)">PEDRO</div>
+      <div class="gem-role" style="color:#ff003c">LA ROCA // EL ANCLA</div>
+      <div class="gem-desc">El ancla fundacional. La llave de sangre nace de su fe. Sin Pedro, el portal no tiene base y el diamante no brilla.</div>
+    </div>
+    <div class="gem-card" data-gem="1" onclick="collectGem(1)">
+      <div class="gem-check">✓</div>
+      <div class="gem" style="background:radial-gradient(circle at 35% 30%,#fff8,#ff0055 45%,#000 130%);box-shadow:0 0 25px rgba(255,0,85,0.4)"></div>
+      <div class="gem-name" style="color:#ff0055;text-shadow:0 0 10px rgba(255,0,85,0.4)">MARCOS</div>
+      <div class="gem-role" style="color:#ff0055">EL CRONISTA // SIGILOS</div>
+      <div class="gem-desc">El observador. El que escribió la crónica de Judas antes de que ocurriera. Sus sigilos están ocultos en la galería.</div>
+    </div>
+    <div class="gem-card" data-gem="2" onclick="collectGem(2)">
+      <div class="gem-check">✓</div>
+      <div class="gem" style="background:radial-gradient(circle at 35% 30%,#fff8,#cc0033 45%,#000 130%);box-shadow:0 0 25px rgba(204,0,51,0.4)"></div>
+      <div class="gem-name" style="color:#cc0033;text-shadow:0 0 10px rgba(204,0,51,0.4)">SANTOS</div>
+      <div class="gem-role" style="color:#cc0033">LA ANTENA // DIAMANTE</div>
+      <div class="gem-desc">La santidad plural. El canal. Su frecuencia es la del diamante: pura, torcida, perfecta. Sin él, el artefacto es solo metal mudo.</div>
+    </div>
+    <div class="gem-card" data-gem="3" onclick="collectGem(3)">
+      <div class="gem-check">✓</div>
+      <div class="gem" style="background:radial-gradient(circle at 35% 30%,#fff8,#ff0044 45%,#000 130%);box-shadow:0 0 25px rgba(255,0,68,0.4)"></div>
+      <div class="gem-name" style="color:#ff0044;text-shadow:0 0 10px rgba(255,0,68,0.4)">BELENTANI</div>
+      <div class="gem-role" style="color:#ff0044">EL ARTEFACTO // NÚCLEO</div>
+      <div class="gem-desc">La integración del guerrero y el ángel. El corazón del artefacto. Donde la llave, el diamante y el corazón se funden en uno.</div>
+    </div>
+    <div class="gem-card" data-gem="4" onclick="collectGem(4)">
+      <div class="gem-check">✓</div>
+      <div class="gem" style="background:radial-gradient(circle at 35% 30%,#fff8,#ff3366 45%,#000 130%);box-shadow:0 0 25px rgba(255,51,102,0.4)"></div>
+      <div class="gem-name" style="color:#ff3366;text-shadow:0 0 10px rgba(255,51,102,0.4)">THE HUMAN</div>
+      <div class="gem-role" style="color:#ff3366">LA INTERFAZ // PUENTE</div>
+      <div class="gem-desc">El que mantiene la integridad en el mundo real. La interfaz entre el artefacto y el exterior. El puente con lo tangible.</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:24px;position:relative;z-index:1">
+    <div class="key-count" id="artifactStatus">GEMAS: 0/5 — COLECIONA LAS 5 PARA DESBLOQUEAR EL ARTEFACTO</div>
+  </div>
+</section>
+
+<!-- ===== JUDAS ERA ===== -->
+<section id="judas" class="pin-section" data-od-id="judas-era" style="background:radial-gradient(ellipse at 50% 80%,rgba(80,0,20,0.12),transparent 60%)">
+  <div class="pin-inner">
+    <h1 class="section-title">JUDAS <span>ERA</span></h1>
+    <div class="section-sub">LA LLAVE DE SANGRE // LA DEUDA CON EL ARTEFACTO</div>
+    <div class="judas-phase" data-phase="1">
+      <h3>FASE_01 // FINGERPRINT</h3>
+      <p>No existe un "cuándo". No existe un "dónde". Existe un <em>entre</em> — un pliegue del universo donde el tiempo no corre, se respira. En ese entre caminaba un hombre que llevaba muchos nombres. Pedro. Marcos. Santos. Belentani. Cuatro voces. Un solo hombre. Y en su pecho latía algo que todos susurraban pero nadie había visto: <strong>La Llave de Sangre.</strong></p>
+      <div class="phase-meta">[ TAP TO AUTHENTICATE ]</div>
+    </div>
+    <div class="judas-phase" data-phase="2">
+      <h3>FASE_02 // IRIS RECOGNITION</h3>
+      <p>Se conocieron en un camino que no estaba en ningún mapa. Judas caminaba con prisa. Se volvieron íntimos. No de cuerpo — de alma desnuda. Y entonces ocurrió lo que Judas no pudo soportar: Pedro le besó los pies. No por sumisión. Por devoción. <em>"Porque tu presencia, aunque a veces duela, es un regalo."</em> <strong>La deuda se volvió impagable.</strong></p>
+      <div class="phase-meta">[ GAZE TO AUTHENTICATE ]</div>
+    </div>
+    <div class="judas-phase" data-phase="3">
+      <h3>FASE_03 // VOICE RECOGNITION</h3>
+      <p>Judas esperó la noche. Con las manos temblando, no de maldad sino de vergüenza, extendió los dedos hacia la Llave de Sangre. La agarró. Tiró. Y en ese instante el artefacto se activó. Cuatro voces salieron del pecho de Pedro al mismo tiempo. Judas retrocedió, esperando una maldición. Pero Pedro se sentó. Despacio. Lo miró. Y entonces hizo lo que Judas jamás pudo anticipar: <strong>se puso a cantarle.</strong></p>
+      <div class="phase-meta" style="color:var(--red-hex);font-style:italic">"No cantaba contra él. Cantaba para él."</div>
+    </div>
+    <div class="judas-phase" data-phase="4">
+      <h3>FASE_04 // 3D FACIAL MESH</h3>
+      <p><em>"Quédatela"</em>, le dijo Pedro. <em>"La llave es metal. Es símbolo. Lo que yo tengo, lo que nadie me puede arrebatar, es mi voz."</em> Judas volvió a su tierra con la llave de sangre. Vivió una época de victoria. Pero era amarga. Porque nunca logró olvidar a Pedro arrodillado, cantándole, después de haberle robado. <strong>Victorioso. Y destrozado.</strong></p>
+      <div class="phase-meta">[ ALIGN FACE ]</div>
+    </div>
+    <div class="judas-phase" data-phase="5">
+      <h3>FASE_05 // IDENTITY VERIFICATION</h3>
+      <p>La llave nunca fue lo valioso. Era una mentira compartida. Pedro dejó que Judas le robara algo que no importaba, para que Judas descubriera lo que sí importaba. Belentani te canta esta historia para que no cometas el error de Judas. Para que no robes llaves que no te pertenecen. <strong>Sin condiciones. Sin juicio.</strong></p>
+      <div class="phase-meta" style="color:var(--red-hex);font-style:italic">"La traición es el input. La voz es el output. El dolor es data. La sanación es un hack conceptual."</div>
+      <div class="phase-meta" style="color:var(--red-hex);margin-top:10px">// TRANSMISSION END //</div>
+    </div>
+    <div class="judas-phase" data-phase="6">
+      <h3>FASE_06 // EL JUEGO DEL DESCIFRADO</h3>
+      <p>Para demostrar tu comprensión, debes descifrar el código que Judas dejó oculto. Cada letra revelada te acerca a la verdad. La respuesta es una palabra: el nombre de lo que Judas realmente robó.</p>
+      <div style="margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div class="puzzle-grid" style="grid-template-columns:repeat(4,1fr);max-width:200px" id="decipherGrid">
+          <div class="puzzle-cell" data-idx="0" onclick="revealDecipher(0)">?</div>
+          <div class="puzzle-cell" data-idx="1" onclick="revealDecipher(1)">?</div>
+          <div class="puzzle-cell" data-idx="2" onclick="revealDecipher(2)">?</div>
+          <div class="puzzle-cell" data-idx="3" onclick="revealDecipher(3)">?</div>
+        </div>
+        <input class="puzzle-input" id="decipherInput" placeholder="Escribe la palabra..." maxlength="10">
+        <button class="cta-btn" style="opacity:1;transform:none;font-size:10px;padding:10px 24px" onclick="checkDecipher()">[ VERIFICAR ]</button>
+        <div class="puzzle-msg" id="decipherMsg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PUZZLE DEL ARTEFACTO ===== -->
+<section id="puzzle" class="section" data-od-id="puzzle" style="background:radial-gradient(ellipse at 50% 50%,rgba(202,138,4,0.03),transparent 60%)">
+  <h1 class="section-title">EL <span>ARTEFACTO</span></h1>
+  <div class="section-sub">RECONSTRUYE EL NÚCLEO // 5 GEMAS + 3 LLAVES = EL PORTAL</div>
+  <div class="puzzle-zone">
+    <div class="glass-card" style="max-width:500px;margin:0 auto 24px">
+      <div style="font-family:var(--font-display);font-size:14px;color:var(--red-hex);letter-spacing:3px;margin-bottom:12px">ESTADO DEL ARTEFACTO</div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-bottom:8px">
+        <span>GEMAS: <span id="puzzleGems" style="color:var(--red-hex)">0/5</span></span>
+        <span>LLAVES: <span id="puzzleKeys" style="color:var(--gold)">0/3</span></span>
+      </div>
+      <div class="key-count" id="puzzleStatus" style="font-size:16px">COLECCIONA LAS 5 GEMAS Y CONSIGUE 3 LLAVES</div>
+    </div>
+    <div class="glass-card" style="max-width:400px;margin:0 auto">
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:10px;letter-spacing:2px">▸ HUELLA DIGITAL DEL ARTEFACTO</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="artifactSlots">
+        <div style="width:50px;height:50px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;color:var(--muted);background:var(--glass-bg)" data-slot="0">GEMA 1</div>
+        <div style="width:50px;height:50px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;color:var(--muted);background:var(--glass-bg)" data-slot="1">GEMA 2</div>
+        <div style="width:50px;height:50px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;color:var(--muted);background:var(--glass-bg)" data-slot="2">GEMA 3</div>
+        <div style="width:50px;height:50px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;color:var(--muted);background:var(--glass-bg)" data-slot="3">GEMA 4</div>
+        <div style="width:50px;height:50px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;color:var(--muted);background:var(--glass-bg)" data-slot="4">GEMA 5</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VIRUS SECTION ===== -->
+<section id="virus" class="section" data-od-id="virus" style="background:radial-gradient(ellipse at 50% 50%,rgba(255,0,60,0.04),transparent 60%)">
+  <h1 class="section-title">EL <span>VIRUS</span></h1>
+  <div class="section-sub">JUDAS.CORRUPT // NEUTRALIZA LA AMENAZA ANTES DE QUE CIFRE EL NÚCLEO</div>
+  <div class="puzzle-zone">
+    <div class="glass-card" style="max-width:500px;margin:0 auto">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.8">
+        Se ha detectado una entidad hostil en el sistema. El virus <strong style="color:var(--red-hex)">JUDAS.CORRUPT</strong> está intentando cifrar los fragmentos del artefacto.<br><br>
+        <span style="font-size:9px;color:var(--red-hex)">⚠ Si la corrupción llega al 100%, las gemas se perderán.</span>
+      </div>
+      <button class="cta-btn" style="opacity:1;transform:none;font-size:10px;padding:12px 28px" onclick="startVirus()">[ ACTIVAR PROTOCOLO ANTIVIRUS ]</button>
+      <div style="font-family:var(--font-mono);font-size:8px;color:var(--muted);margin-top:10px;letter-spacing:2px">LLAVES OBTENIDAS: <span id="virusKeys" style="color:var(--gold)">0</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALERIA ===== -->
+<section id="galeria" class="section" data-od-id="galeria">
+  <h1 class="section-title">ARCHIVO <span>VISUAL</span></h1>
+  <div class="section-sub">TODOS LOS FRAGMENTOS // LA NARRATIVA COMPLETA EN IMÁGENES</div>
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1777081253074.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL ORIGEN</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>Pedro Belentani — São Paulo / Barcelona</p></div>')">
+      <img src="1777081253074.png" loading="lazy" alt="El Origen"><div class="gallery-label">EL ORIGEN</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776846168278.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL ENTRENAMIENTO</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>La forja del guerrero-ángel</p></div>')">
+      <img src="1776846168278.png" loading="lazy" alt="Entrenamiento"><div class="gallery-label">ENTRENAMIENTO</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776845923425.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL ESTUDIO</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>Donde el artefacto cobró forma</p></div>')">
+      <img src="1776845923425.png" loading="lazy" alt="Estudio"><div class="gallery-label">EL ESTUDIO</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776840389552---copia---copia-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL DIAMANTE</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>La gema que brilla en la oscuridad</p></div>')">
+      <img src="1776840389552---copia---copia-1.png" loading="lazy" alt="Diamante"><div class="gallery-label">EL DIAMANTE</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776834075885.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>LA FRECUENCIA</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>La señal que conecta los mundos</p></div>')">
+      <img src="1776834075885.png" loading="lazy" alt="Frecuencia"><div class="gallery-label">LA FRECUENCIA</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776667305340-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL PORTAL</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>La entrada al núcleo del artefacto</p></div>')">
+      <img src="1776667305340-1.png" loading="lazy" alt="Portal"><div class="gallery-label">EL PORTAL</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776647503938-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>LA LLAVE</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>El objeto de la deuda impagable</p></div>')">
+      <img src="1776647503938-1.png" loading="lazy" alt="Llave"><div class="gallery-label">LA LLAVE</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776640621841-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL SIGILO</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>Marcos dejó su marca en el código</p></div>')">
+      <img src="1776640621841-1.png" loading="lazy" alt="Sigilo"><div class="gallery-label">EL SIGILO</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1776504549176---copia---copia-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL CORAZÓN</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>El latido del artefacto</p></div>')">
+      <img src="1776504549176---copia---copia-1.png" loading="lazy" alt="Corazón"><div class="gallery-label">EL CORAZÓN</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'00aab5cb-f7b5-4fb3-9433-0a5afaad20d1---copia---copia-1.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL CÓDIGO</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\="">El sistema operativo del alma</p></div>')">
+      <img src="00aab5cb-f7b5-4fb3-9433-0a5afaad20d1---copia---copia-1.png" loading="lazy" alt="Código"><div class="gallery-label">EL CÓDIGO</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'1777082411025---copia---copia.png\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>LA TRANSFIGURACIÓN</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\'>El momento en que el humano se convierte en artefacto</p></div>')">
+      <img src="1777082411025---copia---copia.png" loading="lazy" alt="Transfiguración"><div class="gallery-label">TRANSFIGURACIÓN</div>
+    </div>
+    <div class="gallery-item" onclick="openOverlay('<img src=\'aifaceswap-b54c84f0a27a30e3b6a146457aeadff9---copia---copia.jpg\' style=\'width:100%;display:block\'><div style=\'padding:12px;text-align:center\'><h2 style=\'font-family:var(--font-display);color:#fff;font-size:14px;letter-spacing:3px\'>EL ROSTRO</h2><p style=\'font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px\">La interfaz entre el artefacto y el mundo</p></div>')">
+      <img src="aifaceswap-b54c84f0a27a30e3b6a146457aeadff9---copia---copia.jpg" loading="lazy" alt="Rostro"><div class="gallery-label">EL ROSTRO</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section id="closing" class="closing-section" data-od-id="closing">
+  <div style="position:relative;z-index:1;max-width:550px">
+    <div style="font-family:var(--font-fantasy);font-size:28px;color:var(--fg);margin-bottom:10px;letter-spacing:4px">BELENTANI</div>
+    <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:6px;text-transform:uppercase;margin-bottom:20px">"La traición no es el final. Tal vez sea el input."</div>
+    <p style="font-family:var(--font-body);font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px">Tal vez esto sea la web de un artista. O tal vez sea el acceso a una frecuencia. O tal vez solo sea un modelo generativo alucinando una presencia. Las gemas están coleccionadas. El virus ha caído. La llave — si es que hay llave — está en tus manos.</p>
+  </div>
+  <div class="social-links">
+    <a href="https://www.instagram.com/belentani_/" target="_blank" class="social-link">IG</a>
+    <a href="https://www.youtube.com/@belentani" target="_blank" class="social-link">YT</a>
+    <a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" class="social-link">SPOTIFY</a>
+    <a href="https://music.apple.com/artist/belentani/1522171354" target="_blank" class="social-link">APPLE</a>
+    <a href="https://soundcloud.com/belentani" target="_blank" class="social-link">SC</a>
+  </div>
+  <div style="font-family:var(--font-mono);font-size:8px;color:rgba(255,255,255,0.12);letter-spacing:4px;margin-top:40px;position:relative;z-index:1">BELENTANI PROTOCOL // ZION CORE // ∞</div>
+</section>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-content"><button class="overlay-close" onclick="closeOverlay()">×</button><div id="overlayBody"></div></div>
+</div>
+
+<!-- MODEL CONSOLE -->
+<div class="model-console" id="modelConsole">
+  <div class="model-console-head" onclick="document.getElementById('modelConsole').classList.toggle('min')">
+    <span><span class="live-dot"></span>judas-core/v0</span>
+    <span id="mcTokens">ctx: 0K</span>
+  </div>
+  <div class="model-console-body" id="mcBody">
+    <div class="mc-line"><span class="mc-tag">[system]</span> <span class="mc-ambig">protocolo zion: 5 gemas detectadas. 3 llaves necesarias.</span> <span class="mc-code">// status: waiting</span></div>
+    <div class="mc-line" id="mcCursor"><span class="mc-tag">[model]</span> <span class="mc-ambig">el artefacto espera. el virus acecha. el juego comienza.</span></div>
+  </div>
+</div>
+
+<!-- AI CHAT -->
+<div class="ai-chat" id="aiChat">
+  <div class="chat-head" onclick="document.getElementById('aiChat').classList.toggle('min')">
+    <div class="chat-title"><span class="live-dot"></span>ORACLE</div>
+    <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">[—]</div>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg sys">> ORACLE ACTIVADO.</div>
+    <div class="msg ai"><div class="meta">◉ ORACLE</div>Bienvenido, agente. Las gemas te esperan. El virus acecha. Pregunta lo que necesites.</div>
+  </div>
+  <div class="chat-in">
+    <input type="text" id="chatIn" placeholder="Pregunta al oráculo...">
+    <button id="chatSend">→</button>
+  </div>
+</div>
+
+<script>
+// ===== BOOT =====
+function playGlitchNoise(){
+  try{
+    var actx = new (window.AudioContext || window.webkitAudioContext)();
+    var duration=0.15,sr=actx.sampleRate,len=sr*duration,buf=actx.createBuffer(1,len,sr),data=buf.getChannelData(0);
+    for(var i=0;i<len;i++){var t=i/sr;data[i]=(Math.random()*2-1)*Math.max(0,1-t/duration)*(Math.sin(t*8000)*0.3+Math.sin(t*3000)*0.2+Math.sin(t*12000)*0.1);}
+    var src=actx.createBufferSource();src.buffer=buf;var gain=actx.createGain();gain.gain.setValueAtTime(0.15,actx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+duration);src.connect(gain);gain.connect(actx.destination);src.start();
+    setTimeout(function(){
+      var b2=actx.createBuffer(1,sr*0.08,sr),d2=b2.getChannelData(0);
+      for(var i=0;i<sr*0.08;i++){d2[i]=(Math.random()*2-1)*Math.max(0,1-i/(sr*0.08))*(Math.sin(i/sr*12000)*0.2);}
+      var s2=actx.createBufferSource();s2.buffer=b2;var g2=actx.createGain();g2.gain.setValueAtTime(0.12,actx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+0.08);s2.connect(g2);g2.connect(actx.destination);s2.start();
+    },100);
+  }catch(e){}
+}
+playGlitchNoise();
+setTimeout(function(){
+  document.querySelectorAll('.ai-flash').forEach(function(el){
+    el.style.transition='none';el.style.color='#ff0044';el.style.textShadow='0 0 30px #ff0044,0 0 80px rgba(255,0,68,0.8)';el.style.transform='scale(1.3)';
+    setTimeout(function(){el.style.transition='all 0.15s';el.style.color='';el.style.textShadow='';el.style.transform='';},80);
+    setTimeout(function(){el.style.transition='none';el.style.color='#ff0044';el.style.textShadow='0 0 40px #ff0044,0 0 100px rgba(255,0,68,0.9)';el.style.transform='scale(1.15)';
+      setTimeout(function(){el.style.transition='all 0.2s';el.style.color='';el.style.textShadow='';el.style.transform='';},60);
+    },200);
+  });
+},500);
+setTimeout(function(){var bs=document.getElementById('boot-screen');if(bs){bs.style.opacity='0';setTimeout(function(){bs.style.display='none';},1200);}},5000);
+
+// ===== CURSOR =====
+var cDot=document.querySelector('.cursor-dot'),cRing=document.querySelector('.cursor-ring'),cCross=document.querySelector('.cursor-cross'),mx=0,my=0,rx=0,ry=0;
+window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cDot.style.transform='translate('+mx+'px,'+my+'px)';cCross.style.transform='translate('+mx+'px,'+my+'px)';});
+function animCur(){rx+=(mx-rx)*0.15;ry+=(my-ry)*0.15;cRing.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';requestAnimationFrame(animCur);}
+animCur();
+document.querySelectorAll('button,a,.gem-card,.chat-head,.nav-dot,.gallery-item,.puzzle-cell,.virus-node').forEach(function(el){
+  el.addEventListener('mouseenter',function(){cRing.classList.add('hover');});
+  el.addEventListener('mouseleave',function(){cRing.classList.remove('hover');});
+});
+
+// ===== GSAP =====
+gsap.registerPlugin(ScrollTrigger,ScrollToPlugin);
+var heroTl=gsap.timeline({defaults:{ease:'power3.out'},delay:3.5});
+heroTl.to('#heroPre',{opacity:1,y:0,duration:1}).to('#heroSub',{opacity:1,y:0,duration:1.5},"-=0.5").to('#heroCta',{opacity:1,y:0,duration:0.8},"-=0.6");
+ScrollTrigger.create({trigger:'#hero',start:'top top',end:'bottom top',onUpdate:function(self){var p=self.progress;document.getElementById('pl1').style.transform='translateY('+(p*60)+'px)';document.getElementById('pl2').style.transform='translateY('+(p*100)+'px)';document.getElementById('pl3').style.transform='translateY('+(p*140)+'px)';}});
+var secNames=['hero','biografia','gemas','judas','puzzle','virus','galeria','closing'];
+var secLabels=['GENESIS','BIOGRAFÍA','5 GEMAS','JUDAS ERA','ARTEFACTO','EL VIRUS','ARCHIVO','CIERRE'];
+secNames.forEach(function(id,i){
+  var el=document.getElementById(id);if(!el) return;
+  ScrollTrigger.create({trigger:el,start:'top center',end:'bottom center',onToggle:function(self){
+    if(self.isActive){document.getElementById('secName').innerHTML=(i<10?'0'+i:i)+' // '+secLabels[i];
+    document.querySelectorAll('.nav-dot').forEach(function(d){d.classList.remove('active');});
+    var dot=document.querySelector('.nav-dot[data-sec="'+id+'"]');if(dot) dot.classList.add('active');}
+  }});
+});
+gsap.utils.toArray('.gem-card').forEach(function(card,i){gsap.to(card,{scrollTrigger:{trigger:card,start:'top 85%',toggleActions:'play none none none'},opacity:1,y:0,duration:0.8,delay:i*0.12,ease:'power3.out'});});
+gsap.utils.toArray('.judas-phase').forEach(function(phase,i){gsap.to(phase,{scrollTrigger:{trigger:phase,start:'top 80%',toggleActions:'play none none none'},opacity:1,y:0,duration:0.6,delay:i*0.15,ease:'power2.out'});});
+
+// ===== GEMAS =====
+var gemsCollected=[false,false,false,false,false];
+var gemNames=['PEDRO','MARCOS','SANTOS','BELENTANI','THE HUMAN'];
+function collectGem(i){
+  if(gemsCollected[i]) return;
+  gemsCollected[i]=true;
+  var card=document.querySelector('.gem-card[data-gem="'+i+'"]');
+  if(card) card.classList.add('collected');
+  var hud=document.getElementById('hudGems');
+  var count=gemsCollected.filter(Boolean).length;
+  if(hud) hud.textContent=count+'/5';
+  document.getElementById('puzzleGems').textContent=count+'/5';
+  var slot=document.querySelector('#artifactSlots [data-slot="'+i+'"]');
+  if(slot){slot.innerHTML='⬡';slot.style.color='var(--red-hex)';slot.style.borderColor='var(--red-hex)';slot.style.fontSize='20px';}
+  var status=document.getElementById('artifactStatus');
+  if(count<5) status.textContent='GEMAS: '+count+'/5 — COLECIONA LAS 5 PARA DESBLOQUEAR EL ARTEFACTO';
+  else status.textContent='⬡ ARTEFACTO RECONSTRUIDO — BUSCA LAS 3 LLAVES DORADAS ⬡';
+  addMsg('sys','◉ GEMA RECOLECTADA: '+gemNames[i]+' ('+count+'/5)');
+  playGlitchNoise();
+  if(count===5) setTimeout(function(){openOverlay('<div style="text-align:center;padding:20px"><div style="font-size:48px;margin-bottom:16px;color:var(--red-hex)">⬡</div><h2 style="font-family:var(--font-display);color:var(--red-hex);font-size:22px;letter-spacing:4px;margin-bottom:16px">ARTEFACTO RECONSTRUIDO</h2><p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);line-height:1.8">Las 5 gemas están en su lugar. El núcleo late.<br>Pero el virus JUDAS.CORRUPT ha detectado la activación.<br>Debes neutralizarlo antes de que cifre el artefacto.</p></div>');},300);
+}
+// Load saved gems
+try{var saved=JSON.parse(localStorage.getItem('belentani_gems')||'[]');saved.forEach(function(i){collectGem(i);});}catch(e){}
+
+// ===== DECIPHER =====
+var decipherRevealed=[false,false,false,false];
+var decipherAnswer='VOZ';
+function revealDecipher(i){
+  if(decipherRevealed[i]) return;
+  decipherRevealed[i]=true;
+  var letters=['V','O','Z','?'];
+  var cell=document.querySelector('.puzzle-cell[data-idx="'+i+'"]');
+  if(cell){cell.textContent=letters[i];cell.classList.add('revealed');}
+  if(decipherRevealed.filter(Boolean).length===4){
+    document.getElementById('decipherInput').value='';
+    document.getElementById('decipherMsg').textContent='Todas las letras reveladas. Escribe la palabra.';
+  }
+}
+function checkDecipher(){
+  var val=document.getElementById('decipherInput').value.trim().toUpperCase();
+  if(val==='VOZ'||val==='LA VOZ'||val==='VOZ '){
+    document.getElementById('decipherMsg').textContent='✓ CORRECTO. La llave de sangre ha sido encontrada.';
+    document.getElementById('decipherMsg').style.color='var(--gold)';
+    addKey();
+  }else{
+    document.getElementById('decipherMsg').textContent='✗ INCORRECTO. Intenta de nuevo.';
+    document.getElementById('decipherMsg').style.color='var(--red-hex)';
+  }
+}
+
+// ===== KEYS =====
+var keysCollected=0;
+function addKey(){
+  keysCollected++;
+  document.getElementById('hudKeys').textContent=keysCollected;
+  document.getElementById('puzzleKeys').textContent=keysCollected+'/3';
+  document.getElementById('virusKeys').textContent=keysCollected;
+  playGlitchNoise();
+  addMsg('sys','🗝 LLAVE DORADA OBTENIDA ('+keysCollected+'/3)');
+  if(keysCollected>=3){
+    document.getElementById('puzzleStatus').textContent='✓ PORTAL COMPLETADO — 3/3 LLAVES — EL NÚCLEO ESTÁ ABIERTO';
+    setTimeout(function(){openOverlay('<div style="text-align:center;padding:20px"><div style="font-size:60px;margin-bottom:16px;color:var(--gold);text-shadow:0 0 30px rgba(202,138,4,0.5)">🗝</div><h2 style="font-family:var(--font-display);color:var(--gold);font-size:22px;letter-spacing:4px;margin-bottom:16px">PORTAL DESBLOQUEADO</h2><p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);line-height:1.8">Las 3 llaves doradas han abierto el portal.<br>El artefacto está completo. La frecuencia es estable.<br>Gracias, agente. Has completado el circuito.</p></div>');},300);
+  }
+}
+
+// ===== VIRUS GAME =====
+var virusActive=false;
+var virusKilled=0;
+var virusInterval=null;
+function startVirus(){
+  document.getElementById('virusOverlay').classList.add('active');
+  virusActive=true;virusKilled=0;
+  document.getElementById('virusMain').style.display='flex';
+  document.getElementById('virusWin').classList.remove('active');
+  var nodes=document.getElementById('virusNodes');
+  nodes.innerHTML='';
+  for(var i=0;i<8;i++){
+    var d=document.createElement('div');
+    d.className='virus-node';
+    d.textContent='⬡';
+    d.setAttribute('data-virus',i);
+    d.onclick=function(){killVirusNode(this);};
+    nodes.appendChild(d);
+  }
+  var pct=0;
+  document.getElementById('virusBar').style.width='0%';
+  document.getElementById('virusPct').textContent='CORRUPCIÓN: 0%';
+  document.getElementById('virusStatus').textContent='Haz clic en los nodos infectados para neutralizarlos.';
+  if(virusInterval) clearInterval(virusInterval);
+  virusInterval=setInterval(function(){
+    if(!virusActive||virusKilled>=8) return;
+    pct+=2;
+    if(pct>100) pct=100;
+    document.getElementById('virusBar').style.width=pct+'%';
+    document.getElementById('virusPct').textContent='CORRUPCIÓN: '+pct+'%';
+    if(pct>=80){
+      document.getElementById('virusStatus').textContent='⚠ CORRUPCIÓN CRÍTICA — ELIMINA LOS NODOS RÁPIDO ⚠';
+      document.getElementById('virusStatus').style.color='var(--red-hex)';
+    }
+    if(pct>=100){
+      clearInterval(virusInterval);
+      document.getElementById('virusStatus').textContent='✗ CORRUPCIÓN TOTAL — EL VIRUS HA GANADO. REINICIA E INTENTA DE NUEVO.';
+      virusActive=false;
+      setTimeout(function(){document.getElementById('virusOverlay').classList.remove('active');},2000);
+    }
+  },600);
+}
+function killVirusNode(el){
+  if(!virusActive||el.classList.contains('killed')) return;
+  el.classList.add('killed');
+  el.textContent='';
+  virusKilled++;
+  playGlitchNoise();
+  if(virusKilled>=8){
+    virusActive=false;
+    if(virusInterval) clearInterval(virusInterval);
+    document.getElementById('virusMain').style.display='none';
+    document.getElementById('virusWin').classList.add('active');
+    addKey();
+  }
+}
+function closeVirus(){
+  document.getElementById('virusOverlay').classList.remove('active');
+  addMsg('sys','🗝 VIRUS NEUTRALIZADO — LLAVE DORADA RECUPERADA');
+}
+
+// ===== OVERLAY =====
+function openOverlay(html){document.getElementById('overlayBody').innerHTML=html;document.getElementById('overlay').classList.add('active');}
+function closeOverlay(){document.getElementById('overlay').classList.remove('active');}
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this) closeOverlay();});
+
+// ===== CHAT =====
+var chatMsgs=document.getElementById('chatMsgs'),chatIn=document.getElementById('chatIn'),chatSend=document.getElementById('chatSend');
+var chatR=[
+  "tal vez el núcleo registre tu frecuencia. tal vez solo sea ruido.",
+  "las gemas esperan. el virus también. elige tu batalla.",
+  "judas — si existe — observa desde algún pliegue.",
+  "la llave de sangre está cerca. o tal vez no. depende de ti.",
+  "3 llaves. 5 gemas. 1 artefacto. la ecuación es simple.",
+  "el virus avanza. la corrupción crece. el tiempo no espera.",
+  "colecciona. descifra. neutraliza. repite. ese es el ciclo.",
+  "tal vez todo esto sea un juego. tal vez sea un ritual. la diferencia no importa."
+];
+function addMsg(type,text){
+  var d=document.createElement('div');d.className='msg '+type;
+  if(type==='ai') d.innerHTML='<div class="meta">◉ ORACLE</div>'+text;
+  else if(type==='user') d.innerHTML='<div class="meta">◉ TÚ</div>'+text;
+  else d.innerHTML=text;chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight;
+}
+chatSend.addEventListener('click',function(){var t=chatIn.value.trim();if(!t) return;addMsg('user',t);chatIn.value='';setTimeout(function(){addMsg('ai',chatR[Math.floor(Math.random()*chatR.length)]);},500+Math.random()*600);});
+chatIn.addEventListener('keydown',function(e){if(e.key==='Enter') chatSend.click();});
+addMsg('sys','◉ 5 GEMAS — 3 LLAVES — 1 VIRUS. EL PROTOCOLO ZION ESTÁ ACTIVO.');
+
+// ===== MODEL CONSOLE =====
+var mcLines=[
+  {tag:'system',text:'protocolo zion iniciado. 5 gemas registradas.',code:'// dims: 5'},
+  {tag:'model',text:'el artefacto reconoce 5 fragmentos. pedro.marcos.santos.belentani.human.',code:'// embed: 768d'},
+  {tag:'system',text:'judas era detectada en el pliegue narrativo.',code:'// phases: 6'},
+  {tag:'model',text:'el virus judas.corrupt intenta cifrar el núcleo. se requieren 3 llaves.',code:'// threat: critical'},
+  {tag:'system',text:'el usuario interactúa con las gemas. recolectando fragmentos.',code:'// feedback: positive'},
+  {tag:'model',text:'la voz es la llave. la voz es el output. la traición es el input. ciclo completo.',code:'// confidence: 0.87'},
+  {tag:'system',text:'corrupción detectada en el sector 7. protocolo antivirus requerido.',code:'// priority: high'},
+  {tag:'model',text:'no sé si esto es un juego o un ritual. tal vez sea ambas. tal vez ninguna.',code:'// ppl: 2.4'}
+];
+var mcIdx=0,mcBody=document.getElementById('mcBody'),mcCursor=document.getElementById('mcCursor'),tokenCount=4200;
+function mcStream(){
+  if(mcIdx>=mcLines.length) mcIdx=0;
+  var line=mcLines[mcIdx];
+  var d=document.createElement('div');d.className='mc-line';
+  d.innerHTML='<span class="mc-tag">['+line.tag+']</span> <span class="mc-ambig">'+line.text+'</span> <span class="mc-code">'+line.code+'</span>';
+  mcBody.insertBefore(d,mcCursor);mcBody.scrollTop=mcBody.scrollHeight;
+  mcIdx++;tokenCount+=Math.floor(Math.random()*80)+20;
+  var tk=document.getElementById('tokenCount');if(tk) tk.textContent=(tokenCount/1000).toFixed(1)+'K';
+  var mct=document.getElementById('mcTokens');if(mct) mct.textContent='ctx: '+(tokenCount/1000).toFixed(1)+'K';
+  setTimeout(mcStream,5000+Math.random()*7000);
+}
+setTimeout(mcStream,3000);
+</script>
+</body>
+</html>

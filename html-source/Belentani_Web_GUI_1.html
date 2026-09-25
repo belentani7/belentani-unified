@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belentani OS | Multi-Stack Command Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0f',
+                        surface: '#12121a',
+                        surface2: '#1a1a24',
+                        accent: '#6366f1',
+                        accentHover: '#4f46e5',
+                        neon: '#0ea5e9'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #0a0a0f; color: #f8fafc; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .glass { background: rgba(26, 26, 36, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .neon-glow { text-shadow: 0 0 15px rgba(14, 165, 233, 0.5); }
+        .neon-border { box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+
+            useEffect(() => {
+                lucide.createIcons();
+            });
+
+            return (
+                <div className="flex h-screen overflow-hidden bg-dark">
+                    {/* Sidebar */}
+                    <aside className="w-64 glass flex flex-col border-r border-white/10">
+                        <div className="p-6 border-b border-white/10 flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-neon flex items-center justify-center neon-border">
+                                <i data-lucide="cpu" className="text-white w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h1 className="font-bold text-lg tracking-wider neon-glow">BELENTANI OS</h1>
+                                <p className="text-xs text-neon/70">MAX AUTO MULTI-STACK</p>
+                            </div>
+                        </div>
+                        <nav className="flex-1 p-4 space-y-2">
+                            {['overview', 'monorepo', 'local_agents', 'api_vault'].map((tab) => (
+                                <button 
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab ? 'bg-accent/20 text-neon border border-accent/30' : 'text-gray-400 hover:bg-white/5'}`}
+                                >
+                                    <i data-lucide={tab === 'overview' ? 'layout-dashboard' : tab === 'monorepo' ? 'git-merge' : tab === 'local_agents' ? 'bot' : 'key'} className="w-5 h-5"></i>
+                                    <span className="capitalize">{tab.replace('_', ' ')}</span>
+                                </button>
+                            ))}
+                        </nav>
+                        <div className="p-4 border-t border-white/10">
+                            <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-3 rounded-lg flex items-center gap-2 text-sm">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                Entorno Local Conectado
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* Main Content */}
+                    <main className="flex-1 overflow-y-auto p-8">
+                        {activeTab === 'overview' && (
+                            <div className="space-y-6">
+                                <header className="mb-8">
+                                    <h2 className="text-3xl font-bold mb-2">Unificación Maestra Iniciada</h2>
+                                    <p className="text-gray-400">Consolidando 72 repositorios en 1 super-estructura (Multi-Stack Máximo).</p>
+                                </header>
+
+                                {/* Stats Grid */}
+                                <div className="grid grid-cols-3 gap-6 mb-8">
+                                    <div className="glass p-6 rounded-2xl neon-border">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="p-3 bg-accent/20 rounded-lg"><i data-lucide="layers" className="text-accent"></i></div>
+                                            <span className="text-xs font-mono text-neon">COMPLETADO 15%</span>
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1">1</h3>
+                                        <p className="text-gray-400 text-sm">Monorepo Global Definitivo</p>
+                                    </div>
+                                    <div className="glass p-6 rounded-2xl border border-white/5">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="p-3 bg-green-500/20 rounded-lg"><i data-lucide="folder-git-2" className="text-green-400"></i></div>
+                                            <span className="text-xs font-mono text-green-400">72 ORIGINALES</span>
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1">14</h3>
+                                        <p className="text-gray-400 text-sm">Repos migrados al core</p>
+                                    </div>
+                                    <div className="glass p-6 rounded-2xl border border-white/5">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="p-3 bg-purple-500/20 rounded-lg"><i data-lucide="zap" className="text-purple-400"></i></div>
+                                            <span className="text-xs font-mono text-purple-400">ACTIVO</span>
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1">NOIACORE</h3>
+                                        <p className="text-gray-400 text-sm">Orquestación de IAs Base</p>
+                                    </div>
+                                </div>
+
+                                {/* Architecture */}
+                                <h3 className="text-xl font-bold mb-4">Arquitectura Multi-Stack Máxima (Opus/Omega)</h3>
+                                <div className="glass rounded-2xl p-6 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 blur-3xl rounded-full"></div>
+                                    <div className="space-y-4 relative z-10">
+                                        <div className="flex items-center justify-between p-4 bg-surface2 rounded-xl border border-white/5 hover:border-accent/50 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <i data-lucide="monitor" className="w-8 h-8 text-neon"></i>
+                                                <div>
+                                                    <h4 className="font-bold">Frontend Global (Web GUI)</h4>
+                                                    <p className="text-sm text-gray-400">Next.js 15 App Router + React 19 + Tailwind v4 + Shadcn UI</p>
+                                                </div>
+                                            </div>
+                                            <span className="px-3 py-1 bg-neon/10 text-neon rounded text-xs border border-neon/20">Unified UI</span>
+                                        </div>
+                                        
+                                        <div className="flex items-center justify-between p-4 bg-surface2 rounded-xl border border-white/5 hover:border-accent/50 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <i data-lucide="server" className="w-8 h-8 text-purple-400"></i>
+                                                <div>
+                                                    <h4 className="font-bold">Backend & AI Core (Local + Nube)</h4>
+                                                    <p className="text-sm text-gray-400">Python FastAPI + Node TRPC + Integración nativa de Modelos</p>
+                                                </div>
+                                            </div>
+                                            <span className="px-3 py-1 bg-purple-500/10 text-purple-400 rounded text-xs border border-purple-500/20">NOIACORE Engine</span>
+                                        </div>
+
+                                        <div className="flex items-center justify-between p-4 bg-surface2 rounded-xl border border-white/5 hover:border-accent/50 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <i data-lucide="database" className="w-8 h-8 text-green-400"></i>
+                                                <div>
+                                                    <h4 className="font-bold">Estado y Persistencia (Workspace)</h4>
+                                                    <p className="text-sm text-gray-400">Prisma (SQLite Local) + Vector DB para RAG + Zustand</p>
+                                                </div>
+                                            </div>
+                                            <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded text-xs border border-green-500/20">Storage</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'monorepo' && (
+                            <div>
+                                <h2 className="text-2xl font-bold mb-6">Fusión de Repositorios</h2>
+                                <div className="glass rounded-2xl overflow-hidden border border-white/10">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-surface2">
+                                            <tr>
+                                                <th className="p-4 text-sm text-gray-400 font-medium">Proyecto Original</th>
+                                                <th className="p-4 text-sm text-gray-400 font-medium">Destino en Monorepo</th>
+                                                <th className="p-4 text-sm text-gray-400 font-medium">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            <tr>
+                                                <td className="p-4"><code>duck-ecosystem</code></td>
+                                                <td className="p-4"><code>apps/duck-web</code></td>
+                                                <td className="p-4"><span className="text-accent text-sm flex items-center gap-1"><i data-lucide="loader" className="w-4 h-4 animate-spin"></i> Integrando...</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-4"><code>belentaniexperience</code></td>
+                                                <td className="p-4"><code>apps/portal-omega</code></td>
+                                                <td className="p-4"><span className="text-gray-500 text-sm">En cola</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-4"><code>noiacore-turbo</code></td>
+                                                <td className="p-4"><code>packages/ai-core</code></td>
+                                                <td className="p-4"><span className="text-gray-500 text-sm">En cola</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-4"><code>elite-legal-pdf</code></td>
+                                                <td className="p-4"><code>services/pdf-engine</code></td>
+                                                <td className="p-4"><span className="text-gray-500 text-sm">En cola</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'local_agents' && (
+                            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                                <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center neon-border mb-4">
+                                    <i data-lucide="terminal" className="w-10 h-10 text-accent"></i>
+                                </div>
+                                <h2 className="text-2xl font-bold">Agents & CLI Hub</h2>
+                                <p className="text-gray-400 max-w-md">Conexión directa con OpenCode, Kilo y Mimo. El Monorepo utilizará modelos OpenRouter Free Tier para automatización de refactoring en background.</p>
+                                <button className="mt-4 px-6 py-3 bg-accent hover:bg-accentHover text-white rounded-xl font-bold shadow-lg shadow-accent/30 transition-all">
+                                    Desplegar Agentes de Fusión
+                                </button>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

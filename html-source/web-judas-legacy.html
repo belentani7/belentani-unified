@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judas Experience - Neural Interface System | Pedro Belentani</title>
+    <meta name="description" content="Judas Experience: Neural interface system for immersive digital experiences. AI-powered brain-computer interface prototype by Pedro Belentani.">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030308;
+            --surface: rgba(255,255,255,0.02);
+            --border: rgba(255,255,255,0.05);
+            --neural: #8B5CF6;
+            --neural-glow: rgba(139,92,246,0.4);
+            --electric: #06B6D4;
+            --pink: #EC4899;
+            --text: #E2E8F0;
+            --dim: #475569;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* NEURAL BACKGROUND */
+        .neural-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+        }
+        .neural-bg canvas { width: 100%; height: 100%; }
+
+        .glow-orb {
+            position: fixed; border-radius: 50%; filter: blur(100px); opacity: 0.08;
+            animation: float 10s ease-in-out infinite;
+        }
+        .glow-orb.v1 { width: 500px; height: 500px; background: var(--neural); top: 10%; left: -10%; }
+        .glow-orb.v2 { width: 400px; height: 400px; background: var(--electric); bottom: 10%; right: -5%; animation-delay: -5s; }
+        .glow-orb.v3 { width: 300px; height: 300px; background: var(--pink); top: 60%; left: 40%; animation-delay: -3s; }
+        @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-40px) scale(1.1); } }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(3,3,8,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-weight: 700; font-size: 1.3rem; letter-spacing: -0.5px; }
+        .logo .judas { color: var(--neural); }
+        .logo .exp { color: var(--electric); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--dim); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 6rem 2rem; position: relative; z-index: 1;
+        }
+        .hero-content { max-width: 800px; }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+            padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.75rem; color: var(--neural);
+            margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5rem); font-weight: 700; line-height: 1;
+            letter-spacing: -3px; margin-bottom: 1.5rem;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--neural), var(--electric), var(--pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.1rem; color: var(--dim); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.8; }
+        .hero-cta {
+            display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+        }
+        .btn-glow {
+            background: linear-gradient(135deg, var(--neural), #7c3aed); color: white;
+            padding: 0.9rem 2rem; border-radius: 50px; font-weight: 600; border: none;
+            cursor: pointer; transition: all 0.3s; text-decoration: none; font-size: 0.95rem;
+            box-shadow: 0 0 30px var(--neural-glow);
+        }
+        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 40px var(--neural-glow); }
+        .btn-outline {
+            background: transparent; color: var(--text); padding: 0.9rem 2rem; border-radius: 50px;
+            font-weight: 600; border: 1px solid var(--border); cursor: pointer; transition: all 0.3s;
+            text-decoration: none; font-size: 0.95rem;
+        }
+        .btn-outline:hover { border-color: var(--neural); color: var(--neural); }
+
+        /* WAVEFORM */
+        .waveform {
+            display: flex; justify-content: center; align-items: center; gap: 3px;
+            margin: 3rem auto 0; height: 40px;
+        }
+        .wave-bar {
+            width: 3px; background: var(--neural); border-radius: 2px;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        @keyframes wave { 0%,100% { height: 8px; opacity: 0.3; } 50% { height: 35px; opacity: 1; } }
+
+        /* SECTIONS */
+        .section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        .section-title {
+            text-align: center; margin-bottom: 4rem;
+        }
+        .section-title .tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--neural); font-weight: 600; margin-bottom: 0.8rem; }
+        .section-title h2 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; }
+        .section-title p { color: var(--dim); max-width: 450px; margin: 1rem auto 0; line-height: 1.7; }
+
+        /* FEATURE CARDS */
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .feature-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 2rem; transition: all 0.4s; position: relative; overflow: hidden;
+        }
+        .feature-card:hover { border-color: rgba(139,92,246,0.3); transform: translateY(-3px); }
+        .feature-card .icon {
+            width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 1.2rem; background: rgba(139,92,246,0.1);
+        }
+        .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+        .feature-card p { color: var(--dim); font-size: 0.88rem; line-height: 1.7; }
+
+        /* TECH STACK */
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .tech-item {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+            padding: 1.5rem; text-align: center; transition: all 0.3s;
+        }
+        .tech-item:hover { border-color: var(--electric); }
+        .tech-item .name { font-weight: 600; font-size: 0.95rem; margin-top: 0.5rem; }
+        .tech-item .desc { color: var(--dim); font-size: 0.78rem; margin-top: 0.3rem; }
+
+        /* ARCHITECTURE */
+        .arch-block {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 3rem; text-align: center; margin-top: 2rem;
+        }
+        .arch-layers { display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 2rem auto 0; }
+        .arch-layer {
+            background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 12px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+        }
+        .arch-layer .num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neural); font-weight: 700; }
+        .arch-layer .info { text-align: left; }
+        .arch-layer .info h4 { font-size: 0.95rem; font-weight: 600; }
+        .arch-layer .info p { font-size: 0.8rem; color: var(--dim); }
+
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(6,182,212,0.05));
+            border: 1px solid rgba(139,92,246,0.15); border-radius: 24px;
+            padding: 4rem 2rem; text-align: center; margin: 4rem auto; max-width: 800px;
+        }
+        .cta-box h2 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+        .cta-box p { color: var(--dim); margin-bottom: 2rem; }
+
+        /* FOOTER */
+        footer { border-top: 1px solid var(--border); padding: 3rem 2rem; text-align: center; color: var(--dim); font-size: 0.8rem; position: relative; z-index: 1; }
+        footer a { color: var(--neural); text-decoration: none; }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; letter-spacing: -1px; }
+            .features, .tech-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-orb v1"></div>
+    <div class="glow-orb v2"></div>
+    <div class="glow-orb v3"></div>
+
+    <nav>
+        <div class="logo"><span class="judas">JUDAS</span> <span class="exp">EXPERIENCE</span></div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#tech">Tech Stack</a>
+            <a href="#arch">Arquitectura</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">Neural Interface System v2.0</div>
+            <h1><span class="gradient">Judas</span> Experience</h1>
+            <p>Neural interface system que conecta la mente humana con experiencias digitales inmersivas. AI-powered brain-computer interface para el futuro de la interaccion humano-maquina.</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn-glow">Request Access</a>
+                <a href="#features" class="btn-outline">Learn More</a>
+            </div>
+            <div class="waveform">
+                <div class="wave-bar" style="animation-delay:0s"></div>
+                <div class="wave-bar" style="animation-delay:0.1s"></div>
+                <div class="wave-bar" style="animation-delay:0.2s"></div>
+                <div class="wave-bar" style="animation-delay:0.3s"></div>
+                <div class="wave-bar" style="animation-delay:0.4s"></div>
+                <div class="wave-bar" style="animation-delay:0.5s"></div>
+                <div class="wave-bar" style="animation-delay:0.6s"></div>
+                <div class="wave-bar" style="animation-delay:0.7s"></div>
+                <div class="wave-bar" style="animation-delay:0.8s"></div>
+                <div class="wave-bar" style="animation-delay:0.9s"></div>
+                <div class="wave-bar" style="animation-delay:1s"></div>
+                <div class="wave-bar" style="animation-delay:0.15s"></div>
+                <div class="wave-bar" style="animation-delay:0.25s"></div>
+                <div class="wave-bar" style="animation-delay:0.35s"></div>
+                <div class="wave-bar" style="animation-delay:0.45s"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="section-title reveal">
+            <div class="tag">Capabilities</div>
+            <h2>Neural <span style="color:var(--neural)">Features</span></h2>
+            <p>El sistema de interfaz neural mas avanzado para experiencias digitales.</p>
+        </div>
+        <div class="features">
+            <div class="feature-card reveal">
+                <div class="icon">🧠</div>
+                <h3>Neural Decoding Engine</h3>
+                <p>Decodificacion en tiempo real de patrones neuronales con latencia sub-milisegundo. Procesamiento paralelo de multiples canales EEG.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="icon">🌐</div>
+                <h3>Immersive Reality Bridge</h3>
+                <p>Puente entre neural input y entornos VR/AR. Traduccion bidireccional de intenciones cognitivas a acciones digitales.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="icon">🤖</div>
+                <h3>Adaptive AI Core</h3>
+                <p>Motor de IA que aprende los patrones unicos de cada usuario. Calibracion automatica y mejora continua del modelo personal.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="icon">🔒</div>
+                <h3>Neural Encryption</h3>
+                <p>Encriptacion de datos neuronales con protocolos cuanticos. Privacidad cognitiva garantizada con zero-knowledge proofs.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="icon">⚡</div>
+                <h3>Real-time Processing</h3>
+                <p>Procesamiento Edge con GPU dedicada. Latencia <5ms para feedback sensorial. Streaming neural a 2048 canales.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="icon">🎮</div>
+                <h3>Cognitive Gaming</h3>
+                <p>Control de juegos y experiencias interactivas con la mente. Nivel de dificultad adaptativo basado en estado cognitivo.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="tech">
+        <div class="section-title reveal">
+            <div class="tag">Technology</div>
+            <h2>Tech <span style="color:var(--electric)">Stack</span></h2>
+        </div>
+        <div class="tech-grid">
+            <div class="tech-item reveal"><div style="font-size:2rem">🐍</div><div class="name">Python</div><div class="desc">Neural signal processing</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">🧠</div><div class="name">PyTorch</div><div class="desc">Deep learning models</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">⚛️</div><div class="name">React Native</div><div class="desc">Mobile interface</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">🔬</div><div class="name">MNE-Python</div><div class="desc">EEG data analysis</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">☁️</div><div class="name">FastAPI</div><div class="desc">Neural API backend</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">📊</div><div class="name">PostgreSQL</div><div class="desc">Neural data storage</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">🔴</div><div class="name">Redis</div><div class="desc">Real-time streaming</div></div>
+            <div class="tech-item reveal"><div style="font-size:2rem">🐳</div><div class="name">Docker</div><div class="desc">Container deployment</div></div>
+        </div>
+    </section>
+
+    <section class="section" id="arch">
+        <div class="section-title reveal">
+            <div class="tag">Architecture</div>
+            <h2>System <span style="color:var(--pink)">Architecture</span></h2>
+        </div>
+        <div class="arch-block reveal">
+            <h3>Multi-Layer Neural Pipeline</h3>
+            <p style="color:var(--dim);margin-top:0.5rem;">Pipeline completo de adquisicion, procesamiento y renderizado neural.</p>
+            <div class="arch-layers">
+                <div class="arch-layer"><div class="num">01</div><div class="info"><h4>Signal Acquisition</h4><p>EEG/EMG/EOG sensor array - 2048 channels @ 4096Hz</p></div></div>
+                <div class="arch-layer"><div class="num">02</div><div class="info"><h4>Pre-processing</h4><p>Noise filtering, artifact removal, ICA decomposition</p></div></div>
+                <div class="arch-layer"><div class="num">03</div><div class="info"><h4>Feature Extraction</h4><p>Spectral analysis, connectivity mapping, state classification</p></div></div>
+                <div class="arch-layer"><div class="num">04</div><div class="info"><h4>Neural Decoding</h4><p>Transformer-based intent recognition, motor imagery decoding</p></div></div>
+                <div class="arch-layer"><div class="num">05</div><div class="info"><h4>Output Rendering</h4><p>Haptic feedback, visual stimulus, audio synthesis</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-box" id="contact">
+        <h2>Ready to <span style="color:var(--neural)">connect</span>?</h2>
+        <p>Join the neural revolution. Early access program now open for researchers and developers.</p>
+        <a href="mailto:pedro@judasexperience.ai" class="btn-glow">Request Early Access</a>
+        <p style="margin-top:1rem;font-size:0.8rem;color:var(--dim);">pedro@judasexperience.ai</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Judas Experience | Pedro Belentani</p>
+        <p style="margin-top:0.5rem;"><a href="mailto:pedro@judasexperience.ai">pedro@judasexperience.ai</a> | Barcelona, Spain</p>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // Nav scroll effect
+        window.addEventListener('scroll', () => {
+            document.querySelector('nav').style.background = window.scrollY > 50
+                ? 'rgba(3,3,8,0.95)' : 'rgba(3,3,8,0.85)';
+        });
+    </script>
+</body>
+</html>

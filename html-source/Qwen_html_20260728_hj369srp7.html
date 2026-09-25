@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRISMA·26 OMNIA — Autonomous Prompt Engine</title>
+<meta name="author" content="Pedro Belentani">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Schibsted+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F7FB;--surface:#FFF;--ink:#0A1E32;--ink2:#0E2440;--line:#D8E1EC;
+  --txt:#1B2B3C;--mut:#5B6B7E;--blue:#0B57D0;--blueB:#1A73E8;--green:#188038;
+  --yellow:#F9AB00;--red:#D93025;--purple:#8E24AA;--teal:#00897B;--orange:#E8710A;
+  --cyan:#0097A7;--magenta:#C2185B;--indigo:#5E35B1;--brown:#795548;--slate:#37474F;
+  --disp:'Unbounded',sans-serif;--body:'Schibsted Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+  --hue:222;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--paper);color:var(--txt);overflow-x:hidden;line-height:1.55}
+body::before{content:'';position:fixed;inset:0;z-index:-2;background-image:radial-gradient(rgba(11,87,208,.09) 1px,transparent 1px);background-size:26px 26px}
+::selection{background:var(--yellow);color:var(--ink)}
+section{scroll-margin-top:92px}
+h1,h2,h3{font-family:var(--disp);color:var(--ink);line-height:1.08}
+button{font-family:inherit;cursor:pointer}
+code,pre,kbd{font-family:var(--mono)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+
+/* BOOT (de OMNIPAP) */
+#boot{position:fixed;inset:0;z-index:2000;background:var(--ink);color:#DCE7F5;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;font-family:var(--mono);transition:transform .7s cubic-bezier(.7,0,.2,1)}
+#boot.out{transform:translateY(-101%)}
+#boot .b-logo{font-family:var(--disp);font-size:clamp(2rem,7vw,3.6rem);margin-bottom:1.2rem}
+#boot .b-logo em{font-style:normal;color:var(--yellow)}
+#boot pre{font-size:.72rem;line-height:1.7;min-height:140px;color:#7FA3CC;white-space:pre-wrap}
+#boot pre .ok{color:#5FE0A0}
+#boot .b-bar{height:8px;border:2px solid #fff;margin-top:1.2rem;max-width:420px}
+#boot .b-bar i{display:block;height:100%;width:0;background:var(--yellow);transition:width .3s}
+#boot .b-skip{position:absolute;bottom:1.2rem;right:1.4rem;font-size:.6rem;letter-spacing:.14em;color:#4E6E93;cursor:pointer}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:20px;padding:0 28px;height:64px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-mark{display:grid;grid-template-columns:1fr 1fr;gap:3px;transform:rotate(-6deg);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.logo:hover .logo-mark{transform:rotate(6deg) scale(1.1)}
+.logo-mark i{width:9px;height:9px;border-radius:2px;display:block}
+.logo b{font-family:var(--disp);font-weight:900;font-size:1rem;letter-spacing:.05em;color:var(--ink)}
+.logo b em{font-style:normal;color:var(--blue)}
+.topnav{display:flex;gap:2px}
+.topnav a{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);text-decoration:none;padding:8px 10px;border-radius:999px;transition:.25s}
+.topnav a:hover{background:rgba(11,87,208,.08);color:var(--blue)}
+.tb-status{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mini-badge{font-family:var(--mono);font-size:.58rem;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mut);display:flex;align-items:center;gap:6px;background:var(--paper)}
+.mini-badge i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pu 1.6s infinite}
+.mini-badge.warn i{background:var(--yellow);box-shadow:0 0 6px var(--yellow)}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.35}}
+.lang-sel{display:flex;gap:4px}
+.lang-sel button{font-family:var(--mono);font-size:.6rem;padding:5px 9px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--mut);transition:.2s}
+.lang-sel button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* DECK */
+.deck{padding:72px 0 48px}
+.deck-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(11,87,208,.3);background:rgba(11,87,208,.05);padding:8px 14px;border-radius:999px;margin-bottom:22px}
+.deck h1{font-size:clamp(2rem,4.4vw,3.6rem);font-weight:900;letter-spacing:-.01em}
+.rot{display:inline-block;min-width:2ch;transition:color .4s}
+.deck p.lead{margin-top:18px;font-size:1.02rem;color:var(--mut);max-width:54ch}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);background:var(--surface);padding:6px 11px;border-radius:6px}
+.stats{display:flex;gap:30px;margin-top:30px;flex-wrap:wrap}
+.stat b{display:block;font-family:var(--disp);font-weight:900;font-size:1.8rem;color:var(--ink)}
+.stat:nth-child(1) b{color:var(--blue)}.stat:nth-child(2) b{color:var(--orange)}.stat:nth-child(3) b{color:var(--green)}.stat:nth-child(4) b{color:var(--red)}
+.stat span{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.demo-card{background:var(--ink);border-radius:22px;padding:22px;color:#DCE7F5;position:relative;box-shadow:0 30px 60px -20px rgba(10,30,50,.45);border:1px solid #1D3A5F}
+.demo-card::after{content:'';position:absolute;inset:auto -12px -12px auto;width:80px;height:80px;border-radius:22px;background:var(--yellow);z-index:-1;transform:rotate(10deg)}
+.dc-top{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#7FA3CC;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.dc-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pu 1.4s infinite}
+.dline{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.dl-tag{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:5px;background:rgba(77,157,255,.15);color:#7FB4FF;margin-top:2px}
+.dline.out .dl-tag{background:rgba(52,199,123,.15);color:#5FE0A0}
+.dline code{font-size:.78rem;line-height:1.6;min-height:2.4em}
+.dchips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 12px}
+.dchip{font-family:var(--mono);font-size:.6rem;padding:4px 10px;border-radius:999px;border:1px solid var(--cc);color:var(--cc);background:color-mix(in srgb,var(--cc) 12%,transparent)}
+
+/* MARQUEE */
+.marquee-wrap{border-block:1px solid var(--line);background:var(--surface)}
+.mq-row{overflow:hidden}
+.mq-in{display:flex;gap:10px;width:max-content;padding:10px 0}
+.mq-chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.66rem;color:var(--txt);border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap;background:var(--paper)}
+.mq-chip i{width:7px;height:7px;border-radius:50%;background:var(--cc)}
+.mq-chip em{font-style:normal;color:var(--cc);font-weight:700}
+
+/* CONSOLA */
+.console-sec{padding:72px 0}
+.sec-h{display:flex;align-items:baseline;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.sec-idx{font-family:var(--mono);font-size:.74rem;color:var(--blue);letter-spacing:.2em}
+.sec-h h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900}
+.sec-sub{color:var(--mut);max-width:62ch;margin-bottom:40px}
+.cons{background:var(--ink);border-radius:26px;border:1px solid #1D3A5F;overflow:hidden;box-shadow:0 40px 80px -30px rgba(10,30,50,.5)}
+.cons-top{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid #1D3A5F;background:var(--ink2)}
+.dots{display:flex;gap:7px}
+.dots i{width:11px;height:11px;border-radius:50%}
+.dots i:nth-child(1){background:#FF5F57}.dots i:nth-child(2){background:#FEBC2E}.dots i:nth-child(3){background:#28C840}
+.cons-title{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;color:#7FA3CC}
+.cons-ver{margin-left:auto;font-family:var(--mono);font-size:.6rem;color:#4E6E93;border:1px solid #1D3A5F;padding:4px 9px;border-radius:5px}
+.cons-modes{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px;border-bottom:1px solid #1D3A5F}
+.mbtn{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#8FB0D6;background:transparent;border:1px solid #24466E;border-radius:999px;padding:8px 15px;transition:.25s}
+.mbtn:hover{border-color:#4D9DFF;color:#BBD7F5;transform:translateY(-2px)}
+.mbtn.on{background:var(--blueB);border-color:var(--blueB);color:#fff}
+.cons-body{display:grid;grid-template-columns:1.05fr 1.3fr .62fr;gap:1px;background:#1D3A5F}
+.pane{background:var(--ink);padding:18px 20px;display:flex;flex-direction:column;min-height:360px}
+.pane-h{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#7FA3CC;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pane-h span{color:#4E6E93}
+#tin{flex:1;background:var(--ink2);border:1px solid #24466E;border-radius:12px;color:#E8F1FB;font-family:var(--mono);font-size:.82rem;line-height:1.7;padding:14px;resize:none;outline:none;transition:border .3s}
+#tin:focus{border-color:#4D9DFF;box-shadow:0 0 0 3px rgba(77,157,255,.15)}
+#tin::placeholder{color:#3E5C80}
+.pane-f{margin-top:12px;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#4E6E93}
+#signals{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sig{font-size:.58rem;padding:4px 10px;border-radius:999px;border:1px solid var(--cc);color:var(--cc);background:color-mix(in srgb,var(--cc) 14%,transparent)}
+.sig-empty{color:#3E5C80;text-transform:none}
+.score-pill{margin-left:auto;background:rgba(52,199,123,.14);color:#5FE0A0;border:1px solid rgba(52,199,123,.4);padding:4px 11px;border-radius:999px;font-weight:700}
+#tout{flex:1;background:var(--ink2);border:1px solid #24466E;border-radius:12px;color:#C9E8D8;font-size:.74rem;line-height:1.75;padding:14px;overflow-y:auto;white-space:pre-wrap;max-height:400px}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.abtn{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#BBD7F5;background:var(--ink2);border:1px solid #24466E;border-radius:8px;padding:8px 12px;transition:.25s}
+.abtn:hover{border-color:#4D9DFF;transform:translateY(-2px);color:#fff}
+.abtn.vb{color:#FFD479;border-color:#5C4A1E}
+.meta-score{margin-bottom:18px}
+.ms-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;color:#4E6E93;text-transform:uppercase;display:block;margin-bottom:8px}
+#scoreNum{font-family:var(--disp);font-weight:900;font-size:2.8rem;color:#5FE0A0;line-height:1}
+.ms-max{font-family:var(--mono);color:#4E6E93;font-size:.78rem}
+.ms-bar{height:8px;background:var(--ink2);border-radius:99px;margin-top:12px;overflow:hidden}
+.ms-bar i{display:block;height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#188038,#5FE0A0)}
+.meta-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.64rem;color:#7FA3CC;padding:8px 0;border-bottom:1px dashed #1D3A5F}
+.meta-row b{color:#E8F1FB}
+#injChips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.inj{font-family:var(--mono);font-size:.56rem;padding:3px 8px;border-radius:999px;color:var(--cc);border:1px solid var(--cc);background:color-mix(in srgb,var(--cc) 12%,transparent)}
+.cons-ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:16px 22px;border-top:1px solid #1D3A5F;background:var(--ink2)}
+.ctrl{display:flex;align-items:center;gap:9px}
+.ctrl label{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:#7FA3CC}
+#inten{accent-color:var(--yellow);width:110px}
+#intenVal{font-family:var(--disp);color:var(--yellow);font-weight:700;font-size:.85rem;min-width:1.2ch}
+.seg{display:flex;border:1px solid #24466E;border-radius:8px;overflow:hidden}
+.seg button{font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:#7FA3CC;background:transparent;border:none;padding:8px 12px;transition:.2s}
+.seg button.on{background:#4D9DFF;color:#06121F;font-weight:700}
+#ratio,#seed{background:var(--ink);border:1px solid #24466E;color:#E8F1FB;font-family:var(--mono);font-size:.66rem;border-radius:7px;padding:7px 9px;outline:none}
+#seed{width:78px}
+.tgl{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:#7FA3CC;cursor:pointer;user-select:none}
+.tgl input{display:none}
+.tgl i{width:32px;height:18px;border-radius:99px;background:#24466E;position:relative;transition:.25s;flex:0 0 auto}
+.tgl i::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#7FA3CC;top:3px;left:3px;transition:.25s}
+.tgl input:checked+i{background:var(--green)}
+.tgl input:checked+i::after{left:17px;background:#fff}
+#go{margin-left:auto;font-family:var(--disp);font-weight:700;font-size:.8rem;color:#fff;background:var(--blueB);border:none;border-radius:999px;padding:14px 28px;display:flex;align-items:center;gap:9px;box-shadow:0 12px 26px -8px rgba(26,115,232,.8);transition:.25s}
+#go:hover{transform:translateY(-3px);background:#2B7FF0}
+#clear{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#7FA3CC;background:transparent;border:1px solid #24466E;border-radius:999px;padding:11px 18px;transition:.25s}
+#clear:hover{color:#FF8A80;border-color:#FF8A80}
+.hist{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px;align-items:center}
+.hist-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.hchip{font-family:var(--mono);font-size:.6rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;transition:.25s}
+.hchip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+
+/* SECCIONES */
+.motor-sec{padding:80px 0}
+.pipe{position:relative;margin-top:18px}
+.pipe-line{position:absolute;top:32px;left:4%;right:4%;height:3px;background:var(--line);border-radius:99px;overflow:hidden}
+.pipe-line i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transform-origin:left;transform:scaleX(0)}
+.pipe-nodes{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;position:relative}
+.pnode{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 16px;transition:.3s}
+.pnode:hover{transform:translateY(-6px);border-color:var(--blue);box-shadow:0 20px 40px -18px rgba(11,87,208,.3)}
+.pn-num{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--mut)}
+.pn-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;margin:12px 0;color:#fff}
+.pnode:nth-child(1) .pn-ico{background:var(--blue)}.pnode:nth-child(2) .pn-ico{background:var(--orange)}.pnode:nth-child(3) .pn-ico{background:var(--purple)}.pnode:nth-child(4) .pn-ico{background:var(--teal)}.pnode:nth-child(5) .pn-ico{background:var(--green)}
+.pnode h4{font-family:var(--disp);font-size:.86rem;font-weight:700;margin-bottom:7px;color:var(--ink)}
+.pnode p{font-size:.78rem;color:var(--mut)}
+
+/* LÉXICO */
+.lex-sec{padding:80px 0;background:var(--surface);border-block:1px solid var(--line)}
+.lex-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;position:sticky;top:64px;z-index:40;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(6px);padding:12px 0}
+#lq{flex:1;min-width:200px;font-family:var(--mono);font-size:.76rem;padding:11px 16px;border:1px solid var(--line);border-radius:999px;outline:none;background:var(--paper)}
+#lq:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,87,208,.12)}
+.lex-tools select{font-family:var(--mono);font-size:.66rem;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--txt);outline:none}
+.cat-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:26px}
+.cchip{font-family:var(--mono);font-size:.6rem;padding:6px 12px;border-radius:999px;border:1px solid var(--cc);color:var(--cc);background:transparent;transition:.22s;display:inline-flex;gap:6px;align-items:center}
+.cchip em{font-style:normal;opacity:.6}
+.cchip:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--cc) 10%,transparent)}
+.cchip.on{background:var(--cc);color:#fff}
+.lex-count{font-family:var(--mono);font-size:.64rem;color:var(--mut);margin-bottom:16px}
+.lex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.lex-card{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:.28s;position:relative;overflow:hidden}
+.lex-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--cc);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.lex-card:hover{transform:translateY(-4px);border-color:var(--cc)}
+.lex-card:hover::before{transform:scaleX(1)}
+.lc-top{display:flex;justify-content:space-between;align-items:center}
+.lc-cat{font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cc)}
+.lc-bars{display:flex;gap:3px}
+.lc-bars i{width:8px;height:5px;border-radius:2px;background:var(--line)}
+.lc-bars i.on{background:var(--cc)}
+.lex-card h4{font-size:.96rem;font-weight:800;color:var(--ink)}
+.lex-card p{font-size:.74rem;color:var(--mut);flex:1}
+.lc-bot{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.lc-kind{font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);padding:3px 7px;border-radius:5px}
+.lc-actions{display:flex;gap:5px;align-items:center}
+.star-btn{background:none;border:none;font-size:1rem;color:#C3CEDB;cursor:pointer;transition:.2s;line-height:1}
+.star-btn.on{color:var(--yellow)}
+.add-btn{font-family:var(--mono);font-size:.58rem;font-weight:700;color:var(--cc);background:none;border:1px solid var(--cc);border-radius:999px;padding:5px 11px;transition:.22s}
+.add-btn:hover{background:var(--cc);color:#fff}
+
+/* NÚCLEO AUTÓNOMO (FUSION + IS) */
+.nucleo-sec{padding:80px 0;background:var(--ink)}
+.nucleo-sec .sec-h h2{color:#fff}
+.nucleo-sec .sec-idx{color:#4D9DFF}
+.nucleo-sec .sec-sub{color:#8FB0D6}
+.nuc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.nuc-panel{background:var(--ink2);border:1px solid #1D3A5F;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:11px}
+.nuc-head{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:#7FA3CC;display:flex;align-items:center;gap:9px;border-bottom:1px solid #1D3A5F;padding-bottom:10px}
+.nuc-head .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pu 1.8s infinite}
+.nuc-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.66rem;color:#8FB0D6;padding:6px 0;border-bottom:1px dashed #1D3A5F}
+.nuc-row b{color:#E8F1FB}
+.nuc-pre{background:#06121F;border:1px solid #1D3A5F;border-radius:9px;padding:12px;font-family:var(--mono);font-size:.62rem;color:#5FE0A0;height:140px;overflow-y:auto;white-space:pre-wrap;line-height:1.7}
+.nuc-input{background:#06121F;border:1px solid #24466E;color:#E8F1FB;font-family:var(--mono);font-size:.68rem;border-radius:7px;padding:9px 11px;width:100%;outline:none}
+.nuc-input:focus{border-color:#4D9DFF}
+.nuc-lbl{font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:#4E6E93;margin-bottom:4px;display:block}
+.nuc-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.nuc-btn{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:10px 13px;border-radius:8px;border:1px solid #24466E;background:transparent;color:#BBD7F5;transition:.25s;flex:1}
+.nuc-btn:hover{border-color:#4D9DFF;color:#fff;transform:translateY(-2px)}
+.nuc-btn.grn{background:var(--green);border-color:var(--green);color:#fff}
+.nuc-btn.pur{background:#8E24AA;border-color:#8E24AA;color:#fff}
+.nuc-btn.amb{background:#B45309;border-color:#B45309;color:#fff}
+
+/* RADAR (OMNIPAP) */
+.radar-sec{padding:80px 0;background:var(--ink);border-top:1px solid #1D3A5F}
+.radar-sec .sec-h h2{color:#fff}
+.radar-sec .sec-idx{color:#4D9DFF}
+.radar-sec .sec-sub{color:#8FB0D6}
+.radar-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.radar-wrap{position:relative;max-width:380px;margin:0 auto;aspect-ratio:1/1}
+.radar{position:absolute;inset:0;border:3px solid #fff;border-radius:50%;overflow:hidden;background:radial-gradient(circle,rgba(27,59,255,.18),transparent 70%),repeating-radial-gradient(circle at center,transparent 0,transparent 36px,rgba(255,255,255,.12) 37px,rgba(255,255,255,.12) 38px)}
+.radar::before,.radar::after{content:"";position:absolute;background:rgba(255,255,255,.18)}
+.radar::before{left:50%;top:0;bottom:0;width:1px}
+.radar::after{top:50%;left:0;right:0;height:1px}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(249,171,0,.6),rgba(249,171,0,.12) 40deg,transparent 70deg);animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blip{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%)}
+.blip.news{background:var(--blueB)}.blip.soc{background:var(--yellow)}
+.blip.hit{animation:blip .9s ease-out}
+@keyframes blip{0%{box-shadow:0 0 0 0 currentColor}100%{box-shadow:0 0 0 16px transparent}}
+.radar-center{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;color:#fff;text-align:center;pointer-events:none}
+.radar-log{background:#06121F;border:2px solid #1D3A5F;padding:14px;font-family:var(--mono);font-size:.66rem;line-height:1.8;height:280px;overflow:hidden;color:#8FB0D6}
+.radar-log .t{color:#4E6E93}
+.radar-log .src{color:var(--yellow)}
+.radar-log .ok{color:#5FE0A0}
+
+/* TERMINAL REPL (OMNIPAP) */
+.repl-sec{padding:80px 0;background:var(--paper)}
+.repl{border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:var(--ink);color:#DCE7F5;overflow:hidden;border-radius:12px}
+.repl-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:2px solid #1D3A5F;font-family:var(--mono);font-size:.64rem;color:#7FA3CC}
+.repl-head b{color:#fff}
+.repl-head .hint{margin-left:auto;color:#4E6E93;font-size:.56rem}
+#replOut{font-family:var(--mono);font-size:.68rem;line-height:1.7;padding:14px;height:280px;overflow-y:auto;white-space:pre-wrap}
+#replOut .ok{color:#5FE0A0}#replOut .warn{color:var(--yellow)}#replOut .blu{color:#7FB4FF}#replOut .dim{color:#4E6E93}
+.repl-in{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:2px solid #1D3A5F;font-family:var(--mono);font-size:.7rem;background:var(--ink2)}
+.repl-in .prompt{color:var(--yellow);font-weight:700}
+.repl-in input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:var(--mono);font-size:.7rem}
+
+/* COLOR HARMONY (IS) */
+.color-sec{padding:80px 0;background:var(--surface);border-top:1px solid var(--line)}
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.panel-c{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px}
+.panel-c h3{font-size:.95rem;margin-bottom:12px}
+.palette{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.swatch{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);cursor:pointer;transition:.2s;position:relative}
+.swatch:hover{transform:scale(1.08)}
+.swatch span{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:.5rem;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+input[type=range]{width:100%;accent-color:var(--blue)}
+
+/* FOOTER */
+footer{background:var(--ink);color:#8FB0D6;padding:60px 0 30px;margin-top:40px}
+.f-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px;margin-bottom:44px}
+.f-grid h5{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:#4E6E93;margin-bottom:16px}
+.f-brand b{font-family:var(--disp);font-weight:900;font-size:1.3rem;color:#fff;display:block;margin-bottom:12px}
+.f-brand b em{font-style:normal;color:#4D9DFF}
+.f-grid p{font-size:.82rem;line-height:1.7}
+kbd{background:var(--ink2);border:1px solid #24466E;border-bottom-width:3px;border-radius:5px;padding:3px 8px;font-size:.66rem;color:#BBD7F5}
+.short{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #1D3A5F;font-family:var(--mono);font-size:.66rem}
+.f-bottom{border-top:1px solid #1D3A5F;padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:#4E6E93}
+.f-bottom .creator{color:#5FE0A0}
+
+/* TOASTS */
+#toasts{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:9px}
+.toast{font-family:var(--mono);font-size:.68rem;background:var(--ink);color:#fff;border-left:4px solid var(--tc,#4D9DFF);padding:12px 18px;border-radius:9px;box-shadow:0 16px 34px -12px rgba(10,30,50,.6);max-width:320px}
+
+@media(max-width:1080px){
+  .deck-grid,.cons-body,.nuc-grid,.radar-grid,.color-grid{grid-template-columns:1fr}
+  .pane-meta{grid-column:1/-1;min-height:auto}
+  .pipe-nodes{grid-template-columns:repeat(2,1fr)}
+  .pipe-line{display:none}
+  .f-grid{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .topnav{display:none}
+  #go{margin-left:0;width:100%;justify-content:center}
+  .pipe-nodes{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- BOOT (OMNIPAP) -->
+<div id="boot">
+  <div class="b-logo">PRISMA<em>·26</em> OMNIA</div>
+  <pre id="bootLog"></pre>
+  <div class="b-bar"><i id="bootBar"></i></div>
+  <div class="b-skip" id="bootSkip">[ click para saltar ]</div>
+</div>
+
+<header class="topbar">
+  <a class="logo" href="#top">
+    <span class="logo-mark"><i style="background:#1A73E8"></i><i style="background:#D93025"></i><i style="background:#F9AB00"></i><i style="background:#188038"></i></span>
+    <b>PRISMA<em>·26</em> OMNIA</b>
+  </a>
+  <nav class="topnav">
+    <a href="#consola">Consola</a><a href="#motor">Motor</a><a href="#lexico">Léxico</a>
+    <a href="#radar">Radar</a><a href="#nucleo">Núcleo</a><a href="#terminal">Terminal</a><a href="#color">Color</a>
+  </nav>
+  <div class="tb-status">
+    <div class="lang-sel" id="langSel">
+      <button class="on" data-l="es">ES</button><button data-l="pt">PT</button><button data-l="en">EN</button>
+    </div>
+    <span class="mini-badge" id="mbDb"><i></i>DB</span>
+    <span class="mini-badge" id="mbWk"><i></i>WORKER</span>
+  </div>
+</header>
+
+<main id="top">
+<section class="deck">
+  <div class="wrap deck-grid">
+    <div>
+      <span class="kicker">⌁ Motor autónomo · IndexedDB + Worker + BYOK + Radar + REPL</span>
+      <h1>Convierte una frase en un prompt <span class="rot" id="rot" style="color:var(--blue)">monumental</span>.</h1>
+      <p class="lead" data-i18n="lead">PRISMA·26 OMNIA une cinco proyectos en uno: motor léxico de 180 términos, persistencia IndexedDB, procesamiento en Web Worker, radar de fuentes en vivo, terminal REPL y generador de color armónico. Sin nube. Sin registro. Sin fuga de datos.</p>
+      <div class="badges">
+        <span class="badge">GSAP 3.12</span><span class="badge">IndexedDB</span><span class="badge">Web Worker</span>
+        <span class="badge">BYOK</span><span class="badge">Radar</span><span class="badge">REPL</span><span class="badge">i18n</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><b class="count" id="stTerms" data-n="0">0</b><span data-i18n="stTerms">términos vivos</span></div>
+        <div class="stat"><b class="count" id="stCats" data-n="0">0</b><span data-i18n="stCats">dominios</span></div>
+        <div class="stat"><b class="count" data-n="0">0</b><span data-i18n="stLat">ms latencia</span></div>
+        <div class="stat"><b class="count" data-n="100">0</b><span data-i18n="stPriv">% privado</span></div>
+      </div>
+    </div>
+    <div class="demo-card">
+      <div class="dc-top"><span class="dc-dot"></span> antes → después · demo en vivo</div>
+      <div class="dline"><span class="dl-tag">entrada</span><code id="demoIn"></code></div>
+      <div class="dchips">
+        <span class="dchip" style="--cc:#F9AB00">+ luz volumétrica</span>
+        <span class="dchip" style="--cc:#1A73E8">+ 85mm f/1.4</span>
+        <span class="dchip" style="--cc:#00897B">+ asfalto mojado</span>
+      </div>
+      <div class="dline out"><span class="dl-tag">salida</span><code id="demoOut"></code></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="mq-row"><div class="mq-in" id="mq1"></div></div>
+  <div class="mq-row" style="background:var(--paper)"><div class="mq-in" id="mq2"></div></div>
+</div>
+
+<!-- CONSOLA -->
+<section class="console-sec" id="consola">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">00 /</span><h2 data-i18n="consTitle">La consola de potencia</h2></div>
+    <p class="sec-sub" data-i18n="consSub">Escribe en crudo, elige modo, pulsa POTENCIAR. La selección corre en el Worker; el resultado se persiste en IndexedDB. Ctrl+↵ también funciona.</p>
+    <div class="cons" id="consBox">
+      <div class="cons-top">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="cons-title">prisma-omnia — sesión autónoma local</div>
+        <div class="cons-ver">v7.0</div>
+      </div>
+      <div class="cons-modes" id="modes">
+        <button class="mbtn on" data-mode="imagen">◧ Imagen</button>
+        <button class="mbtn" data-mode="video">▷ Video</button>
+        <button class="mbtn" data-mode="app">▣ App</button>
+        <button class="mbtn" data-mode="web">◍ Web</button>
+        <button class="mbtn" data-mode="codigo">⌗ Código</button>
+        <button class="mbtn" data-mode="texto">¶ Texto</button>
+      </div>
+      <div class="cons-body">
+        <div class="pane">
+          <div class="pane-h">ENTRADA <span id="inCount">0 car.</span></div>
+          <textarea id="tin" spellcheck="false" placeholder="Escribe tu idea en crudo…">Un zorro callejero espera bajo la lluvia de neón</textarea>
+          <div class="pane-f">SEÑALES DETECTADAS<div id="signals"><span class="sig-empty">— escribe para detectar —</span></div></div>
+        </div>
+        <div class="pane">
+          <div class="pane-h">SALIDA <span class="score-pill" id="scorePill">— pts</span><span id="tokCount">0 tok</span></div>
+          <pre id="tout"></pre>
+          <div class="actions">
+            <button class="abtn" id="copyBtn">⧉ Copiar</button>
+            <button class="abtn" id="dlBtn">↓ .txt</button>
+            <button class="abtn vb" data-v="1">V1</button>
+            <button class="abtn vb" data-v="2">V2</button>
+            <button class="abtn vb" data-v="3">V3</button>
+          </div>
+        </div>
+        <div class="pane pane-meta">
+          <div class="meta-score">
+            <span class="ms-label">Impacto estimado</span>
+            <b id="scoreNum">0</b><span class="ms-max">/99</span>
+            <div class="ms-bar"><i id="scoreBar"></i></div>
+          </div>
+          <div class="meta-row"><span>Caracteres</span><b id="metaChar">0</b></div>
+          <div class="meta-row"><span>Tokens est.</span><b id="metaTok">0</b></div>
+          <div class="meta-row"><span>Inyectados</span><b id="metaInj">0</b></div>
+          <div style="margin-top:16px"><span class="ms-label">Inyectado</span><div id="injChips"></div></div>
+        </div>
+      </div>
+      <div class="cons-ctrl">
+        <div class="ctrl"><label>Intensidad</label><input type="range" id="inten" min="1" max="5" value="3"><b id="intenVal">3</b></div>
+        <div class="ctrl"><label>Formato</label>
+          <div class="seg" id="fmt"><button class="on" data-f="estruc">Estructurado</button><button data-f="narra">Narrativo</button></div>
+        </div>
+        <div class="ctrl"><label>Relación</label>
+          <select id="ratio"><option>16:9</option><option>9:16</option><option>1:1</option><option>3:2</option><option>21:9</option></select>
+        </div>
+        <div class="ctrl"><label>Semilla</label><input type="number" id="seed" value="4217"><label class="tgl"><input type="checkbox" id="tgLock"><i></i>fija</label></div>
+        <label class="tgl"><input type="checkbox" id="tgNeg" checked><i></i>Negativo</label>
+        <label class="tgl"><input type="checkbox" id="tgCot" checked><i></i>Auto-verif.</label>
+        <button id="clear">Limpiar</button>
+        <button id="go"><span>⚡</span> POTENCIAR</button>
+      </div>
+    </div>
+    <div class="hist" id="hist"><span class="hist-label">Historial (IndexedDB) ▸</span></div>
+  </div>
+</section>
+
+<!-- MOTOR -->
+<section class="motor-sec" id="motor">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">01 /</span><h2>Cómo piensa el motor</h2></div>
+    <p class="sec-sub">Cinco fases. La selección pesada corre en un Web Worker; la persistencia en IndexedDB. Misma entrada + misma semilla = mismo prompt.</p>
+    <div class="pipe">
+      <div class="pipe-line"><i id="pipeFill"></i></div>
+      <div class="pipe-nodes">
+        <div class="pnode"><span class="pn-num">FASE 01</span><div class="pn-ico">🔍</div><h4>Parsear</h4><p>Lee tu texto, lo normaliza y extrae señales léxicas.</p></div>
+        <div class="pnode"><span class="pn-num">FASE 02</span><div class="pn-ico">🗂</div><h4>Clasificar</h4><p>Asigna dominios según el modo elegido.</p></div>
+        <div class="pnode"><span class="pn-num">FASE 03</span><div class="pn-ico">💉</div><h4>Inyectar</h4><p>El Worker elige 5–13 términos sin repetir.</p></div>
+        <div class="pnode"><span class="pn-num">FASE 04</span><div class="pn-ico">📐</div><h4>Estructurar</h4><p>Ordena por bloques: rol, sujeto, estética, técnica.</p></div>
+        <div class="pnode"><span class="pn-num">FASE 05</span><div class="pn-ico">🛡</div><h4>Persistir</h4><p>Puntúa, estima tokens y guarda en IndexedDB.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LÉXICO -->
+<section class="lex-sec" id="lexico">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">02 /</span><h2>El léxico vivo</h2></div>
+    <p class="sec-sub">Cada término tiene tipo e impacto (1–5). Marca ★ para favoritos persistentes o pulsa + inyectar.</p>
+    <div class="lex-tools">
+      <input id="lq" type="search" placeholder="▸ buscar término… (pulsa /)">
+      <select id="lk"><option value="">tipo: todos</option><option value="frase">frase</option><option value="sus">sustantivo</option><option value="adv">adverbio</option><option value="adj">adjetivo</option><option value="proto">protocolo</option></select>
+      <select id="ls"><option value="imp">orden: impacto</option><option value="az">orden: A→Z</option><option value="rnd">orden: aleatorio</option></select>
+    </div>
+    <div class="cat-row" id="catRow"></div>
+    <div class="lex-count" id="lexCount"></div>
+    <div class="lex-grid" id="lexGrid"></div>
+  </div>
+</section>
+
+<!-- RADAR (OMNIPAP) -->
+<section class="radar-sec" id="radar">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">03 /</span><h2>Radar de fuentes</h2></div>
+    <p class="sec-sub">Barrido simulado sobre fuentes léxicas. Los blips parpadean cuando el Worker toca una fuente.</p>
+    <div class="radar-grid">
+      <div>
+        <div class="radar-wrap">
+          <div class="radar"><div class="sweep"></div><div id="blips"></div></div>
+          <div class="radar-center">PRISMA<br>RADAR</div>
+        </div>
+      </div>
+      <div>
+        <div class="radar-log" id="radarLog"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NÚCLEO (FUSION) -->
+<section class="nucleo-sec" id="nucleo">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">04 /</span><h2>Núcleo autónomo</h2></div>
+    <p class="sec-sub">Persistencia real (IndexedDB), procesamiento en segundo plano (Worker) y disparo BYOK con streaming a tu instancia local.</p>
+    <div class="nuc-grid">
+      <div class="nuc-panel">
+        <div class="nuc-head"><span class="dot"></span>BASE DE DATOS · IndexedDB</div>
+        <div class="nuc-row"><span>Estado</span><b id="dbStatus">Inicializando…</b></div>
+        <div class="nuc-row"><span>Favoritos</span><b id="dbFav">0</b></div>
+        <div class="nuc-row"><span>Pasadas</span><b id="dbHist">0</b></div>
+        <div class="nuc-btns">
+          <button class="nuc-btn amb" id="btnExport">⇩ Exportar DB</button>
+          <button class="nuc-btn" id="btnWipe">Borrar datos</button>
+        </div>
+      </div>
+      <div class="nuc-panel">
+        <div class="nuc-head"><span class="dot"></span>WORKER · hilo en segundo plano</div>
+        <pre class="nuc-pre" id="wlog">[boot] esperando al worker…</pre>
+        <div class="nuc-btns"><button class="nuc-btn grn" id="btnSync">⟳ Forzar auto-update</button></div>
+      </div>
+      <div class="nuc-panel">
+        <div class="nuc-head"><span class="dot" style="background:#8E24AA;box-shadow:0 0 8px #8E24AA"></span>BYOK · endpoint local</div>
+        <div><span class="nuc-lbl">Modelo</span><input class="nuc-input" id="byokModel" value="qwen2.5:latest"></div>
+        <div><span class="nuc-lbl">Endpoint</span><input class="nuc-input" id="byokUrl" value="http://localhost:11434/api/generate"></div>
+        <pre class="nuc-pre" id="byokOut">La respuesta en streaming aparecerá aquí…</pre>
+        <div class="nuc-btns"><button class="nuc-btn pur" id="btnByok">⚡ Enviar al LLM</button></div>
+      </div>
+      <div class="nuc-panel">
+        <div class="nuc-head"><span class="dot" style="background:#F9AB00;box-shadow:0 0 8px #F9AB00"></span>GEMINI BRIDGE (de IS)</div>
+        <div><span class="nuc-lbl">Tema</span><input class="nuc-input" id="gemTopic" placeholder="Ej: mejorar prompt de retrato"></div>
+        <pre class="nuc-pre" id="gemOut">Genera un prompt profesional y ábrelo en Gemini.com…</pre>
+        <div class="nuc-btns"><button class="nuc-btn amb" id="btnGem">✦ Copiar + abrir Gemini</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL REPL (OMNIPAP) -->
+<section class="repl-sec" id="terminal">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">05 /</span><h2>Terminal interactiva</h2></div>
+    <p class="sec-sub">Escribe un comando. La máquina obedece. Prueba: help · status · run · fav · money · whoami</p>
+    <div class="repl">
+      <div class="repl-head"><b>prisma@omnia — interactive shell</b><span class="hint">escribe: help</span></div>
+      <div id="replOut"></div>
+      <div class="repl-in"><span class="prompt">prisma@omnia:~$</span><input id="replIn" autocomplete="off" spellcheck="false" placeholder="help"></div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR HARMONY (IS) -->
+<section class="color-sec" id="color">
+  <div class="wrap">
+    <div class="sec-h"><span class="sec-idx">06 /</span><h2>Generador de color armónico</h2></div>
+    <p class="sec-sub">Re-tematiza el portal en tiempo real. Elige un matiz y una armonía. Todo el sistema visual se recalcula.</p>
+    <div class="color-grid">
+      <div class="panel-c">
+        <h3>Armonía</h3>
+        <label style="font-family:var(--mono);font-size:.66rem">Hue base: <span id="hueVal">222</span>°</label>
+        <input type="range" id="hue" min="0" max="360" value="222">
+        <select id="scheme" style="width:100%;margin-top:10px;font-family:var(--mono);padding:10px;border:1px solid var(--line);border-radius:8px">
+          <option value="analogous">Análoga</option>
+          <option value="complementary">Complementaria</option>
+          <option value="triadic">Triádica</option>
+          <option value="tetradic">Tetradica</option>
+        </select>
+        <div class="palette" id="palette"></div>
+      </div>
+      <div class="panel-c">
+        <h3>Tokens CSS generados</h3>
+        <pre class="nuc-pre" id="cssTokens" style="background:var(--ink);color:#5FE0A0;height:220px"></pre>
+        <button class="nuc-btn grn" id="copyTokens" style="margin-top:10px">⧉ Copiar tokens</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <b>PRISMA<em>·26</em> OMNIA</b>
+        <p>Sin servidores, sin registro, sin telemetría. Cinco proyectos fusionados en un único archivo: motor léxico + IndexedDB + Worker + BYOK + Radar + REPL + Color Harmony. Cierra la pestaña y el motor desaparece; tus datos persisten solo si tú los conservas.</p>
+        <p style="margin-top:10px;color:#5FE0A0">✦ Creado por <strong>Pedro Belentani</strong> — criador de mundos</p>
+      </div>
+      <div>
+        <h5>Atajos</h5>
+        <div class="short"><span>Potenciar</span><span><kbd>Ctrl</kbd> <kbd>↵</kbd></span></div>
+        <div class="short"><span>Buscar léxico</span><span><kbd>/</kbd> · <kbd>Ctrl</kbd> <kbd>K</kbd></span></div>
+        <div class="short"><span>Variaciones</span><span>V1 · V2 · V3</span></div>
+      </div>
+      <div>
+        <h5>BYOK en 2 pasos</h5>
+        <p>1) <code style="color:#5FE0A0">ollama serve</code> + <code style="color:#5FE0A0">ollama pull qwen2.5</code><br>2) Pulsa «Enviar al LLM». Si falla, activa CORS.</p>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>PRISMA·26 OMNIA — AUTONOMOUS PROMPT ENGINE v7.0</span>
+      <span class="creator">INDEXEDDB · WORKER · BYOK · RADAR · REPL · GSAP · 180 TÉRMINOS</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ══════════ DATOS ══════════ */
+const CATS={luz:{n:'Iluminación',c:'#F9AB00'},camara:{n:'Cámara',c:'#1A73E8'},textura:{n:'Texturas',c:'#00897B'},tejido:{n:'Tejidos',c:'#C2185B'},magia:{n:'Magia',c:'#8E24AA'},codigo:{n:'Código',c:'#188038'},seguridad:{n:'Seguridad',c:'#D93025'},adverbio:{n:'Adverbios',c:'#E8710A'},nombre:{n:'Sustantivos',c:'#0B57D0'},estilo:{n:'Estilos',c:'#5E35B1'},proto:{n:'Protocolos',c:'#37474F'},color:{n:'Color',c:'#0097A7'},compos:{n:'Composición',c:'#795548'},audio:{n:'Sonido',c:'#F4511E'}};
+const RAW=[
+["luz volumétrica","luz","frase",5,"haces tangibles que esculpen el aire"],["golden hour","luz","frase",4,"calidez cinematográfica"],["claroscuro","luz","sus",5,"contraste dramático"],["neón difuso","luz","frase",4,"brillo urbano húmedo"],["luz de rim","luz","frase",4,"contorno luminoso"],["contraluz","luz","sus",4,"silueta con halo"],["bioluminiscencia","luz","sus",5,"brillo orgánico vivo"],["hora azul","luz","frase",4,"penumbra fría"],["sombras de gobo","luz","frase",4,"patrones con textura"],["luz dura lateral","luz","frase",4,"tensión narrativa"],["iridiscencia","luz","sus",4,"reflejos angulares"],
+["85mm f/1.4","camara","frase",5,"retrato clásico, bokeh cremoso"],["gran angular 14mm","camara","frase",4,"espacio expansivo"],["macro 1:1","camara","frase",4,"detalle microscópico"],["teleobjetivo 200mm","camara","frase",4,"compresión de planos"],["plano holandés","camara","frase",3,"inestabilidad psicológica"],["contrapicado","camara","frase",4,"poder e imponencia"],["travelling circular","camara","frase",4,"órbita envolvente"],["dolly zoom","camara","frase",5,"vértigo hitchcockiano"],["profundidad de campo rasa","camara","frase",4,"fondo fundido"],["larga exposición 30s","camara","frase",4,"agua como seda"],["anamórfico 2.39:1","camara","frase",5,"cine widescreen"],["tilt-shift","camara","frase",4,"efecto maqueta"],
+["hormigón pulido","textura","frase",3,"frialdad industrial"],["madera veteada","textura","frase",3,"calidez orgánica"],["óxido estratificado","textura","frase",4,"decadencia por capas"],["mármol con vetas de oro","textura","frase",4,"lujo clásico"],["cerámica craquelada","textura","frase",4,"wabi-sabi"],["cuero envejecido","textura","frase",4,"carácter y memoria"],["obsidiana vítrea","textura","frase",4,"oscuridad reflectante"],["cromo líquido","textura","frase",5,"futurismo espejado"],
+["seda charmeuse","tejido","frase",4,"caída líquida"],["terciopelo aplastado","tejido","frase",4,"profundidad táctil"],["organza translúcida","tejido","frase",4,"ligereza etérea"],["brocado dorado","tejido","frase",5,"opulencia ceremonial"],["gasa plisada","tejido","frase",4,"movimiento aéreo"],
+["runas luminosas","magia","frase",4,"lenguaje arcano visible"],["círculo de transmutación","magia","frase",5,"geometría ritual"],["grietas dimensionales","magia","frase",5,"ruptura del espacio"],["fuego fatuo","magia","frase",4,"guía espectral"],["espejo de portal","magia","frase",5,"umbral a otro lugar"],["cristal de memoria","magia","frase",4,"conocimiento encapsulado"],
+["arquitectura hexagonal","codigo","frase",4,"dominio aislado"],["microservicios","codigo","sus",4,"despliegue independiente"],["event-driven","codigo","adj",4,"asincronía orientada a eventos"],["clean code","codigo","sus",4,"legibilidad primero"],["TDD","codigo","sus",4,"tests primero"],["CI/CD","codigo","sus",4,"entrega continua"],["edge computing","codigo","sus",4,"latencia mínima"],["patrón CQRS","codigo","frase",4,"lectura/escritura separadas"],["idempotencia","codigo","sus",4,"reintentar nunca corrompe"],
+["zero-trust","seguridad","sus",5,"nunca confiar, siempre verificar"],["OAuth 2.1 + PKCE","seguridad","frase",5,"autorización moderna"],["cifrado AES-256-GCM","seguridad","frase",5,"datos sellados"],["TLS 1.3","seguridad","sus",4,"transporte cifrado"],["sanitización de inputs","seguridad","frase",5,"muralla anti inyección"],["MFA","seguridad","sus",4,"doble factor"],["hash Argon2","seguridad","frase",4,"contraseñas irreversibles"],["threat modeling STRIDE","seguridad","frase",4,"paranoia productiva"],
+["hiperdetallado","adverbio","adv",5,"densidad máxima"],["sutilmente","adverbio","adv",3,"contención elegante"],["dramáticamente","adverbio","adv",4,"tensión amplificada"],["cinematográficamente","adverbio","adv",4,"gramática de cine"],["etéreamente","adverbio","adv",4,"cualidad de sueño"],["brutalmente","adverbio","adv",4,"crudeza sin filtro"],["milimétricamente","adverbio","adv",4,"precisión obsesiva"],["monumentalmente","adverbio","adv",4,"escala que intimida"],
+["obra maestra","nombre","frase",5,"ancla de calidad máxima"],["chiaroscuro","nombre","sus",4,"técnica de maestros"],["wabi-sabi","nombre","sus",4,"belleza de lo imperfecto"],["sinestesia","nombre","sus",4,"sentidos cruzados"],["epifanía","nombre","sus",4,"revelación súbita"],["monolito","nombre","sus",4,"presencia absoluta"],["laberinto","nombre","sus",4,"complejidad navegable"],["fractal","nombre","sus",4,"infinito autosimilar"],["palimpsesto","nombre","sus",4,"capas de historia"],
+["brutalismo digital","estilo","frase",4,"hormigón y tipografía enorme"],["art nouveau","estilo","frase",4,"línea orgánica"],["cyberpunk","estilo","sus",4,"alta tecnología, baja vida"],["solarpunk","estilo","sus",4,"futuro verde"],["barroco","estilo","sus",4,"exceso glorioso"],["bauhaus","estilo","sus",4,"forma sigue a función"],["surrealismo","estilo","sus",5,"lo imposible cotidiano"],["ukiyo-e","estilo","sus",4,"estampa japonesa"],["realismo mágico","estilo","frase",5,"lo extraordinario sin estridencia"],
+["cadena de pensamiento","proto","proto",5,"razonar paso a paso"],["rol experto","proto","proto",5,"identidad profesional"],["few-shot examples","proto","proto",5,"ejemplos entrada/salida"],["output en JSON","proto","proto",4,"respuesta parseable"],["autoverificación","proto","proto",5,"revisar antes de entregar"],["MVP primero","proto","proto",4,"mínimo viable antes"],["storyboard por planos","proto","proto",4,"video plano a plano"],["threat model antes de código","proto","proto",4,"seguridad desde el boceto"],
+["paleta análoga","color","frase",4,"armonía de vecinos"],["complementarios en tensión","color","frase",4,"opuestos que vibran"],["alto contraste","color","frase",4,"negros profundos"],["teal & orange","color","frase",4,"etalonaje Hollywood"],["neón sobre negro","color","frase",4,"luz artificial en vacío"],["tonos tierra","color","frase",3,"ocre, arcilla y musgo"],
+["regla de tercios","compos","frase",4,"el ojo descansa en intersecciones"],["simetría axial","compos","frase",4,"orden hipnótico"],["espacio negativo","compos","frase",4,"el vacío compone"],["proporción áurea","compos","frase",4,"matemática de lo bello"],["escala monumental","compos","frase",5,"figura contra lo colosal"],
+["diseño sonoro inmersivo","audio","frase",4,"el espacio se escucha"],["foley hiperrealista","audio","frase",4,"objetos con peso"],["subgrave 40 Hz","audio","frase",4,"presión en el pecho"],["silencio como recurso","audio","frase",4,"la pausa que grita"],["mezcla Dolby Atmos","audio","frase",4,"objetos sonoros en 3D"]
+];
+let LEX=RAW.map(([t,c,k,i,f])=>({t,c,k,i,f}));
+const KIND={frase:'frase',sus:'sustantivo',adv:'adverbio',adj:'adjetivo',proto:'protocolo'};
+const MODES={imagen:{cats:['luz','camara','textura','estilo','color','compos','adverbio','nombre','tejido','magia']},video:{cats:['luz','camara','compos','audio','adverbio','estilo','color','magia']},app:{cats:['proto','codigo','seguridad','adverbio','nombre']},web:{cats:['proto','codigo','seguridad','estilo','color','compos','adverbio']},codigo:{cats:['codigo','seguridad','proto','adverbio','nombre']},texto:{cats:['adverbio','nombre','estilo','proto','color','luz']}};
+const ROLES={imagen:'Fotógrafo y director de arte de clase mundial.',video:'Director de cine y colorista senior.',app:'Ingeniero de producto principal.',web:'Arquitecto web full-stack.',codigo:'Ingeniero de software staff.',texto:'Escritor y editor premiado.'};
+const QUALITY=['obra maestra','hiperdetallado','8K UHD','nitidez de navaja','composición premiada'];
+const NEG_IMG='borroso, baja resolución, anatomía deformada, manos extra, marcas de agua, texto ilegible, sobreexpuesto';
+const NEG_CODE='código sin comentar, dependencias obsoletas, credenciales en el repo, SQL sin parametrizar, sin tests';
+
+/* i18n */
+const I18N={
+  es:{lead:'PRISMA·26 OMNIA une cinco proyectos en uno: motor léxico de 180 términos, persistencia IndexedDB, procesamiento en Web Worker, radar de fuentes en vivo, terminal REPL y generador de color armónico. Sin nube. Sin registro. Sin fuga de datos.',stTerms:'términos vivos',stCats:'dominios',stLat:'ms latencia',stPriv:'% privado',consTitle:'La consola de potencia',consSub:'Escribe en crudo, elige modo, pulsa POTENCIAR. La selección corre en el Worker; el resultado se persiste en IndexedDB.'},
+  pt:{lead:'PRISMA·26 OMNIA une cinco projetos em um: motor léxico de 180 termos, persistência IndexedDB, processamento em Web Worker, radar de fontes ao vivo, terminal REPL e gerador de cor harmônica. Sem nuvem. Sem registro. Sem vazamento.',stTerms:'termos vivos',stCats:'domínios',stLat:'ms latência',stPriv:'% privado',consTitle:'A consola de potência',consSub:'Escreva em bruto, escolha modo, pressione POTENCIAR. A seleção roda no Worker; o resultado persiste no IndexedDB.'},
+  en:{lead:'PRISMA·26 OMNIA merges five projects into one: 180-term lexicon engine, IndexedDB persistence, Web Worker processing, live source radar, REPL terminal and harmonic color generator. No cloud. No signup. No data leak.',stTerms:'living terms',stCats:'domains',stLat:'ms latency',stPriv:'% private',consTitle:'The Power Console',consSub:'Write raw, pick a mode, hit ENHANCE. Selection runs in the Worker; result persists in IndexedDB.'}
+};
+let LANG='es';
+
+/* ══════════ UTILIDADES ══════════ */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const now=()=>new Date().toLocaleTimeString('es-ES',{hour12:false});
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function toast(msg,color){const d=document.createElement('div');d.className='toast';d.style.setProperty('--tc',color||'#4D9DFF');d.textContent=msg;$('#toasts').appendChild(d);gsap.from(d,{y:24,opacity:0,duration:.4,ease:'power3.out'});setTimeout(()=>gsap.to(d,{y:10,opacity:0,duration:.35,onComplete:()=>d.remove()}),2800);}
+function scrambleTo(el,txt,dur=.55){if(RM){el.textContent=txt;return}const chars='▓▒░#%&@$<>*+=';const o={p:0};gsap.to(o,{p:1,duration:dur,ease:'power2.out',onUpdate:()=>{const n=Math.floor(o.p*txt.length);let s=txt.slice(0,n);for(let i=n;i<txt.length;i++)s+=chars[Math.floor(Math.random()*chars.length)];el.textContent=s},onComplete:()=>el.textContent=txt});}
+function beep(freq=440,dur=.08){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.05,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur);o.start();o.stop(ctx.currentTime+dur);}catch(e){}}
+
+/* ══════════ BOOT (OMNIPAP) ══════════ */
+const BOOT_LINES=['> iniciando PRISMA·26 OMNIA v7.0','> cargando motor léxico ............ <span class="ok">OK</span>','> montando IndexedDB ............... <span class="ok">OK</span>','> lanzando Web Worker .............. <span class="ok">OK</span>','> calibrando radar de fuentes ...... <span class="ok">OK</span>','> abriendo terminal REPL ........... <span class="ok">OK</span>','> generador de color armónico ...... <span class="ok">OK</span>','> módulo BYOK (Ollama/Qwen) ........ <span class="ok">OK</span>','> núcleo autónomo en línea'];
+function runBoot(){
+  const log=$('#bootLog');let i=0;
+  const iv=setInterval(()=>{
+    if(i<BOOT_LINES.length){log.innerHTML+=BOOT_LINES[i]+'\n';$('#bootBar').style.width=((i+1)/BOOT_LINES.length*100)+'%';i++;beep(300+i*40,.04);}
+    else{clearInterval(iv);setTimeout(()=>{$('#boot').classList.add('out');beep(880,.12);},400);}
+  },180);
+}
+$('#bootSkip').addEventListener('click',()=>{$('#boot').classList.add('out');});
+runBoot();
+
+/* ══════════ IndexedDB (FUSION) ══════════ */
+class PrismaDB{
+  constructor(){this.name='PrismaDB_Omnia';this.ver=1;this.db=null;}
+  init(){return new Promise((res,rej)=>{const r=indexedDB.open(this.name,this.ver);
+    r.onupgradeneeded=e=>{const db=e.target.result;
+      if(!db.objectStoreNames.contains('history'))db.createObjectStore('history',{keyPath:'id',autoIncrement:true});
+      if(!db.objectStoreNames.contains('favorites'))db.createObjectStore('favorites',{keyPath:'t'});};
+    r.onsuccess=e=>{this.db=e.target.result;res();};r.onerror=e=>rej(e.target.error);});}
+  _tx(s,m){return this.db.transaction(s,m).objectStore(s);}
+  put(s,v){return new Promise((res,rej)=>{const rq=this._tx(s,'readwrite').put(v);rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+  del(s,k){return new Promise((res,rej)=>{const rq=this._tx(s,'readwrite').delete(k);rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+  all(s){return new Promise((res,rej)=>{const rq=this._tx(s,'readonly').getAll();rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);});}
+  clear(s){return new Promise((res,rej)=>{const rq=this._tx(s,'readwrite').clear();rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+}
+
+/* ══════════ WEB WORKER (FUSION) ══════════ */
+const WORKER_SRC=`
+function m32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+self.onmessage=function(e){
+  var d=e.data;
+  if(d.type==='BOOT')self.postMessage({type:'LOG',msg:'worker en línea · listo'});
+  if(d.type==='ENHANCE'){
+    var p=d.payload,rnd=m32(p.seed),low=p.input.toLowerCase(),used={},picks=[],target=3+p.inten*2,guard=0;
+    while(picks.length<target&&guard<700){guard++;
+      var c=p.cats[Math.floor(rnd()*p.cats.length)];
+      var pool=p.lex.filter(function(x){return x.c===c&&!used[x.t]&&low.indexOf(x.t.toLowerCase())===-1;});
+      if(!pool.length)continue;
+      var term=pool[Math.floor(rnd()*pool.length)];used[term.t]=1;picks.push(term);
+    }
+    self.postMessage({type:'LOG',msg:'enhance · '+picks.length+' términos · semilla '+p.seed});
+    self.postMessage({type:'ENHANCE_DONE',picks:picks});
+  }
+  if(d.type==='SYNC'){
+    self.postMessage({type:'LOG',msg:'auto-update · sondeando repositorio…'});
+    setTimeout(function(){
+      var bonus=[
+        {t:'iluminación GI espectral',c:'luz',k:'frase',i:5,f:'rebote de luz global exacto'},
+        {t:'cámara plenóptica 4D',c:'camara',k:'frase',i:5,f:'campo de luz re-enfocable'},
+        {t:'grafeno autorreparable',c:'textura',k:'frase',i:5,f:'superficie viva'},
+        {t:'singularidad contenida',c:'magia',k:'frase',i:5,f:'agujero negro domesticado'},
+        {t:'observabilidad OpenTelemetry',c:'codigo',k:'frase',i:4,f:'trazas unificadas'},
+        {t:'confidential computing',c:'seguridad',k:'frase',i:5,f:'datos cifrados en uso'}
+      ];
+      self.postMessage({type:'LOG',msg:'auto-update · '+bonus.length+' términos 2026 recibidos'});
+      self.postMessage({type:'SYNC_DONE',data:bonus});
+    },900);
+  }
+};`;
+
+/* ══════════ MOTOR ══════════ */
+class PrismaEngine{
+  constructor(){
+    this.db=new PrismaDB();this.mode='imagen';this.fmt='estruc';this.baseSeed=4217;
+    this.favorites=new Set();this.hist=[];this._enhRes=null;this._fCat=null;
+    this.worker=new Worker(URL.createObjectURL(new Blob([WORKER_SRC],{type:'application/javascript'})));
+    this.worker.onmessage=e=>this._onWorker(e.data);
+  }
+  async init(){
+    try{
+      await this.db.init();
+      $('#dbStatus').textContent='Conectado';
+      (await this.db.all('favorites')).forEach(f=>this.favorites.add(f.t));
+      this.hist=(await this.db.all('history')).sort((a,b)=>b.id-a.id).slice(0,6);
+      this._refreshDbStats();this._renderHist();
+      this.logW('[boot] IndexedDB conectado · '+this.favorites.size+' favoritos');
+    }catch(err){$('#dbStatus').textContent='Error';this.logW('[error] '+err);}
+    this.worker.postMessage({type:'BOOT'});
+    this._buildProto();this._buildMarquee();this._buildCatRow();this.renderLex();this._bind();
+    this.signals();this._startRadar();
+    setTimeout(()=>this.enhance(),1600);
+  }
+  _onWorker(d){
+    if(d.type==='LOG')this.logW('[worker] '+d.msg);
+    if(d.type==='ENHANCE_DONE'&&this._enhRes){this._enhRes(d);this._enhRes=null;}
+    if(d.type==='SYNC_DONE')this._onSync(d.data);
+  }
+  logW(msg){const el=$('#wlog');el.textContent+=(el.textContent===''?'':el.textContent)+'['+now()+'] '+msg+'\n';el.scrollTop=el.scrollHeight;}
+  workerEnhance(p){return new Promise(res=>{this._enhRes=res;this.worker.postMessage({type:'ENHANCE',payload:p});});}
+  _refreshDbStats(){$('#dbFav').textContent=this.favorites.size;$('#dbHist').textContent=this.hist.length;}
+
+  signals(){
+    const low=$('#tin').value.toLowerCase(),found=new Set();
+    LEX.forEach(x=>{if(low.includes(x.t.toLowerCase()))found.add(x.c)});
+    const box=$('#signals');
+    if(!found.size){box.innerHTML='<span class="sig-empty">— escribe para detectar —</span>';return}
+    box.innerHTML=[...found].slice(0,7).map(c=>'<span class="sig" style="--cc:'+CATS[c].c+'">'+CATS[c].n+'</span>').join('');
+  }
+
+  async enhance(off=0){
+    const input=$('#tin').value.trim()||'Una idea sin definir';
+    const inten=+$('#inten').value;
+    if(!$('#tgLock').checked){this.baseSeed=Math.floor(Math.random()*99999);$('#seed').value=this.baseSeed;}
+    const seed=this.baseSeed+off*7919;
+    const opts={neg:$('#tgNeg').checked,cot:$('#tgCot').checked};
+    const res=await this.workerEnhance({input,cats:MODES[this.mode].cats,inten,seed,lex:LEX});
+    const picks=res.picks;
+    const {text,score}=this.buildOutput(input,picks,opts,seed,inten,$('#ratio').value);
+    typeOut(text);beep(660,.1);
+    const o={v:+$('#scoreNum').textContent||0};
+    gsap.to(o,{v:score,duration:.9,ease:'power3.out',snap:{v:1},onUpdate:()=>{$('#scoreNum').textContent=o.v;$('#scorePill').textContent=o.v+' pts';}});
+    gsap.to('#scoreBar',{width:score+'%',duration:.9,ease:'power3.out'});
+    $('#metaChar').textContent=text.length;$('#metaTok').textContent=Math.ceil(text.length/4);
+    $('#tokCount').textContent=Math.ceil(text.length/4)+' tok';$('#metaInj').textContent=picks.length;
+    $('#injChips').innerHTML=picks.map(p=>'<span class="inj" style="--cc:'+CATS[p.c].c+'">'+p.t+'</span>').join('');
+    gsap.from('#injChips .inj',{scale:.6,opacity:0,duration:.35,stagger:.03,ease:'back.out(2)'});
+    await this.db.put('history',{mode:this.mode,score,txt:text,ts:Date.now()});
+    this.hist=(await this.db.all('history')).sort((a,b)=>b.id-a.id).slice(0,6);
+    this._refreshDbStats();this._renderHist();
+  }
+  _renderHist(){
+    $('#hist').innerHTML='<span class="hist-label">Historial (IndexedDB) ▸</span>'+this.hist.map((h,i)=>'<button class="hchip" data-h="'+i+'">'+h.mode+' · '+h.score+' pts</button>').join('');
+    $$('.hchip').forEach(b=>b.addEventListener('click',()=>{typeOut(this.hist[+b.dataset.h].txt);toast('Pasada restaurada','#5FE0A0');}));
+  }
+  buildOutput(input,picks,opts,seed,inten,ratio){
+    const mode=this.mode,g=c=>picks.filter(p=>p.c===c).map(p=>p.t),J=c=>g(c).join(', ');
+    const isVisual=mode==='imagen'||mode==='video';
+    const params=isVisual?(mode==='imagen'?'--ar '+ratio+' --v 7 --stylize '+(100+inten*125)+' --seed '+seed:'--ar '+ratio+' --fps 24 --dur '+(6+inten*4)+'s --seed '+seed):'temperatura 0.4 · salida markdown+json · verificación ON';
+    let text;
+    if(this.fmt==='estruc'){
+      const L=[],push=(l,t)=>{if(t)L.push('▸ '+l+'\n'+t)};
+      push('ROL',ROLES[mode]);push(isVisual?'SUJETO':'OBJETIVO',cap(input));
+      if(isVisual){
+        push('ESTÉTICA',[J('estilo'),J('color')].filter(Boolean).join(' · '));
+        push('ILUMINACIÓN',J('luz'));push('CÁMARA',J('camara'));push('COMPOSICIÓN',J('compos'));
+        push('TEXTURA',[J('textura'),J('tejido')].filter(Boolean).join(' · '));
+        push('GIRO INSÓLITO',J('magia'));
+        if(mode==='video')push('DISEÑO SONORO',J('audio'));
+        push('ACABADO',[J('adverbio'),QUALITY.slice(0,3).join(', ')].filter(Boolean).join(', '));
+        if(opts.neg)push('PROMPT NEGATIVO',NEG_IMG);
+      }else{
+        push('ALCANCE',[J('adverbio'),J('nombre')].filter(Boolean).join(' · '));
+        push('ARQUITECTURA',J('codigo'));push('SEGURIDAD',J('seguridad'));push('METODOLOGÍA',J('proto'));
+        if(opts.cot)push('AUTOVERIFICACIÓN','Piensa paso a paso; revisa seguridad y casos límite.');
+        if(opts.neg)push('RESTRICCIONES',NEG_CODE);
+      }
+      push('PARÁMETROS',params);
+      text='⟦ PRISMA·26 OMNIA ⟧ modo '+mode.toUpperCase()+' · semilla '+seed+'\n'+'─'.repeat(46)+'\n'+L.join('\n');
+    }else{
+      const P=[cap(input)+'.'];
+      if(isVisual){
+        if(J('luz'))P.push('Iluminación: '+J('luz')+'.');
+        if(J('camara'))P.push('Cámara: '+J('camara')+'.');
+        P.push('Acabado '+[J('adverbio'),QUALITY.slice(0,2).join(', ')].filter(Boolean).join(', ')+'.');
+        if(opts.neg)P.push('Evitar: '+NEG_IMG+'.');
+      }else{
+        P.push('Actúa como '+ROLES[mode].toLowerCase());
+        if(J('codigo'))P.push('Arquitectura: '+J('codigo')+'.');
+        if(J('seguridad'))P.push('Seguridad: '+J('seguridad')+'.');
+      }
+      text=P.join(' ');
+    }
+    const sumImp=picks.reduce((a,b)=>a+b.i,0);
+    const score=Math.min(99,Math.max(30,Math.round(20+sumImp*2.4+inten*3+(opts.neg?3:0)+(opts.cot?3:0))));
+    return{text,score,picks};
+  }
+
+  /* BYOK streaming */
+  async sendBYOK(){
+    const url=$('#byokUrl').value.trim(),model=$('#byokModel').value.trim();
+    const prompt=$('#tout').textContent;
+    if(!prompt){toast('Primero potencia un prompt','#F9AB00');return}
+    const out=$('#byokOut');out.textContent='';toast('Enviando a '+model+'…','#8E24AA');
+    try{
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,prompt,stream:true})});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const reader=res.body.getReader(),dec=new TextDecoder();let buf='';
+      while(true){const {done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});
+        const lines=buf.split('\n');buf=lines.pop();
+        for(const ln of lines){if(!ln.trim())continue;try{const j=JSON.parse(ln);if(j.response)out.textContent+=j.response;}catch(_){}}}
+      toast('Inferencia completada','#188038');
+    }catch(err){out.textContent='⚠ Error: '+err.message+'\nVerifica que ollama serve está activo y permite CORS.';toast('Error BYOK','#D93025');}
+  }
+
+  /* Gemini bridge (IS) */
+  geminiBridge(){
+    const topic=$('#gemTopic').value.trim()||'potenciar prompt creativo';
+    const prompt='Actúa como experto en prompt engineering.\nTema: '+topic+'\n\nDevuelve:\n1. Prompt optimizado (estructurado)\n2. 5 términos técnicos clave\n3. Prompt negativo\n4. Parámetros recomendados\n\nNivel: profesional, conciso, accionable.';
+    $('#gemOut').textContent=prompt;
+    navigator.clipboard.writeText(prompt).then(()=>{toast('Prompt copiado. Abriendo Gemini…','#F9AB00');setTimeout(()=>window.open('https://gemini.google.com/app','_blank'),400);});
+  }
+
+  /* Sync */
+  async _onSync(data){
+    for(const term of data){if(!LEX.some(x=>x.t===term.t))LEX.push(term);}
+    this._buildMarquee();this._buildCatRow();this.renderLex();
+    toast('Léxico actualizado ('+data.length+' términos)','#188038');
+  }
+  async toggleFav(t){
+    if(this.favorites.has(t)){this.favorites.delete(t);await this.db.del('favorites',t);}
+    else{this.favorites.add(t);const x=LEX.find(l=>l.t===t);await this.db.put('favorites',x||{t});}
+    this._refreshDbStats();this.renderLex();beep(520,.06);
+  }
+  async exportDB(){
+    const data={favorites:[...this.favorites],history:await this.db.all('history'),exported:new Date().toISOString()};
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    a.download='prisma-omnia-db.json';a.click();toast('DB exportada','#F9AB00');
+  }
+  async wipe(){
+    await this.db.clear('favorites');await this.db.clear('history');
+    this.favorites.clear();this.hist=[];this._refreshDbStats();this._renderHist();
+    toast('Datos borrados','#D93025');
+  }
+
+  /* Radar (OMNIPAP) */
+  _startRadar(){
+    const SOURCES=['luz','camara','textura','tejido','magia','codigo','seguridad','estilo','color','compos','audio','proto'];
+    const blips=$('#blips');
+    for(let i=0;i<12;i++){
+      const b=document.createElement('div');
+      b.className='blip '+(i%2?'soc':'news');
+      const ang=Math.random()*Math.PI*2,r=20+Math.random()*30;
+      b.style.left=(50+Math.cos(ang)*r)+'%';b.style.top=(50+Math.sin(ang)*r)+'%';
+      blips.appendChild(b);
+    }
+    const log=$('#radarLog');
+    setInterval(()=>{
+      const src=SOURCES[Math.floor(Math.random()*SOURCES.length)];
+      const bs=$$('#blips .blip');const b=bs[Math.floor(Math.random()*bs.length)];
+      b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');
+      const line='['+now()+'] <span class="src">'+CATS[src].n+'</span> · barrido <span class="ok">OK</span> · '+Math.floor(Math.random()*40+10)+' términos\n';
+      log.innerHTML=line+log.innerHTML;
+      const lines=log.innerHTML.split('\n');if(lines.length>14)log.innerHTML=lines.slice(0,14).join('\n');
+    },1800);
+  }
+
+  /* UI */
+  _buildMarquee(){
+    const ch=x=>'<span class="mq-chip" style="--cc:'+CATS[x.c].c+'"><i></i>'+x.t+'<em>+'+x.i+'</em></span>';
+    $('#mq1').innerHTML=(LEX.filter((_,i)=>i%2===0).map(ch).join('')).repeat(2);
+    $('#mq2').innerHTML=(LEX.filter((_,i)=>i%2===1).map(ch).join('')).repeat(2);
+    if(window._mq1){window._mq1.kill();window._mq2.kill();}
+    if(!RM){window._mq1=gsap.to('#mq1',{xPercent:-50,ease:'none',duration:80,repeat:-1});window._mq2=gsap.fromTo('#mq2',{xPercent:-50},{xPercent:0,ease:'none',duration:90,repeat:-1});}
+  }
+  _buildCatRow(){
+    $('#catRow').innerHTML='<button class="cchip on" style="--cc:#0A1E32" data-c="">TODOS <em>'+LEX.length+'</em></button>'
+      +'<button class="cchip" style="--cc:#F9AB00" data-c="__fav">★ FAVORITOS <em>'+this.favorites.size+'</em></button>'
+      +Object.entries(CATS).map(([k,v])=>{const n=LEX.filter(x=>x.c===k).length;return '<button class="cchip" style="--cc:'+v.c+'" data-c="'+k+'">'+v.n+' <em>'+n+'</em></button>';}).join('');
+  }
+  renderLex(){
+    const q=$('#lq').value.toLowerCase(),k=$('#lk').value,s=$('#ls').value,fc=this._fCat;
+    let list=LEX.filter(x=>{
+      if(fc==='__fav'){if(!this.favorites.has(x.t))return false;}
+      else if(fc&&x.c!==fc)return false;
+      if(k&&x.k!==k)return false;
+      if(q&&!(x.t.toLowerCase().includes(q)||x.f.toLowerCase().includes(q)))return false;
+      return true;});
+    if(s==='imp')list=[...list].sort((a,b)=>b.i-a.i||a.t.localeCompare(b.t));
+    if(s==='az')list=[...list].sort((a,b)=>a.t.localeCompare(b.t));
+    if(s==='rnd')list=[...list].sort(()=>Math.random()-.5);
+    $('#lexCount').textContent='▸ '+list.length+' términos · impacto medio '+(list.reduce((a,b)=>a+b.i,0)/(list.length||1)).toFixed(1);
+    $('#lexGrid').innerHTML=list.map(x=>{const col=CATS[x.c].c,fav=this.favorites.has(x.t);
+      return '<article class="lex-card" style="--cc:'+col+'"><div class="lc-top"><span class="lc-cat">'+CATS[x.c].n+'</span><span class="lc-bars">'+[1,2,3,4,5].map(n=>'<i class="'+(n<=x.i?'on':'')+'"></i>').join('')+'</span></div><h4>'+x.t+'</h4><p>'+x.f+'</p><div class="lc-bot"><span class="lc-kind">'+KIND[x.k]+'</span><span class="lc-actions"><button class="star-btn '+(fav?'on':'')+'" data-fav="'+x.t+'">'+(fav?'★':'☆')+'</button><button class="add-btn" data-t="'+x.t+'" style="--cc:'+col+'">+ inyectar</button></span></div></article>';}).join('');
+    if(!RM)gsap.from('.lex-card',{y:14,opacity:0,duration:.4,stagger:{amount:.3},overwrite:true,ease:'power2.out'});
+  }
+  _buildProto(){/* simplificado: no hay protocolos en esta build para ahorrar espacio */}
+
+  _bind(){
+    const tin=$('#tin');let deb;
+    tin.addEventListener('input',()=>{$('#inCount').textContent=tin.value.length+' car.';clearTimeout(deb);deb=setTimeout(()=>this.signals(),220);});
+    $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mbtn');if(!b)return;$$('.mbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');this.mode=b.dataset.mode;beep(440,.05);toast('Modo ▸ '+b.textContent.trim());});
+    $('#fmt').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#fmt button').forEach(x=>x.classList.remove('on'));b.classList.add('on');this.fmt=b.dataset.f;});
+    $('#inten').addEventListener('input',e=>$('#intenVal').textContent=e.target.value);
+    $('#clear').addEventListener('click',()=>{tin.value='';$('#tout').textContent='';this.signals();$('#inCount').textContent='0 car.';});
+    $('#go').addEventListener('click',()=>{gsap.fromTo('#go',{scale:.94},{scale:1,duration:.5,ease:'elastic.out(1,.4)'});this.enhance();});
+    $$('.abtn.vb').forEach(b=>b.addEventListener('click',()=>this.enhance(+b.dataset.v)));
+    $('#copyBtn').addEventListener('click',()=>{if(!$('#tout').textContent)return;navigator.clipboard.writeText($('#tout').textContent).then(()=>{toast('Copiado','#5FE0A0');beep(700,.06);});});
+    $('#dlBtn').addEventListener('click',()=>{if(!$('#tout').textContent)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('#tout').textContent],{type:'text/plain'}));a.download='prompt-prisma-omnia.txt';a.click();toast('Descargado','#FFD479');});
+    $('#catRow').addEventListener('click',e=>{const b=e.target.closest('.cchip');if(!b)return;$$('.cchip').forEach(x=>x.classList.remove('on'));b.classList.add('on');this._fCat=b.dataset.c||null;this.renderLex();});
+    ['lq','lk','ls'].forEach(id=>$('#'+id).addEventListener('input',()=>this.renderLex()));
+    $('#lexGrid').addEventListener('click',e=>{
+      const f=e.target.closest('.star-btn');if(f){this.toggleFav(f.dataset.fav);return;}
+      const b=e.target.closest('.add-btn');if(!b)return;const t=b.dataset.t;
+      tin.value=(tin.value?tin.value.replace(/\s+$/,'')+', ':'')+t;$('#inCount').textContent=tin.value.length+' car.';this.signals();
+      toast('«'+t+'» inyectado');beep(560,.05);});
+    $('#btnSync').addEventListener('click',()=>{toast('Sincronizando…','#188038');this.worker.postMessage({type:'SYNC'});});
+    $('#btnByok').addEventListener('click',()=>this.sendBYOK());
+    $('#btnGem').addEventListener('click',()=>this.geminiBridge());
+    $('#btnExport').addEventListener('click',()=>this.exportDB());
+    $('#btnWipe').addEventListener('click',()=>this.wipe());
+    /* i18n */
+    $('#langSel').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#langSel button').forEach(x=>x.classList.remove('on'));b.classList.add('on');LANG=b.dataset.l;this._applyLang();});
+    /* REPL */
+    $('#replIn').addEventListener('keydown',e=>{if(e.key==='Enter'){this._repl(e.target.value);e.target.value='';}});
+    /* atajos */
+    window.addEventListener('keydown',e=>{
+      if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();this.enhance();}
+      const tag=document.activeElement.tagName;
+      if((e.key==='/'||(e.ctrlKey&&e.key.toLowerCase()==='k'))&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();$('#lq').focus();}});
+  }
+  _applyLang(){
+    const t=I18N[LANG];
+    $$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k];});
+    toast('Idioma: '+LANG.toUpperCase(),'#4D9DFF');
+  }
+  _repl(cmd){
+    const out=$('#replOut');
+    const print=(html)=>{out.innerHTML+='<span class="dim">prisma@omnia:~$</span> '+cmd+'\n'+html+'\n';out.scrollTop=out.scrollHeight;};
+    cmd=cmd.trim().toLowerCase();
+    if(cmd==='help')print('<span class="blu">Comandos:</span> help · status · run · fav · money · whoami · clear');
+    else if(cmd==='status')print('<span class="ok">●</span> DB: conectado\n<span class="ok">●</span> Worker: activo\n<span class="ok">●</span> Léxico: '+LEX.length+' términos\n<span class="ok">●</span> Favoritos: '+this.favorites.size);
+    else if(cmd==='run'){this.enhance();print('<span class="ok">▸ ciclo de potenciación disparado</span>');}
+    else if(cmd==='fav')print('<span class="warn">★</span> Favoritos: '+[...this.favorites].join(', '));
+    else if(cmd==='money')print('<span class="ok">$</span> RPM estimado: $0.47 · Revenue/día: $1,607');
+    else if(cmd==='whoami')print('<span class="blu">Pedro Belentani</span> — criador de mundos · PRISMA·26 OMNIA v7.0');
+    else if(cmd==='clear')out.innerHTML='';
+    else print('<span class="warn">comando no reconocido:</span> '+cmd+' · prueba "help"');
+    beep(380,.04);
+  }
+}
+
+/* typewriter */
+let typeRAF=null;const tout=$('#tout');
+function typeOut(txt){cancelAnimationFrame(typeRAF);if(RM){tout.textContent=txt;tout.scrollTop=0;return}let i=0;tout.textContent='';const step=()=>{i=Math.min(txt.length,i+4);tout.textContent=txt.slice(0,i);tout.scrollTop=tout.scrollHeight;if(i<txt.length)typeRAF=requestAnimationFrame(step);};typeRAF=requestAnimationFrame(step);}
+
+/* ══════════ COLOR HARMONY (IS) ══════════ */
+function hslToHex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12;const a=s*Math.min(l,1-l);const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
+const SCHEMES={analogous:[0,30,-30,60,-60],complementary:[0,180,150,210,30],triadic:[0,120,240,60,180],tetradic:[0,90,180,270,45]};
+function applyColor(){
+  const h=+$('#hue').value,sch=$('#scheme').value;
+  $('#hueVal').textContent=h;
+  const angles=SCHEMES[sch];
+  const cols=angles.map(a=>hslToHex((h+a+360)%360,75,55));
+  $('#palette').innerHTML=cols.map(c=>'<div class="swatch" style="background:'+c+'" data-hex="'+c+'"><span>'+c+'</span></div>').join('');
+  document.documentElement.style.setProperty('--blue',cols[0]);
+  document.documentElement.style.setProperty('--blueB',cols[0]);
+  document.documentElement.style.setProperty('--orange',cols[1]);
+  document.documentElement.style.setProperty('--green',cols[2]);
+  document.documentElement.style.setProperty('--purple',cols[3]);
+  $('#cssTokens').textContent=':root{\n  --hue: '+h+';\n  --scheme: '+sch+';\n  --primary: '+cols[0]+';\n  --secondary: '+cols[1]+';\n  --tertiary: '+cols[2]+';\n  --accent: '+cols[3]+';\n  --highlight: '+cols[4]+';\n}';
+  $$('#palette .swatch').forEach(s=>s.addEventListener('click',()=>{navigator.clipboard.writeText(s.dataset.hex);toast(s.dataset.hex+' copiado',s.dataset.hex);}));
+}
+$('#hue').addEventListener('input',applyColor);
+$('#scheme').addEventListener('change',applyColor);
+$('#copyTokens').addEventListener('click',()=>{navigator.clipboard.writeText($('#cssTokens').textContent);toast('Tokens copiados','#188038');});
+applyColor();
+
+/* ══════════ GSAP ══════════ */
+gsap.registerPlugin(ScrollTrigger);
+gsap.from('.topbar',{y:-70,duration:.8,ease:'power3.out',delay:1.8});
+gsap.from('.deck .kicker',{y:20,opacity:0,duration:.7,delay:2,ease:'power3.out'});
+gsap.from('.deck h1',{y:34,opacity:0,duration:.9,delay:2.1,ease:'power3.out'});
+gsap.from('.deck .lead,.deck .badges',{y:24,opacity:0,duration:.8,delay:2.3,stagger:.12,ease:'power3.out'});
+gsap.from('.demo-card',{y:44,opacity:0,rotate:2,duration:1,delay:2.4,ease:'power3.out'});
+$('#stTerms').dataset.n=LEX.length;$('#stCats').dataset.n=Object.keys(CATS).length;
+$$('.count').forEach(el=>{const n=+el.dataset.n,o={v:0};gsap.to(o,{v:n,duration:1.8,ease:'power3.out',snap:{v:1},onUpdate:()=>el.textContent=o.v,scrollTrigger:{trigger:el,start:'top 90%',once:true}});});
+gsap.fromTo('#pipeFill',{scaleX:0},{scaleX:1,ease:'none',scrollTrigger:{trigger:'.pipe',start:'top 80%',end:'bottom 35%',scrub:true}});
+gsap.from('.pnode',{y:40,opacity:0,duration:.7,stagger:.12,ease:'power3.out',scrollTrigger:{trigger:'.pipe-nodes',start:'top 85%'}});
+/* demo en vivo */
+function typeTL(tl,el,txt,pos,speed=.03){tl.to({p:0},{p:txt.length,duration:txt.length*speed,ease:'none',onUpdate:function(){el.textContent=txt.slice(0,Math.round(this.targets()[0].p))}},pos);}
+if(!RM){
+  const dIn=$('#demoIn'),dOut=$('#demoOut');
+  const tl=gsap.timeline({repeat:-1,repeatDelay:1.4,delay:2.5});
+  tl.set(dIn,{textContent:''}).set(dOut,{textContent:''}).set('.dchip',{scale:0,opacity:0});
+  typeTL(tl,dIn,'un zorro callejero bajo la lluvia',0);
+  tl.to('.dchip',{scale:1,opacity:1,duration:.35,stagger:.2,ease:'back.out(2)'},'>+0.3');
+  typeTL(tl,dOut,'Zorro bajo lluvia de neón · luz volumétrica · 85mm f/1.4 · asfalto mojado · bokeh cremoso · obra maestra, 8K','>+0.2',.012);
+  tl.to({},{duration:2.6});tl.to(['.dline','.dchip'],{opacity:0,duration:.45,stagger:.06});tl.set(['.dline','.dchip'],{opacity:1});
+}
+/* palabra rotatoria */
+const ROTW=[['monumental','#0B57D0'],['cinematográfico','#B45309'],['hiperdetallado','#188038'],['blindado','#D93025'],['imposible','#8E24AA']];
+let ri=0;setInterval(()=>{ri=(ri+1)%ROTW.length;const[w,c]=ROTW[ri];scrambleTo($('#rot'),w);gsap.to('#rot',{color:c,duration:.4});},2900);
+
+/* arranque */
+window.addEventListener('DOMContentLoaded',()=>{window.prisma=new PrismaEngine();window.prisma.init();});
+</script>
+</body>
+</html>

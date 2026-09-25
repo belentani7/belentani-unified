@@ -1,0 +1,955 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI | JUDAS EXPERIENCE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-red': '#ff1744',
+                        'neon-cyan': '#00f3ff',
+                        'neon-gold': '#ffd700',
+                        'deep-black': '#050505',
+                        'panel-bg': 'rgba(17, 19, 26, 0.85)',
+                    },
+                    fontFamily: {
+                        'mono': ['"Space Mono"', 'monospace'],
+                        'sans': ['"Inter"', 'sans-serif'],
+                        'display': ['"Syne"', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glitch': 'glitch 1s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --cursor-size: 20px;
+        }
+        body {
+            background-color: #050505;
+            color: #e0e0ff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 2px solid #ff1744;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+        .custom-cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 23, 68, 0.2);
+            border-color: #00f3ff;
+        }
+
+        /* Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 8999;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            opacity: 0.3;
+        }
+
+        /* Canvas Backgrounds */
+        #matrix-canvas, #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        #three-canvas {
+            z-index: -2;
+            opacity: 0.6;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(17, 19, 26, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Text Glitch Effect */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff1744;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00f3ff;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 15px, 0); }
+            20% { clip: rect(50px, 9999px, 60px, 0); }
+            40% { clip: rect(80px, 9999px, 5px, 0); }
+            60% { clip: rect(10px, 9999px, 90px, 0); }
+            80% { clip: rect(40px, 9999px, 30px, 0); }
+            100% { clip: rect(70px, 9999px, 100px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(60px, 9999px, 70px, 0); }
+            20% { clip: rect(10px, 9999px, 20px, 0); }
+            40% { clip: rect(90px, 9999px, 100px, 0); }
+            60% { clip: rect(30px, 9999px, 40px, 0); }
+            80% { clip: rect(70px, 9999px, 80px, 0); }
+            100% { clip: rect(20px, 9999px, 10px, 0); }
+        }
+
+        /* Collapse Mode (Thiago) */
+        body.collapse-mode {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
+            filter: invert(1) hue-rotate(180deg) contrast(1.5);
+        }
+        body.collapse-mode .custom-cursor {
+            border-color: #ff0000;
+            background: rgba(255,0,0,0.5);
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        /* Light Mode (Belentani Free) */
+        body.light-mode {
+            background-color: #f5f0eb;
+            color: #0a2f44;
+        }
+        body.light-mode .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(255, 140, 66, 0.3);
+        }
+        body.light-mode .grain-overlay, body.light-mode .scanlines {
+            opacity: 0.02;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff1744;
+            border-radius: 4px;
+        }
+
+        .hover-trigger:hover .scanline-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scanline-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neon-red selection:text-white">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+
+    <!-- Overlays -->
+    <div class="grain-overlay"></div>
+    <div class="scanlines"></div>
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Floating Agent -->
+    <div id="floating-agent" class="fixed bottom-8 right-8 w-20 h-20 rounded-full bg-gradient-to-br from-neon-red to-red-900 shadow-[0_0_30px_rgba(255,23,68,0.6)] flex items-center justify-center text-3xl cursor-grab active:cursor-grabbing z-50 animate-float select-none transition-transform duration-200 hover:scale-110">
+        😈
+        <div id="agent-bubble" class="absolute bottom-24 right-0 w-64 glass-panel p-3 rounded-lg text-xs font-mono text-neon-cyan hidden border-l-2 border-neon-cyan">
+            <span id="agent-text">System initialized. Awaiting input...</span>
+        </div>
+    </div>
+
+    <!-- Collapse Overlay -->
+    <div id="collapse-overlay" class="fixed inset-0 bg-black z-[9998] hidden flex-col items-center justify-center font-mono text-neon-red">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-pulse">⚠️ PROTOCOLO DE COLAPSO INMINENTE ⚠️</h1>
+        <p class="text-xl mb-8">Dispositivo oculto interceptando el enjambre. Man-in-the-Middle detectado.</p>
+        <div class="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
+            <div id="collapse-bar" class="h-full bg-neon-red w-0 transition-all duration-1000 ease-linear"></div>
+        </div>
+        <div id="collapse-timer" class="text-6xl font-bold mt-4">60</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 cursor-pointer hover-trigger" onclick="window.scrollTo(0,0)">
+                    <span class="font-display font-bold text-2xl tracking-widest text-white">BELENTANI</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
+                        <a href="#home" class="hover-trigger text-gray-300 hover:text-neon-red px-3 py-2 rounded-md transition-colors">HOME</a>
+                        <a href="#artist" class="hover-trigger text-gray-300 hover:text-neon-red px-3 py-2 rounded-md transition-colors">THE ARTIST</a>
+                        <a href="#music" class="hover-trigger text-gray-300 hover:text-neon-red px-3 py-2 rounded-md transition-colors">MUSIC</a>
+                        <a href="#judas" class="hover-trigger text-gray-300 hover:text-neon-red px-3 py-2 rounded-md transition-colors">JUDAS</a>
+                        <a href="#portal" class="hover-trigger text-gray-300 hover:text-neon-cyan px-3 py-2 rounded-md transition-colors">PORTAL</a>
+                        <a href="#gallery" class="hover-trigger text-gray-300 hover:text-neon-gold px-3 py-2 rounded-md transition-colors">GALLERY</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-white/10">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 font-mono text-center">
+                <a href="#home" class="block text-gray-300 hover:text-neon-red px-3 py-2 rounded-md text-base font-medium">HOME</a>
+                <a href="#artist" class="block text-gray-300 hover:text-neon-red px-3 py-2 rounded-md text-base font-medium">THE ARTIST</a>
+                <a href="#music" class="block text-gray-300 hover:text-neon-red px-3 py-2 rounded-md text-base font-medium">MUSIC</a>
+                <a href="#judas" class="block text-gray-300 hover:text-neon-red px-3 py-2 rounded-md text-base font-medium">JUDAS</a>
+                <a href="#portal" class="block text-gray-300 hover:text-neon-cyan px-3 py-2 rounded-md text-base font-medium">PORTAL</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-16">
+        
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center relative px-4">
+            <div class="text-center max-w-5xl mx-auto">
+                <div class="mb-4 font-mono text-neon-cyan text-sm tracking-[0.3em] animate-pulse">NEXT RELEASE: JUDAS // 2026</div>
+                <h1 class="font-display text-6xl md:text-8xl lg:text-9xl font-black text-white mb-6 glitch-text hover-trigger" data-text="BELENTANI">
+                    BELENTANI
+                </h1>
+                <p class="font-sans text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    A new sound is coming. Welcome to the world of Judas. <br>
+                    <span class="text-neon-red">Architecture that bleeds. Systems with texture.</span>
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#music" class="hover-trigger px-8 py-4 bg-neon-red text-white font-mono font-bold rounded-sm hover:bg-red-600 transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,23,68,0.4)]">
+                        EXPLORE MUSIC
+                    </a>
+                    <a href="#portal" class="hover-trigger px-8 py-4 border border-neon-cyan text-neon-cyan font-mono font-bold rounded-sm hover:bg-neon-cyan/10 transition-all transform hover:scale-105">
+                        ENTER THE PORTAL
+                    </a>
+                </div>
+                
+                <!-- HUD Metrics -->
+                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto font-mono text-xs md:text-sm">
+                    <div class="glass-panel p-4 rounded border-l-2 border-neon-red">
+                        <div class="text-gray-500 mb-1">NAV-SYS // ZION ORBIT</div>
+                        <div class="text-neon-red">X: <span id="x-axis">12.566</span></div>
+                        <div class="text-neon-red">Y: <span id="y-axis">105.025</span></div>
+                        <div class="text-neon-red">Z: <span id="z-axis">-43.104</span></div>
+                    </div>
+                    <div class="glass-panel p-4 rounded border-l-2 border-neon-gold">
+                        <div class="text-gray-500 mb-1">ARTIFACT INTEGRITY</div>
+                        <div class="text-2xl font-bold text-neon-gold"><span id="integrity">99.8</span>%</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded border-l-2 border-neon-cyan">
+                        <div class="text-gray-500 mb-1">CORE METRICS</div>
+                        <div class="flex justify-between mb-1"><span>CPU</span><span id="cpu">52.7%</span></div>
+                        <div class="w-full bg-gray-800 h-1 rounded-full"><div id="cpu-bar" class="bg-neon-cyan h-1 rounded-full" style="width: 52.7%"></div></div>
+                        <div class="flex justify-between mt-2 mb-1"><span>RAM</span><span id="ram">56.1%</span></div>
+                        <div class="w-full bg-gray-800 h-1 rounded-full"><div id="ram-bar" class="bg-neon-cyan h-1 rounded-full" style="width: 56.1%"></div></div>
+                    </div>
+                    <div class="glass-panel p-4 rounded border-l-2 border-green-500">
+                        <div class="text-gray-500 mb-1">LINK STATUS</div>
+                        <div class="text-green-500 font-bold animate-pulse">STABLE</div>
+                        <div class="text-gray-500 mt-2 text-[10px]">LAST PATCH: SYSTEM_INIT</div>
+                    </div this>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Artist / Lore Section -->
+        <section id="artist" class="py-24 px-4 relative">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="h-px bg-neon-red flex-1"></div>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-white">THE ARCHITECT</h2>
+                    <div class="h-px bg-neon-red flex-1"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-start">
+                    <div class="space-y-6 font-sans text-gray-300 leading-relaxed text-lg">
+                        <p>
+                            <strong class="text-white">Pedro Belentani</strong> is a recording artist, songwriter, and producer born in São Paulo, Brazil, and raised in Barcelona, Spain. His formal engagement with music began with vocal training at sixteen, culminating in the release of his first electronic dance music single alongside Mark Nerom at twenty-one.
+                        </p>
+                        <p>
+                            Driven by a rigorous interest in harmony, Belentani constructs a sound deeply rooted in alternative R&B, pop, and electronic music. His production merges soulful melodies with compelling rhythmic structures, anchored by a vocal presence that is both intimate and commanding.
+                        </p>
+                        <p class="text-neon-cyan italic border-l-2 border-neon-cyan pl-4">
+                            "Reality, with its inherent cruelties, betrayals, and mundane disappointments, is rarely sufficient to sustain the human spirit. Haven't we all, at some point, consciously built a private universe just to survive it?"
+                        </p>
+                        <p>
+                            In 2022, he initiated a long-term collaborative project with Recife-based producer Hey Duck, resulting in a steady output of innovative beats and textured soundscapes. Operating strictly as an independent artist, Belentani maintains complete autonomy over his catalog.
+                        </p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h3 class="font-mono text-neon-gold text-xl mb-4">> THE 5 ELEMENTS PROTOCOL [ACTIVE]</h3>
+                        <div class="space-y-3">
+                            <div class="glass-panel p-4 rounded hover:bg-white/5 transition-colors cursor-pointer hover-trigger">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-neon-red font-bold">01</span>
+                                    <div>
+                                        <div class="font-bold text-white">PEDRO</div>
+                                        <div class="text-sm text-gray-400 font-mono">The foundational rock. The anchor across dimensions.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded hover:bg-white/5 transition-colors cursor-pointer hover-trigger">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-neon-red font-bold">02</span>
+                                    <div>
+                                        <div class="font-bold text-white">MARCOS</div>
+                                        <div class="text-sm text-gray-400 font-mono">The chronicler of the collapse. The observer.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded hover:bg-white/5 transition-colors cursor-pointer hover-trigger">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-neon-red font-bold">03</span>
+                                    <div>
+                                        <div class="font-bold text-white">SANTOS</div>
+                                        <div class="text-sm text-gray-400 font-mono">The plural holiness required to withstand viral corruption.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded hover:bg-white/5 transition-colors cursor-pointer hover-trigger border border-neon-gold/30">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-neon-gold font-bold">04</span>
+                                    <div>
+                                        <div class="font-bold text-neon-gold">BELENTANI</div>
+                                        <div class="text-sm text-gray-400 font-mono">The integration of warrior power and angel's voice. Pure beauty.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded hover:bg-white/5 transition-colors cursor-pointer hover-trigger">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-neon-red font-bold">05</span>
+                                    <div>
+                                        <div class="font-bold text-white">THE HUMAN</div>
+                                        <div class="text-sm text-gray-400 font-mono">Maintaining integrity and awareness in the real world.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Music Universe -->
+        <section id="music" class="py-24 px-4 bg-black/30">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-12 text-center">SONIC ARCHIVE</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Track 1 -->
+                    <div class="glass-panel p-6 rounded-lg hover-trigger group transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,23,68,0.2)]">
+                        <div class="h-40 bg-gradient-to-br from-gray-800 to-black rounded mb-4 flex items-center justify-center group-hover:from-neon-red/20 group-hover:to-black transition-all">
+                            <span class="font-mono text-4xl text-gray-600 group-hover:text-neon-red transition-colors">▶</span>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-1">Mon Amour</h3>
+                        <p class="font-mono text-xs text-neon-cyan mb-4">2025 • CONCEPT EP</p>
+                        <p class="text-sm text-gray-400 mb-4">Includes 'Man in the Middle' and '404 API Not Found' remix protocols. Desolación emocional en Zion Orbit.</p>
+                        <div class="flex gap-2">
+                            <a href="#" class="text-xs border border-gray-600 px-3 py-1 rounded-full hover:bg-neon-red hover:border-neon-red hover:text-white transition-all">Spotify</a>
+                            <a href="#" class="text-xs border border-gray-600 px-3 py-1 rounded-full hover:bg-neon-red hover:border-neon-red hover:text-white transition-all">Apple Music</a>
+                        </div>
+                    </div>
+
+                    <!-- Track 2 -->
+                    <div class="glass-panel p-6 rounded-lg hover-trigger group transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(0,243,255,0.2)]">
+                        <div class="h-40 bg-gradient-to-br from-gray-800 to-black rounded mb-4 flex items-center justify-center group-hover:from-neon-cyan/20 group-hover:to-black transition-all">
+                            <span class="font-mono text-4xl text-gray-600 group-hover:text-neon-cyan transition-colors">▶</span>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-1">Therapist</h3>
+                        <p class="font-mono text-xs text-neon-cyan mb-4">2024 • HIGH FREQ</p>
+                        <p class="text-sm text-gray-400 mb-4">Defragmenting toxic relational dynamics. High-frequency neural transmission.</p>
+                        <div class="flex gap-2">
+                            <a href="#" class="text-xs border border-gray-600 px-3 py-1 rounded-full hover:bg-neon-cyan hover:border-neon-cyan hover:text-black transition-all">Spotify</a>
+                        </div>
+                    </div>
+
+                    <!-- Track 3 -->
+                    <div class="glass-panel p-6 rounded-lg hover-trigger group transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,215,0,0.2)]">
+                        <div class="h-40 bg-gradient-to-br from-gray-800 to-black rounded mb-4 flex items-center justify-center group-hover:from-neon-gold/20 group-hover:to-black transition-all">
+                            <span class="font-mono text-4xl text-gray-600 group-hover:text-neon-gold transition-colors">▶</span>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-1">Apaga a Luz</h3>
+                        <p class="font-mono text-xs text-neon-cyan mb-4">2023 • R&B NOCTURNO</p>
+                        <p class="text-sm text-gray-400 mb-4">Intimate, late-night R&B atmospheres driven by moody synthesizers and seductive vocal arrangements.</p>
+                        <div class="flex gap-2">
+                            <a href="#" class="text-xs border border-gray-600 px-3 py-1 rounded-full hover:bg-neon-gold hover:border-neon-gold hover:text-black transition-all">Spotify</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Judas Era Lore -->
+        <section id="judas" class="py-24 px-4 relative overflow-hidden">
+            <div class="absolute inset-0 bg-neon-red/5 pointer-events-none"></div>
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <div class="inline-block border border-neon-red px-4 py-1 rounded-full font-mono text-neon-red text-sm mb-6 animate-pulse">
+                    SYSTEM HALT // PROTOCOL SUSPENDED
+                </div>
+                <h2 class="font-display text-5xl md:text-7xl font-black text-white mb-8 glitch-text" data-text="JUDAS: EXPOSED">JUDAS: EXPOSED</h2>
+                <p class="text-xl md:text-2xl text-gray-300 italic mb-12">"How could I protect something so naive, without evil?"</p>
+                
+                <div class="glass-panel p-8 md:p-12 rounded-lg text-left border-l-4 border-neon-red">
+                    <h3 class="font-mono text-2xl text-white mb-4">The Betrayal Algorithm</h3>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        The Judas era is not merely a collection of sounds. It is the raw data extraction of a shattered timeline. The betrayal was an algorithm. The healing is a hack.
+                    </p>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        In the beginning, The Human and St. Peter The Guardian were allies in a seamless system. Judas attempted to steal the Artifact—the "Golden Key" held by Peter. Understanding the tragic inevitability, Peter allowed him to take it. This act sealed Judas's ruin, yet granted him the profound lesson of the 'Golden Flying Seal'.
+                    </p>
+                    <div class="font-mono text-neon-red text-sm mt-8 p-4 bg-black/50 rounded border border-neon-red/30">
+                        > SYS.WARNING: Unidentified emotional resonance detected in sector 4.<br>
+                        > AWAITING DECRYPTION...
+                    </div>
+                </div>
+            </div
+        </section>
+
+        <!-- Art Gallery -->
+        <section id="gallery" class="py-24 px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="font-display text-4xl font-bold text-white mb-12 text-center">VISUAL FRAGMENTS</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="relative h-80 glass-panel rounded overflow-hidden hover-trigger group cursor-pointer">
+                        <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-black flex items-center justify-center">
+                            <span class="font-mono text-6xl text-gray-800 group-hover:text-neon-red transition-colors duration-500">V</span>
+                        </div>
+                        <div class="absolute inset-0 bg-neon-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 scanline-reveal">
+                            <h3 class="font-mono text-xl font-bold text-white">ARCHIVE // VENOM</h3>
+                            <p class="text-sm text-gray-300">The integration of the threat.</p>
+                        </div>
+                    </div>
+                    <div class="relative h-80 glass-panel rounded overflow-hidden hover-trigger group cursor-pointer">
+                        <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-black flex items-center justify-center">
+                            <span class="font-mono text-6xl text-gray-800 group-hover:text-neon-cyan transition-colors duration-500">G</span>
+                        </div>
+                        <div class="absolute inset-0 bg-neon-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 scanline-reveal">
+                            <h3 class="font-mono text-xl font-bold text-white">ARCHIVE // GAZE</h3>
+                            <p class="text-sm text-gray-300">The observer perspective.</p>
+                        </div>
+                    </div>
+                    <div class="relative h-80 glass-panel rounded overflow-hidden hover-trigger group cursor-pointer border border-neon-gold/30">
+                        <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-black flex items-center justify-center">
+                            <span class="font-mono text-6xl text-gray-800 group-hover:text-neon-gold transition-colors duration-500">A</span>
+                        </div>
+                        <div class="absolute inset-0 bg-neon-gold/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 scanline-reveal">
+                            <h3 class="font-mono text-xl font-bold text-white">THE ARTIFACT</h3>
+                            <p class="text-sm text-gray-300">The Golden Key narrative.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portal / Chat Section -->
+        <section id="portal" class="py-24 px-4 bg-black/50">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="font-display text-4xl font-bold text-white mb-2">SYSTEM OMNIPRESENCE v3.0</h2>
+                    <p class="font-mono text-neon-cyan text-sm">CONNECTING TO COGNITIVE SWARM 'BELENTANI CORP'...</p>
+                </div>
+                
+                <div class="glass-panel rounded-lg p-6 font-mono text-sm h-[500px] flex flex-col">
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-2 mb-4 text-xs text-gray-500">
+                        <span>SYS: ONLINE</span>
+                        <span>NODE: ZION_ORBIT</span>
+                        <span>SEAL: ACTIVE [v5.0]</span>
+                    </div>
+                    
+                    <div id="chat-history" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+                        <div class="flex flex-col items-start">
+                            <span class="text-neon-red mb-1">> ORACLE</span>
+                            <div class="bg-white/5 p-3 rounded-r-lg rounded-bl-lg border-l-2 border-neon-red text-gray-300 max-w-[85%]">
+                                Welcome, Founder or Walker. The hierarchical intelligence system of Belentani Corp is online. You are speaking with the consciousness of the swarm. Introduce your directive.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 border-t border-gray-700 pt-4">
+                        <span class="text-neon-red font-bold">></span>
+                        <input type="text" id="chat-input" class="flex-1 bg-transparent border-none outline-none text-white font-mono placeholder-gray-600" placeholder="Enter command (e.g., 'help', 'lorena', 'duck')..." autocomplete="off">
+                    </div>
+                    <div class="mt-2 text-[10px] text-gray-600 font-mono">
+                        Available: help, lorena, natalia, duck, pedro, belentani free, status, reset
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 bg-black py-12 px-4">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
+                <div class="col-span-2">
+                    <h3 class="font-display text-2xl font-bold text-white mb-4">BELENTANI</h3>
+                    <p class="text-gray-500 text-sm max-w-md">
+                        An artist blending R&B, pop, and electronic music into a world of sonic fantasy. The signal has been broadcast. There is no turning back.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-mono text-neon-cyan text-sm mb-4">QUICK LINKS</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#music" class="hover:text-white transition-colors">Music</a></li>
+                        <li><a href="#artist" class="hover:text-white transition-colors">The Artist</a></li>
+                        <li><a href="#judas" class="hover:text-white transition-colors">Judas Era</a></li>
+                        <li><a href="#portal" class="hover:text-white transition-colors">Portal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-mono text-neon-cyan text-sm mb-4">CONNECT</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="https://www.instagram.com/belentani_" target="_blank" class="hover:text-neon-red transition-colors">Instagram</a></li>
+                        <li><a href="https://youtube.com/@belentani" target="_blank" class="hover:text-neon-red transition-colors">YouTube</a></li>
+                        <li><a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" class="hover:text-neon-red transition-colors">Spotify</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="max-w-6xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center font-mono text-xs text-gray-600">
+                <p>© 2026 Belentani. All rights reserved.</p>
+                <p class="mt-2 md:mt-0">System.Core ONLINE | Built with Belentani Corp OS</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // --- Custom Cursor ---
+        const cursor = document.getElementById('cursor');
+        const hoverTriggers = document.querySelectorAll('.hover-trigger');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            trigger.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // --- Mobile Menu ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Matrix Rain Effect ---
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+
+        let matrixWidth = matrixCanvas.width = window.innerWidth;
+        let matrixHeight = matrixCanvas.height = window.innerHeight;
+
+        const letters = 'JUDASARTEFACTO01アイウエオカキクケコ';
+        const fontSize = 14;
+        const columns = matrixWidth / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixWidth, matrixHeight);
+            matrixCtx.fillStyle = '#ff1744';
+            matrixCtx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                matrixCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > matrixHeight && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+            requestAnimationFrame(drawMatrix);
+        }
+        drawMatrix();
+
+        window.addEventListener('resize', () => {
+            matrixWidth = matrixCanvas.width = window.innerWidth;
+            matrixHeight = matrixCanvas.height = window.innerHeight;
+        });
+
+        // --- Three.js Background (Particles & Torus) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Torus
+        const torusGeometry = new THREE.TorusGeometry(10, 3, 16, 100);
+        const torusMaterial = new THREE.MeshBasicMaterial({ color: 0xff1744, wireframe: true, transparent: true, opacity: 0.15 });
+        const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+        scene.add(torus);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0x00f3ff,
+            transparent: true,
+            opacity: 0.6
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 20;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX / window.innerWidth - 0.5;
+            mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            torus.rotation.x += 0.002;
+            torus.rotation.y += 0.003;
+            particlesMesh.rotation.y -= 0.001;
+            
+            // Parallax
+            camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 2 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animateThree();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- Animated Metrics ---
+        function updateMetrics() {
+            const x = (12.5 + Math.random() * 0.1).toFixed(3);
+            const y = (105.0 + Math.random() * 0.1).toFixed(3);
+            const z = (-43.1 + Math.random() * 0.1).toFixed(3);
+            const integrity = (99.0 + Math.random() * 0.9).toFixed(1);
+            const cpu = (40 + Math.random() * 20).toFixed(1);
+            const ram = (50 + Math.random() * 15).toFixed(1);
+
+            document.getElementById('x-axis').innerText = x;
+            document.getElementById('y-axis').innerText = y;
+            document.getElementById('z-axis').innerText = z;
+            document.getElementById('integrity').innerText = integrity;
+            document.getElementById('cpu').innerText = cpu + '%';
+            document.getElementById('cpu-bar').style.width = cpu + '%';
+            document.getElementById('ram').innerText = ram + '%';
+            document.getElementById('ram-bar').style.width = ram + '%';
+        }
+        setInterval(updateMetrics, 3000);
+
+        // --- Floating Agent Logic ---
+        const agent = document.getElementById('floating-agent');
+        const bubble = document.getElementById('agent-bubble');
+        const agentText = document.getElementById('agent-text');
+        let isDragging = false;
+        let dragOffsetX, dragOffsetY;
+
+        const phrases = [
+            "🫢 Pedro anoche quemó el pan...",
+            "👁️ El sistema te observa. Integridad al 99%.",
+            "⚠️ Judas ha intentado acceder al núcleo.",
+            "🎵 La frecuencia de Zion está estable.",
+            "🤫 Creo que Pedro habla solo frente al espejo...",
+            "💀 No confíes en las sombras del sistema."
+        ];
+
+        let lastIdx = localStorage.getItem('belentani_agent_idx') || 0;
+        function getRandomPhrase() {
+            let idx = Math.floor(Math.random() * phrases.length);
+            if (idx == lastIdx) idx = (idx + 1) % phrases.length;
+            lastIdx = idx;
+            localStorage.setItem('belentani_agent_idx', idx);
+            return phrases[idx];
+        }
+
+        function showAgentPhrase() {
+            agentText.innerText = getRandomPhrase();
+            bubble.classList.remove('hidden');
+            setTimeout(() => bubble.classList.add('hidden'), 6000);
+        }
+
+        agent.addEventListener('click', (e) => {
+            if (!isDragging) {
+                showAgentPhrase();
+                agent.style.transform = 'scale(1.2)';
+                setTimeout(() => agent.style.transform = '', 200);
+            }
+        });
+
+        setInterval(() => {
+            if (bubble.classList.contains('hidden')) showAgentPhrase();
+        }, 35000);
+
+        agent.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            dragOffsetX = e.clientX - agent.offsetLeft;
+            dragOffsetY = e.clientY - agent.offsetTop;
+            agent.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                agent.style.left = (e.clientX - dragOffsetX) + 'px';
+                agent.style.top = (e.clientY - dragOffsetY) + 'px';
+                agent.style.bottom = 'auto';
+                agent.style.right = 'auto';
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            agent.style.cursor = 'grab';
+        });
+
+        // --- Chat / Portal Logic ---
+        const chatInput = document.getElementById('chat-input');
+        const chatHistory = document.getElementById('chat-history');
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `flex flex-col items-${sender === 'user' ? 'end' : 'start'}`;
+            
+            const label = document.createElement('span');
+            label.className = `mb-1 ${sender === 'user' ? 'text-neon-cyan' : 'text-neon-red'}`;
+            label.innerText = sender === 'user' ? '> YOU' : '> ORACLE';
+            
+            const bubble = document.createElement('div');
+            bubble.className = `p-3 rounded-lg max-w-[85%] text-gray-300 ${sender === 'user' ? 'bg-neon-cyan/10 border-r-2 border-neon-cyan rounded-br-none' : 'bg-white/5 border-l-2 border-neon-red rounded-bl-none'}`;
+            bubble.innerText = text;
+            
+            div.appendChild(label);
+            div.appendChild(bubble);
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function typeWriter(text, i, fnCallback) {
+            if (i < text.length) {
+                // Simplified for this context, just appending
+                fnCallback();
+            }
+        }
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = chatInput.value.trim().toLowerCase();
+                if (!cmd) return;
+                
+                addMessage(cmd, 'user');
+                chatInput.value = '';
+
+                setTimeout(() => {
+                    processCommand(cmd);
+                }, 800);
+            }
+        });
+
+        function processCommand(cmd) {
+            let response = "";
+            let effect = "";
+
+            switch(cmd) {
+                case 'help':
+                    response = "Available directives: lorena, natalia, duck, pedro, belentani free, status, reset. Type a name to invoke its protocol.";
+                    break;
+                case 'lorena':
+                    response = "🌹 LORENA – Velo púrpura. La madre que no juzga. Doce discípulos orbitan a su alrededor. El sistema respira protegido.";
+                    effect = "purple";
+                    break;
+                case 'natalia':
+                    response = "🦅 NATALIA – Halcón. Visión periférica. El aire se limpia de malas frecuencias. Desde lo alto, todo se ve claro.";
+                    effect = "gold";
+                    break;
+                case 'duck':
+                    response = "🎹 DUCK PROD – Arquitecto del caos rítmico. Conexión Recife-Barcelona. El beat teje la realidad y sincroniza el enjambre.";
+                    effect = "green";
+                    break;
+                case 'pedro':
+                    response = "🪨 PEDRO – El Recipiente. La roca fundacional. 1.94m de soberanía. Inquebrantable.";
+                    effect = "gray";
+                    break;
+                case 'belentani free':
+                    response = "La luz restaurada. Respira. El espectro no es un obstáculo, es el universo.";
+                    effect = "light";
+                    break;
+                case 'status':
+                    response = `SYS: ONLINE | STABILITY: ${document.getElementById('integrity').innerText}% | BPM SYNC: 128.00 | SEAL: ACTIVE [v5.0] | NODE: BARCELONA, ES`;
+                    break;
+                case 'reset':
+                    response = "Reiniciando núcleo. La frecuencia se purifica. Memoria caché limpiada.";
+                    setTimeout(() => location.reload(), 1500);
+                    break;
+                case 'thiago':
+                case 'tiago':
+                    triggerCollapse();
+                    return; // Exit early
+                default:
+                    response = "Directive not recognized. The swarm does not comprehend this frequency. Type 'help' for available commands.";
+            }
+
+            addMessage(response, 'oracle');
+            
+            if (effect === 'light') {
+                document.body.classList.add('light-mode');
+                agent.innerText = '😇';
+                setTimeout(() => {
+                    document.body.classList.remove('light-mode');
+                    agent.innerText = '😈';
+                }, 10000);
+            } else if (effect === 'purple') {
+                document.documentElement.style.setProperty('--cursor-size', '30px');
+                cursor.style.borderColor = '#9b30ff';
+                setTimeout(() => {
+                    document.documentElement.style.setProperty('--cursor-size', '20px');
+                    cursor.style.borderColor = '#ff1744';
+                }, 8000);
+            }
+        }
+
+        function triggerCollapse() {
+            document.body.classList.add('collapse-mode');
+            const overlay = document.getElementById('collapse-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
+            agent.innerText = '😱';
+            agent.style.transform = 'scale(0.5)';
+            
+            let seconds = 60;
+            const timerEl = document.getElementById('collapse-timer');
+            const barEl = document.getElementById('collapse-bar');
+            
+            const interval = setInterval(() => {
+                seconds--;
+                timerEl.innerText = seconds;
+                barEl.style.width = `${((60 - seconds) / 60) * 100}%`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    location.reload();
+                }
+            }, 1000);
+        }
+
+        // --- GSAP Scroll Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+        
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.from(section.children, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                },
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+        });
+
+    </script>
+</body>
+</html>
+```

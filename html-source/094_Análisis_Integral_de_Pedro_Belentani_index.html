@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cassandra Complex • Pedro Belentani</title>
+  <meta name="description" content="Sistema operativo cognitivo para mentes divergentes. Ciencia, neurociencia, psicología evolutiva y comunidad LGBTQ+ afirmativa.">
+  
+  <!-- Fuentes y estilos base -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== VARIABLES GLOBALES - NEO-GLASSMORPHISM + DAFT PUNK ===== */
+    :root {
+      /* Colores base */
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a25;
+      --text-primary: #f0f0f5;
+      --text-secondary: #a0a0b0;
+      --text-muted: #666677;
+      
+      /* Acentos neón */
+      --neon-red: #ff2a6d;
+      --neon-cyan: #00f5ff;
+      --neon-purple: #b72aff;
+      --neon-green: #4ade80;
+      --neon-amber: #fbbf24;
+      
+      /* Glassmorphism */
+      --glass-bg: rgba(26, 26, 37, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      
+      /* Transiciones neuro-amigables */
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.4s ease;
+      --transition-slow: 0.6s ease;
+      
+      /* Accesibilidad */
+      --focus-ring: 3px solid var(--neon-cyan);
+      --min-touch-target: 44px;
+      --max-line-length: 65ch;
+      
+      /* Carga cognitiva */
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 1rem;
+      --spacing-md: 1.5rem;
+      --spacing-lg: 2rem;
+      --spacing-xl: 3rem;
+    }
+    
+    /* Modo alto contraste */
+    @media (prefers-contrast: more) {
+      :root {
+        --bg-primary: #000;
+        --bg-secondary: #111;
+        --text-primary: #fff;
+        --text-secondary: #ddd;
+        --glass-bg: rgba(0, 0, 0, 0.9);
+        --glass-border: rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    /* Reducción de movimiento */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* ===== RESET Y BASE ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* ===== TIPOGRAFÍA ===== */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+    h2 { font-size: clamp(1.4rem, 4vw, 1.8rem); }
+    h3 { font-size: clamp(1.2rem, 3vw, 1.4rem); }
+    
+    p { margin-bottom: var(--spacing-sm); max-width: var(--max-line-length); }
+    
+    a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    
+    a:hover, a:focus { color: var(--neon-purple); }
+    
+    /* ===== UTILIDADES ===== */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+    }
+    
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      padding: var(--spacing-lg);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+    }
+    
+    .neon-border {
+      position: relative;
+    }
+    
+    .neon-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(45deg, var(--neon-red), var(--neon-cyan), var(--neon-purple));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: var(--min-touch-target);
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+    }
+    
+    .btn:hover, .btn:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 245, 255, 0.4);
+      outline: none;
+    }
+    
+    .btn:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 2px;
+    }
+    
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+    }
+    
+    /* ===== HEADER Y NAVEGACIÓN ===== */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--neon-cyan);
+      color: #000;
+      padding: 0.5rem 1rem;
+      z-index: 1000;
+      transition: top var(--transition-fast);
+    }
+    
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: var(--spacing-sm) 0;
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-md);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--neon-red), var(--neon-purple));
+      border-radius: 0.5rem;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+    }
+    
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      list-style: none;
+    }
+    
+    nav a {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    nav a:hover, nav a[aria-current="page"] {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .lang-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    
+    .crisis-btn {
+      position: fixed;
+      bottom: var(--spacing-lg);
+      right: var(--spacing-lg);
+      z-index: 1000;
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+    }
+    
+    /* ===== HERO SECTION ===== */
+    .hero {
+      padding: var(--spacing-xl) 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(183, 42, 255, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .hero h1 {
+      margin-bottom: var(--spacing-md);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-red));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 60ch;
+      margin: 0 auto var(--spacing-lg);
+    }
+    
+    .mode-selector {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: var(--spacing-lg) 0;
+    }
+    
+    .mode-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .mode-btn:hover, .mode-btn[aria-pressed="true"] {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+      color: #000;
+      border-color: transparent;
+    }
+    
+    /* ===== MAIN CONTENT GRID ===== */
+    .content-grid {
+      display: grid;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-lg) 0;
+    }
+    
+    @media (min-width: 768px) {
+      .content-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+    }
+    
+    .section-card {
+      transition: transform var(--transition-normal);
+    }
+    
+    .section-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .section-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .section-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* ===== TESTS INTERACTIVOS ===== */
+    .test-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .question {
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: var(--spacing-sm);
+    }
+    
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .option-label:hover, .option-label:has(input:checked) {
+      background: var(--bg-secondary);
+      border: 1px solid var(--neon-cyan);
+    }
+    
+    .option-label input {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: var(--neon-cyan);
+    }
+    
+    .result {
+      margin-top: var(--spacing-lg);
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: 0.75rem;
+      border-left: 4px solid var(--neon-green);
+    }
+    
+    /* ===== CHAT SIMULADO ===== */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .message {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: 0.75rem;
+      max-width: 85%;
+    }
+    
+    .message.user {
+      margin-left: auto;
+      background: var(--neon-purple);
+      color: #000;
+    }
+    
+    .message.ai {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .message-avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .message.ai .message-avatar {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      color: #000;
+    }
+    
+    .chat-input {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+    }
+    
+    .chat-input input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    
+    .chat-input input:focus {
+      outline: var(--focus-ring);
+      border-color: var(--neon-cyan);
+    }
+    
+    /* ===== GLOSARIO Y TARJETAS ===== */
+    .glossary-grid {
+      display: grid;
+      gap: var(--spacing-sm);
+    }
+    
+    .term-card {
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: 0.5rem;
+      border-left: 3px solid var(--neon-cyan);
+    }
+    
+    .term-card h4 {
+      margin-bottom: 0.25rem;
+      color: var(--neon-cyan);
+    }
+    
+    .term-card .pop-ref {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+    
+    /* ===== ECOSISTEMA BELENTANI ===== */
+    .ecosystem-grid {
+      display: grid;
+      gap: var(--spacing-sm);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .ecosystem-node {
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: 0.75rem;
+      text-align: center;
+      transition: all var(--transition-normal);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .ecosystem-node:hover {
+      border-color: var(--neon-cyan);
+      transform: translateY(-2px);
+    }
+    
+    .ecosystem-node .icon {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    /* ===== FOOTER ===== */
+    footer {
+      padding: var(--spacing-xl) 0 var(--spacing-lg);
+      text-align: center;
+      border-top: 1px solid var(--glass-border);
+      margin-top: var(--spacing-xl);
+    }
+    
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+    }
+    
+    .disclaimer {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+    
+    /* ===== UTILIDADES DE ACCESIBILIDAD ===== */
+    :focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 2px;
+    }
+    
+    [role="alert"] {
+      position: fixed;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      background: var(--neon-amber);
+      color: #000;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: 0.5rem;
+      z-index: 1001;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* ===== ANIMACIONES SUAVES ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    /* ===== MODO BAJADA (CALMA) ===== */
+    body[data-mode="bajada"] {
+      --bg-primary: #0f1419;
+      --neon-red: #64748b;
+      --neon-cyan: #94a3b8;
+      --neon-purple: #a78bfa;
+    }
+    
+    body[data-mode="bajada"] .btn {
+      background: linear-gradient(135deg, #475569, #64748b);
+    }
+    
+    /* ===== MODO FIESTA (ENERGÍA) ===== */
+    body[data-mode="fiesta"] {
+      --bg-primary: #1a0a2e;
+      --neon-red: #ff6b9d;
+      --neon-cyan: #00f5d4;
+      --neon-purple: #d46bff;
+    }
+    
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      nav ul {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: var(--spacing-xs);
+      }
+      
+      .mode-selector {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .crisis-btn {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip link para accesibilidad -->
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+  
+  <!-- Botón de crisis siempre visible -->
+  <button class="btn btn-danger crisis-btn" id="crisisBtn" aria-label="Ayuda inmediata - Presiona ESC para salir rápido">
+    🆘 ¿Necesitas ayuda?
+  </button>
+  
+  <!-- Header con navegación -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo" aria-label="Cassandra Complex - Inicio">
+        <span class="logo-icon">🧬</span>
+        <span>Cassandra Complex</span>
+      </a>
+      
+      <nav aria-label="Navegación principal">
+        <ul>
+          <li><a href="#inicio" aria-current="page">Inicio</a></li>
+          <li><a href="#percepcion">Percepción</a></li>
+          <li><a href="#neurodivergencia">Neurodivergencia</a></li>
+          <li><a href="#dsm5">DSM-5 Evolutivo</a></li>
+          <li><a href="#preguntas">1000 Preguntas</a></li>
+          <li><a href="#ecosistema">Ecosistema</a></li>
+          <li><a href="#tests">Tests</a></li>
+          <li><a href="#chat">IA Chat</a></li>
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <select class="lang-toggle" id="langToggle" aria-label="Cambiar idioma">
+          <option value="es">ES</option>
+          <option value="ca">CA</option>
+          <option value="en">EN</option>
+          <option value="pt">PT</option>
+          <option value="fr">FR</option>
+        </select>
+        <button class="btn btn-secondary" id="breathingBtn" aria-label="Ejercicio de respiración 4-7-8">🧘 Respirar</button>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Contenido principal -->
+  <main id="main-content" class="container">
+    
+    <!-- Hero Section -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <h1 id="hero-title">Tu mente no está rota.<br>Está <span style="color:var(--neon-cyan)">desajustada</span> con un mundo que separa lo que debería estar conectado.</h1>
+      <p>Sistema operativo cognitivo para mentes divergentes. Ciencia rigurosa × lenguaje pop × privacidad absoluta × comunidad afirmativa.</p>
+      
+      <div class="mode-selector" role="group" aria-label="Selecciona tu estado actual">
+        <button class="mode-btn" data-mode="curioso" aria-pressed="true">🔍 Curioso</button>
+        <button class="mode-btn" data-mode="fiesta" aria-pressed="false">🎉 Fiesta</button>
+        <button class="mode-btn" data-mode="bajada" aria-pressed="false">🌙 Bajada</button>
+        <button class="mode-btn" data-mode="dejar" aria-pressed="false">💪 Dejar</button>
+        <button class="mode-btn" data-mode="cuidador" aria-pressed="false">🤝 Cuidador</button>
+      </div>
+      
+      <div class="glass-card neon-border" style="max-width: 600px; margin: 0 auto;">
+        <p style="margin:0; font-size:0.95rem;"><strong>🧠 Principio neurocientífico:</strong> Tu percepción no es una cámara. Es un proceso predictivo. El cerebro genera hipótesis y usa estímulos solo para corregirlas (Predictive Coding). Diseñamos con esto, no contra esto.</p>
+      </div>
+    </section>
+    
+    <!-- Grid de contenido principal -->
+    <div class="content-grid">
+      
+      <!-- Sección: Percepción Humana -->
+      <section class="glass-card section-card" id="percepcion" aria-labelledby="percepcion-title">
+        <h3 id="percepcion-title"><span class="section-icon">👁️</span> Percepción Humana</h3>
+        <p><strong>No es poesía. Es biología.</strong> Entender cómo el cerebro transforma luz en significado es la base para diseñar interfaces que funcionen <em>con</em> tu cerebro, no contra él.</p>
+        
+        <div class="glossary-grid">
+          <div class="term-card">
+            <h4>Sensación vs Percepción</h4>
+            <p><strong>Sensación:</strong> Detección cruda de energía (fotón → señal eléctrica).<br><strong>Percepción:</strong> Interpretación cerebral filtrada por experiencia y emoción.</p>
+            <div class="pop-ref">🎬 Como en <em>Inception</em>: lo que ves no es la realidad, es tu cerebro construyéndola.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>Ley de Weber-Fechner</h4>
+            <p>La diferencia perceptible es proporcional al estímulo base. Un botón rojo sobre blanco destaca más que sobre gris.</p>
+            <div class="pop-ref">🎮 Como en videojuegos: el contraste guía tu atención sin saturar.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>Carga Cognitiva (Sweller)</h4>
+            <p>La memoria de trabajo sostiene ~4±1 "chunks". Más opciones = parálisis decisional.</p>
+            <div class="pop-ref">📱 Por qué las apps exitosas muestran máximo 3 opciones por pantalla.</div>
+          </div>
+        </div>
+        
+        <details style="margin-top:var(--spacing-md);">
+          <summary style="cursor:pointer; color:var(--neon-cyan); font-weight:500;">🔬 ¿Cómo aplicamos esto en Cassandra?</summary>
+          <ul style="margin-top:var(--spacing-sm); padding-left:1.5rem;">
+            <li>Contraste mínimo WCAG AAA (7:1) → tu cerebro procesa con certeza, no adivina</li>
+            <li>Máximo 3 opciones por pantalla → reduce fatiga decisional</li>
+            <li>Transiciones ≤0.4s → suficiente para continuidad, insuficiente para saturar</li>
+            <li>Botón ESC siempre visible → reduce ansiedad basal al saber que hay salida</li>
+            <li>Lenguaje que valida sin patologizar → "patrones intensos" ≠ "trastorno"</li>
+          </ul>
+        </details>
+      </section>
+      
+      <!-- Sección: Neurodivergencia -->
+      <section class="glass-card section-card" id="neurodivergencia" aria-labelledby="neurodivergencia-title">
+        <h3 id="neurodivergencia-title"><span class="section-icon">🧩</span> Mentes Divergentes</h3>
+        <p><strong>No es un trastorno. Es variación natural.</strong> El 15-20% de la población es neurodivergente. Tu forma de procesar el mundo es válida.</p>
+        
+        <div class="glossary-grid">
+          <div class="term-card">
+            <h4>Neurodivergencia</h4>
+            <p>Variación natural en el funcionamiento cerebral (autismo, TDAH, dislexia, etc.). No es error, es diversidad cognitiva.</p>
+            <div class="pop-ref">🌈 Como la biodiversidad: un ecosistema diverso es más resiliente.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>Masking (Enmascaramiento)</h4>
+            <p>Supresión de comportamientos neurodivergentes para "encajar". Estrategia de supervivencia con costo alto: burnout, pérdida de identidad.</p>
+            <div class="pop-ref">🎭 Como usar una máscara de carnaval 24/7: funciona, pero agota.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>Intersección Queer + Neuro</h4>
+            <p>Personas autistas tienen 3-7x más probabilidad de identificarse como LGBTQ+. Ambas identidades activan rechazo social → doble carga, doble resiliencia.</p>
+            <div class="pop-ref">⚡ Como en <em>Heartstopper</em>: ser tú mismo en un mundo que prefiere copias.</div>
+          </div>
+        </div>
+        
+        <details style="margin-top:var(--spacing-md);">
+          <summary style="cursor:pointer; color:var(--neon-cyan); font-weight:500;">🧠 Fortalezas documentadas (con ciencia)</summary>
+          <ul style="margin-top:var(--spacing-sm); padding-left:1.5rem;">
+            <li><strong>Autismo:</strong> Atención al detalle, pensamiento sistémico, honestidad radical → ideal para ciencia de datos, programación</li>
+            <li><strong>TDAH:</strong> Creatividad divergente, energía en crisis, intuición social → ideal para innovación, emergencias, arte</li>
+            <li><strong>Alta sensibilidad:</strong> Empatía profunda, compromiso con valores → ideal para terapia, activismo, liderazgo transformacional</li>
+            <li><strong>Dislexia:</strong> Pensamiento visual-espacial, narrativa compleja → ideal para diseño, arquitectura, storytelling</li>
+          </ul>
+        </details>
+      </section>
+      
+      <!-- Sección: DSM-5 Evolutivo -->
+      <section class="glass-card section-card" id="dsm5" aria-labelledby="dsm5-title">
+        <h3 id="dsm5-title"><span class="section-icon">📚</span> DSM-5 Evolutivo</h3>
+        <p><strong>Reinterpretación compasiva:</strong> Lo que el modelo biomédico llama "patología", el enfoque evolutivo lo entiende como adaptaciones en desajuste con el entorno moderno.</p>
+        
+        <div class="glossary-grid">
+          <div class="term-card">
+            <h4>TDAH = El Explorador</h4>
+            <p>En entornos ancestrales impredecibles, alta búsqueda de novedad y atención dispersa permitían descubrir recursos. Mismatch moderno: el aula/oficina requiere foco sostenido.</p>
+            <div class="pop-ref">🗺️ Como un explorador en una oficina: tu superpoder se lee como "déficit" en el contexto equivocado.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>Autismo = El Sistematizador</h4>
+            <p>Atención extrema al detalle y tolerancia al trabajo repetitivo permitían desarrollar herramientas precisas y comprender ciclos naturales. Mismatch: el mundo moderno prioriza comunicación no verbal sutil.</p>
+            <div class="pop-ref">⚙️ Como un ingeniero en una fiesta: tu precisión se lee como "frialdad" en el contexto equivocado.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>TLP = Regulación en Entorno Impredecible</h4>
+            <p>Inestabilidad emocional como adaptación a entornos sociales impredecibles ancestrales. Miedo al abandono como alarma de supervivencia en grupos pequeños.</p>
+            <div class="pop-ref">🌪️ Como un radar hiper-sensible: útil en la jungla, agotador en la ciudad.</div>
+          </div>
+        </div>
+        
+        <details style="margin-top:var(--spacing-md);">
+          <summary style="cursor:pointer; color:var(--neon-cyan); font-weight:500;">🔄 ¿Por qué "evolutivo" cambia todo?</summary>
+          <ul style="margin-top:var(--spacing-sm); padding-left:1.5rem;">
+            <li>De "¿Qué está mal contigo?" a "¿Para qué evolucionó esto?"</li>
+            <li>De "curar" a "acomodar": diseñar entornos que honren tu forma de procesar</li>
+            <li>De estigma a orgullo: tu diferencia es recurso, no defecto</li>
+            <li>De pasividad a agencia: entender tu biología te da herramientas para navegar el mundo</li>
+          </ul>
+        </details>
+      </section>
+      
+      <!-- Sección: 1000 Preguntas (Muestra) -->
+      <section class="glass-card section-card" id="preguntas" aria-labelledby="preguntas-title">
+        <h3 id="preguntas-title"><span class="section-icon">❓</span> 1000 Preguntas Universales</h3>
+        <p>Las respuestas ocultas, honestas y necesarias sobre psicología evolutiva humana. Sin moralina. Sin estigma. Solo ciencia + experiencia.</p>
+        
+        <div class="glossary-grid">
+          <div class="term-card">
+            <h4>¿Por qué duele el rechazo romántico?</h4>
+            <p>El rechazo activa las mismas regiones cerebrales que el dolor físico (corteza cingulada anterior). Evolutivamente, el exilio del grupo = muerte. Tu cerebro no distingue entre "dolor social" y "dolor físico" porque, para nuestros ancestros, eran lo mismo.</p>
+            <div class="pop-ref">💔 Como en <em>Euphoria</em>: el dolor no es "dramático", es biológico.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>¿Tiene la homosexualidad ventaja evolutiva?</h4>
+            <p>La "paradoja darwiniana": si reduce reproducción directa, ¿por qué persiste? Hipótesis: 1) Selección de parentesco (ayudar a criar sobrinos), 2) Cohesión grupal (reducir competencia intra-grupo), 3) Variación natural sin presión selectiva fuerte.</p>
+            <div class="pop-ref">🏳️‍🌈 Como en <em>Red, White & Royal Blue</em>: el amor no es "contra natura", es parte de la diversidad humana.</div>
+          </div>
+          
+          <div class="term-card">
+            <h4>¿Por qué el insomnio es tan común hoy?</h4>
+            <p>El insomnio ancestral era adaptativo en entornos inseguros (hipervigilancia). Mismatch moderno: el estrés psicológico activa la misma alarma física que un depredador. Tu cuerpo está listo para correr... de un email.</p>
+            <div class="pop-ref">🌙 Como en <em>BoJack Horseman</em>: la mente no se apaga con un interruptor.</div>
+          </div>
+        </div>
+        
+        <p style="margin-top:var(--spacing-md); font-size:0.9rem; color:var(--text-muted);">
+          🔍 <strong>Explora los 10 dominios:</strong> Supervivencia • Reproducción • Cooperación • Estatus • Cognición • Emoción • Identidad • Moralidad • Espiritualidad • Tecnología
+        </p>
+      </section>
+      
+      <!-- Sección: Tests Interactivos -->
+      <section class="glass-card section-card" id="tests" aria-labelledby="tests-title">
+        <h3 id="tests-title"><span class="section-icon">🧪</span> Tests de Autoconocimiento</h3>
+        <p>Sin diagnósticos médicos. Solo escalas validadas por la ciencia, adaptadas a nuestra realidad. <strong>Todo queda en tu dispositivo</strong>, no guardamos tu email.</p>
+        
+        <div class="test-container">
+          <div class="question">
+            <p><strong>1.</strong> ¿Con qué frecuencia explicas constantemente tu identidad/emoções para ser llevado/a en serio?</p>
+            <div class="options">
+              <label class="option-label">
+                <input type="radio" name="q1" value="0"> Raramente, me siento validado/a
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="1"> A veces, genera tensión
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="2"> Sí, casi siempre para evitar conflictos
+              </label>
+            </div>
+          </div>
+          
+          <div class="question">
+            <p><strong>2.</strong> ¿Sientes que tu intensidad emocional es leída como "dramatismo" por otros?</p>
+            <div class="options">
+              <label class="option-label">
+                <input type="radio" name="q2" value="0"> No, la entienden
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="1"> A veces, depende del contexto
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="2"> Sí, casi siempre
+              </label>
+            </div>
+          </div>
+          
+          <div class="question">
+            <p><strong>3.</strong> ¿Necesitas tiempo a solas después de socializar para "recargar"?</p>
+            <div class="options">
+              <label class="option-label">
+                <input type="radio" name="q3" value="0"> No, socializar me da energía
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="1"> A veces, depende de la situación
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="2"> Sí, siempre necesito tiempo solo/a
+              </label>
+            </div>
+          </div>
+          
+          <button class="btn" id="calculateBtn">Calcular mi perfil</button>
+          
+          <div id="testResult" class="result" style="display:none;" role="status" aria-live="polite">
+            <p><strong>Tu perfil sugiere:</strong> Alta sensibilidad cognitiva + posible neurodivergencia no diagnosticada.</p>
+            <p style="margin-top:0.5rem; font-size:0.95rem;">Esto no es un diagnóstico. Es una invitación a explorar: ¿te resuena la experiencia de procesamiento intenso? Si sí, recursos afirmativos pueden ayudarte a navegar el mundo con más herramientas, no con más etiquetas.</p>
+            <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <a href="#neurodivergencia" class="btn btn-secondary" style="font-size:0.9rem;">Leer sobre neurodivergencia</a>
+              <a href="#chat" class="btn btn-secondary" style="font-size:0.9rem;">Hablar con IA</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Sección: Chat con IA (Simulado) -->
+      <section class="glass-card section-card" id="chat" aria-labelledby="chat-title">
+        <h3 id="chat-title"><span class="section-icon">💬</span> Chat con Agentes Especializados</h3>
+        <p>IA ética simulada localmente. <strong>Cero APIs externas, cero datos enviados.</strong> Cada sesión empieza de cero.</p>
+        
+        <div class="chat-container" id="chatMessages" aria-live="polite">
+          <div class="message ai">
+            <div class="message-avatar">🧠</div>
+            <div class="message-content">
+              <p>Hola. Soy tu agente de Cassandra. Estoy aquí para validar, no para diagnosticar. ¿En qué puedo ayudarte hoy?</p>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;"><em>Agentes disponibles: 💜 Empático • 🔍 Educativo • 🛡️ Seguridad • 🎮 Lúdico • 🌍 Cultural</em></p>
+            </div>
+          </div>
+        </div>
+        
+        <form class="chat-input" id="chatForm">
+          <input type="text" id="chatInput" placeholder="Escribe tu pregunta... (ej: '¿Por qué me siento así?')" aria-label="Mensaje para el agente de IA">
+          <button type="submit" class="btn">Enviar</button>
+        </form>
+        
+        <details style="margin-top:var(--spacing-md);">
+          <summary style="cursor:pointer; color:var(--neon-cyan); font-weight:500;">🔐 Guardrails éticos (cómo funciona)</summary>
+          <ul style="margin-top:var(--spacing-sm); padding-left:1.5rem;">
+            <li><strong>Detección de crisis:</strong> Palabras como "suicidio", "matarme" → oferta inmediata de derivación a 024/112/Trevor</li>
+            <li><strong>Cero patologización:</strong> Nunca diré "eres un trastorno". Diré "tu experiencia es válida y comprensible"</li>
+            <li><strong>Validación primero:</strong> Antes de cualquier consejo, validaré tu emoción: "Tiene sentido que te sientas así"</li>
+            <li><strong>Historial local:</strong> Las conversaciones se guardan solo en tu dispositivo y se borran al cerrar la pestaña</li>
+            <li><strong>Agente cultural:</strong> Adapto referencias a tu región: Bad Bunny para LatAm, anime para España, etc.</li>
+          </ul>
+        </details>
+      </section>
+      
+      <!-- Sección: Ecosistema Belentani -->
+      <section class="glass-card section-card" id="ecosistema" aria-labelledby="ecosistema-title" style="grid-column: 1 / -1;">
+        <h3 id="ecosistema-title"><span class="section-icon">🌐</span> Ecosistema Belentani • 11 Nodos Interconectados</h3>
+        <p>Ninguna web es una isla. Cassandra Complex es el núcleo que conecta 11 refugios digitales diseñados para mentes divergentes.</p>
+        
+        <div class="ecosystem-grid">
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🧠</div>
+            <strong>Altas Capacidades</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Intersección: pobreza, migración, arte/análisis</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">💜</div>
+            <strong>ABRAZO</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Manual para parejas de personas con TLP</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🛡️</div>
+            <strong>Radar de Violencia</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Decodifica gaslighting en tiempo real</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">📚</div>
+            <strong>DSM-5 Evolutivo</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Reinterpretación compasiva de diagnósticos</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">❓</div>
+            <strong>1000 Preguntas</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Respuestas evolutivas a preguntas universales</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🌈</div>
+            <strong>Guía de Espectros</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">TEA, psicosis, bipolar: más allá del binario</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🧩</div>
+            <strong>Mentes Divergentes</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Neuroqueer, TDAH, autismo: fortalezas y comunidad</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🔍</div>
+            <strong>Dinámicas Ocultas</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Narcisismo encubierto, aislamiento organizado</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🗂️</div>
+            <strong>Índice Maestro</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Catálogo minimalista de todos los temas</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🤝</div>
+            <strong>Espacio Seguro</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Chat con guardrails terapéuticos</p>
+          </a>
+          
+          <a href="#" class="ecosystem-node neon-border">
+            <div class="icon">🧬</div>
+            <strong>Psicología Evolutiva</strong>
+            <p style="font-size:0.85rem; margin-top:0.25rem;">Fundamentos: selección sexual, apego, mismatch</p>
+          </a>
+        </div>
+        
+        <p style="margin-top:var(--spacing-md); text-align:center; font-size:0.9rem; color:var(--text-muted);">
+          <strong>🔗 Conexión profunda:</strong> Cuando lees sobre "gaslighting" en Radar de Violencia, el sistema te sugiere: el juego de supervivencia relevante + el módulo de narcisismo + la pregunta #347 sobre validación epistémica. No son islas. Es un ecosistema.
+        </p>
+      </section>
+      
+    </div>
+    
+  </main>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#">Sobre Pedro Belentani</a>
+        <a href="#">Código abierto en GitHub</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Contribuir</a>
+        <a href="#">Contacto seguro</a>
+      </div>
+      
+      <p class="disclaimer">
+        <strong>⚠️ Disclaimer:</strong> Cassandra Complex no reemplaza terapia profesional. Si estás en crisis, contacta con ayuda profesional inmediatamente. 
+        <br><br>
+        <strong>🔐 Privacidad:</strong> Todo el contenido se procesa en tu dispositivo. No usamos cookies, tracking ni APIs externas. 
+        <br><br>
+        <strong>🌍 Accesibilidad:</strong> Diseñado con principios neuro-inclusivos: contraste WCAG AAA, navegación por teclado, reducción de movimiento, lenguaje validante.
+      </p>
+      
+      <p style="margin-top:var(--spacing-md); font-size:0.9rem; color:var(--text-muted);">
+        © 2026 Cassandra Complex • Creado con ciencia, corazón y código • <span style="color:var(--neon-cyan);">Tu complejidad no es error. Es adaptación.</span>
+      </p>
+    </div>
+  </footer>
+  
+  <!-- Modal de Respiración (oculto por defecto) -->
+  <div id="breathingModal" class="glass-card" style="display:none; position:fixed; inset:0; z-index:2000; display:grid; place-items:center; background:rgba(10,10,15,0.95);" role="dialog" aria-modal="true" aria-labelledby="breathingTitle">
+    <div style="text-align:center; max-width:400px; padding:var(--spacing-lg);">
+      <h3 id="breathingTitle" style="margin-bottom:var(--spacing-md);">🧘 Ejercicio 4-7-8</h3>
+      <p style="margin-bottom:var(--spacing-lg);">Respira conmigo para calmar tu sistema nervioso:</p>
+      
+      <div id="breathingCircle" style="width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); margin:0 auto var(--spacing-lg); display:grid; place-items:center; font-weight:600; transition:transform 4s ease-in-out;">
+        <span id="breathingText">Inhala</span>
+      </div>
+      
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:var(--spacing-lg);">
+        4s dentro • 7s aguantando • 8s fuera<br>
+        Repite 4 veces o hasta sentir calma
+      </p>
+      
+      <button class="btn btn-secondary" id="closeBreathing">Cerrar</button>
+    </div>
+  </div>
+  
+  <!-- Modal de Crisis (oculto por defecto) -->
+  <div id="crisisModal" class="glass-card" style="display:none; position:fixed; inset:0; z-index:2000; display:grid; place-items:center; background:rgba(10,10,15,0.95);" role="alertdialog" aria-modal="true" aria-labelledby="crisisTitle">
+    <div style="text-align:center; max-width:500px; padding:var(--spacing-lg);">
+      <h3 id="crisisTitle" style="margin-bottom:var(--spacing-md); color:var(--neon-red);">🆘 ¿Necesitas ayuda inmediata?</h3>
+      <p style="margin-bottom:var(--spacing-lg);">Si estás en peligro o pensando en hacerte daño, por favor contacta con ayuda profesional ahora mismo. Tu vida importa.</p>
+      
+      <div style="display:grid; gap:var(--spacing-sm); margin-bottom:var(--spacing-lg);">
+        <a href="tel:112" class="btn" style="background:linear-gradient(135deg, #ef4444, #f97316);">📞 112 - Emergencias (España/Europa)</a>
+        <a href="tel:024" class="btn btn-secondary">📞 024 - Línea Prevención Suicidio (España)</a>
+        <a href="https://www.thetrevorproject.org/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">🌍 Trevor Project - LGBTQ+ Global</a>
+        <a href="tel:188" class="btn btn-secondary">📞 188 - CVV Brasil</a>
+      </div>
+      
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:var(--spacing-lg);">
+        Mientras, respira conmigo: 4 segundos dentro, 7 aguantando, 8 fuera. No estás solx.
+      </p>
+      
+      <button class="btn btn-secondary" id="closeCrisis">Cerrar y volver</button>
+    </div>
+  </div>
+  
+  <!-- Script principal -->
+  <script>
+    // ===== ESTADO GLOBAL =====
+    const state = {
+      mode: 'curioso',
+      lang: 'es',
+      testAnswers: {},
+      chatHistory: []
+    };
+    
+    // ===== INICIALIZACIÓN =====
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cargar preferencias guardadas
+      loadPreferences();
+      
+      // Configurar eventos
+      setupEventListeners();
+      
+      // Iniciar partículas de fondo (efecto visual ligero)
+      initParticles();
+      
+      // Mensaje de bienvenida contextual
+      showWelcomeMessage();
+    });
+    
+    // ===== CARGAR PREFERENCIAS =====
+    function loadPreferences() {
+      // Modo
+      const savedMode = localStorage.getItem('cassandra:mode');
+      if (savedMode && ['curioso','fiesta','bajada','dejar','cuidador'].includes(savedMode)) {
+        setMode(savedMode);
+      }
+      
+      // Idioma
+      const savedLang = localStorage.getItem('cassandra:lang');
+      if (savedLang) {
+        state.lang = savedLang;
+        document.getElementById('langToggle').value = savedLang;
+        updateLanguage(savedLang);
+      }
+      
+      // Respuestas de tests
+      const savedAnswers = localStorage.getItem('cassandra:testAnswers');
+      if (savedAnswers) {
+        state.testAnswers = JSON.parse(savedAnswers);
+      }
+    }
+    
+    // ===== GUARDAR PREFERENCIAS =====
+    function savePreferences() {
+      localStorage.setItem('cassandra:mode', state.mode);
+      localStorage.setItem('cassandra:lang', state.lang);
+      localStorage.setItem('cassandra:testAnswers', JSON.stringify(state.testAnswers));
+    }
+    
+    // ===== CONFIGURAR EVENTOS =====
+    function setupEventListeners() {
+      // Selector de modo
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const mode = e.currentTarget.dataset.mode;
+          setMode(mode);
+          
+          // Actualizar UI
+          document.querySelectorAll('.mode-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+          e.currentTarget.setAttribute('aria-pressed', 'true');
+        });
+      });
+      
+      // Selector de idioma
+      document.getElementById('langToggle').addEventListener('change', (e) => {
+        state.lang = e.target.value;
+        updateLanguage(state.lang);
+        savePreferences();
+      });
+      
+      // Botón de respiración
+      document.getElementById('breathingBtn').addEventListener('click', showBreathingModal);
+      document.getElementById('closeBreathing').addEventListener('click', hideBreathingModal);
+      
+      // Botón de crisis
+      document.getElementById('crisisBtn').addEventListener('click', showCrisisModal);
+      document.getElementById('closeCrisis').addEventListener('click', hideCrisisModal);
+      
+      // Tecla ESC para salir rápido
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          hideBreathingModal();
+          hideCrisisModal();
+          // Opcional: redirigir a Google para salida rápida
+          // window.location.href = 'https://google.com';
+        }
+      });
+      
+      // Test interactivo
+      document.querySelectorAll('.option-label input').forEach(input => {
+        input.addEventListener('change', (e) => {
+          state.testAnswers[e.target.name] = parseInt(e.target.value);
+          savePreferences();
+        });
+      });
+      
+      document.getElementById('calculateBtn').addEventListener('click', calculateTestResult);
+      
+      // Chat simulado
+      document.getElementById('chatForm').addEventListener('submit', handleChatSubmit);
+      
+      // Navegación suave
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(anchor.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+    
+    // ===== CAMBIAR MODO =====
+    function setMode(mode) {
+      state.mode = mode;
+      document.body.setAttribute('data-mode', mode);
+      savePreferences();
+      
+      // Mensaje contextual
+      const messages = {
+        curioso: "🔍 Modo curioso: Explora todo el contenido a tu ritmo.",
+        fiesta: "🎉 Modo fiesta: Información esencial y reducción de daños rápida.",
+        bajada: "🌙 Modo bajada: Tonos calmados, apoyo emocional, grounding.",
+        dejar: "💪 Modo dejar: Recursos para dejar, motivación, derivación profesional.",
+        cuidador: "🤝 Modo cuidador: Info clínica, cómo apoyar sin quemarte."
+      };
+      
+      showAlert(messages[mode] || messages.curioso);
+    }
+    
+    // ===== ACTUALIZAR IDIOMA =====
+    function updateLanguage(lang) {
+      // En una implementación real, cargaríamos diccionarios JSON
+      // Aquí simulamos con mensajes clave
+      const translations = {
+        es: { welcome: "Bienvenido/a a Cassandra Complex", crisis: "¿Necesitas ayuda?" },
+        ca: { welcome: "Benvingut/da a Cassandra Complex", crisis: "Necessites ajuda?" },
+        en: { welcome: "Welcome to Cassandra Complex", crisis: "Need help?" },
+        pt: { welcome: "Bem-vindo/a ao Cassandra Complex", crisis: "Precisa de ajuda?" },
+        fr: { welcome: "Bienvenue sur Cassandra Complex", crisis: "Besoin d'aide ?" }
+      };
+      
+      const t = translations[lang] || translations.es;
+      document.querySelector('.logo span:last-child').textContent = 'Cassandra Complex';
+      document.getElementById('crisisBtn').textContent = `🆘 ${t.crisis}`;
+      
+      showAlert(`Idioma cambiado a ${lang.toUpperCase()}. Contenido profundo en proceso de traducción.`);
+    }
+    
+    // ===== MODAL DE RESPIRACIÓN =====
+    function showBreathingModal() {
+      const modal = document.getElementById('breathingModal');
+      modal.style.display = 'grid';
+      
+      // Animación de respiración
+      const circle = document.getElementById('breathingCircle');
+      const text = document.getElementById('breathingText');
+      let phase = 0; // 0: inhala, 1: aguanta, 2: exhala
+      
+      const breathe = () => {
+        if (phase === 0) {
+          text.textContent = 'Inhala (4s)';
+          circle.style.transform = 'scale(1.3)';
+          phase = 1;
+          setTimeout(breathe, 4000);
+        } else if (phase === 1) {
+          text.textContent = 'Aguanta (7s)';
+          phase = 2;
+          setTimeout(breathe, 7000);
+        } else {
+          text.textContent = 'Exhala (8s)';
+          circle.style.transform = 'scale(1)';
+          phase = 0;
+          setTimeout(breathe, 8000);
+        }
+      };
+      
+      breathe();
+    }
+    
+    function hideBreathingModal() {
+      document.getElementById('breathingModal').style.display = 'none';
+      // Resetear animación
+      const circle = document.getElementById('breathingCircle');
+      circle.style.transform = 'scale(1)';
+      document.getElementById('breathingText').textContent = 'Inhala';
+    }
+    
+    // ===== MODAL DE CRISIS =====
+    function showCrisisModal() {
+      document.getElementById('crisisModal').style.display = 'grid';
+    }
+    
+    function hideCrisisModal() {
+      document.getElementById('crisisModal').style.display = 'none';
+    }
+    
+    // ===== CALCULAR RESULTADO DEL TEST =====
+    function calculateTestResult() {
+      // Verificar que todas las preguntas están respondidas
+      const totalQuestions = 3;
+      const answered = Object.keys(state.testAnswers).length;
+      
+      if (answered < totalQuestions) {
+        showAlert(`Por favor responde las ${totalQuestions} preguntas para ver tu perfil.`);
+        return;
+      }
+      
+      // Calcular puntuación (simplificado)
+      const score = Object.values(state.testAnswers).reduce((a,b) => a+b, 0);
+      const maxScore = totalQuestions * 2;
+      const percentage = Math.round((score / maxScore) * 100);
+      
+      // Mostrar resultado
+      const resultDiv = document.getElementById('testResult');
+      resultDiv.style.display = 'block';
+      
+      // Mensaje personalizado
+      let message = '';
+      if (percentage >= 70) {
+        message = "Alta sensibilidad cognitiva + posible neurodivergencia no diagnosticada.";
+      } else if (percentage >= 40) {
+        message = "Sensibilidad moderada. Explorar recursos de autoconocimiento puede ayudarte.";
+      } else {
+        message = "Perfil neurotípico o bien acomodado. ¡Genial! Si aun así buscas entender mejor tu mente, sigue explorando.";
+      }
+      
+      resultDiv.querySelector('p:first-child strong').textContent = `Tu perfil sugiere: ${message}`;
+      
+      // Scroll suave al resultado
+      resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    // ===== CHAT SIMULADO =====
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      const chatContainer = document.getElementById('chatMessages');
+      
+      if (!message) return;
+      
+      // Añadir mensaje del usuario
+      addMessage(message, 'user');
+      input.value = '';
+      
+      // Simular respuesta de IA (local, sin APIs)
+      setTimeout(() => {
+        const response = generateAIResponse(message);
+        addMessage(response, 'ai');
+      }, 1000);
+    }
+    
+    function addMessage(text, sender) {
+      const chatContainer = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const avatar = sender === 'ai' ? '🧠' : '👤';
+      
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${avatar}</div>
+        <div class="message-content">
+          <p>${text}</p>
+        </div>
+      `;
+      
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function generateAIResponse(userMessage) {
+      // Respuestas simuladas basadas en palabras clave (sin APIs externas)
+      const lower = userMessage.toLowerCase();
+      
+      if (lower.includes('suicidio') || lower.includes('matarme') || lower.includes('morir')) {
+        return "🆘 Si estás pensando en hacerte daño, por favor contacta con ayuda profesional AHORA: 112 (emergencias), 024 (prevención suicidio España), o Trevor Project para LGBTQ+. Tu vida importa. Mientras, respira: 4s dentro, 7s aguantando, 8s fuera.";
+      }
+      
+      if (lower.includes('ansiedad') || lower.includes('nervios') || lower.includes('miedo')) {
+        return "💜 Es válido sentir ansiedad. Tu sistema nervioso está haciendo su trabajo: protegerte. Prueba esto: 1) Nombra 5 cosas que ves, 4 que tocas, 3 que oyes (grounding). 2) Respira 4-7-8. 3) Recuerda: esta sensación pasará. ¿Quieres que te guíe en un ejercicio de respiración?";
+      }
+      
+      if (lower.includes('tdah') || lower.includes('atención') || lower.includes('distra')) {
+        return "🧩 El TDAH no es falta de voluntad. Es un sistema de motivación que responde a interés, no a obligación. Estrategias que ayudan: 1) Divide tareas en micro-pasos. 2) Usa timers (Pomodoro). 3) Combina movimiento con tarea. ¿Quieres explorar más estrategias para tu contexto específico?";
+      }
+      
+      if (lower.includes('tlp') || lower.includes('intensidad') || lower.includes('abandono')) {
+        return "💜 La intensidad emocional del TLP no es 'dramatismo'. Es un sistema de alarma hiper-sensible. La DBT (Terapia Dialéctica Conductual) tiene 70% de eficacia. Estrategia clave: validar la emoción ANTES de intentar cambiarla. 'Tiene sentido que te sientas así' es el primer paso. ¿Quieres que exploremos técnicas de validación?";
+      }
+      
+      if (lower.includes('narcis') || lower.includes('manipul') || lower.includes('gaslight')) {
+        return "🛡️ El gaslighting no es 'malentendido'. Es un intento de hackear tu percepción de la realidad. Señal clave: si constantemente dudas de tu memoria o juicio después de hablar con alguien, es bandera roja. Tu percepción es válida. ¿Quieres que decodifiquemos una frase específica que te hayan dicho?";
+      }
+      
+      // Respuesta por defecto
+      return "🧠 Entiendo. Tu experiencia es válida. Para darte una respuesta más útil: ¿podrías contarme un poco más sobre el contexto? Por ejemplo: ¿es sobre relaciones, trabajo, identidad, o algo más? Mientras, recuerda: no estás solx. Cassandra está aquí para validar, no para juzgar.";
+    }
+    
+    // ===== ALERTAS =====
+    function showAlert(message) {
+      // Eliminar alertas anteriores
+      const existing = document.querySelector('[role="alert"]');
+      if (existing) existing.remove();
+      
+      // Crear nueva alerta
+      const alert = document.createElement('div');
+      alert.setAttribute('role', 'alert');
+      alert.textContent = message;
+      document.body.appendChild(alert);
+      
+      // Auto-eliminar después de 5 segundos
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        alert.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => alert.remove(), 300);
+      }, 5000);
+    }
+    
+    // ===== PARTÍCULAS DE FONDO (EFECTO VISUAL LIGERO) =====
+    function initParticles() {
+      // Solo si no hay preferencia de movimiento reducido
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed; inset:0; pointer-events:none; z-index:-1; opacity:0.3;';
+      document.body.appendChild(canvas);
+      
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2 + 0.5,
+          speedX: (Math.random() - 0.5) * 0.5,
+          speedY: (Math.random() - 0.5) * 0.5,
+          color: `hsl(${Math.random() * 60 + 180}, 100%, 70%)` // Cian a púrpura
+        };
+      }
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(p => {
+          p.x += p.speedX;
+          p.y += p.speedY;
+          
+          // Rebote en bordes
+          if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+          
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+        });
+        
+        requestAnimationFrame(animate);
+      }
+      
+      // Inicializar
+      resize();
+      window.addEventListener('resize', resize);
+      
+      for (let i = 0; i < 30; i++) {
+        particles.push(createParticle());
+      }
+      
+      animate();
+    }
+    
+    // ===== MENSAJE DE BIENVENIDA CONTEXTUAL =====
+    function showWelcomeMessage() {
+      // Solo mostrar una vez por sesión
+      if (sessionStorage.getItem('cassandra:welcomeShown')) return;
+      
+      const messages = {
+        es: "🧠 Bienvenido/a. Cassandra Complex es un espacio seguro para explorar tu mente. Todo queda en tu dispositivo. Presiona ESC en cualquier momento para salir rápido.",
+        ca: "🧠 Benvingut/da. Cassandra Complex és un espai segur per explorar la teva ment. Tot queda al teu dispositiu. Prem ESC en qualsevol moment per sortir ràpid.",
+        en: "🧠 Welcome. Cassandra Complex is a safe space to explore your mind. Everything stays on your device. Press ESC anytime to exit quickly.",
+        pt: "🧠 Bem-vindo/a. Cassandra Complex é um espaço seguro para explorar sua mente. Tudo fica no seu dispositivo. Pressione ESC a qualquer momento para sair rápido.",
+        fr: "🧠 Bienvenue. Cassandra Complex est un espace sûr pour explorer votre esprit. Tout reste sur votre appareil. Appuyez sur ESC à tout moment pour sortir rapidement."
+      };
+      
+      showAlert(messages[state.lang] || messages.es);
+      sessionStorage.setItem('cassandra:welcomeShown', 'true');
+    }
+    
+    // ===== UTILIDAD: ACCESIBILIDAD MEJORADA =====
+    // Añadir landmarks ARIA dinámicamente si faltan
+    (function enhanceAccessibility() {
+      // Asegurar que el main tenga role="main"
+      const main = document.querySelector('main');
+      if (main && !main.getAttribute('role')) {
+        main.setAttribute('role', 'main');
+      }
+      
+      // Añadir skip link si no existe
+      if (!document.querySelector('.skip-link')) {
+        const skip = document.createElement('a');
+        skip.href = '#main-content';
+        skip.className = 'skip-link';
+        skip.textContent = 'Saltar al contenido';
+        document.body.insertBefore(skip, document.body.firstChild);
+      }
+    })();
+  </script>
+</body>
+</html>

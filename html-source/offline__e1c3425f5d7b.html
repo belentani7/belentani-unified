@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BELENTANI — OFFLINE</title>
+<meta name="theme-color" content="#ff073a">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--neon:#ff073a;--neon2:#ff2a5c;--black:#000;--black2:#050505;--fm:'Share Tech Mono',monospace;--fd:'Orbitron',sans-serif}
+html,body{height:100%;background:var(--black);color:rgba(255,255,255,0.85);font-family:var(--fm);overflow:hidden}
+.tron-grid{position:fixed;bottom:-50%;left:-50%;width:200%;height:100%;background-image:linear-gradient(rgba(255,7,58,0.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,7,58,0.12) 1px,transparent 1px);background-size:50px 50px;transform:perspective(500px) rotateX(60deg);animation:grid-move 8s linear infinite;pointer-events:none;z-index:0}
+@keyframes grid-move{0%{transform:perspective(500px) rotateX(60deg) translateY(0)}100%{transform:perspective(500px) rotateX(60deg) translateY(50px)}}
+.scanlines{position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03) 0px,rgba(0,0,0,0.03) 1px,transparent 1px,transparent 3px);opacity:0.4}
+.container{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:32px;text-align:center}
+.logo{font-family:var(--fd);font-size:clamp(2rem,8vw,5rem);font-weight:900;letter-spacing:6px;color:var(--neon);text-shadow:0 0 40px var(--neon),0 0 80px rgba(255,7,58,0.5),0 0 160px rgba(255,7,58,0.25);animation:flicker 4s ease-in-out infinite;margin-bottom:20px}
+@keyframes flicker{0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;text-shadow:0 0 40px var(--neon),0 0 80px rgba(255,7,58,0.5),0 0 160px rgba(255,7,58,0.25)}20%,24%,55%{opacity:0.85;text-shadow:0 0 20px var(--neon),0 0 40px rgba(255,7,58,0.3)}}
+.badge{font-size:clamp(0.6rem,1.2vw,0.8rem);letter-spacing:4px;color:rgba(255,7,58,0.5);margin-bottom:30px;text-transform:uppercase}
+.term-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,7,58,0.08);border-radius:8px;padding:20px 28px;max-width:520px;width:100%;text-align:left;line-height:2}
+.term-line{font-size:clamp(0.65rem,1.1vw,0.75rem);color:rgba(255,255,255,0.3)}
+.term-line.error{color:var(--neon)}
+.term-line.success{color:#22c55e}
+.cursor{animation:blink 1s step-end infinite;color:var(--neon)}
+@keyframes blink{50%{opacity:0}}
+.btn{margin-top:40px;padding:14px 32px;border:2px solid var(--neon);border-radius:10px;background:linear-gradient(145deg,#1a0005,#4d0011);color:#fff;font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-block}
+.btn:hover{box-shadow:0 0 40px rgba(255,7,58,0.4);transform:translateY(-2px)}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:6px;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.3}}
+</style>
+</head>
+<body>
+<div class="tron-grid" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="container">
+  <div class="badge"><span class="status-dot"></span> MODO OFFLINE — CACHÉ ACTIVA</div>
+  <div class="logo">◆ OFFLINE</div>
+  <div class="term-box">
+    <div class="term-line">&gt; BELENTANI CORE v2.0 — MODO AVIÓN</div>
+    <div class="term-line">&gt; No hay conexión disponible.</div>
+    <div class="term-line">&gt; Caché local: ACTIVA</div>
+    <div class="term-line">&gt; Datos del portal preservados en IndexedDB.</div>
+    <div class="term-line error">&gt; Frecuencia temporalmente fuera de alcance.</div>
+    <div class="term-line success">&gt; La experiencia continúa. El artefacto permanece.</div>
+    <div class="term-line">&gt; <span class="cursor">_</span></div>
+  </div>
+  <a href="../belentani-judas-experience-v2.html" class="btn">◈ RECONECTAR</a>
+  <p style="margin-top:20px;font-size:8px;color:rgba(255,255,255,0.1);letter-spacing:2px">© 2026 BELENTANI — ENTITY ACTIVE</p>
+</div>
+</body>
+</html>

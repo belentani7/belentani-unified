@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Calculadora · Manos Abiertas</title>
+<style>
+  :root{--brand:#0f766e;--bg:#f6f7fb;--fg:#1c2230;--card:#fff;--line:#e3e7f0;--muted:#5b6472}
+  [data-theme="dark"]{--bg:#11151c;--fg:#e8ecf4;--card:#1a2029;--line:#2a3240;--brand:#2dd4bf}
+  *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px}
+  h1{font-size:24px;color:var(--fg)}
+  #disp{width:100%;font-size:28px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--fg);text-align:right;margin:16px 0}
+  .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  button{font-size:20px;padding:16px;border:none;border-radius:10px;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--fg)}
+  button.fn{background:var(--line);color:var(--brand);font-weight:700}
+  button.op{background:#94a3b8;color:#fff;font-weight:700}
+  button.eq{background:var(--brand);color:#fff;grid-column:span 4}
+  button.clr{background:#dc2626;color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧮 Calculadora</h1>
+  <input id="disp" readonly aria-label="Pantalla" value="0">
+  <div class="keys">
+    <button class="fn clr" data-c>C</button><button class="fn" data-bs>⌫</button><button class="fn" data-p>%</button><button class="op" data-a>/</button>
+    <button data-n>7</button><button data-n>8</button><button data-n>9</button><button class="op" data-a>*</button>
+    <button data-n>4</button><button data-n>5</button><button data-n>6</button><button class="op" data-a>-</button>
+    <button data-n>1</button><button data-n>2</button><button data-n>3</button><button class="op" data-a>+</button>
+    <button data-n>0</button><button data-n>.</button><button class="eq" data-e>=</button>
+  </div>
+  <button class="fn" data-t style="width:100%;margin-top:12px">🗣️ Hablar el cálculo en voz</button>
+</div>
+<script>
+  const disp=document.getElementById("disp");
+  let cur="0", prev=null, op=null, reset=false;
+  function render(){ disp.value = cur.length>12? parseFloat(cur).toExponential(4): cur; }
+  render();
+  document.querySelector(".keys").addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.n!==undefined){ if(reset){cur=b.dataset.n;reset=false;} else cur = cur==="0"&&b.dataset.n!=="." ? b.dataset.n : cur+b.dataset.n; render(); }
+    else if(b.dataset.a!==undefined){ if(op&&!reset){ compute(); } prev=parseFloat(cur); op=b.dataset.a; reset=true; }
+    else if(b.dataset.e!==undefined){ if(op){ compute();} op=null; prev=null; }
+    else if(b.dataset.c!==undefined){ cur="0";prev=null;op=null;reset=false;render(); }
+    else if(b.dataset.bs!==undefined){ cur = cur.length>1? cur.slice(0,-1):"0"; if(cur==="-"||cur==="")cur="0"; render(); }
+    else if(b.dataset.p!==undefined){ cur=String(parseFloat(cur)/100); render(); }
+  });
+  function compute(){ const a=prev, b=parseFloat(cur); let r; try{
+    r = op==="+"?a+b: op==="-"?a-b: op==="*"?a*b: op==="/"? (b===0?NaN:a/b): b; }catch{r=NaN;}
+    cur = Number.isFinite(r)? String(Math.round(r*1e10)/1e10): "Error"; render(); }
+  // voz: reconocer operación hablada (soporte limitado, Chrome/Edge)
+  document.querySelector("[data-t]").onclick=()=>{
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){alert("Voz no soportada en este navegador.");return;}
+    const r=new SR(); r.lang="es-ES"; r.interimResults=false;
+    r.onresult=(e)=>{ const t=e.results[0][0].transcript.replace(/[^0-9+\-*/x(.).\s]/g,"").replace(/x/gi,"*").replace(/por/gi,"*").replace(/dividido\s*entre|entre/gi,"/").replace(/\s/g,"");
+      try{ const v=Function("return ("+t+")")(); cur=Number.isFinite(v)?String(Math.round(v*1e10)/1e10):"Error"; }catch{cur="Error";} render(); };
+    r.onerror=()=>alert("No pude escuchar bien. Intenta de nuevo.");
+    r.start();
+  };
+</script>
+</body>
+</html>

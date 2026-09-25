@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // JUDAS ERA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+@property --progress { syntax:"<percentage>"; inherits:false; initial-value:0% }
+@property --glow-intensity { syntax:"<number>"; inherits:false; initial-value:0.3 }
+@property --hue-shift { syntax:"<angle>"; inherits:false; initial-value:0deg }
+@property --rotation { syntax:"<angle>"; inherits:false; initial-value:0deg }
+
+:root {
+  --void:#030308; --red:#ff003c; --red-dim:rgba(255,0,60,.15);
+  --red-glow:rgba(255,0,60,.6); --surface:#0a0a0f; --surface-light:#12121a;
+  --smoke:rgba(10,10,15,.85); --ash:rgba(255,255,255,.4);
+  --text:#fff; --text-dim:rgba(255,255,255,.5);
+  --border:rgba(255,0,60,.2); --border-active:rgba(255,0,60,.5);
+  --fd:'Orbitron',sans-serif; --fu:'Chakra Petch',sans-serif; --fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-smooth:cubic-bezier(.22,1,.36,1); --ease-out-quart:cubic-bezier(.25,1,.5,1);
+  --shadow-sm:0 2px 4px rgba(255,0,60,.08); --shadow-md:0 4px 12px rgba(255,0,60,.12);
+  --shadow-lg:0 8px 24px rgba(255,0,60,.16); --shadow-xl:0 16px 48px rgba(255,0,60,.2);
+  --shadow-glow:0 0 30px rgba(255,0,60,.3); --shadow-glow-lg:0 0 60px rgba(255,0,60,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(255,0,60,.3) #030308}
+body{background:var(--void);color:var(--text);font-family:var(--fu);cursor:none;overflow-x:hidden;line-height:1.6}
+::selection{background:var(--red);color:#000}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#030308}::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+
+/* PROGRESS BAR */
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--red),rgba(255,0,60,.5),var(--red));z-index:10001;transform-origin:left;transform:scaleX(0);animation:fillProgress linear;animation-timeline:scroll(root);pointer-events:none}
+@keyframes fillProgress{to{transform:scaleX(1)}}
+
+/* MESH BACKGROUND */
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 20% 40%,rgba(255,0,60,.07)0%,transparent 50%),radial-gradient(ellipse 60% 40% at 80% 60%,rgba(255,0,60,.04)0%,transparent 50%);animation:meshFloat 20s ease-in-out infinite alternate}
+@keyframes meshFloat{0%{background-position:0% 0%,100% 100%}100%{background-position:100% 100%,0% 0%}}
+
+/* BOOT */
+#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:var(--fm);color:var(--green);font-size:13px;transition:opacity 1.5s ease-out}
+#boot.done{opacity:0;pointer-events:none}
+.bl{opacity:0;transform:translateY(8px);animation:blIn .3s forwards}
+@keyframes blIn{to{opacity:1;transform:translateY(0)}}
+.bb{width:280px;height:2px;background:rgba(255,0,60,.1);margin-top:16px;position:relative;overflow:hidden}
+.bb::after{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,var(--red),rgba(255,0,60,.5));box-shadow:0 0 15px var(--red);animation:bbLoad 4s cubic-bezier(.1,0,.2,1) forwards}
+@keyframes bbLoad{to{width:100%}}
+
+/* CURSOR - 4 LAYERS */
+.cd,.cr,.cc,.cb{position:fixed;top:0;left:0;pointer-events:none;z-index:10001;transform:translate(-50%,-50%);will-change:transform}
+.cd{width:6px;height:6px;background:#fff;border-radius:50%;box-shadow:0 0 12px #fff,0 0 25px rgba(255,0,60,.5)}
+.cr{width:44px;height:44px;border:1px solid rgba(255,0,60,.4);border-radius:50%;transition:width .4s var(--ease),height .4s var(--ease),border-color .4s}
+.cr.hov{width:80px;height:80px;border-color:rgba(255,0,60,.6)}
+.cc{width:200px;height:200px;background:radial-gradient(circle,rgba(255,0,60,.06)0%,transparent 70%);border-radius:50%;opacity:.3}
+.cb{width:60px;height:60px;border:1px dashed rgba(255,0,60,.3);opacity:0;transition:opacity .3s}
+.cb.active{opacity:1}
+
+/* NAV */
+.nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1500;display:flex;gap:4px;padding:8px 16px;background:rgba(10,10,15,.65);backdrop-filter:blur(20px) saturate(1.4);border:1px solid var(--border);border-radius:100px;pointer-events:auto}
+.nav a{padding:8px 14px;color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:100px;transition:all .3s var(--ease);position:relative;overflow:hidden}
+.nav a::before{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);z-index:-1;border-radius:100px}
+.nav a:hover,.nav a.act{color:var(--text)}
+.nav a:hover::before,.nav a.act::before{transform:scaleX(1)}
+
+/* HERO */
+.hero{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-t{font-family:var(--fd);font-size:clamp(70px,18vw,280px);font-weight:900;line-height:.85;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px var(--red);position:relative;z-index:2}
+.hero-t .mask{position:absolute;inset:0;background:linear-gradient(135deg,var(--red),rgba(255,0,60,.6),var(--red));-webkit-background-clip:text;background-clip:text;color:transparent;clip-path:inset(0 100% 0 0);animation:maskReveal 2.5s cubic-bezier(.77,0,.175,1) 4.5s forwards}
+@keyframes maskReveal{to{clip-path:inset(0 0 0 0)}}
+.hero-sub{font-family:var(--fm);font-size:12px;color:var(--ash);letter-spacing:6px;text-transform:uppercase;margin-top:24px;opacity:0;animation:fadeUp 1s var(--ease) 5.5s forwards;transform:translateY(15px)}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* MAGNETIC BUTTON */
+.mag-btn{position:relative;padding:16px 44px;background:transparent;border:1px solid var(--red);color:var(--text);font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;overflow:hidden;transition:transform .3s var(--ease-spring),box-shadow .3s var(--ease);margin-top:32px;opacity:0;animation:fadeUp 1s var(--ease) 6s forwards}
+.mag-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),rgba(255,0,60,.7));transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.mag-btn:hover::before{transform:scaleX(1)}
+.mag-btn span{position:relative;z-index:1}
+.mag-btn:hover{box-shadow:var(--shadow-glow-lg);border-color:rgba(255,0,60,.6)}
+.mag-btn:active{transform:scale(.96)}
+
+/* MARQUEE */
+.marquee{overflow:hidden;white-space:nowrap;padding:30px 0}
+.marquee-t{display:inline-flex;gap:50px;animation:marqueeScroll 35s linear infinite;font-family:var(--fd);font-size:clamp(40px,7vw,100px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(255,0,60,.08)}
+.marquee-t span{-webkit-text-stroke:0;color:rgba(255,0,60,.04)}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTION */
+.sec{min-height:100vh;padding:100px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;z-index:10}
+.sec-label{font-family:var(--fm);font-size:10px;color:var(--red);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;opacity:0;transform:translateY(15px)}
+.sec-title{font-family:var(--fd);font-size:clamp(32px,7vw,80px);font-weight:900;letter-spacing:6px;text-align:center;color:transparent;-webkit-text-stroke:1px var(--text-dim);opacity:0;transform:translateY(30px)}
+.sec-title em{font-style:italic;-webkit-text-stroke:0;color:var(--text)}
+
+/* GLASS PANEL */
+.glass{background:rgba(10,10,15,.7);backdrop-filter:blur(24px) saturate(1.5);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));transition:all .5s var(--ease);opacity:0;transform:translateY(25px)}
+.glass::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,0,60,.08)0%,transparent 50%,rgba(255,0,60,.04)100%);pointer-events:none}
+.glass::after{content:'';position:absolute;inset:-1px;border-radius:inherit;background:linear-gradient(135deg,rgba(255,0,60,.2),transparent 40%,transparent 60%,rgba(255,0,60,.1));mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:1px;pointer-events:none;opacity:0;transition:opacity .4s}
+.glass:hover::after{opacity:1}
+.glass:hover{border-color:var(--border-active);box-shadow:var(--shadow-lg),var(--shadow-glow);transform:translateY(-4px)}
+
+/* HOLO CARD */
+.holo{position:relative;background:rgba(10,10,15,.75);border:1px solid var(--border);padding:28px;overflow:hidden;cursor:pointer;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));transition:all .5s var(--ease);opacity:0;transform:translateY(25px)}
+.holo::before{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,rgba(255,0,60,.2),rgba(255,0,60,.1),rgba(255,0,60,.2));background-size:400% 400%;animation:holoShift 3s linear infinite paused;transition:opacity .4s}
+.holo:hover::before{opacity:1;animation-play-state:running}
+.holo:hover{transform:translateY(-8px) scale(1.02);box-shadow:var(--shadow-xl),var(--shadow-glow)}
+@keyframes holoShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.holo .ci{width:44px;height:44px;background:linear-gradient(135deg,var(--red),rgba(255,0,60,.5));display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);margin-bottom:16px;font-size:16px;transition:transform .5s var(--ease-spring)}
+.holo:hover .ci{transform:rotate(45deg) scale(1.15)}
+.holo .ct{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+.holo .cid{font-family:var(--fm);font-size:9px;color:var(--red);letter-spacing:2px;margin-bottom:10px}
+.holo .cd2{font-size:12px;color:var(--text-dim);line-height:1.6}
+.holo .cca{width:100%;padding:10px;margin-top:16px;background:transparent;border:1px solid var(--red);color:var(--red);font-family:var(--fm);font-size:9px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s var(--ease);display:flex;justify-content:space-between;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.holo .cca:hover{background:var(--red);color:#fff;box-shadow:var(--shadow-glow)}
+
+/* SPOTLIGHT CARD */
+.spot{position:relative;background:rgba(10,10,15,.55);padding:28px;border:1px solid rgba(255,255,255,.04);overflow:hidden;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));opacity:0;transform:translateY(25px)}
+.spot::before{content:'';position:absolute;top:var(--my,50%);left:var(--mx,50%);width:250px;height:250px;background:radial-gradient(circle,rgba(255,0,60,.1)0%,transparent 70%);transform:translate(-50%,-50%);opacity:0;transition:opacity .4s;pointer-events:none}
+.spot:hover::before{opacity:1}
+.spot:hover{border-color:var(--border);box-shadow:var(--shadow-md)}
+
+/* FREQUENCY BUTTONS */
+.freq{padding:16px;background:rgba(10,10,15,.55);border:1px solid var(--border);color:var(--text);cursor:pointer;text-align:center;transition:all .4s var(--ease);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);width:100px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto}
+.freq:hover{background:rgba(255,0,60,.08);border-color:var(--red);transform:scale(1.1);box-shadow:var(--shadow-glow)}
+.freq .fn{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--red)}
+.freq .fl{font-family:var(--fm);font-size:8px;color:var(--ash);letter-spacing:1px;margin-top:3px}
+
+/* SACRED DIAMOND */
+.sacred{width:90px;height:90px;margin:30px auto;background:linear-gradient(135deg,var(--red),rgba(255,0,60,.5),var(--red));clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);animation:sacredSpin 12s linear infinite;filter:drop-shadow(0 0 25px rgba(255,0,60,.3))}
+@keyframes sacredSpin{to{transform:rotate(360deg)}}
+
+/* GRID */
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;width:100%;max-width:1100px}
+
+/* GLITCH */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;opacity:0;animation:gFlicker 10s infinite}
+.glitch::before{color:rgba(255,0,60,.6);clip-path:inset(0 0 65% 0);transform:translate(-2px,-2px)}
+.glitch::after{color:rgba(255,0,60,.4);clip-path:inset(65% 0 0 0);transform:translate(2px,2px)}
+@keyframes gFlicker{0%,94%,100%{opacity:0}95%{opacity:.7;transform:translate(-3px,1px)}96%{opacity:0}97%{opacity:.5;transform:translate(3px,-1px)}98%{opacity:0}}
+
+/* GLITCH BORDER */
+.gb{position:fixed;inset:0;border:1px solid rgba(255,0,60,.1);pointer-events:none;z-index:9998}
+.gb::before{content:'';position:absolute;inset:-1px;border:1px solid var(--red);opacity:0;animation:gbGlitch 15s infinite}
+@keyframes gbGlitch{0%,95%,100%{opacity:0;transform:translate(0)}96%{opacity:1;transform:translate(4px,-2px)}97%{opacity:0}98%{opacity:1;transform:translate(-4px,2px)}99%{opacity:0}}
+
+/* ATMOSPHERE */
+.vig{position:fixed;inset:0;background:radial-gradient(circle,transparent 25%,rgba(3,3,8,.75)100%);z-index:1;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='none' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scan{position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px)}
+
+/* CANVASES */
+#wgl{position:fixed;inset:0;z-index:0}
+#mtx{position:fixed;inset:0;z-index:1;opacity:.08;pointer-events:none}
+
+/* FLOATING AGENT */
+.agent{position:fixed;bottom:90px;left:20px;z-index:1000;width:55px;height:55px;cursor:grab;pointer-events:auto;transition:transform .3s var(--ease-spring)}
+.agent:active{cursor:grabbing}
+.agent-b{width:55px;height:55px;background:rgba(255,0,60,.08);border:1px solid rgba(255,0,60,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:18px;color:var(--red);animation:agentPulse 3s ease-in-out infinite;position:relative}
+@keyframes agentPulse{0%,100%{box-shadow:0 0 8px rgba(255,0,60,.2)}50%{box-shadow:0 0 22px rgba(255,0,60,.5)}}
+.agent-bub{position:absolute;bottom:65px;left:0;width:230px;background:rgba(10,10,15,.92);border:1px solid rgba(255,0,60,.15);padding:10px;font-family:var(--fm);font-size:10px;color:var(--red);line-height:1.5;opacity:0;transform:translateY(8px);transition:all .3s var(--ease);pointer-events:none;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.agent-bub.vis{opacity:1;transform:translateY(0)}
+
+/* CHAT */
+#chat{position:fixed;bottom:20px;right:20px;z-index:1000;width:340px;background:rgba(10,10,15,.92);backdrop-filter:blur(24px);border:1px solid var(--border);display:none;flex-direction:column;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+#chat.open{display:flex}
+.ch-h{padding:12px;border-bottom:1px solid rgba(255,0,60,.12);display:flex;justify-content:space-between;align-items:center}
+.ch-h span{font-family:var(--fm);font-size:10px;color:var(--red);letter-spacing:2px}
+.ch-h button{background:none;border:none;color:var(--ash);cursor:pointer;font-size:16px}
+.ch-m{flex:1;overflow-y:auto;padding:12px;max-height:280px;font-family:var(--fm);font-size:11px;line-height:1.6}
+.ch-i{padding:10px;border-top:1px solid rgba(255,0,60,.12);display:flex;gap:6px}
+.ch-i input{flex:1;background:rgba(255,255,255,.02);border:1px solid rgba(255,0,60,.12);color:var(--text);padding:8px;font-family:var(--fm);font-size:11px;outline:none}
+.ch-i button{background:var(--red);border:none;color:#fff;padding:8px 14px;font-family:var(--fm);font-size:10px;cursor:pointer}
+
+/* TERMINAL */
+#term{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.97);display:none;flex-direction:column;font-family:var(--fm);font-size:13px;color:var(--green,#00ff41);padding:36px}
+#term.open{display:flex}
+.t-out{flex:1;overflow-y:auto;margin-bottom:16px}
+.t-in{display:flex;gap:8px}
+.t-in span{color:var(--red)}
+.t-in input{flex:1;background:none;border:none;color:var(--green,#00ff41);font-family:var(--fm);font-size:13px;outline:none}
+
+/* LANGUAGE */
+.lang{position:fixed;top:20px;right:20px;z-index:1500;display:flex;gap:3px;padding:5px 10px;background:rgba(10,10,15,.65);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px}
+.lang button{padding:3px 8px;background:none;border:none;color:var(--ash);font-family:var(--fm);font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:100px;transition:all .3s}
+.lang button.act{background:var(--red);color:#fff}
+
+/* FORM */
+.f-input{width:100%;padding:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,0,60,.12);color:var(--text);font-family:var(--fm);font-size:11px;outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical}
+.f-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,0,60,.1)}
+
+/* GLOBAL GLITCH */
+.g-glich{animation:gGlitch .12s steps(2) infinite;animation-play-state:paused}
+.g-glich.on{animation-play-state:running}
+@keyframes gGlitch{0%{filter:hue-rotate(0) saturate(1);transform:translate(0)}25%{filter:hue-rotate(90deg) saturate(2);transform:translate(-2px,1px)}50%{filter:hue-rotate(180deg) saturate(1.5);transform:translate(2px,-1px)}75%{filter:hue-rotate(270deg) saturate(2.5);transform:translate(-1px,2px)}100%{filter:hue-rotate(360deg) saturate(1);transform:translate(0)}}
+
+/* REDUCED MOTION */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.cd,.cr,.cc,.cb{display:none}body{cursor:auto}}
+
+/* RESPONSIVE */
+@media(max-width:768px){.nav{padding:6px 10px;gap:2px}.nav a{padding:5px 8px;font-size:8px}.hero-t{font-size:clamp(40px,14vw,100px)}.g3{grid-template-columns:1fr}.cd,.cr,.cc,.cb{display:none}body{cursor:auto}.lang{top:auto;bottom:20px;right:20px}.agent{bottom:80px;left:10px}}
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="mesh"></div>
+<canvas id="wgl"></canvas><canvas id="mtx"></canvas>
+<div class="vig"></div><div class="grain"></div><div class="scan"></div><div class="gb"></div>
+<div class="cd" id="cd"></div><div class="cr" id="cr"></div><div class="cc" id="cc"></div><div class="cb" id="cb"></div>
+
+<nav class="nav" role="navigation" aria-label="Main">
+<a href="#home" class="act">HOME</a><a href="#about">ABOUT</a><a href="#music">MUSIC</a><a href="#judas">JUDAS</a><a href="#portal">PORTAL</a><a href="#lab">AI LAB</a><a href="#contact">CONTACT</a>
+</nav>
+
+<div class="lang"><button class="act" onclick="setLang('es')">ES</button><button onclick="setLang('en')">EN</button><button onclick="setLang('pt')">PT</button></div>
+
+<div class="agent" id="agent"><div class="agent-bub" id="abub"><div id="atxt">Welcome to the Judas Era.</div></div><div class="agent-b">^_^</div></div>
+
+<section class="hero" id="home">
+<div style="text-align:center;position:relative;z-index:10">
+<h1 class="hero-t" data-text="BELENTANI"><span class="glitch" data-text="BELENTANI">BELENTANI</span><span class="mask">BELENTANI</span></h1>
+<p class="hero-sub">CREATIVE OPERATING SYSTEM</p>
+<button class="mag-btn" onclick="scrollTo('#about')"><span>ENTER THE JUDAS ERA</span></button>
+</div>
+</section>
+
+<div class="marquee"><div class="marquee-t"><span>JUDAS</span> ◆ <span>ART</span> ◆ <span>CODE</span> ◆ <span>TRUTH</span> ◆ <span>BELENTANI</span> ◆ <span>NEURAL</span> ◆ <span>OMEGA</span> ◆ <span>SACRED</span> ◆ <span>JUDAS</span> ◆ <span>ART</span> ◆ <span>CODE</span> ◆ <span>TRUTH</span> ◆ <span>BELENTANI</span> ◆ <span>NEURAL</span> ◆ <span>OMEGA</span> ◆ <span>SACRED</span> ◆</div></div>
+
+<section class="sec" id="about">
+<div class="sec-label">THE ARTIST</div>
+<h2 class="sec-title">PEDRO <em>BELENTANI</em></h2>
+<div class="glass" style="max-width:750px;margin-top:32px;padding:40px">
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px;margin-bottom:20px">Pedro Marcos Santos Belentani. Nacido en São Paulo, Brasil. Criado en Barcelona, España. Artista, compositor y productor que fusiona R&B, pop oscuro y electrónica industrial en un mundo de fantasía sónica.</p>
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px;margin-bottom:20px">A los 16 años empezó clases de canto. A los 21, lanzó su primer sencillo EDM con Mark Nerom. Desde entonces, ha explorado nuevas fronteras sonoras, colaborando con el productor emergente Hey Duck de Recife.</p>
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px;margin-bottom:20px">Belentani transforma experiencias personales en arte. Su música es un mecanismo de supervivencia: usar la mente como herramienta para procesar el trauma, la vulnerabilidad y las relaciones humanas.</p>
+<p style="color:var(--red);line-height:1.8;font-size:16px;font-family:var(--fd);font-style:italic">"Welcome to the fantasy world of Belentani."</p>
+</div>
+</section>
+
+<section class="sec" id="music">
+<div class="sec-label">SONIC ARCHIVE</div>
+<h2 class="sec-title">MUSIC <em>SYSTEM</em></h2>
+<div class="g3" style="margin-top:32px">
+<div class="holo"><div class="ci">◆</div><div class="ct">MON AMOUR</div><div class="cid">SINGLE · 2025</div><div class="cd2">El sencillo más reciente. Donde el amor y la traición se encuentran.</div><button class="cca" onclick="window.open('https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl','_blank')">SPOTIFY <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">THERAPIST</div><div class="cid">SINGLE · 2024</div><div class="cd2">Terapia musical. Cada nota es una sesión de sanación.</div><button class="cca" onclick="window.open('https://music.apple.com/artist/belentani/1522171354','_blank')">APPLE MUSIC <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">APAGA A LUZ</div><div class="cid">SINGLE · 2024</div><div class="cd2">Portugues meets electronic. La luz que se apaga para ver más adentro.</div><button class="cca" onclick="window.open('https://www.youtube.com/@belentani','_blank')">YOUTUBE <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">LENTO</div><div class="cid">SINGLE · 2022</div><div class="cd2">Colaboración con Hey Duck. El ritmo que marcó el inicio.</div><button class="cca" onclick="window.open('https://soundcloud.com/belentani','_blank')">SOUNDCLOUD <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">I WROTE A SONG</div><div class="cid">SINGLE · 2023</div><div class="cd2">Donde la vulnerabilidad se convierte en melódía.</div><button class="cca" onclick="window.open('https://www.deezer.com/artist/99797362','_blank')">DEEZER <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">AMERICA HAS A PROBLEM</div><div class="cid">COVER · 2023</div><div class="cd2">Reinterpretación personal. Belentani haciendo suya la canción de Beyoncé.</div><button class="cca" onclick="window.open('https://music.amazon.com/albums/B0DC71RHZY','_blank')">AMAZON <span>↗</span></button></div>
+</div>
+</section>
+
+<section class="sec" id="judas">
+<div class="sec-label">JUDAS ERA</div>
+<h2 class="sec-title">THE <em>ANTAGONIST</em></h2>
+<div class="glass" style="max-width:750px;margin-top:32px;padding:40px">
+<p style="color:var(--text-dim);font-family:var(--fd);font-style:italic;font-size:16px;line-height:1.8;margin-bottom:24px;text-align:center">"La traición no es el final. Es el input. Hackear el trauma a través de la creación."</p>
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px;margin-bottom:20px">JUDAS ERA no es un álbum. Es un ecosistema narrativo. 8 tracks que cuentan la historia de la traición como herramienta de transformación. Cada canción es una fase del proceso: desde la herida hasta la redención.</p>
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px;margin-bottom:20px">El concepto se basa en la figura de Judas no como villano, sino como catalizador. Sin la traición, no hay resurrección. Sin el dolor, no hay arte. Belentani toma esta narrativa milenaria y la convierte en un sistema operativo creativo.</p>
+<p style="color:var(--text-dim);line-height:1.8;font-size:15px">Las 5 fases: El Hombre Integrado → La Deuda Impagable → El Robo y El Canto → La Victoria Amarga → La Mentira Compartida. Cada fase tiene su frecuencia, su color, su sonido.</p>
+</div>
+</section>
+
+<section class="sec" id="portal">
+<div class="sec-label">THE PORTAL</div>
+<h2 class="sec-title">DIAMOND <em>GATE</em></h2>
+<p style="color:var(--text-dim);font-size:14px;text-align:center;max-width:600px;margin:16px auto 0;line-height:1.7">Cada frecuencia Solfeggio tiene un efecto diferente en el cerebro humano. Toca los diamantes para experimentar cada una.</p>
+<div class="sacred"></div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+<button class="freq" onclick="playFreq(432)"><div class="fn">432</div><div class="fl">HARMONY</div></button>
+<button class="freq" onclick="playFreq(528)"><div class="fn">528</div><div class="fl">REPAIR</div></button>
+<button class="freq" onclick="playFreq(639)"><div class="fn">639</div><div class="fl">CONNECT</div></button>
+<button class="freq" onclick="playFreq(741)"><div class="fn">741</div><div class="fl">EXPRESS</div></button>
+<button class="freq" onclick="playFreq(852)"><div class="fn">852</div><div class="fl">INTUIT</div></button>
+</div>
+<div class="g3" style="margin-top:40px">
+<div class="glass" style="text-align:center;padding:20px"><div style="font-family:var(--fd);font-size:24px;color:var(--red);margin-bottom:8px">432 Hz</div><div style="font-size:12px;color:var(--text-dim)">Frecuencia de Armonía Universal. Alinea el cuerpo con la naturaleza. Reduce la ansiedad. La frecuencia del corazón de la Tierra.</div></div>
+<div class="glass" style="text-align:center;padding:20px"><div style="font-family:var(--fd);font-size:24px;color:var(--red);margin-bottom:8px">528 Hz</div><div style="font-size:12px;color:var(--text-dim)">Frecuencia de Reparación. Conocida como "frecuencia del amor". Transforma el ADN. La frecuencia de los milagros.</div></div>
+<div class="glass" style="text-align:center;padding:20px"><div style="font-family:var(--fd);font-size:24px;color:var(--red);margin-bottom:8px">639 Hz</div><div style="font-size:12px;color:var(--text-dim)">Frecuencia de Conexión. Facilita las relaciones humanas. Comunica con compasión. La frecuencia del perdón.</div></div>
+<div class="glass" style="text-align:center;padding:20px"><div style="font-family:var(--fd);font-size:24px;color:var(--red);margin-bottom:8px">741 Hz</div><div style="font-size:12px;color:var(--text-dim)">Frecuencia de Expresión. Libera la creatividad bloqueada. Despierta la intuición. La frecuencia de la expresión auténtica.</div></div>
+<div class="glass" style="text-align:center;padding:20px"><div style="font-family:var(--fd);font-size:24px;color:var(--red);margin-bottom:8px">852 Hz</div><div style="font-size:12px;color:var(--text-dim)">Frecuencia de Intuición. Accede al espíritu superior. Despierta la percepción interna. La frecuencia de la iluminación.</div></div>
+</div>
+</section>
+
+<section class="sec" id="lab">
+<div class="sec-label">AI LAB</div>
+<h2 class="sec-title">NEURAL <em>TOOLS</em></h2>
+<div class="g3" style="margin-top:32px">
+<div class="holo"><div class="ci">◆</div><div class="ct">NEURAL CHAT</div><div class="cid">CORE_AI v11</div><div class="cd2">Habla con la inteligencia del sistema. Pregúntale sobre el lore de Judas, las 5 firmas, el significado de cada frecuencia. Responde en español, poético.</div><button class="cca" onclick="toggleChat()">ACTIVATE <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">VISION FORGE</div><div class="cid">IMG_GEN v3</div><div class="cd2">Genera arte visual desde texto. Describe una imagen y el sistema la crea. Perfecto para portadas de singles, wallpapers, arte conceptual.</div><button class="cca">ACTIVATE <span>↗</span></button></div>
+<div class="holo"><div class="ci">◆</div><div class="ct">BEAT FORGE</div><div class="cid">AUDIO v2</div><div class="cd2">Crea beats en tiempo real. Elige entre 3 modos: Dark Pop (96 BPM), R&B Soul, o Industrial. Cada modo tiene su propia progresión de acordes.</div><button class="cca" onclick="toggleBeat()">ACTIVATE <span>↗</span></button></div>
+</div>
+</section>
+
+<section class="sec" id="contact">
+<div class="sec-label">CONTACT PROTOCOL</div>
+<h2 class="sec-title">REACH <em>THE CORE</em></h2>
+<div class="glass" style="max-width:450px;margin-top:32px;padding:36px">
+<form onsubmit="event.preventDefault();alert('Sent.')">
+<input class="f-input" type="text" placeholder="NAME" required style="margin-bottom:10px">
+<input class="f-input" type="email" placeholder="EMAIL" required style="margin-bottom:10px">
+<textarea class="f-input" rows="3" placeholder="MESSAGE" required style="margin-bottom:10px"></textarea>
+<button type="submit" class="cca" style="width:100%;border:1px solid var(--red);color:var(--red);font-family:var(--fm);font-size:9px;font-weight:700;letter-spacing:2px;cursor:pointer;padding:10px;background:transparent">SEND <span>↗</span></button>
+</form>
+<div style="margin-top:20px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap">
+<a href="https://www.instagram.com/belentani_/" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">IG</a>
+<a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">SPOTIFY</a>
+<a href="https://music.apple.com/artist/belentani/1522171354" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">APPLE</a>
+<a href="https://www.youtube.com/@belentani" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">YT</a>
+<a href="https://soundcloud.com/belentani" target="_blank" style="color:var(--ash);text-decoration:none;font-family:var(--fm);font-size:10px;letter-spacing:1px">SC</a>
+</div>
+</div>
+</section>
+
+<div id="chat"><div class="ch-h"><span>NEURAL CHAT</span><button onclick="toggleChat()">×</button></div><div class="ch-m" id="chm"><div style="color:var(--green,#00ff41)">> CORE_AI initialized.</div></div><div class="ch-i"><input id="chin" placeholder="Ask..." onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">SEND</button></div></div>
+
+<div id="term"><div class="t-out" id="tout"><div style="color:var(--red)">╔══════════════════════════════╗</div><div style="color:var(--red)">║  TERMINAL Ω — JUDAS OS v11 ║</div><div style="color:var(--red)">╚══════════════════════════════╝</div><div style="margin-top:12px">> Type 'help' for commands.</div></div><div class="t-in"><span>❯</span><input id="tin" onkeypress="if(event.key==='Enter')execTerm()"></div></div>
+
+<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;font-family:var(--fm);font-size:9px;color:rgba(255,0,60,.2);letter-spacing:3px;pointer-events:none">PRESS ` FOR TERMINAL</div>
+
+<script>
+// LANG
+const T={es:{home:'HOME',about:'ABOUT',music:'MUSIC',judas:'JUDAS',portal:'PORTAL',lab:'AI LAB',contact:'CONTACT'},en:{home:'HOME',about:'ABOUT',music:'MUSIC',judas:'JUDAS',portal:'PORTAL',lab:'AI LAB',contact:'CONTACT'},pt:{home:'INÍCIO',about:'SOBRE',music:'MÚSICA',judas:'JUDAS',portal:'PORTAL',lab:'LAB IA',contact:'CONTATO'}};
+function setLang(l){document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('act',b.textContent.toLowerCase()===l));document.querySelectorAll('.nav a').forEach(a=>{const k=a.getAttribute('href').replace('#','');if(T[l][k])a.textContent=T[l][k]})}
+
+// BOOT
+const BL=['> INITIALIZING JUDAS_OS v11.0...','> LOADING NEURAL CORE... [OK]','> CALIBRATING FREQUENCIES... 432Hz LOCKED','> DECRYPTING 5 BIOMETRIC SIGNATURES...','> OMEGA_CORE ONLINE.','> WELCOME TO THE JUDAS ERA.'];
+(function(){const l=document.getElementById('boot-log');if(!l)return;BL.forEach((t,i)=>setTimeout(()=>{const d=document.createElement('div');d.className='bl';d.textContent=t;l.appendChild(d)},i*400));setTimeout(()=>document.getElementById('boot').classList.add('done'),3200)})();
+
+// CURSOR - 4 LAYERS
+let mx=0,my=0,ox=0,oy=0;
+const cd=document.getElementById('cd'),cr=document.getElementById('cr'),cc=document.getElementById('cc'),cb=document.getElementById('cb');
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cd.style.transform=`translate(${mx}px,${my}px)`;
+const tgt=e.target.closest('a,button,.holo,.freq,.spot,.glass');if(tgt){cb.classList.add('active');const r=tgt.getBoundingClientRect();cb.style.width=r.width+16+'px';cb.style.height=r.height+16+'px';cb.style.transform=`translate(${r.left-8}px,${r.top-8}px)`}else{cb.classList.remove('active')}});
+(function animC(){ox+=(mx-ox)*.08;oy+=(my-oy)*.08;cr.style.transform=`translate(${ox}px,${oy}px) translate(-50%,-50%)`;cc.style.transform=`translate(${ox}px,${oy}px) translate(-50%,-50%)`;requestAnimationFrame(animC)})();
+document.querySelectorAll('a,button,.holo,.freq,.spot,.glass').forEach(el=>{el.addEventListener('mouseenter',()=>cr.classList.add('hov'));el.addEventListener('mouseleave',()=>cr.classList.remove('hov'))});
+
+// SPOTLIGHT
+document.querySelectorAll('.spot').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',`${e.clientX-r.left}px`);c.style.setProperty('--my',`${e.clientY-r.top}px`)})});
+
+// MAGNETIC
+document.querySelectorAll('.mag-btn').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();const x=e.clientX-r.left-r.width/2;const y=e.clientY-r.top-r.height/2;b.style.transform=`translate(${x*.2}px,${y*.2}px)`});b.addEventListener('mouseleave',()=>b.style.transform='')});
+
+// MATRIX
+(function(){const c=document.getElementById('mtx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const ch='JUDAS0123456789BELENTANI◆◇○●アイウエオカキクケコ';const fs=14;const d=Array(Math.ceil(c.width/fs)).fill(1);setInterval(()=>{x.fillStyle='rgba(3,3,8,.05)';x.fillRect(0,0,c.width,c.height);x.font=`${fs}px 'JetBrains Mono'`;for(let i=0;i<d.length;i++){x.fillStyle=Math.random()>.97?'var(--green,#00ff41)':Math.random()>.92?'var(--red)':'rgba(255,0,60,.2)';x.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,d[i]*fs);if(d[i]*fs>c.height&&Math.random()>.975)d[i]=0;d[i]++}},50)})();
+
+// GLOBAL GLITCH
+setInterval(()=>{document.body.classList.add('g-glich');setTimeout(()=>document.body.classList.remove('g-glich'),150)},12000+Math.random()*8000);
+
+// THREE.JS
+let scene,camera,renderer,composer,coreMesh;const clock=new THREE.Clock();
+function init3D(){if(typeof THREE==='undefined')return;const c=document.getElementById('wgl');scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);renderer=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const geo=new THREE.IcosahedronGeometry(8,5);const mat=new THREE.MeshBasicMaterial({color:0xff003c,wireframe:true,transparent:true,opacity:.12});coreMesh=new THREE.Mesh(geo,mat);scene.add(coreMesh);
+const pc=1200;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);for(let i=0;i<pc;i++){const r=15+Math.random()*20;const t=Math.random()*Math.PI*2;const p=Math.acos(2*Math.random()-1);pp[i*3]=r*Math.sin(p)*Math.cos(t);pp[i*3+1]=r*Math.sin(p)*Math.sin(t);pp[i*3+2]=r*Math.cos(p)}pg.setAttribute('position',new THREE.BufferAttribute(pp,3));scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xff003c,size:.15,transparent:true,opacity:.5,blending:THREE.AdditiveBlending})));
+camera.position.z=25;composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),1.5,.4,.85));
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);if(composer)composer.setSize(innerWidth,innerHeight)})}
+function anim3D(){requestAnimationFrame(anim3D);if(coreMesh){coreMesh.rotation.y+=.003;coreMesh.rotation.x+=.001}if(composer)composer.render();else if(renderer)renderer.render(scene,camera)}
+
+// AUDIO
+let audioOn=false;async function initAudio(){if(audioOn||typeof Tone==='undefined')return;await Tone.start();audioOn=true}
+function playFreq(f){if(!audioOn){initAudio().then(()=>playFreq(f));return}const o=new Tone.Oscillator(f,'sine').toDestination();const g=new Tone.Gain(.1).toDestination();o.connect(g);o.start();g.gain.rampTo(.001,8);o.stop('+8')}
+let beatOn=false;function toggleBeat(){if(!audioOn){initAudio().then(toggleBeat);return}if(beatOn){Tone.Transport.stop();beatOn=false;return}Tone.Transport.bpm.value=96;const s=new Tone.PolySynth(Tone.Synth,{oscillator:{type:'sine'},envelope:{attack:.02,decay:.3,sustain:.2,release:.8}}).toDestination();s.volume.value=-12;let step=0;const prog=['Am','F','C','G'];new Tone.Loop(t=>{s.triggerAttackRelease(prog[step%4],'2n',t);step++},'1m').start(0);Tone.Transport.start();beatOn=true}
+
+// CHAT
+async function sendChat(){const i=document.getElementById('chin'),m=document.getElementById('chm'),q=i.value.trim();if(!q)return;m.innerHTML+=`<div style="color:var(--red)">> ${q}</div>`;i.value='';m.innerHTML+=`<div style="color:var(--text-dim)">> Processing...</div>`;m.scrollTop=m.scrollHeight;try{const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(q)}?system=${encodeURIComponent('Eres CORE_AI de Belentani JUDAS ERA. Responde en español, poético, max 200 chars.')}`);const t=await r.text();m.removeChild(m.lastChild);m.innerHTML+=`<div style="color:var(--red)">> ${t}</div>`}catch{m.removeChild(m.lastChild);m.innerHTML+=`<div>> Error.</div>`}m.scrollTop=m.scrollHeight}
+function toggleChat(){document.getElementById('chat').classList.toggle('open')}
+
+// TERMINAL
+const CMDS={help:'> Commands: status, ascend, purge, omega, freq [Hz], clear',status:`> OMEGA_v11 | UPTIME: ${Math.floor(performance.now()/1000)}s`,ascend:()=>{document.body.style.filter='hue-rotate(40deg) brightness(1.3)';return'> ☀ ASCENSION ☀'},purge:()=>{document.body.style.filter='';return'> PURGED.'},omega:()=>{document.body.style.filter='hue-rotate(40deg) brightness(1.3)';return'> ☀ OMEGA ☀'},clear:()=>{document.getElementById('tout').innerHTML='';return''}};
+function execTerm(){const i=document.getElementById('tin'),o=document.getElementById('tout'),cmd=i.value.trim().toLowerCase();i.value='';if(cmd){o.innerHTML+=`<div style="color:var(--red)">❯ ${cmd}</div>`;if(cmd.startsWith('freq ')){const f=parseInt(cmd.split(' ')[1]);if(f)playFreq(f);o.innerHTML+=`<div>> Playing ${f}Hz</div>`}else if(CMDS[cmd]){const r=typeof CMDS[cmd]==='function'?CMDS[cmd]():CMDS[cmd];if(r)o.innerHTML+=`<div>${r}</div>`}else o.innerHTML+=`<div>> Unknown: ${cmd}</div>`;o.scrollTop=o.scrollHeight}}
+document.addEventListener('keydown',e=>{if(e.key==='`'){e.preventDefault();document.getElementById('term').classList.toggle('open')}if(e.key==='Escape')document.getElementById('term').classList.remove('open')});
+
+// NAV
+const secs=document.querySelectorAll('.sec,.hero');const navL=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur=0;secs.forEach((s,i)=>{if(scrollY>=s.offsetTop-300)cur=i});navL.forEach((l,i)=>l.classList.toggle('act',i===cur))});
+navL.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();document.querySelector(l.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})}));
+function scrollTo(s){document.querySelector(s)?.scrollIntoView({behavior:'smooth'})}
+
+// GSAP SCROLL REVEALS
+function initGSAP(){if(typeof gsap==='undefined')return;gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.sec').forEach(s=>{const lab=s.querySelector('.sec-label'),tit=s.querySelector('.sec-title'),card=s.querySelector('.glass,.holo,.g3,.g2,form');const tl=gsap.timeline({scrollTrigger:{trigger:s,start:'top 80%',toggleActions:'play none none reverse'}});if(lab)tl.to(lab,{opacity:1,y:0,duration:.6,ease:'power3.out'});if(tit)tl.to(tit,{opacity:1,y:0,duration:.8,ease:'power3.out'},'-.3');if(card)tl.to(card,{opacity:1,y:0,duration:.8,ease:'power3.out'},'-.4')})}
+
+// AGENT - FOLLOWS CURSOR
+(function(){const ag=document.getElementById('agent'),bub=document.getElementById('abub'),txt=document.getElementById('atxt'),face=ag.querySelector('.agent-b');
+let agentX=innerWidth-100,agentY=innerHeight-100;
+const msgs=['Welcome to the Judas Era.','The betrayal is the input.','Each frequency opens a door.','The system sees you.','Type "omega" in terminal.','The golden key awaits.','You are the 5th signature.','The void speaks to those who listen.','Have you tried the Terminal?','Find the Portal. Free Belentani.'];
+document.addEventListener('mousemove',e=>{agentX+=(e.clientX-agentX)*.03;agentY+=(e.clientY-agentY)*.03;ag.style.left=agentX+'px';ag.style.top=agentY+'px'});
+let lastScroll=0;window.addEventListener('scroll',()=>{const s=Math.floor(scrollY/innerHeight);if(s!==lastScroll){txt.textContent=msgs[Math.floor(Math.random()*msgs.length)];bub.classList.add('vis');setTimeout(()=>bub.classList.remove('vis'),3000);lastScroll=s}});
+setInterval(()=>{face.textContent=['^_^','>_','O_O','u_u','>.<','^o^'][Math.floor(Math.random()*6)]},5000);
+ag.addEventListener('click',()=>{txt.textContent=msgs[Math.floor(Math.random()*msgs.length)];bub.classList.add('vis');face.textContent='>_<';setTimeout(()=>bub.classList.remove('vis'),4000)});
+setTimeout(()=>{bub.classList.add('vis');setTimeout(()=>bub.classList.remove('vis'),5000)},6000)})();
+
+// INIT
+document.addEventListener('DOMContentLoaded',()=>{init3D();anim3D();initGSAP()});
+</script>
+</body>
+</html>

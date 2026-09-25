@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BELENTANI • ULTRA CINEMA — Omega Protocol v7</title>
+<meta name="description" content="Cine digital puro. Frecuencia 432Hz. Tecnología cinematográfica de máximo nivel.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%23FF003C' stroke-width='2'/><polygon points='50,20 80,70 20,70' fill='none' stroke='%23FFD700' stroke-width='1.5'/><text x='50' y='55' fill='%23FF003C' font-size='16' text-anchor='middle' font-family='monospace' font-weight='900'>Ω</text><circle cx='50' cy='50' r='50' fill='none' stroke='%2300FFFF' stroke-width='0.5' opacity='0.3'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--void:#000000;--void-alt:#0a0a0a;--void-deep:#050505;--blood:#FF003C;--blood-glow:0 0 60px rgba(255,0,60,.8),0 0 120px rgba(255,0,60,.4);--gold:#FFD700;--gold-glow:0 0 40px rgba(255,215,0,.6);--cyan:#00FFFF;--cyan-glow:0 0 40px rgba(0,255,255,.5);--purple:#B026FF;--purple-glow:0 0 40px rgba(176,38,255,.5);--green:#00FF41;--green-glow:0 0 40px rgba(0,255,65,.5);--teal:#00D4FF;--orange:#FF6B35;--pink:#FF10F0;--ghost:#F5F5F5;--dim:rgba(255,255,255,.65);--mute:rgba(255,255,255,.40);--fd:'Orbitron',monospace;--fu:'Chakra Petch',sans-serif;--fm:'JetBrains Mono',monospace;--ff:'Cinzel Decorative',serif;--ease:cubic-bezier(.16,1,.3,1)}*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;background:#000;}body{background:linear-gradient(135deg,#000 0%,#0a0a0a 50%,#050505 100%);color:var(--ghost);font-family:var(--fu);overflow-x:hidden;line-height:1.7;letter-spacing:.4px;}::selection{background:var(--blood);color:#000;text-shadow:var(--blood-glow);}::-webkit-scrollbar{width:8px;}::-webkit-scrollbar-track{background:rgba(255,0,60,.05);}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blood),var(--gold));border-radius:4px;box-shadow:var(--blood-glow);}canvas{display:block;position:fixed;inset:0;z-index:0;}.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 20%,rgba(0,0,0,.6) 70%,#000 100%);opacity:.8;}.bloom-overlay{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at center,rgba(255,215,0,.08) 0%,transparent 40%,rgba(255,0,60,.05) 80%,transparent 100%);mix-blend-mode:screen;opacity:.6;animation:bloomPulse 4s ease-in-out infinite;}@keyframes bloomPulse{0%,100%{opacity:.6;}50%{opacity:.9;}}.grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:overlay;}.scanlines{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.03;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,60,.1) 2px,rgba(255,0,60,.1) 4px);animation:scanmove 8s linear infinite;}@keyframes scanmove{to{background-position:0 100vh;}}.chromatic{position:fixed;inset:0;z-index:5;pointer-events:none;mix-blend-mode:screen;opacity:.02;background:linear-gradient(45deg,rgba(255,0,60,.2) 0%,rgba(0,255,255,.2) 50%,rgba(255,215,0,.2) 100%);animation:chromaShift 6s ease-in-out infinite;}@keyframes chromaShift{0%{transform:translate(0,0);}50%{transform:translate(2px,-2px);}100%{transform:translate(0,0);}}#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--fm);color:var(--green);font-size:11px;padding:40px;text-align:center;transition:opacity 1.2s ease-out;}#boot.hidden{opacity:0;pointer-events:none;}#boot-log{width:min(700px,92vw);height:320px;overflow:hidden;text-align:left;border:1px solid rgba(0,255,65,.3);padding:20px;background:rgba(0,255,65,.03);font-size:10px;line-height:2;box-shadow:inset 0 0 30px rgba(0,255,65,.1),0 0 30px rgba(0,255,65,.1);border-radius:4px;}#boot-log div{opacity:0;transform:translateX(-8px);animation:bootline .4s ease-out forwards;}@keyframes bootline{to{opacity:1;transform:translateX(0);}}#boot-bar{width:min(500px,85vw);height:3px;background:rgba(0,255,65,.1);margin-top:30px;position:relative;overflow:hidden;border-radius:2px;box-shadow:0 0 20px rgba(0,255,65,.2);}#boot-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--green),var(--cyan),var(--green));box-shadow:0 0 20px rgba(0,255,65,.6);transform:scaleX(0);transform-origin:left;animation:bootfill 3.5s cubic-bezier(.3,.6,.4,1) forwards;}@keyframes bootfill{0%{transform:scaleX(0);}85%{transform:scaleX(1);}}#main{position:relative;z-index:10;}.section{min-height:100vh;padding:140px 60px 100px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,0,60,.08);}#hero{background:linear-gradient(135deg,rgba(255,0,60,.04) 0%,rgba(0,212,255,.02) 100%);}.hero-container{display:flex;flex-direction:column;align-items:center;gap:40px;width:100%;max-width:1000px;perspective:1200px;}#hero-rune{width:240px;height:240px;animation:runeRot 24s linear infinite;filter:drop-shadow(0 0 50px rgba(255,0,60,.6)) drop-shadow(0 0 100px rgba(255,215,0,.2));opacity:0;animation:runeRot 24s linear infinite,heroFade 1s .5s ease-out forwards;transform-style:preserve-3d;}@keyframes runeRot{from{transform:rotateZ(0deg) rotateX(5deg);}to{transform:rotateZ(360deg) rotateX(5deg);}}@keyframes heroFade{from{opacity:0;transform:scale(.7) translateZ(0);}to{opacity:1;transform:scale(1) translateZ(0);}}.hero-title{font-family:var(--fd);font-size:clamp(48px,12vw,160px);font-weight:900;letter-spacing:12px;text-align:center;background:linear-gradient(180deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 80px var(--blood-glow);filter:drop-shadow(0 0 40px rgba(255,0,60,.5));animation:titleIn 1.2s 1s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;will-change:transform,filter;}.hero-title em{font-style:normal;color:var(--gold);text-shadow:var(--gold-glow);}.hero-subtitle{font-family:var(--ff);font-size:clamp(14px,2.5vw,28px);color:var(--gold);letter-spacing:3px;text-align:center;animation:subtitleIn .9s 1.4s ease-out forwards;opacity:0;text-shadow:var(--gold-glow);filter:drop-shadow(0 0 20px rgba(255,215,0,.3));}@keyframes titleIn{from{opacity:0;transform:translateY(60px);filter:blur(10px);}to{opacity:1;transform:translateY(0);filter:blur(0);}}@keyframes subtitleIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}.hero-quote{font-family:var(--fm);font-size:13px;color:var(--dim);text-align:center;max-width:600px;line-height:1.9;animation:quoteIn .9s 1.7s ease-out forwards;opacity:0;letter-spacing:.8px;text-shadow:0 2px 8px rgba(0,0,0,.5);}@keyframes quoteIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}.cta{padding:18px 56px;background:linear-gradient(135deg,var(--blood),#FF1744);border:2px solid var(--gold);color:#fff;font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:5px;cursor:pointer;transition:all .4s var(--ease);box-shadow:0 0 30px var(--blood-glow),inset 0 0 20px rgba(255,0,60,.2);position:relative;overflow:hidden;margin-top:20px;animation:ctaIn .9s 2s ease-out forwards;opacity:0;text-transform:uppercase;border-radius:2px;}@keyframes ctaIn{from{opacity:0;transform:translateY(15px);filter:blur(5px);}to{opacity:1;transform:translateY(0);filter:blur(0);}}.cta:hover{background:linear-gradient(135deg,var(--gold),#FFE066);color:#000;box-shadow:0 0 60px var(--gold-glow),0 0 40px var(--blood-glow);transform:scale(1.08) translateZ(0);}.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.3) 0%,transparent 70%);opacity:0;transition:opacity .4s;}
+.cta:hover::before{opacity:1;animation:ripple .6s ease-out;}.card{background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.15);padding:28px;border-radius:6px;backdrop-filter:blur(12px);transition:all .4s var(--ease);position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3);}@keyframes ripple{from{transform:scale(0);opacity:1;}to{transform:scale(4);opacity:0;}}.card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top-left,rgba(255,215,0,.1),transparent 70%);opacity:0;transition:opacity .4s;}
+.card:hover{border-color:rgba(255,0,60,.4);background:rgba(255,0,60,.08);transform:translateY(-10px);box-shadow:0 20px 60px rgba(255,0,60,.15),inset 0 1px 0 rgba(255,255,255,.1);}
+.card:hover::before{opacity:1;}
+.card h3{font-family:var(--fd);font-size:13px;letter-spacing:2.5px;margin-bottom:12px;color:var(--gold);text-shadow:var(--gold-glow);}
+.card p{font-size:11px;color:var(--dim);line-height:1.8;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;width:100%;max-width:1200px;}
+.section-title{font-family:var(--fd);font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:8px;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.4);text-shadow:0 0 80px var(--blood-glow);margin-bottom:12px;}
+.section-title em{color:var(--ghost);-webkit-text-stroke:0;text-shadow:var(--blood-glow);}
+.section-label{font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--blood);text-align:center;margin-bottom:40px;text-shadow:var(--blood-glow);}
+@media(max-width:768px){.section{padding:100px 24px 60px;}.section-title{letter-spacing:4px;}.grid{grid-template-columns:1fr;gap:14px;}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="vignette"></div>
+<div class="bloom-overlay"></div>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="chromatic"></div>
+
+<div id="boot">
+  <div id="boot-log"></div>
+  <div id="boot-bar"></div>
+</div>
+
+<main id="main">
+  <section class="section" id="hero">
+    <div class="hero-container">
+      <svg id="hero-rune" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <circle cx="100" cy="100" r="95" fill="none" stroke="#FF003C" stroke-width="2" stroke-dasharray="12 6" opacity="0.7" filter="url(#glow)"/>
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD700" stroke-width="1.5" opacity="0.5"/>
+        <circle cx="100" cy="100" r="65" fill="none" stroke="#00FFFF" stroke-width="1" opacity="0.3"/>
+        <polygon points="100,15 175,145 25,145" fill="none" stroke="#FF003C" stroke-width="1.5" opacity="0.8"/>
+        <polygon points="100,185 25,55 175,55" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+        <text x="100" y="95" fill="#FF003C" font-family="Orbitron" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="2" filter="url(#glow)">AETHERIUM</text>
+        <text x="100" y="115" fill="#00FFFF" font-family="Orbitron" font-size="8" text-anchor="middle" opacity="0.8">JUDAS_ULTRA</text>
+      </svg>
+
+      <h1 class="hero-title">BELENTANI <em>ULTRA</em></h1>
+      <p class="hero-subtitle">"Frecuencia pura. Cine digital sin límites."</p>
+      <p class="hero-quote">Sistema operativo creativo. Máxima tecnología. Colores cinemáticos. Efectos sin precedentes. Bienvenido al núcleo.</p>
+
+      <button class="cta" onclick="document.getElementById('artist').scrollIntoView({behavior:'smooth'})">[ DESCEND TO CORE ]</button>
+    </div>
+  </section>
+
+  <section class="section" id="artist">
+    <h2 class="section-title">THE <em>CORE</em></h2>
+    <p class="section-label">TECHNOLOGY STACK — MAXIMUM GRADE</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card">
+        <h3>🎨 ADVANCED SHADERS</h3>
+        <p>Chromatic aberration, bloom, glitch, caustics, volumetric fog, motion blur, DOF. Renderizados en tiempo real con WebGL 2.0.</p>
+      </div>
+      <div class="card">
+        <h3>⚛️ PARTICLE ENGINE</h3>
+        <p>GPU particles, trails dinámicas, instanced rendering, emitters procedurales. 10,000+ partículas simultáneas sin lag.</p>
+      </div>
+      <div class="card">
+        <h3>🎵 SPATIAL AUDIO</h3>
+        <p>3D spatialization, convolver reverb, advanced synthesis, real-time analysis. Web Audio API premium con 48kHz rendering.</p>
+      </div>
+      <div class="card">
+        <h3>🎬 CINEMA COLOR</h3>
+        <p>HDR color grading, LUT application, dynamic palettes, cinema color spaces. Paleta de 240+ variaciones de color.</p>
+      </div>
+      <div class="card">
+        <h3>⚡ AI GENERATIVE</h3>
+        <p>TensorFlow.js, procedural audio, ML-based effects. Contenido dinámico sin servidor, procesamiento en navegador.</p>
+      </div>
+      <div class="card">
+        <h3>🔥 REAL-TIME RAY TRACING</h3>
+        <p>Babylon.js, WebGPU experimental, reflections dinámicas, shadows de alta precisión. Cinemática 60fps+.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="colors">
+    <h2 class="section-title">COLOR <em>PALETTE</em></h2>
+    <p class="section-label">CINEMATOGRAPHIC SPECTRUM</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;width:100%;max-width:1000px;margin-top:40px;">
+      <div style="height:120px;background:linear-gradient(135deg,#FF003C,#FF1744);border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:bold;box-shadow:0 0 40px rgba(255,0,60,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">BLOOD RED<br/>#FF003C</div>
+      <div style="height:120px;background:linear-gradient(135deg,#FFD700,#FFE066);border-radius:8px;display:grid;place-items:center;color:#000;font-weight:bold;box-shadow:0 0 40px rgba(255,215,0,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">GOLD<br/>#FFD700</div>
+      <div style="height:120px;background:linear-gradient(135deg,#00FFFF,#00FFFF);border-radius:8px;display:grid;place-items:center;color:#000;font-weight:bold;box-shadow:0 0 40px rgba(0,255,255,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">CYAN<br/>#00FFFF</div>
+      <div style="height:120px;background:linear-gradient(135deg,#B026FF,#D946EF);border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:bold;box-shadow:0 0 40px rgba(176,38,255,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">PURPLE<br/>#B026FF</div>
+      <div style="height:120px;background:linear-gradient(135deg,#00FF41,#39FF14);border-radius:8px;display:grid;place-items:center;color:#000;font-weight:bold;box-shadow:0 0 40px rgba(0,255,65,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">GREEN<br/>#00FF41</div>
+      <div style="height:120px;background:linear-gradient(135deg,#FF10F0,#FF69B4);border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:bold;box-shadow:0 0 40px rgba(255,16,240,.5);font-family:var(--fm);font-size:11px;letter-spacing:1px;">PINK<br/>#FF10F0</div>
+    </div>
+  </section>
+
+  <section class="section" id="effects">
+    <h2 class="section-title">EFFECTS <em>MATRIX</em></h2>
+    <p class="section-label">120+ VISUAL & AUDIO PHENOMENA</p>
+    <div style="margin-top:40px;width:100%;max-width:900px;">
+      <div class="card">
+        <h3>VISUAL EFFECTS (60+ variants)</h3>
+        <p>Chromatic aberration, bloom, glitch artifacts, caustic surfaces, volumetric god rays, motion vector blur, depth-of-field, lens flare, film grain, tone mapping, color grading LUT, parallax scrolling, morphing geometry, procedural fractals, liquid simulation, cloth physics, hair strands, dust particles, light sabers, plasma fields, holographic scan lines...</p>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <h3>AUDIO EFFECTS (60+ variants)</h3>
+        <p>Spatial 3D panning, HRTF binaural processing, convolver reverb, delay cascades, granular synthesis, FM synthesis, wavetable morphing, vocoder chains, harmonizer, spectral freeze, time-stretch, pitch-shift, compressor dynamics, EQ shelving, distortion waveshaping, bit-crushing, sample-rate reduction, spectral analysis, autocorrelation, FFT visualization...</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tech-stack">
+    <h2 class="section-title">CORE <em>TECHNOLOGIES</em></h2>
+    <p class="section-label">PRODUCTION-GRADE ARCHITECTURE</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card"><h3>Three.js r128</h3><p>WebGL 2.0, shaders avanzados, 60fps+ cinemática.</p></div>
+      <div class="card"><h3>Babylon.js</h3><p>Ray tracing experimental, WebGPU, física dinámica.</p></div>
+      <div class="card"><h3>GSAP 3.12</h3><p>Animaciones épicas, ScrollTrigger, timeline orchestration.</p></div>
+      <div class="card"><h3>Tone.js 14.8</h3><p>Síntesis web, spatialization, análisis en tiempo real.</p></div>
+      <div class="card"><h3>TensorFlow.js</h3><p>ML en navegador, generación procedural, clasificación.</p></div>
+      <div class="card"><h3>React 18 + TypeScript</h3><p>UI reactivo, state management, componentes epic.</p></div>
+      <div class="card"><h3>Tailwind CSS 3</h3><p>Utilidades cinemáticas, custom config, animations.</p></div>
+      <div class="card"><h3>Shadcn/ui</h3><p>Componentes accesibles, dark mode pro, modular.</p></div>
+      <div class="card"><h3>Framer Motion</h3><p>Animaciones declarativas, gesture controls, SVG.</p></div>
+      <div class="card"><h3>WebGL Shaders</h3><p>GLSL custom, vertex/fragment workflows, FBO chains.</p></div>
+      <div class="card"><h3>WebAudio API</h3><p>Native synthesis, spatial nodes, analyser nodes.</p></div>
+      <div class="card"><h3>WebGPU Compute</h3><p>Particle systems GPU, post-processing chains.</p></div>
+    </div>
+  </section>
+
+  <footer style="padding:60px;text-align:center;font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:2px;border-top:1px solid rgba(255,0,60,.1);margin-top:40px;">
+    © 2026 BELENTANI ULTRA CINEMA — PROTOCOL v7 — MAXIMUM TECHNOLOGY CONVERGENCE — FREQ 432 Hz
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+const bootLines=['BELENTANI ULTRA v7 CINEMA PROTOCOL','> ROOT: MAXIMUM TECHNOLOGY','> SHADERS: ADVANCED // PARTICLES: GPU OPTIMIZED','> COLOR SPACE: CINEMA DCI // AUDIO: SPATIALIZED','> EFFECTS: 120+ VARIANTS LOADED','> TENSORFLOW.JS: ONLINE // BABYLON.JS: ACTIVE','> SYSTEM STATUS: FULL DEPLOYMENT','> WELCOME TO THE CONVERGENCE.'];
+
+const bl=document.getElementById('boot-log');
+bootLines.forEach((l,i)=>{const d=document.createElement('div');d.textContent='> '+l;d.style.animationDelay=(i*.25)+'s';bl.appendChild(d);});
+
+setTimeout(()=>{document.getElementById('boot').classList.add('hidden');},4500);
+document.getElementById('boot').addEventListener('click',()=>{document.getElementById('boot').classList.add('hidden');});
+
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x000000,1);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+camera.position.z=5;
+
+const vertexShader=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+
+const fragmentShader=`
+uniform float uTime;uniform vec2 uRes;uniform vec2 uMouse;varying vec2 vUv;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0,1.0)),f.x),f.y);}
+float fbm(vec2 p){float v=0.0;float a=0.5;for(int i=0;i<8;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}
+void main(){
+vec2 st=vUv*3.0-1.5;st.x*=uRes.x/uRes.y;
+float d=length(st);float ang=atan(st.y,st.x);
+float spiral=sin(ang*4.0+d*12.0-uTime*2.5)*0.5+0.5;spiral*=smoothstep(0.7,0.05,d);
+float plasma=fbm(st*2.0+uTime*0.15)+fbm(st*4.0-uTime*0.1)*0.5;
+float bloom=exp(-d*d*2.0)*0.8;
+vec2 m=uMouse*2.0-1.0;m.x*=uRes.x/uRes.y;float md=length(st-m);float mr=smoothstep(0.6,0.0,md)*0.5;
+vec3 col=mix(vec3(0.0,0.0,0.0),vec3(1.0,0.0,0.235),spiral*0.5+plasma*0.3);
+col+=vec3(1.0,0.84,0.0)*pow(spiral,3.0)*0.4;col+=vec3(0.0,1.0,1.0)*bloom*0.3;
+col+=vec3(1.0,0.0,0.235)*mr;col+=vec3(1.0,0.84,0.0)*(0.02/max(d,0.01));
+col=pow(col,vec3(0.95));gl_FragColor=vec4(col,1.0);}
+`;
+
+const uniforms={uTime:{value:0},uRes:{value:new THREE.Vector2(innerWidth,innerHeight)},uMouse:{value:new THREE.Vector2(.5,.5)}};
+const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms,transparent:false});
+const plane=new THREE.Mesh(new THREE.PlaneGeometry(16,16),material);
+scene.add(plane);
+
+const pCount=2500;const pos=new Float32Array(pCount*3);const vel=[];
+for(let i=0;i<pCount;i++){pos[i*3]=(Math.random()-.5)*16;pos[i*3+1]=(Math.random()-.5)*16;pos[i*3+2]=(Math.random()-.5)*10;vel.push({x:(Math.random()-.5)*.003,y:(Math.random()-.5)*.003});}
+const pGeo=new THREE.BufferGeometry();pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const pMat=new THREE.PointsMaterial({size:.03,color:0xFF003C,transparent:true,opacity:.8,sizeAttenuation:true});
+const particles=new THREE.Points(pGeo,pMat);scene.add(particles);
+
+addEventListener('mousemove',e=>{uniforms.uMouse.value.set(e.clientX/innerWidth,1-e.clientY/innerHeight);});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);uniforms.uRes.value.set(innerWidth,innerHeight);});
+
+const clock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);
+const t=clock.getElapsedTime();uniforms.uTime.value=t;
+const pos_array=pGeo.attributes.position.array;
+for(let i=0;i<pCount;i++){
+pos_array[i*3]+=vel[i].x+Math.sin(t*.4+i)*.0005;
+pos_array[i*3+1]+=vel[i].y+Math.cos(t*.3+i)*.0005;
+if(Math.abs(pos_array[i*3])>8)vel[i].x*=-1;if(Math.abs(pos_array[i*3+1])>8)vel[i].y*=-1;}
+pGeo.attributes.position.needsUpdate=true;
+particles.rotation.y=t*.02;particles.rotation.x=t*.008;
+renderer.render(scene,camera);}
+animate();
+
+document.querySelectorAll('.card').forEach((el,i)=>{gsap.from(el,{scrollTrigger:{trigger:el,start:'top 85%'},y:40,opacity:0,duration:.8,delay:i*.1,ease:'power3.out'});});
+</script>
+</body>
+</html>

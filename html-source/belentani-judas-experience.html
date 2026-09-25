@@ -1,0 +1,533 @@
+<body>
+
+<!-- Fondo + Orbes + CRT -->
+<canvas id="particleCanvas"></canvas>
+<div></div><!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <span class="brand-logo">BELENTANI</span>
+    <span class="brand-tag">Next Release: Judas</span>
+  </div>
+  <nav class="header-nav">
+    <a href="#music">Music</a>
+    <a href="#studio">Studio</a>
+    <a href="#judas">Judas</a>
+    <a href="#portal">portal</a>
+    <a href="#newsletter">Newsletter</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div class="system-online">
+      <span class="dot"></span>
+      <span>System Online</span>
+    </div>
+    <span class="header-lang">EN</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<main>
+  <section class="hero">
+    <div class="hero-badges">
+      <span class="badge-red">Verified Global Artist</span>
+      <span class="badge-red-soft">Entity Active</span>
+    </div>
+    <h1 class="hero-title" data-text="BELENTANI">BELENTANI</h1>
+    <p class="hero-sub">Music, visuals, and technology intertwined.</p>
+    <div class="hero-counter">
+      <b id="counterParticles">3000</b> particles in motion · <b id="counterClock">00:00:00</b>
+    </div>
+    <div class="scroll-cue">
+      <span>SCROLL</span>
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <!-- VISUAL UNIVERSE -->
+  <section class="section reveal" id="studio">
+    <h2 class="section-title neon">The Visual Universe</h2>
+    <p class="section-sub">Explore the aesthetic world of Belentani through cinematic imagery.</p>
+    <div class="gallery">
+      <div class="tile" data-label="01 · NEON"><div class="visual">◣</div></div>
+      <div class="tile" data-label="02 · BLOOD"><div class="visual">◢</div></div>
+      <div class="tile" data-label="03 · VOID"><div class="visual">◤</div></div>
+      <div class="tile" data-label="04 · PULSE"><div class="visual">◥</div></div>
+      <div class="tile" data-label="05 · STATIC"><div class="visual">▦</div></div>
+      <div class="tile" data-label="06 · GLITCH"><div class="visual">⌬</div></div>
+      <div class="tile" data-label="07 · DECODE"><div class="visual">⌘</div></div>
+      <div class="tile" data-label="08 · ASCEND"><div class="visual">▲</div></div>
+    </div>
+  </section>
+
+  <!-- ENTER THE EXPERIENCE -->
+  <section class="section reveal" id="judas">
+    <h2 class="section-title neon">Enter the Experience</h2>
+    <div class="cta-block">
+      <p class="section-sub" style="margin:0">Type <code style="color:var(--neon);font-family:'Courier New',monospace">thiago</code> in the Global Terminal to trigger the collapse sequence.</p>
+      <p style="color:var(--txt-2);margin-top:8px">Or click below to enter the next era.</p>
+      <a href="#portal" class="cta-btn">Enter Judas Era</a>
+    </div>
+  </section>
+
+  <!-- SONIC WORLDS -->
+  <section class="section reveal" id="music">
+    <h2 class="section-title">Sonic Worlds</h2>
+    <p class="section-sub">Music, visuals, and technology intertwined.</p>
+    <div class="world-list">
+      <div class="world-row">
+        <div class="world-num">01</div>
+        <div><div class="world-name">Judas — Intro</div><div class="world-desc">Neural awakening · ambient intro</div></div>
+        <div class="world-dur">02:14</div>
+      </div>
+      <div class="world-row">
+        <div class="world-num">02</div>
+        <div><div class="world-name">Pursuit</div><div class="world-desc">Synthwave / cyber chase</div></div>
+        <div class="world-dur">03:42</div>
+      </div>
+      <div class="world-row">
+        <div class="world-num">03</div>
+        <div><div class="world-name">Shatter</div><div class="world-desc">Glitchstep · breakdown</div></div>
+        <div class="world-dur">04:08</div>
+      </div>
+      <div class="world-row">
+        <div class="world-num">04</div>
+        <div><div class="world-name">Belentani Core</div><div class="world-desc">R&amp;B / vocal layering</div></div>
+        <div class="world-dur">03:21</div>
+      </div>
+      <div class="world-row">
+        <div class="world-num">05</div>
+        <div><div class="world-name">System Online</div><div class="world-desc">Electronic · outro pulse</div></div>
+        <div class="world-dur">02:55</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISUAL CONCEPTS + AI TOOLS -->
+  <section class="section reveal" id="portal">
+    <h2 class="section-title">Visual Concepts</h2>
+    <p class="section-sub">An artist blending R&B, pop, and electronic music into a world of sonic fantasy.</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="icon">◈</div>
+        <h3>AI Mood Lyricist</h3>
+        <p>Genera letras basadas en el estado emocional del oyente. Personalización neural en tiempo real conectada al catálogo Belentani.</p>
+      </div>
+      <div class="card">
+        <div class="icon">◉</div>
+        <h3>Personalized Song Recommendations</h3>
+        <p>Recomendaciones basadas en biorritmo, momento del día y archivos previos. Sincronización con el archivo neural del usuario.</p>
+      </div>
+      <div class="card">
+        <div class="icon">▣</div>
+        <h3>Visual Content Automator</h3>
+        <p>Genera portadas, clips visuales y loops sincronizados con cada release. Salida 4K con paleta cyberpunk coherente.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⌬</div>
+        <h3>Automated Email Updates</h3>
+        <p>Boletines automáticos a la comunidad Judas Era cuando se libera contenido nuevo. Plantillas con tipografía monoespaciada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section reveal" id="newsletter">
+    <h2 class="section-title">Newsletter</h2>
+    <p class="section-sub">Únete al archivo neural. Recibe cada release antes que nadie.</p>
+    <form class="cta-block" onsubmit="event.preventDefault();subscribeNewsletter(this)">
+      <input type="email" required placeholder="your.email@archive.net" style="background:transparent;border:1px solid rgba(255,7,58,0.4);padding:14px 18px;color:#fff;font-family:'Courier New',monospace;font-size:14px;width:min(380px,100%);outline:none;letter-spacing:0.05em" onfocus="this.style.borderColor='var(--neon)'" onblur="this.style.borderColor='rgba(255,7,58,0.4)'">
+      <br>
+      <button type="submit" class="cta-btn">Sync to Archive</button>
+    </form>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section reveal" id="about">
+    <h2 class="section-title">About</h2>
+    <p class="section-sub" style="max-width:760px">BELENTANI es un proyecto artístico transmedia que combina R&amp;B, pop y electrónica con narrativa cyberpunk. La era <em style="color:var(--neon);font-style:normal">Judas</em> explora temas de traición, redención y la frontera entre lo humano y lo sintético. Cada release se publica como un "núcleo" del archivo neural compartido con la comunidad.</p>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" id="contact">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>BELENTANI</h3>
+      <div class="tag">Judas Era</div>
+      <p>An artist blending R&amp;B, pop, and electronic music into a world of sonic fantasy. Next release: Judas.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#music">Music</a>
+      <a href="#studio">Studio</a>
+      <a href="#judas">Judas</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect With Me</h4>
+      <a href="#" onclick="event.preventDefault()">Instagram</a>
+      <a href="#" onclick="event.preventDefault()">YouTube</a>
+      <a href="#" onclick="event.preventDefault()">Spotify</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 BELENTANI · ALL RIGHTS RESERVED</span>
+    <span class="status">SYSTEM ONLINE</span>
+  </div>
+</footer>
+
+<!-- LIVE TERMINAL (bottom-left) -->
+<div class="live-terminal" aria-hidden="true">
+  <div class="lt-header">
+    <span>SYSTEM_LOG.LIVE</span>
+    <span style="color:var(--neon)">●REC</span>
+  </div>
+  <div class="lt-body" id="liveTerminalBody"></div>
+</div>
+
+<!-- GLOBAL TERMINAL (interactive) -->
+<div class="global-terminal" id="globalTerminal">
+  <div class="gt-header" onclick="toggleGlobalTerminal()">
+    <span>NÚCLEO NEURAL ACTIVO</span>
+    <div class="controls"><span></span><span></span><span></span></div>
+  </div>
+  <div class="gt-body" id="gtBody"></div>
+  <div class="gt-input-row">
+    <input type="text" id="gtInput" placeholder="Escribe 'thiago' para colapso · 'help' para comandos" autocomplete="off">
+  </div>
+</div>
+<div class="gt-minimized" id="gtMinimized" onclick="toggleGlobalTerminal()" title="Open Terminal">CORE</div>
+
+<!-- PURSUIT WINDOW (Ojo de Judas) -->
+<div class="pursuit-window">
+  <div class="pw-title">Ojo de Judas</div>
+  <div class="pw-body">Observando tu movimiento. Cada clic queda registrado en el archivo neural.</div>
+  <div class="pw-eye"></div>
+</div>
+
+<!-- RECOMMENDATION RADAR -->
+<div class="radar">
+  <div class="radar-title">Sugerencias Neurales</div>
+  <div class="radar-item">Lab Creativo</div>
+  <div class="radar-item">Experiencia Judas</div>
+  <div class="radar-item">Habla con los 50 arquetipos</div>
+  <div class="radar-item">Sumérgete en la mente traicionada</div>
+</div>
+
+<!-- COLLAPSE OVERLAY -->
+<div class="collapse-overlay" id="collapseOverlay">
+  <div class="co-content">
+    COLLAPSE SEQUENCE INITIATED<br>
+    <span style="font-size:1rem;color:var(--txt-2)">JUDAS ERA · PURGING ARCHIVE...</span>
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <a href="#music" class="active"><span class="icon">♪</span><span>Music</span></a>
+  <a href="#studio"><span class="icon">◇</span><span>Studio</span></a>
+  <a href="#judas"><span class="icon">▲</span><span>Judas</span></a>
+  <a href="#portal"><span class="icon">⌬</span><span>Portal</span></a>
+  <a href="#contact"><span class="icon">✉</span><span>Contact</span></a>
+</nav>
+
+<script>
+/* ============================================================
+   A. PARTICLE BACKGROUND (3000 partículas + profundidad + estela)
+   ============================================================ */
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const PARTICLE_COUNT = window.innerWidth < 768 ? 1500 : 3000;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function spawn(){
+    particles = [];
+    for(let i=0;i<PARTICLE_COUNT;i++){
+      const isForeground = Math.random() < 0.2; // 20% grandes y rápidas
+      const isNeon = Math.random() < 0.1; // 10% neón
+      particles.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        vx: (Math.random()-0.5) * (isForeground ? 1.8 : 0.4),
+        vy: (Math.random()-0.5) * (isForeground ? 1.8 : 0.4),
+        size: isForeground ? 1.5 + Math.random()*1.5 : 0.5 + Math.random()*0.8,
+        color: isNeon ? '#ff073a' : '#8B0000',
+        alpha: isForeground ? 0.7+Math.random()*0.3 : 0.25+Math.random()*0.3,
+      });
+    }
+  }
+  spawn();
+
+  function loop(){
+    // Estela: no borrar del todo, pintar de negro con 30% opacidad
+    ctx.fillStyle = 'rgba(5, 0, 0, 0.3)';
+    ctx.fillRect(0,0,W,H);
+
+    for(const p of particles){
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x < 0) p.x = W;
+      if(p.x > W) p.x = 0;
+      if(p.y < 0) p.y = H;
+      if(p.y > H) p.y = 0;
+
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ============================================================
+   B. LIVE TERMINAL — logs cada 4.5s
+   ============================================================ */
+(function(){
+  const body = document.getElementById('liveTerminalBody');
+  const logs = [
+    'Neural network stabilizing...',
+    'Syncing with global data streams...',
+    'Biometric scan complete · identity verified',
+    'Accessing Judas core memories...',
+    'Quantum nodes active · 47 synced',
+    'Encryption layer reinforced',
+    'Particle field stable at 3000 units',
+    'Archive neural hash verified',
+    'Subroutine 0xJUDAS listening...',
+    'Visual cortex link established',
+    'Listening for user input...',
+    'Background daemon OK',
+  ];
+  let idx = 0;
+  function pushLine(){
+    const line = document.createElement('div');
+    line.className = 'lt-line';
+    line.textContent = logs[idx % logs.length];
+    body.appendChild(line);
+    idx++;
+    // Keep max 8 lines
+    while(body.children.length > 8){
+      body.removeChild(body.firstChild);
+    }
+  }
+  pushLine();
+  setInterval(pushLine, 4500);
+})();
+
+/* ============================================================
+   C. GLOBAL TERMINAL — interactiva
+   ============================================================ */
+(function(){
+  const body = document.getElementById('gtBody');
+  const input = document.getElementById('gtInput');
+  const minimized = document.getElementById('gtMinimized');
+  const full = document.getElementById('globalTerminal');
+
+  const bootLines = [
+    'BELENTANI_CORE v3.0 INICIADO...',
+    'Escaneando biometría simulada...',
+    'Conexión neural establecida.',
+    'Esperando input. Escribe \'thiago\' para colapso.',
+  ];
+  let bootIdx = 0;
+  function bootSequence(){
+    if(bootIdx < bootLines.length){
+      addLine(bootLines[bootIdx], 'sys');
+      bootIdx++;
+      setTimeout(bootSequence, 600);
+    }
+  }
+  setTimeout(bootSequence, 800);
+
+  function addLine(text, type='sys'){
+    const div = document.createElement('div');
+    div.className = 'gt-line ' + type;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  window.toggleGlobalTerminal = function(){
+    if(full.style.display === 'none' || !full.style.display){
+      full.style.display = 'flex';
+      minimized.style.display = 'none';
+      input.focus();
+    } else {
+      full.style.display = 'none';
+      minimized.style.display = 'flex';
+    }
+  };
+
+  const commands = {
+    help: () => [
+      'Available commands:',
+      '  help       · show this list',
+      '  about      · about BELENTANI',
+      '  judas      · enter Judas era',
+      '  music      · list sonic worlds',
+      '  clear      · clear terminal',
+      '  time       · show system time',
+      '  particles  · count active particles',
+      '  thiago     · TRIGGER COLLAPSE',
+    ],
+    about: () => [
+      'BELENTANI — artist project',
+      'R&B · pop · electronic · cyberpunk',
+      'Next release: Judas',
+    ],
+    judas: () => [
+      'Entering Judas era...',
+      'Memories of betrayal decoded.',
+      'Type "thiago" to collapse the archive.',
+    ],
+    music: () => [
+      '01 · Judas — Intro · 02:14',
+      '02 · Pursuit · 03:42',
+      '03 · Shatter · 04:08',
+      '04 · Belentani Core · 03:21',
+      '05 · System Online · 02:55',
+    ],
+    clear: () => { body.innerHTML = []; return null; },
+    time: () => [ 'SYSTEM_TIME: ' + new Date().toISOString() ],
+    particles: () => [ 'PARTICLE_COUNT: 3000 active' ],
+    thiago: () => { triggerCollapse(); return ['> COLLAPSE TRIGGERED', '> purging archive...']; },
+  };
+
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){
+      const val = input.value.trim();
+      if(!val) return;
+      addLine(val, 'user');
+      input.value = '';
+      const cmd = val.toLowerCase();
+      if(commands[cmd]){
+        const out = commands[cmd]();
+        if(out){
+          out.forEach((line,i) => setTimeout(() => addLine(line, 'sys'), i*120));
+        }
+      } else {
+        setTimeout(() => addLine(`command not found: ${cmd} · type "help"`, 'sys'), 100);
+      }
+    }
+  });
+
+  // On mobile, start minimized
+  if(window.innerWidth <= 768){
+    full.style.display = 'none';
+    minimized.style.display = 'flex';
+  }
+})();
+
+/* ============================================================
+   D. COLLAPSE / SHATTER OVERLAY
+   ============================================================ */
+window.triggerCollapse = function(){
+  const overlay = document.getElementById('collapseOverlay');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }, 2400);
+};
+
+/* ============================================================
+   E. CLOCK + COUNTER
+   ============================================================ */
+(function(){
+  const clock = document.getElementById('counterClock');
+  function update(){
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2,'0');
+    const m = String(d.getMinutes()).padStart(2,'0');
+    const s = String(d.getSeconds()).padStart(2,'0');
+    clock.textContent = `${h}:${m}:${s}`;
+  }
+  update();
+  setInterval(update, 1000);
+})();
+
+/* ============================================================
+   F. NEWSLETTER
+   ============================================================ */
+window.subscribeNewsletter = function(form){
+  const email = form.querySelector('input').value;
+  const btn = form.querySelector('button');
+  const original = btn.textContent;
+  btn.textContent = 'SYNCING...';
+  setTimeout(() => {
+    btn.textContent = '✓ ARCHIVED';
+    btn.style.background = 'var(--terminal)';
+    btn.style.borderColor = 'var(--terminal)';
+    btn.style.color = '#000';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      form.querySelector('input').value = '';
+    }, 2500);
+  }, 800);
+};
+
+/* ============================================================
+   G. REVEAL ON SCROLL
+   ============================================================ */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+})();
+
+/* ============================================================
+   H. MOBILE NAV ACTIVE STATE
+   ============================================================ */
+(function(){
+  const links = document.querySelectorAll('.mobile-nav a');
+  const sections = ['music','studio','judas','portal','contact'];
+  function update(){
+    const scrollY = window.scrollY + 200;
+    let active = sections[0];
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if(el && el.offsetTop <= scrollY) active = id;
+    });
+    links.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+    });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+/* ============================================================
+   I. PURSUIT WINDOW + RADAR on desktop
+   ============================================================ */
+(function(){
+  if(window.innerWidth > 1024){
+    document.querySelector('.pursuit-window').style.display = 'block';
+    document.querySelector('.radar').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>

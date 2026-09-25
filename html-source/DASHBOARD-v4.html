@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BELENTANI Â· Ecosystem Dashboard</title>
+<style>
+:root{--bg:#0d0f14;--panel:#151922;--panel2:#1c2230;--text:#e8ecf3;--muted:#8b95a7;
+--accent:#ff2d55;--accent2:#ff6b81;--ok:#3ddc84;--warn:#ffb020;--bad:#ff4757;--line:#262d3d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;
+justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+h1{margin:0;font-size:20px;letter-spacing:.5px}h1 span{color:var(--accent)}
+.sub{color:var(--muted);font-size:12px}
+main{padding:24px 28px;max-width:1280px;margin:0 auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.card .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.8px}
+.card .v{font-size:23px;font-weight:700;margin-top:4px}
+.card .v.acc{color:var(--accent)}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:26px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.panel h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent)}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.bar .lbl{width:120px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0;
+overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{flex:1;background:var(--panel2);border-radius:6px;height:16px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.fill.ok{background:var(--ok)}.fill.mid{background:var(--warn)}.fill.low{background:var(--bad)}
+.bar .num{width:60px;font-size:12px;color:var(--muted)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+input,select{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+border-radius:8px;padding:8px 10px;font-size:13px}
+input{flex:1;min-width:220px}
+.wrap{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--panel)}
+th{position:sticky;top:0;background:var(--panel);text-align:left;color:var(--muted);
+font-size:11px;text-transform:uppercase;padding:8px;border-bottom:1px solid var(--line);
+cursor:pointer;white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.row:hover{background:var(--panel2);cursor:pointer}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-ok{background:rgba(61,220,132,.15);color:var(--ok)}
+.b-mid{background:rgba(255,176,32,.15);color:var(--warn)}
+.b-low{background:rgba(255,71,87,.15);color:var(--bad)}
+tr.detail td{background:var(--panel2);font-size:12.5px;color:var(--muted)}
+tr.detail ul{margin:6px 0 0;padding-left:18px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin:8px 0;padding:10px 14px}
+summary{cursor:pointer;font-size:13px}
+.paths .pth{font-family:ui-monospace,Consolas,monospace;font-size:11px;
+color:var(--muted);padding:2px 0;word-break:break-all}
+footer{padding:20px 28px;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}
+ul.plain{padding-left:18px;margin:0}ul.plain li{margin:3px 0;font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>BELENTANI <span>/ ECOSYSTEM</span></h1><div class="sub" id="subtitle"></div></div>
+  <div class="sub" id="stamp"></div>
+</header>
+<main>
+  <section class="cards" id="cards"></section>
+  <h2>Distribucion</h2>
+  <section class="grid2">
+    <div class="panel" id="cats"></div>
+    <div class="panel" id="langs"></div>
+    <div class="panel" id="quality"></div>
+  </section>
+  <h2>Proyectos</h2>
+  <div class="controls">
+    <input id="q" placeholder="Buscar proyecto...">
+    <select id="fcat"></select><select id="fqual"></select><select id="sort"></select>
+  </div>
+  <div class="wrap"><table><thead><tr>
+    <th data-k="name">Proyecto</th><th data-k="category">Categoria</th>
+    <th data-k="language">Lenguaje</th><th data-k="size_mb">MB</th>
+    <th data-k="file_count">Archivos</th><th data-k="loc">LOC</th>
+    <th data-k="quality">Calidad</th><th data-k="issues">Issues</th>
+    <th data-k="last_modified">Modificado</th>
+  </tr></thead><tbody id="tbody"></tbody></table></div>
+  <h2>Duplicados</h2><section id="dups"></section>
+  <h2>Plan de accion</h2><section class="grid2" id="plan"></section>
+</main>
+<footer>BELENTANI ORCHESTRATOR v3.0 Â· generado localmente Â· cero dependencias Â· sin CDNs</footer>
+<script>
+const DATA = {"generated": "2026-09-07 08:25", "stats": {"projects": 28, "total_bytes": 64244379, "total_mb": 61.26821422576904, "loc": 531186, "files": 7722, "avg_quality": 59.464285714285715, "quality": {"high": 1, "mid": 23, "low": 4}, "categories": {"apps": 21, "services": 1, "agents": 4, "packages": 2}, "languages": {"TypeScript": 12, "Python": 5, "Unknown": 4, "HTML": 4, "Go": 2, "PowerShell": 1}, "secrets": 5, "todos": 51, "dup_groups": 0, "dup_files": 0, "dup_wasted_mb": 0.0, "remote_only": 0}, "quality": {"high": 1, "mid": 23, "low": 4}, "categories": {"apps": 21, "services": 1, "agents": 4, "packages": 2}, "languages": {"TypeScript": 12, "Python": 5, "Unknown": 4, "HTML": 4, "Go": 2, "PowerShell": 1}, "projects": [{"name": "08-AION-WORKFORCE", "category": "apps", "language": "Unknown", "size_mb": 0.0, "file_count": 4, "loc": 9, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-07T06:18:46.375162+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\aion\\08-AION-WORKFORCE", "description": "", "topics": []}, {"name": "aion-compliance", "category": "apps", "language": "Python", "size_mb": 0.04, "file_count": 7, "loc": 1094, "quality": 70.0, "issues": ["Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-04T22:25:17.630620+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\aion\\aion-compliance", "description": "", "topics": []}, {"name": "backend", "category": "services", "language": "Python", "size_mb": 0.01, "file_count": 5, "loc": 384, "quality": 45.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": ["fastapi>=0.100.0", "uvicorn>=0.23.0", "pydantic>=2.0.0"], "git": null, "last_modified": "2026-09-07T06:18:46.384241+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\nexus\\nexus-workforce-enterprise\\backend", "description": "", "topics": []}, {"name": "premium-effects", "category": "apps", "language": "Unknown", "size_mb": 0.02, "file_count": 4, "loc": 248, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-03T01:08:45.736749+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\artist\\premium-effects", "description": "", "topics": []}, {"name": "nexus-workforce", "category": "apps", "language": "Python", "size_mb": 0.04, "file_count": 7, "loc": 765, "quality": 60.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Frontend: 18 problemas (alt/viewport/!important)"], "todos": 0, "deps": ["pyinstaller>=6.0"], "git": null, "last_modified": "2026-09-04T22:25:28.631713+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\nexus\\nexus-workforce", "description": "", "topics": []}, {"name": "platform3-engine", "category": "apps", "language": "Unknown", "size_mb": 0.05, "file_count": 11, "loc": 107, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": ["bullmq@^5.4.0", "ioredis@^5.3.2", "zod@^3.23.8", "cheerio@^1.0.0", "winston@^3.13.0", "tsx@^4.7.0", "typescript@^5.4.0", "@types/node@^20.0.0"], "git": null, "last_modified": "2026-09-07T06:18:46.399853+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-figura\\platform3-engine", "description": "", "topics": []}, {"name": "control-linux", "category": "apps", "language": "PowerShell", "size_mb": 0.01, "file_count": 8, "loc": 248, "quality": 55.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin LICENSE"], "todos": 0, "deps": ["playwright@^1.49.0", "@types/node@^20.0.0"], "git": null, "last_modified": "2026-09-05T13:39:22.045193+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\control-linux", "description": "", "topics": []}, {"name": "agentbox", "category": "agents", "language": "Go", "size_mb": 4.46, "file_count": 17, "loc": 3343, "quality": 50.0, "issues": ["Sin tests detectados", "Sin CI/CD", "SEC Hardcoded credential (linea 47, valor redactado)"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-01T10:01:35.378035+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\agentbox", "description": "Disposable cloud sandboxes for AI agents. Spin up isolated V", "topics": []}, {"name": "edu-engine", "category": "apps", "language": "TypeScript", "size_mb": 0.02, "file_count": 9, "loc": 755, "quality": 60.0, "issues": ["Falta .gitignore", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-07T06:18:46.390794+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\packages\\edu-engine", "description": "", "topics": []}, {"name": "agentguard", "category": "agents", "language": "Go", "size_mb": 9.43, "file_count": 19, "loc": 2377, "quality": 45.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-01T10:00:57.432426+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\agentguard", "description": "The firewall for your AI budget. Monitor spending, enforce l", "topics": []}, {"name": "judas-experience", "category": "apps", "language": "HTML", "size_mb": 0.07, "file_count": 25, "loc": 850, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": ["@gsap/react@^2.1.2", "@tailwindcss/vite@^4.3.3", "autoprefixer@^10.5.5", "clsx@^2.1.1", "framer-motion@^13.2.0", "gsap@^3.15.0", "lucide-react@^1.41.0", "postcss@^8.5.28", "react@^19.2.8", "react-dom@^19.2.8"], "git": null, "last_modified": "2026-09-05T12:55:10.541439+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\judas-experience", "description": "Proyecto Judas - experiencia musical demo", "topics": []}, {"name": "noiacore", "category": "packages", "language": "HTML", "size_mb": 4.09, "file_count": 20, "loc": 725, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 0, "deps": [], "git": null, "last_modified": "2026-09-04T18:22:55.901932+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\BELENTANI_OMEGA_CORE\\services\\noiacore", "description": "Multi-agent intelligence system ÔÇö concept, architecture, a", "topics": []}, {"name": "judas-access", "category": "apps", "language": "TypeScript", "size_mb": 0.16, "file_count": 34, "loc": 4436, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 1, "deps": ["@dnd-kit/core@^6.1.0", "@dnd-kit/sortable@^8.0.0", "@dnd-kit/utilities@^3.2.2", "@supabase/supabase-js@^2.98.0", "canvas-confetti@^1.9.3", "date-fns@^2.30.0", "framer-motion@^11.16.1", "lucide-react@^0.294.0", "react@^18.2.0", "react-dom@^18.2.0"], "git": null, "last_modified": "2026-09-05T14:40:23.708999+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\judas-access", "description": "", "topics": []}, {"name": "aion", "category": "apps", "language": "TypeScript", "size_mb": 0.47, "file_count": 45, "loc": 10370, "quality": 45.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 1, "deps": ["@aws-sdk/client-s3@^3.693.0", "@aws-sdk/s3-request-presigner@^3.693.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-07T06:18:46.378715+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\aion\\aion", "description": "", "topics": []}, {"name": "open-school", "category": "apps", "language": "TypeScript", "size_mb": 0.37, "file_count": 44, "loc": 8887, "quality": 60.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Frontend: 47 problemas (alt/viewport/!important)"], "todos": 0, "deps": ["@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.1", "@radix-ui/react-alert-dialog@^1.1.1", "@radix-ui/react-avatar@^1.1.1", "@radix-ui/react-checkbox@^1.1.1", "@radix-ui/react-dialog@^1.1.1", "@radix-ui/react-dropdown-menu@^2.1.1", "@radix-ui/react-popover@^1.1.1", "@radix-ui/react-progress@^1.1.1", "@radix-ui/react-radio-group@^1.2.1"], "git": null, "last_modified": "2026-09-03T11:56:04.147928+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\open-school", "description": "Instituto educativo digital universal ÔÇö cursos modulares, ", "topics": []}, {"name": "aion-acquisition-engine-audited", "category": "apps", "language": "TypeScript", "size_mb": 0.52, "file_count": 42, "loc": 12699, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 1, "deps": ["@aws-sdk/client-s3@^3.1116.0", "@aws-sdk/s3-request-presigner@^3.1116.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-07T06:18:46.380226+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\aion\\aion-acquisition-engine-audited", "description": "AION Acquisition Engine - snapshot auditado del sistema de c", "topics": []}, {"name": "skills-registry", "category": "agents", "language": "TypeScript", "size_mb": 0.13, "file_count": 12, "loc": 2983, "quality": 52.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin CI/CD", "Sin LICENSE", "Cambios sin commitear"], "todos": 12, "deps": ["commander@^12.0.0", "ora@^8.0.0", "semver@^7.6.0", "zod@^4.0.0", "glob@^11.0.0", "@types/node@^24.0.0", "typescript@^5.6.0", "tsx@^4.19.0", "vitest@^2.1.0"], "git": {"is_repo": true, "commit_count": 10, "last_commit": "2026-09-07T08:18:58+02:00", "dirty": true}, "last_modified": "2026-09-07T08:18:58+02:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\skills-registry", "description": "Global CLI agent skill distribution system ÔÇö discover, ins", "topics": []}, {"name": "nexus-machine-ops", "category": "apps", "language": "TypeScript", "size_mb": 0.45, "file_count": 61, "loc": 4074, "quality": 55.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE"], "todos": 4, "deps": ["@aws-sdk/client-s3@^3.693.0", "@aws-sdk/s3-request-presigner@^3.693.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-05T11:57:43.077413+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\nexus\\nexus-machine-ops", "description": "", "topics": []}, {"name": "pvc-u-core", "category": "packages", "language": "Python", "size_mb": 0.09, "file_count": 21, "loc": 2760, "quality": 74.0, "issues": ["Sin CI/CD", "Sin LICENSE", "Cambios sin commitear"], "todos": 1, "deps": [], "git": {"is_repo": true, "commit_count": 3, "last_commit": "2026-09-07T08:18:55+02:00", "dirty": true}, "last_modified": "2026-09-07T08:18:55+02:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\pvc-u-core", "description": "Protocolo de Validaci├│n Continua Universal ÔÇö Kernel de go", "topics": []}, {"name": "nexus-data", "category": "apps", "language": "Python", "size_mb": 0.35, "file_count": 92, "loc": 4394, "quality": 70.0, "issues": ["Sin CI/CD", "Sin LICENSE", "Frontend: 32 problemas (alt/viewport/!important)"], "todos": 0, "deps": ["httpx==0.28.1", "PyYAML==6.0.3", "pytest==9.1.1", "streamlit==1.61.1", "pandas==3.0.5"], "git": null, "last_modified": "2026-09-04T22:25:30.097385+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\nexus\\nexus-data", "description": "Nexus Data - pipelines y modelos de datos del ecosistema nex", "topics": []}, {"name": "pvc-u-frontend", "category": "apps", "language": "TypeScript", "size_mb": 0.19, "file_count": 18, "loc": 828, "quality": 63.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Sin LICENSE", "Frontend: 7 problemas (alt/viewport/!important)", "Cambios sin commitear"], "todos": 0, "deps": ["@radix-ui/react-slot@^1.1.0", "@radix-ui/react-tabs@^1.1.2", "@radix-ui/react-toast@^1.2.4", "@radix-ui/react-tooltip@^1.1.6", "@tanstack/react-query@^5.66.0", "class-variance-authority@^0.7.1", "clsx@^2.1.1", "framer-motion@^11.13.1", "lucide-react@^0.468.0", "react@^19.0.0"], "git": {"is_repo": true, "commit_count": 5, "last_commit": "2026-09-07T08:18:56+02:00", "dirty": true}, "last_modified": "2026-09-07T08:18:56+02:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\pvc-u-frontend", "description": "PVC-U Dashboard ÔÇö Liquid Glass/Neon Aesthetic con React 19", "topics": []}, {"name": "aion-workforce-enterprise", "category": "agents", "language": "TypeScript", "size_mb": 3.91, "file_count": 115, "loc": 17182, "quality": 45.0, "issues": ["Falta .gitignore", "Sin tests detectados", "Sin CI/CD", "Sin LICENSE", "Frontend: 39 problemas (alt/viewport/!important)"], "todos": 1, "deps": ["@aws-sdk/client-s3@^3.1116.0", "@aws-sdk/s3-request-presigner@^3.1116.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-04T22:25:21.569113+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\aion\\aion-workforce-enterprise", "description": "AION Workforce Enterprise - plataforma multi-agente de fuerz", "topics": []}, {"name": "secure-t", "category": "apps", "language": "TypeScript", "size_mb": 2.85, "file_count": 135, "loc": 13890, "quality": 85.0, "issues": [], "todos": 0, "deps": ["@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16", "@radix-ui/react-dialog@^1.1.15", "@radix-ui/react-dropdown-menu@^2.1.16"], "git": null, "last_modified": "2026-09-05T21:22:06.702140+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\secure-t", "description": "secure T ÔÇö Universidad Digital de Ciberseguridad e Intelig", "topics": []}, {"name": "linguaforge", "category": "apps", "language": "TypeScript", "size_mb": 1.3, "file_count": 150, "loc": 26187, "quality": 60.0, "issues": ["Sin tests detectados", "Sin CI/CD", "Frontend: 43 problemas (alt/viewport/!important)"], "todos": 1, "deps": ["@aws-sdk/client-s3@^3.1111.0", "@aws-sdk/s3-request-presigner@^3.1111.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-03T18:48:35.197163+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\linguaforge", "description": "Forja linguistica: herramientas de traduccion y adaptacion m", "topics": []}, {"name": "duck-ecosystem", "category": "apps", "language": "TypeScript", "size_mb": 1.17, "file_count": 216, "loc": 27325, "quality": 70.0, "issues": ["Sin tests detectados", "Frontend: 6 problemas (alt/viewport/!important)"], "todos": 2, "deps": ["@aws-sdk/client-s3@^3.693.0", "@aws-sdk/s3-request-presigner@^3.693.0", "@hookform/resolvers@^5.2.2", "@radix-ui/react-accordion@^1.2.12", "@radix-ui/react-alert-dialog@^1.1.15", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10", "@radix-ui/react-checkbox@^1.3.3", "@radix-ui/react-collapsible@^1.1.12", "@radix-ui/react-context-menu@^2.2.16"], "git": null, "last_modified": "2026-09-07T06:18:46.388775+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\BELENTANI_OMEGA_CORE\\apps\\duck-ecosystem", "description": "Ecosistema DUCK - herramientas, GUIs y apps del estudio crea", "topics": []}, {"name": "superpowers", "category": "apps", "language": "Unknown", "size_mb": 1.63, "file_count": 195, "loc": 41250, "quality": 69.0, "issues": ["SEC Hardcoded credential (linea 26, valor redactado)", "SEC Hardcoded credential (linea 16, valor redactado)", "SEC Hardcoded credential (linea 250, valor redactado)", "SEC Hardcoded credential (linea 25, valor redactado)"], "todos": 13, "deps": [], "git": null, "last_modified": "2026-09-04T22:27:18.327070+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\skills\\superpowers", "description": "", "topics": []}, {"name": "ManosAbiertas", "category": "apps", "language": "HTML", "size_mb": 1.35, "file_count": 19, "loc": 3312, "quality": 68.0, "issues": ["Falta README.md", "Sin LICENSE", "Cambios sin commitear"], "todos": 1, "deps": ["@dnd-kit/core@^6.3.1", "@dnd-kit/sortable@^10.0.0", "@dnd-kit/utilities@^3.2.2", "@hookform/resolvers@^5.1.1", "@netlify/blobs@9.1.5", "@prisma/client@^6.11.1", "@radix-ui/react-accordion@^1.2.11", "@radix-ui/react-alert-dialog@^1.1.14", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10"], "git": {"is_repo": true, "commit_count": 8, "last_commit": "2026-09-07T08:18:50+02:00", "dirty": true}, "last_modified": "2026-09-07T08:18:50+02:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\general\\ManosAbiertas", "description": "Plataforma educativa gratuita: cursos IA/Office, creador CV,", "topics": []}, {"name": "manos-abiertas", "category": "apps", "language": "HTML", "size_mb": 28.09, "file_count": 6387, "loc": 339704, "quality": 79.0, "issues": ["Sin LICENSE", "Frontend: 75 problemas (alt/viewport/!important)"], "todos": 13, "deps": ["@dnd-kit/core@^6.3.1", "@dnd-kit/sortable@^10.0.0", "@dnd-kit/utilities@^3.2.2", "@hookform/resolvers@^5.1.1", "@netlify/blobs@9.1.5", "@prisma/client@^6.11.1", "@radix-ui/react-accordion@^1.2.11", "@radix-ui/react-alert-dialog@^1.1.14", "@radix-ui/react-aspect-ratio@^1.1.7", "@radix-ui/react-avatar@^1.1.10"], "git": null, "last_modified": "2026-09-05T03:08:17.002320+00:00", "path": "C:\\Users\\USER\\Documents\\01_PROYECTOS\\belentani-unified\\apps\\manos-abiertas", "description": "Plataforma educativa gratuita: cursos IA/Office, creador CV,", "topics": []}], "duplicates": [], "plan": {"critical": ["agentbox: 1 posibles secrets (Hardcoded credential (linea 47, valor redactado))", "superpowers: 4 posibles secrets (Hardcoded credential (linea 26, valor redactado); Hardcoded credential (linea 16, valor redactado); Hardcoded credential (linea 250, valor redactado))"], "quick_wins": ["aion-compliance: anadir LICENSE -> calidad ~90%", "nexus-workforce: anadir CI basica -> calidad ~90%", "edu-engine: anadir .gitignore, LICENSE -> calidad ~90%", "open-school: anadir CI basica -> calidad ~90%", "pvc-u-core: anadir LICENSE -> calidad ~90%", "nexus-data: anadir LICENSE -> calidad ~90%", "pvc-u-frontend: anadir LICENSE -> calidad ~90%", "secure-t: anadir CI basica -> calidad ~90%", "linguaforge: anadir CI basica -> calidad ~90%", "duck-ecosystem: anadir CI basica -> calidad ~90%", "ManosAbiertas: anadir README, LICENSE -> calidad ~90%", "manos-abiertas: anadir LICENSE -> calidad ~90%"], "archive": ["08-AION-WORKFORCE: casi vacio (4 archivos)", "aion-compliance: 1 commit o menos", "backend: 1 commit o menos", "premium-effects: 1 commit o menos", "nexus-workforce: 1 commit o menos", "platform3-engine: 1 commit o menos", "control-linux: 1 commit o menos", "agentbox: 1 commit o menos", "edu-engine: 1 commit o menos", "agentguard: 1 commit o menos", "judas-experience: 1 commit o menos", "noiacore: 1 commit o menos", "judas-access: 1 commit o menos", "aion: 1 commit o menos", "open-school: 1 commit o menos", "aion-acquisition-engine-audited: 1 commit o menos", "nexus-machine-ops: 1 commit o menos", "nexus-data: 1 commit o menos", "aion-workforce-enterprise: 1 commit o menos", "secure-t: 1 commit o menos", "linguaforge: 1 commit o menos", "duck-ecosystem: 1 commit o menos", "superpowers: 1 commit o menos", "manos-abiertas: 1 commit o menos"], "stale": [], "tests": ["nexus-workforce: sin tests (smoke tests recomendados)", "platform3-engine: sin tests (smoke tests recomendados)", "control-linux: sin tests (smoke tests recomendados)", "agentbox: sin tests (smoke tests recomendados)", "agentguard: sin tests (smoke tests recomendados)", "judas-experience: sin tests (smoke tests recomendados)", "noiacore: sin tests (smoke tests recomendados)", "judas-access: sin tests (smoke tests recomendados)", "aion: sin tests (smoke tests recomendados)", "open-school: sin tests (smoke tests recomendados)", "aion-acquisition-engine-audited: sin tests (smoke tests recomendados)", "skills-registry: sin tests (smoke tests recomendados)", "nexus-machine-ops: sin tests (smoke tests recomendados)", "pvc-u-frontend: sin tests (smoke tests recomendados)", "aion-workforce-enterprise: sin tests (smoke tests recomendados)", "linguaforge: sin tests (smoke tests recomendados)", "duck-ecosystem: sin tests (smoke tests recomendados)"], "frontend": ["nexus-workforce: 18 issues de frontend/a11y", "open-school: 47 issues de frontend/a11y", "nexus-data: 32 issues de frontend/a11y", "aion-workforce-enterprise: 39 issues de frontend/a11y", "linguaforge: 43 issues de frontend/a11y", "manos-abiertas: 75 issues de frontend/a11y"], "consolidation": [], "steps": ["1. CRITICO: si hay secrets, rota credenciales YA y muevelas a variables de entorno (.env fuera de git, en .gitignore).", "2. Ejecuta los quick wins (30 min - 2 h): README, .gitignore, LICENSE.", "3. Decide sobre los candidatos a archivar (borrar o mover a _archive/).", "4. consolidate --apply para materializar el monorepo.", "5. Anade smoke tests al top 10 de proyectos por LOC.", "6. Corrige frontend segun FRONTEND issues del dashboard.", "7. Re-ejecuta scan para medir la mejora (delta de calidad)."]}};
+const $ = s => document.querySelector(s);
+function el(t,c,txt){const e=document.createElement(t);if(c)e.className=c;
+if(txt!=null)e.textContent=txt;return e}
+function fmtMB(n){return n>=1024?(n/1024).toFixed(1)+' GB':n.toFixed(1)+' MB'}
+function num(n){return (n||0).toLocaleString('es-ES')}
+function opt(sel,val,txt){const o=el('option','',txt);o.value=val;sel.appendChild(o)}
+
+const s=DATA.stats;
+$('#subtitle').textContent=num(s.projects)+' proyectos Â· '+fmtMB(s.total_mb)+' Â· '
+  +num(s.loc)+' LOC Â· calidad media '+Math.round(s.avg_quality)+'%';
+$('#stamp').textContent='Generado: '+DATA.generated;
+
+const cards=[['Proyectos',num(s.projects)],['Tamano',fmtMB(s.total_mb)],
+['Lineas de codigo',num(s.loc)],['Duplicados',num(s.dup_groups)],
+['Ahorro potencial',fmtMB(s.dup_wasted_mb)],['Calidad media',Math.round(s.avg_quality)+'%'],
+['Posibles secrets',num(s.secrets)],['Repos no clonados',num(s.remote_only)]];
+const cardsEl=$('#cards');
+cards.forEach(c=>{const d=el('div','card');
+d.appendChild(el('div','k',c[0]));
+const v=el('div','v'+(c[0]==='Ahorro potencial'||c[0]==='Posibles secrets'?' acc':''),c[1]);
+d.appendChild(v);cardsEl.appendChild(d)});
+
+function bars(container,entries,colorFn){
+  container.replaceChildren();
+  const total=entries.reduce((a,e)=>a+e[1],0)||1;
+  entries.forEach(e=>{
+    const b=el('div','bar');
+    const l=el('div','lbl',e[0]);l.title=e[0];
+    const t=el('div','track');
+    const f=el('div','fill'+(colorFn?' '+colorFn():''));
+    f.style.width=Math.max(2,100*e[1]/total)+'%';
+    t.appendChild(f);
+    b.appendChild(l);b.appendChild(t);b.appendChild(el('div','num',num(e[1])));
+    container.appendChild(b);
+  });
+}
+bars($('#cats'),Object.entries(DATA.categories).sort((a,b)=>b[1]-a[1]));
+bars($('#langs'),Object.entries(DATA.languages).sort((a,b)=>b[1]-a[1]).slice(0,10));
+bars($('#quality'),[['80-100 alta',DATA.quality.high],['50-79 media',DATA.quality.mid],
+['0-49 baja',DATA.quality.low]],()=>['ok','mid','low'][bars.ci=(bars.ci||0)+1, (bars.ci-1)%3]);
+
+const fcat=$('#fcat'),fqual=$('#fqual'),sortSel=$('#sort');
+opt(fcat,'all','Todas las categorias');
+[...new Set(DATA.projects.map(p=>p.category))].sort().forEach(c=>opt(fcat,c,c));
+opt(fqual,'all','Toda calidad');opt(fqual,'high','Alta (80+)');
+opt(fqual,'mid','Media (50-79)');opt(fqual,'low','Baja (<50)');
+opt(sortSel,'quality','Calidad');opt(sortSel,'size_mb','Tamano');opt(sortSel,'loc','LOC');
+opt(sortSel,'name','Nombre');opt(sortSel,'last_modified','Modificado');
+let sortKey='quality',openRow=null;
+const tb=$('#tbody');
+
+function badge(q){return [q>=80?'b-ok':q>=50?'b-mid':'b-low',Math.round(q)+'%']}
+function apply(){
+  const q=$('#q').value.toLowerCase();
+  const list=DATA.projects.filter(p=>
+    (!q||p.name.toLowerCase().indexOf(q)>=0)&&
+    (fcat.value==='all'||p.category===fcat.value)&&
+    (fqual.value==='all'||(fqual.value==='high'?p.quality>=80:
+      fqual.value==='mid'?(p.quality>=50&&p.quality<80):p.quality<50)));
+  const sk=sortKey;
+  list.sort((a,b)=>{
+    if(['name','last_modified','category','language'].indexOf(sk)>=0)
+      return String(a[sk]).localeCompare(String(b[sk]));
+    return (b[sk]||0)-(a[sk]||0);
+  });
+  tb.replaceChildren();
+  list.slice(0,800).forEach(p=>{
+    const tr=el('tr','row');
+    [p.name,p.category,p.language,p.size_mb.toFixed(1),num(p.file_count),
+     num(p.loc),null,String(p.issues.length),p.last_modified.slice(0,10)]
+    .forEach((c,i)=>{
+      const td=el('td');
+      if(i===6){const b=badge(p.quality);
+        td.appendChild(el('span','badge '+b[0],b[1]));}
+      else if(i===0){td.textContent=p.name;
+        if(p.topics.length)td.title='topics: '+p.topics.join(', ');}
+      else td.textContent=String(c);
+      tr.appendChild(td);
+    });
+    tr.addEventListener('click',()=>toggleDetail(p,tr));
+    tb.appendChild(tr);
+  });
+}
+function toggleDetail(p,tr){
+  const nxt=tr.nextSibling;
+  if(nxt&&nxt.classList&&nxt.classList.contains('detail')){nxt.remove();return}
+  if(openRow){openRow.remove();openRow=null}
+  const d=el('tr','detail'),td=el('td');td.colSpan=9;
+  const box=el('div');
+  box.appendChild(el('div','','Ruta: '+p.path));
+  if(p.description)box.appendChild(el('div','','Descripcion: '+p.description));
+  if(p.topics.length)box.appendChild(el('div','','Topics: '+p.topics.join(', ')));
+  if(p.git)box.appendChild(el('div','','Git: '+p.git.commit_count+' commits Â· '
+    +(p.git.dirty?'con cambios sin commitear':'limpio')
+    +(p.git.last_commit?' Â· ultimo: '+p.git.last_commit.slice(0,10):'')));
+  if(p.issues.length){const ul=el('ul');
+    p.issues.forEach(i=>ul.appendChild(el('li','',i)));box.appendChild(ul);}
+  td.appendChild(box);d.appendChild(td);tr.after(d);openRow=d;
+}
+$('#q').addEventListener('input',apply);
+fcat.addEventListener('change',apply);fqual.addEventListener('change',apply);
+sortSel.addEventListener('change',()=>{sortKey=sortSel.value;apply()});
+document.querySelectorAll('th[data-k]').forEach(th=>
+  th.addEventListener('click',()=>{sortKey=th.dataset.k;apply()}));
+apply();
+
+const dupsEl=$('#dups');
+if(!DATA.duplicates.length){
+  dupsEl.appendChild(el('div','sub','Sin duplicados registrados. Ejecuta: dedupe'));
+}else{
+  DATA.duplicates.forEach(g=>{
+    const d=el('details');
+    d.appendChild(el('summary','',g.paths.length+' copias Â· '
+      +fmtMB(g.size/1048576)+' Â· hash '+g.hash));
+    const box=el('div','paths');
+    g.paths.forEach(pt=>box.appendChild(el('div','pth',pt)));
+    d.appendChild(box);dupsEl.appendChild(d);
+  });
+}
+
+function planPanel(title,items){
+  const p=el('div','panel');
+  p.appendChild(el('h3','',title+' ('+items.length+')'));
+  const ul=el('ul','plain');
+  items.slice(0,40).forEach(i=>ul.appendChild(el('li','',i)));
+  p.appendChild(ul);return p;
+}
+const pl=DATA.plan,planEl=$('#plan');
+if(pl.critical.length)planEl.appendChild(planPanel('CRITICO - secrets',pl.critical));
+planEl.appendChild(planPanel('Quick wins',pl.quick_wins));
+planEl.appendChild(planPanel('Candidatos a archivar',pl.archive));
+planEl.appendChild(planPanel('Deuda de tests',pl.tests));
+planEl.appendChild(planPanel('Frontend / a11y',pl.frontend));
+const sp=el('div','panel');
+sp.appendChild(el('h3','','Siguientes pasos'));
+const ol=el('ol','plain');
+pl.steps.forEach(x=>ol.appendChild(el('li','',x)));
+sp.appendChild(ol);planEl.appendChild(sp);
+</script>
+</body></html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BELENTANI // THE JUDAS EXPERIENCE — OS UNIFICADO</title>
+<meta name="theme-color" content="#020103"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.0/index.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/index.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<style>
+/* ============ NEOGLASS & RAYTRACER TOKENS ============ */
+:root {
+  --void: #020103; --glass: rgba(28,2,8,.55); --glass-bd: rgba(255,45,85,.35);
+  --neon: #ff073a; --neon-soft: #ff4d6d; --blood: #8b0000;
+  --mono: 'JetBrains Mono', monospace; --disp: 'Space Grotesk', sans-serif;
+  --blur: 16px;
+  --glow-md: 0 0 15px rgba(255,7,58,.6), 0 0 30px rgba(255,7,58,.3);
+  --txt: #e9e4e6; --dim: #8f878c;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--void); color: var(--txt); font-family: var(--disp); overflow-x: hidden; min-height: 100vh; }
+::selection { background: var(--blood); color: #fff; }
+
+/* Background Layers */
+canvas#gl { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.crt { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.22) 50%); background-size: 100% 3px; }
+.vign { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.7)); }
+
+/* Glass Primitives */
+.glass {
+  background: linear-gradient(135deg, rgba(20,0,5,.92), rgba(40,0,10,.82) 50%);
+  backdrop-filter: blur(var(--blur)); border: 1px solid var(--glass-bd);
+  box-shadow: inset 0 0 60px rgba(139,0,0,.35), 0 0 40px rgba(139,0,0,.25);
+  position: relative;
+}
+
+/* UI Layout */
+header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; background: rgba(2,1,3,.8); border-bottom: 1px solid var(--glass-bd); }
+.logo { font-weight: 700; letter-spacing: .35em; color: var(--neon); text-shadow: var(--glow-md); }
+main { position: relative; z-index: 10; padding-top: 80px; }
+.page { display: none; min-height: 100vh; padding: 3rem 2rem; max-width: 1400px; margin: 0 auto; }
+.page.on { display: block; animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* Typography */
+h1.mega { font-size: clamp(3rem, 10vw, 8rem); font-weight: 700; color: #fff; text-shadow: 0 0 24px var(--neon); }
+h2 { font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
+.mono { font-family: var(--mono); }
+.kicker { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.4em; color: var(--neon); text-transform: uppercase; margin-bottom: 1rem; }
+
+/* Grid Systems */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.track { display: grid; grid-template-columns: 30px 1fr auto; padding: 1rem; border-bottom: 1px solid var(--glass-bd); }
+</style>
+</head>
+<body>
+
+<!-- WebGL Schwarzschild Engine -->
+<canvas id="gl"></canvas>
+<div class="crt"></div>
+<div class="vign"></div>
+
+<!-- Unified Header -->
+<header>
+  <div class="logo">BELENTANI</div>
+  <div class="hud mono" style="font-size: 0.6rem; color: var(--neon);">NODE: JUDAS-CORE-07 // FREQ: 432Hz</div>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section class="page on" id="home">
+    <div class="kicker">SYSTEM_READY // ÓRBITA: SIÓN</div>
+    <h1 class="mega">BELENTANI</h1>
+    <h2 style="letter-spacing: 0.5em; color: transparent; -webkit-text-stroke: 1px var(--neon);">JUDAS</h2>
+    <p style="max-width: 600px; line-height: 1.6;">La herida se convierte en arquitectura viva. Dark pop, R&B visceral y electrónica experimental desde Barcelona. The fall was not the end. It was the portal.</p>
+  </section>
+
+  <!-- MUSIC MODULE (Credits Updated) -->
+  <section class="page" id="music" style="display:block; margin-top: 5rem;">
+    <div class="kicker">AUDIO_SYNTHESIS_MODULE</div>
+    <h2>SONIC ARCHIVE</h2>
+    <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
+      <h3 style="color: var(--neon); margin-bottom: 1rem;">▲ PRÓXIMO LANZAMIENTO — 2026</h3>
+      <h2 style="font-size: 3rem; margin-bottom: 0.5rem;">JUDAS</h2>
+      <p style="font-family: var(--mono); font-size: 0.8rem; color: var(--dim);">PRODUCED BY: DUCK PROD // ARCHITECT OF SOUND</p>
+      <p style="margin-top: 1rem;">La Crónica de la Llave Dorada. El algoritmo diseñado para evolucionar.</p>
+    </div>
+    
+    <div class="tracklist">
+      <div class="track">
+        <span class="mono" style="color:var(--neon)">01</span>
+        <div><b>Judas</b><br><small class="mono dim">JUDAS ERA — 2026 — Prod. Duck Prod</small></div>
+        <span class="mono">▶</span>
+      </div>
+      <div class="track">
+        <span class="mono" style="color:var(--neon)">02</span>
+        <div><b>Mon Amour</b><br><small class="mono dim">ÁLBUM — 2025</small></div>
+        <span class="mono">▶</span>
+      </div>
+      <div class="track">
+        <span class="mono" style="color:var(--neon)">07</span>
+        <div><b>Lento (con Hey Duck)</b><br><small class="mono dim">PRE-JUDAS — 2023</small></div>
+        <span class="mono">▶</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LORE & IDENTITY -->
+  <section class="page" id="artist" style="display:block; margin-top: 5rem;">
+    <div class="kicker">THE 5 ELEMENTS PROTOCOL</div>
+    <h2>IDENTITY MATRIX</h2>
+    <div class="grid-2">
+      <div>
+        <p>Pedro Marcos Santos Belentani — artista discográfico, compositor y productor nacido en São Paulo y forjado en Barcelona.</p>
+        <p style="margin-top:1rem;">Desde 2022 trabaja en alianza con el productor Duck Prod (Recife), consolidando un sonido arraigado en el R&B alternativo, el dark pop y la electrónica industrial.</p>
+      </div>
+      <div class="glass" style="padding: 2rem;">
+        <div style="margin-bottom: 1rem;"><span style="color:var(--neon)" class="mono">PEDRO</span> — LA ROCA</div>
+        <div style="margin-bottom: 1rem;"><span style="color:var(--neon)" class="mono">MARCOS</span> — EL CRONISTA</div>
+        <div style="margin-bottom: 1rem;"><span style="color:var(--neon)" class="mono">SANTOS</span> — LA ANTENA</div>
+        <div style="margin-bottom: 1rem;"><span style="color:var(--neon)" class="mono">BELENTANI</span> — EL ARTEFACTO</div>
+        <div><span style="color:var(--neon)" class="mono">THE HUMAN</span> — LA INTERFAZ</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/**
+ * UNIFIED GLSL RAYTRACER KERNEL
+ * Bootstraps the WebGL2 context and initializes the Schwarzschild black hole 
+ * rendering behind the UI elements.
+ */
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl2', { antialias: false, powerPreference: 'high-performance' });
+
+if (gl) {
+  // Compile simplified fallback shader setup to ensure background operates without UI blocking
+  const vsSource = `#version 300 es
+    layout(location=0) in vec2 aPos;
+    void main(){ gl_Position = vec4(aPos,0.0,1.0); }`;
+    
+  // A streamlined version of the Judas Accretion Furnace fragment shader
+  const fsSource = `#version 300 es
+    precision highp float;
+    uniform vec2 uRes; uniform float uTime;
+    out vec4 oCol;
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+      float r = length(uv);
+      float angle = atan(uv.y, uv.x);
+      
+      // Accretion disk math simulation
+      float disk = smoothstep(0.1, 0.4, r) * (1.0 - smoothstep(0.4, 0.8, r));
+      float turbulence = sin(r * 20.0 - uTime * 2.0 + angle * 4.0) * 0.5 + 0.5;
+      
+      vec3 coreColor = vec3(1.0, 0.05, 0.1); // Neon Red/Blood
+      vec3 voidColor = vec3(0.01, 0.0, 0.02);
+      
+      vec3 finalCol = mix(voidColor, coreColor, disk * turbulence * (1.0 - r));
+      
+      // Photon ring glow
+      finalCol += vec3(1.0, 0.2, 0.2) * exp(-pow((r - 0.15) * 15.0, 2.0));
+      oCol = vec4(finalCol, 1.0);
+    }`;
+
+  const createShader = (type, source) => {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    return s;
+  };
+
+  const program = gl.createProgram();
+  gl.attachShader(program, createShader(gl.VERTEX_SHADER, vsSource));
+  gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fsSource));
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+  const uRes = gl.getUniformLocation(program, "uRes");
+  const uTime = gl.getUniformLocation(program, "uTime");
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  const render = (t) => {
+    gl.uniform1f(uTime, t * 0.001);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    requestAnimationFrame(render);
+  };
+  requestAnimationFrame(render);
+}
+
+// GSAP Animations for UI Elements
+gsap.from(".track", {
+  y: 20,
+  opacity: 0,
+  duration: 0.6,
+  stagger: 0.1,
+  ease: "power2.out",
+  delay: 0.5
+});
+</script>
+</body>
+</html>

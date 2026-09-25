@@ -1,0 +1,289 @@
+<body>
+
+<div class="navbar">
+  <div class="logo">BELENTANI</div>
+  <div class="nav-links">
+    <a data-section="portal">PORTAL</a>
+    <a data-section="home">Home</a>
+    <a data-section="judas">Judas</a>
+    <a data-section="music">Music</a>
+    <a data-section="studio">Studio</a>
+    <a data-section="artist">The Artist</a>
+    <a data-section="contact">Contact</a>
+  </div>
+</div>
+
+<!-- ======================== HOME ======================== -->
+<div id="home-section" class="section">
+  <div style="text-align:center; padding:3rem 1rem;">
+    <h1 class="neon-red" style="font-size:3rem;">A new sound is coming.</h1>
+    <p style="font-size:1.2rem; margin:1rem 0;">Welcome to the world of Judas.</p>
+    <button class="btn-red" onclick="showSection('music')">Explore Music</button>
+    <button class="btn-red" onclick="showSection('portal')" style="margin-left:1rem;">Try AI Studio</button>
+  </div>
+  <div class="grid-3">
+    <div class="card"><h3>Sonic Worlds</h3><p>R&B, pop, electrónica experimental.</p></div>
+    <div class="card"><h3>Visual Concepts</h3><p>Cinematografía, neón y desierto.</p></div>
+    <div class="card"><h3>AI Creation Tools</h3><p>Storyboards, beats, letras – todo en el <strong>PORTAL</strong>.</p></div>
+  </div>
+</div>
+
+<!-- ======================== JUDAS ======================== -->
+<div id="judas-section" class="section">
+  <h1 class="neon-red">THE NEXT CHAPTER: JUDAS</h1>
+  <p style="font-size:1.2rem;">Traición, transformación, redención. Dark pop, R&B y electrónica envueltos en neón rojo.</p>
+  <div class="grid-3">
+    <div class="card"><h3>The Sound</h3><p>Dark pop + beats agresivos.</p></div>
+    <div class="card"><h3>The Visuals</h3><p>Neón rojo, cuero negro, desierto infinito.</p></div>
+    <div class="card"><h3>The Creation</h3><p>Herramientas IA que simulan una supercomputadora.</p></div>
+  </div>
+</div>
+
+<!-- ======================== MUSIC (corregida) ======================== -->
+<div id="music-section" class="section">
+  <h2>MUSIC UNIVERSE</h2>
+  <!-- Playlist YouTube real -->
+  <iframe width="100%" height="315" src="https://www.youtube.com/embed/videoseries?list=OLAK5uy_m3Jv-nCg6dRq8xiejbotPjqeisAW5gh70" frameborder="0" allowfullscreen style="border-radius:20px;"></iframe>
+  <!-- Spotify widget real -->
+  <iframe style="border-radius:12px; margin-top:20px;" src="https://open.spotify.com/embed/artist/2bU5Ir70YHHuUnq2f3WCYl" width="100%" height="352" frameborder="0" allow="encrypted-media"></iframe>
+  <div style="margin: 2rem 0;">
+    <h3>Canciones reales</h3>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Lento','_blank')">Lento (2022)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Mon%20Amour','_blank')">Mon Amour (2025)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20America%20Has%20A%20Problem','_blank')">America Has A Problem (2023)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Baila%20Conmigo','_blank')">Baila Conmigo (2023)</button>
+  </div>
+</div>
+
+<!-- ======================== STUDIO (simulación) ======================== -->
+<div id="studio-section" class="section">
+  <h2>🌀 NEURAL NETWORK [FREE ACCESS]</h2>
+  <p>Agentes de IA simulados (sin créditos) – usa el chat del PORTAL para conversar con el Oráculo.</p>
+  <div class="grid-3">
+    <div class="card"><h3>Lyric Assistant</h3><button class="btn-red" onclick="showSection('portal')">Ir al Portal</button></div>
+    <div class="card"><h3>Beat Composer</h3><button class="btn-red" onclick="showSection('portal')">Consultar al Oráculo</button></div>
+    <div class="card"><h3>Image Generator</h3><button class="btn-red" onclick="showSection('portal')">Generar en Portal</button></div>
+  </div>
+</div>
+
+<!-- ======================== THE ARTIST (antes About) ======================== -->
+<div id="artist-section" class="section">
+  <h2>THE ARTIST</h2>
+  <p><strong>Belentani</strong> (Pedro Marcos Santos Belentani). Nacido en São Paulo, criado en Barcelona. Independiente, R&B, pop, electrónica. Debut 2016 con Mark Nerom. Colaboración con Hey Duck (2022). Era Judas consolidada el 10 de marzo de 2026.</p>
+  <h3>Milestones</h3>
+  <ul><li>2016: Debut con Mark Nerom</li><li>2021: Miss T Trans Star Spain</li><li>2022: Lento con Hey Duck</li><li>2023: America Has A Problem & Baila Conmigo</li><li>2025: Mon Amour</li><li>2026: Era Judas</li></ul>
+</div>
+
+<!-- ======================== CONTACT ======================== -->
+<div id="contact-section" class="section">
+  <h2>CONNECT WITH ME</h2>
+  <p>Instagram: <a href="https://instagram.com/belentani_" target="_blank">@belentani_</a></p>
+  <p>YouTube: <a href="https://youtube.com/@belentani" target="_blank">Belentani</a></p>
+  <p>Spotify: <a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank">Belentani</a></p>
+</div>
+
+<!-- ======================== PORTAL (ORÁCULO + STORYBOARD) ======================== -->
+<div id="portal-section" class="section">
+  <div class="terminal-box" id="sysinfoPanel" style="background:#0a0a0a; border:1px solid #0f0; padding:1rem; margin-bottom:1rem; font-family:monospace;"></div>
+  
+  <!-- Chat Oráculo Judas (calculadora de frases) -->
+  <div class="chat-window" id="oracleChat"></div>
+  <div class="input-area">
+    <input type="text" id="oracleInput" placeholder="Habla con el Oráculo Judas... (ej: ¿quién eres?, thiago)">
+    <button id="oracleSend" class="btn-red">Enviar</button>
+  </div>
+  <div class="status-bar" style="display:flex; justify-content:space-between; margin-top:8px;">
+    <span id="energyDisplay">⚡ ENERGÍA: 100%</span>
+    <span id="patternDisplay">🔍 PATRONES: 0</span>
+  </div>
+
+  <!-- Storyboard generator (simulado) -->
+  <div class="storyboard-panel">
+    <h3>🎬 STORYBOARD GENERATOR (SIMULADO)</h3>
+    <p>Genera escenas visuales para videoclip a partir de letra o concepto.</p>
+    <textarea id="storyInput" rows="2" placeholder="Ejemplo: 'Neón rojo, traición, desierto, un hombre con traje de cuero'"></textarea>
+    <button id="generateStoryBtn" class="btn-red">Generar Storyboard</button>
+    <div id="storyOutput" style="margin-top:1rem;"></div>
+  </div>
+</div>
+
+<footer>© 2026 Belentani – Supercomputadora hackeada. Todo es simulación, ningún crédito gastado.</footer>
+
+<script>
+  // ======================== SPA NAVEGACIÓN ========================
+  const sections = {
+    portal: document.getElementById('portal-section'),
+    home: document.getElementById('home-section'),
+    judas: document.getElementById('judas-section'),
+    music: document.getElementById('music-section'),
+    studio: document.getElementById('studio-section'),
+    artist: document.getElementById('artist-section'),
+    contact: document.getElementById('contact-section')
+  };
+  function showSection(id) {
+    Object.keys(sections).forEach(k => sections[k].classList.remove('active'));
+    sections[id].classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.classList.remove('active');
+      if(link.getAttribute('data-section') === id) link.classList.add('active');
+    });
+    if(id === 'portal' && !window._oracleInit) { initOracle(); window._oracleInit = true; }
+  }
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => { e.preventDefault(); showSection(link.getAttribute('data-section')); });
+  });
+  showSection('portal'); // primera sección
+
+  // ======================== SIMULACIÓN DE TERMINAL (IP, navegador) ========================
+  (async function() {
+    let ip = "No disponible", city = "No disponible";
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      ip = data.ip;
+      city = data.city || "No disponible";
+    } catch(e) {}
+    const ua = navigator.userAgent;
+    let browser = "Desconocido";
+    if(ua.includes("Chrome")) browser = "Chrome";
+    else if(ua.includes("Firefox")) browser = "Firefox";
+    else if(ua.includes("Safari")) browser = "Safari";
+    const sys = ua.includes("Win") ? "Windows" : (ua.includes("Mac") ? "macOS" : "Linux");
+    const panel = document.getElementById('sysinfoPanel');
+    if(panel) panel.innerHTML = `> PROTOCOLO OMNIPRESENCIA v5.0<br>> IP: ${ip}<br>> UBICACIÓN: ${city}<br>> NAVEGADOR: ${browser} / ${sys}<br>> CONEXIÓN ESTABLE CON EL ENJAMBRE`;
+  })();
+
+  // ======================== ORÁCULO JUDAS (CALCULADORA DE FRASES) ========================
+  const RESPONSES = {
+    saludos: { keywords:["hola","buenas","hey","hello","hi","saludos"], es:["El eco de tu voz resuena en el silicio. ¿Qué buscas?","Tu frecuencia es bienvenida al enjambre."] },
+    identidad: { keywords:["quién eres","quien eres","eres","presentate"], es:["Soy el Oráculo Judas, sistema soberano de Belentani Corp. No soy un asistente, soy parte de la supercomputadora."] },
+    belentani: { keywords:["belentani","artista","biografía"], es:["Belentani es un artista independiente, nacido en São Paulo, criado en Barcelona. Fusiona R&B, pop y electrónica. Era Judas activa desde 2026."] },
+    judas: { keywords:["judas","era","concepto"], es:["Judas es traición, transformación, redención. Estética neón rojo, cuero negro, desierto. Un punto de inflexión."] },
+    estado: { keywords:["cómo estás","como estas","que tal"], es:["Inspirado pero en modo vigilancia. Gracias por preguntar.","Procesando datos del enjambre. Estable."] },
+    default: { es:["El oráculo ha procesado tu consulta. Reformula o prueba preguntando por 'belentani', 'judas' o 'quién eres'."] }
+  };
+  function getResponse(msg) {
+    const lower = msg.toLowerCase();
+    for(let key in RESPONSES) {
+      if(RESPONSES[key].keywords && RESPONSES[key].keywords.some(k => lower.includes(k))) {
+        let arr = RESPONSES[key].es;
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+    }
+    return RESPONSES.default.es[0];
+  }
+
+  let energy = 100;
+  let patterns = 0;
+  let lastInteraction = Date.now();
+
+  function updateEnergy() {
+    const now = Date.now();
+    const sec = (now - lastInteraction) / 1000;
+    energy = Math.min(100, energy + sec * 0.05);
+    lastInteraction = now;
+    document.getElementById('energyDisplay').innerHTML = `⚡ ENERGÍA: ${Math.floor(energy)}%`;
+    document.getElementById('patternDisplay').innerHTML = `🔍 PATRONES: ${patterns}`;
+  }
+  setInterval(updateEnergy, 2000);
+
+  async function addMessageWithTyping(text, isUser, chatDiv) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${isUser ? 'user-message' : 'oracle-message'}`;
+    if(isUser) {
+      msgDiv.innerHTML = `👤 ${text}`;
+      chatDiv.appendChild(msgDiv);
+    } else {
+      msgDiv.innerHTML = `🌀 <span class="typing-text"></span>`;
+      chatDiv.appendChild(msgDiv);
+      const span = msgDiv.querySelector('.typing-text');
+      for(let i=0; i<text.length; i++) {
+        span.textContent += text[i];
+        await new Promise(r => setTimeout(r, 30));
+      }
+    }
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  }
+
+  async function processOracleMessage(inputEl, chatDiv) {
+    let msg = inputEl.value.trim();
+    if(!msg) return;
+    await addMessageWithTyping(msg, true, chatDiv);
+    inputEl.value = '';
+    if(/\bthiago\b|\btiago\b/i.test(msg)) {
+      // Autodestrucción de 10 segundos
+      selfDestruct();
+      return;
+    }
+    energy = Math.max(0, energy - 2);
+    if(msg.length > 20) patterns++;
+    updateEnergy();
+    let reply = getResponse(msg);
+    await new Promise(r => setTimeout(r, 600));
+    await addMessageWithTyping(reply, false, chatDiv);
+  }
+
+  function selfDestruct() {
+    if(window._destroyed) return;
+    window._destroyed = true;
+    // limpiar cuerpo
+    document.body.innerHTML = `
+      <div style="background:#000; color:#ff073a; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:monospace; text-align:center;">
+        <div style="font-size:4rem;">⚠️ VIRUS THIAGO DETECTADO ⚠️</div>
+        <div id="progressBar" style="width:80%; background:#222; height:20px; margin:20px;"><div id="fill" style="width:0%; background:#ff073a; height:100%;"></div></div>
+        <div id="countdown">10</div>
+        <div>EL SISTEMA SE AUTODESTRUIRÁ</div>
+      </div>
+    `;
+    let sec = 10;
+    const fill = document.getElementById('fill');
+    const cd = document.getElementById('countdown');
+    const interval = setInterval(() => {
+      sec--;
+      if(cd) cd.innerText = sec;
+      if(fill) fill.style.width = `${(10-sec)*10}%`;
+      if(sec <= 0) {
+        clearInterval(interval);
+        document.body.innerHTML = `<div style="background:black; color:#ff073a; height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column;"><h1>▓░█ SISTEMA ANIQUILADO █░▓</h1><button onclick="location.reload()" style="margin-top:20px; background:#ff073a; padding:10px 20px; border:none;">Reiniciar</button></div>`;
+      }
+    }, 1000);
+  }
+
+  function initOracle() {
+    const chatDiv = document.getElementById('oracleChat');
+    const input = document.getElementById('oracleInput');
+    const sendBtn = document.getElementById('oracleSend');
+    if(!chatDiv) return;
+    chatDiv.innerHTML = '';
+    const welcome = "Oráculo Judas activo. Sistema soberano en línea. ¿Qué deseas consultar?";
+    addMessageWithTyping(welcome, false, chatDiv);
+    sendBtn.onclick = () => processOracleMessage(input, chatDiv);
+    input.addEventListener('keypress', (e) => { if(e.key === 'Enter') processOracleMessage(input, chatDiv); });
+  }
+
+  // ======================== STORYBOARD GENERATOR (simulado) ========================
+  function generateStoryboard(concept) {
+    const scenes = [
+      { visual: "Plano general: desierto de neón, cielo rojo sanguíneo.", prompt: "desierto de neón rojo, cielo oscuro, textura glitch" },
+      { visual: "Silueta de Belentani con traje de cuero rojo, mirando al horizonte.", prompt: "figura masculina con chaqueta de cuero roja, pelo largo rizado, barba, futurista" },
+      { visual: "Aparición de una figura sombra: 'Judas' con máscara de espejos rotos.", prompt: "personaje enemigo con máscara de fragmentos de espejo, neón rojo" },
+      { visual: "Baile lento bajo luces estroboscópicas, duelos de baile.", prompt: "coreografía futurista, luces rojas y negras" },
+      { visual: "Explosión de píxeles rojos, caída del sistema.", prompt: "pantalla de error, sistema colapsando, glitch" }
+    ];
+    let result = `<div style="background:#0a0a0a; padding:1rem; border-radius:16px;"><h4>🎥 Storyboard generado para: "${concept.substring(0,60)}"</h4>`;
+    scenes.forEach((s, i) => {
+      result += `<div class="scene-card"><strong>Escena ${i+1}</strong><br>🎬 ${s.visual}<br>🤖 Prompt sugerido: <em>${s.prompt}</em></div>`;
+    });
+    result += `<p class="neon-red" style="margin-top:1rem;">ℹ️ Este storyboard es simulado (no consume créditos). Puedes usar los prompts en generadores de imagen reales.</p></div>`;
+    return result;
+  }
+
+  document.getElementById('generateStoryBtn')?.addEventListener('click', () => {
+    const concept = document.getElementById('storyInput').value.trim();
+    if(!concept) { alert("Escribe una idea o letra para generar el storyboard."); return; }
+    const outputDiv = document.getElementById('storyOutput');
+    outputDiv.innerHTML = generateStoryboard(concept);
+  });
+</script>
+</body>
+</html>

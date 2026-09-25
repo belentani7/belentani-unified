@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ca" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Belentani · Panel de Control</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+ 
+:root {
+  --bg:#0a0a0b;
+  --bg-card:#111113;
+  --bg-raised:#18181c;
+  --bg-hover:#1e1e23;
+  --border:rgba(255,255,255,0.07);
+  --border-hover:rgba(255,255,255,0.14);
+  --text:#f0ede8;
+  --text-muted:rgba(240,237,232,0.5);
+  --text-dim:rgba(240,237,232,0.28);
+  --accent:#c8f55a;
+  --accent-dim:rgba(200,245,90,0.10);
+  --accent-border:rgba(200,245,90,0.25);
+  --red:#ff5f56;
+  --red-dim:rgba(255,95,86,0.10);
+  --yellow:#ffbd2e;
+  --yellow-dim:rgba(255,189,46,0.10);
+  --green:#27c93f;
+  --green-dim:rgba(39,201,63,0.10);
+  --blue:#4a9eff;
+  --blue-dim:rgba(74,158,255,0.10);
+  --mono:'JetBrains Mono','Fira Code',monospace;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --radius:6px;
+  --radius-lg:10px;
+  --sidebar:220px;
+}
+ 
+html{font-size:15px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit}
+ 
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar);
+  background:var(--bg-card);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  top:0;bottom:0;left:0;
+  z-index:50;
+  transition:transform .25s;
+}
+.sidebar-logo {
+  padding:1.25rem 1rem 1rem;
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:0.75rem;
+  letter-spacing:0.04em;
+  color:var(--text);
+  display:flex;align-items:center;gap:0.5rem;
+}
+.sidebar-logo .dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+}
+nav.sidebar-nav {flex:1;padding:0.75rem 0;overflow-y:auto}
+.nav-group-label {
+  font-size:0.625rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-dim);
+  padding:0.875rem 1rem 0.375rem;
+}
+.nav-item {
+  display:flex;align-items:center;gap:0.625rem;
+  padding:0.5rem 1rem;margin:0 0.375rem;
+  border-radius:var(--radius);
+  font-size:0.825rem;color:var(--text-muted);
+  cursor:pointer;transition:background .15s,color .15s;
+}
+.nav-item:hover{background:var(--bg-hover);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border)}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.nav-badge {
+  margin-left:auto;font-size:0.625rem;font-family:var(--mono);
+  background:var(--accent-dim);color:var(--accent);
+  border:1px solid var(--accent-border);
+  padding:1px 5px;border-radius:20px;
+}
+.sidebar-footer {
+  padding:0.875rem 1rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:0.625rem;
+}
+.avatar {
+  width:28px;height:28px;border-radius:50%;
+  background:var(--accent-dim);border:1px solid var(--accent-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:700;color:var(--accent);flex-shrink:0;
+}
+.sidebar-user {flex:1;min-width:0}
+.sidebar-user .name{font-size:0.75rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user .role{font-size:0.625rem;color:var(--text-dim)}
+ 
+/* MAIN */
+.main {
+  margin-left:var(--sidebar);
+  flex:1;
+  display:flex;flex-direction:column;
+  min-height:100vh;
+}
+.topbar {
+  height:52px;
+  background:var(--bg-card);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 1.5rem;gap:1rem;
+  position:sticky;top:0;z-index:40;
+}
+.topbar-title {font-size:0.875rem;font-weight:600}
+.topbar-spacer{flex:1}
+.status-pill {
+  display:flex;align-items:center;gap:0.375rem;
+  font-size:0.7rem;font-family:var(--mono);color:var(--text-muted);
+  padding:0.25rem 0.625rem;border-radius:20px;
+  border:1px solid var(--border);background:var(--bg-raised);
+}
+.status-dot{width:5px;height:5px;border-radius:50%}
+.status-dot.green{background:var(--green);box-shadow:0 0 6px var(--green)}
+.status-dot.red{background:var(--red);box-shadow:0 0 6px var(--red)}
+.status-dot.yellow{background:var(--yellow);box-shadow:0 0 6px var(--yellow)}
+ 
+.content{padding:1.5rem;flex:1}
+ 
+/* SECTION */
+.section{display:none}
+.section.active{display:block}
+.section-title{font-size:1rem;font-weight:600;margin-bottom:1rem}
+ 
+/* METRIC CARDS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.875rem;margin-bottom:1.5rem}
+.metric-card {
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1rem 1.125rem;
+}
+.metric-label{font-size:0.7rem;color:var(--text-muted);margin-bottom:0.375rem;display:flex;align-items:center;gap:0.375rem}
+.metric-label svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.metric-value{font-size:1.625rem;font-weight:700;font-family:var(--mono);line-height:1}
+.metric-delta{font-size:0.7rem;margin-top:0.375rem;color:var(--text-dim)}
+.metric-delta.up{color:var(--green)}
+.metric-delta.down{color:var(--red)}
+.metric-card:hover{border-color:var(--border-hover)}
+ 
+/* GRID 2COL */
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:0.875rem;margin-bottom:1.5rem}
+ 
+/* CARD */
+.card {
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+}
+.card-header {
+  padding:0.875rem 1rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title{font-size:0.8rem;font-weight:600}
+.card-action {
+  font-size:0.7rem;color:var(--text-dim);
+  padding:0.25rem 0.625rem;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--bg-raised);
+  cursor:pointer;transition:color .15s,border-color .15s;
+}
+.card-action:hover{color:var(--text);border-color:var(--border-hover)}
+.card-body{padding:1rem}
+ 
+/* CLIENT TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:0.775rem}
+th{text-align:left;padding:0.5rem 0.875rem;color:var(--text-dim);font-weight:500;font-size:0.675rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border)}
+td{padding:0.625rem 0.875rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-hover)}
+.badge {
+  display:inline-flex;align-items:center;gap:0.25rem;
+  font-size:0.65rem;padding:2px 7px;border-radius:20px;
+  font-family:var(--mono);font-weight:500;
+}
+.badge.active{background:var(--green-dim);color:var(--green);border:1px solid rgba(39,201,63,0.2)}
+.badge.pending{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(255,189,46,0.2)}
+.badge.inactive{background:var(--bg-raised);color:var(--text-dim);border:1px solid var(--border)}
+.badge.live{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(74,158,255,0.2)}
+ 
+/* ACTIVITY LOG */
+.log-list{display:flex;flex-direction:column;gap:0}
+.log-item {
+  display:flex;align-items:flex-start;gap:0.75rem;
+  padding:0.625rem 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:0.75rem;
+}
+.log-item:last-child{border-bottom:none}
+.log-icon {
+  width:24px;height:24px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.log-icon svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.log-icon.ok{background:var(--green-dim);color:var(--green)}
+.log-icon.warn{background:var(--yellow-dim);color:var(--yellow)}
+.log-icon.err{background:var(--red-dim);color:var(--red)}
+.log-icon.info{background:var(--blue-dim);color:var(--blue)}
+.log-meta{flex:1;min-width:0}
+.log-msg{color:var(--text);margin-bottom:1px}
+.log-time{color:var(--text-dim);font-family:var(--mono);font-size:0.65rem}
+ 
+/* SERVICE STATUS */
+.services-list{display:flex;flex-direction:column;gap:0.5rem}
+.service-row {
+  display:flex;align-items:center;gap:0.625rem;
+  padding:0.5rem 0.75rem;border-radius:var(--radius);
+  background:var(--bg-raised);font-size:0.775rem;
+}
+.service-name{flex:1;font-weight:500}
+.service-latency{font-family:var(--mono);font-size:0.7rem;color:var(--text-muted)}
+.svc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.svc-dot.up{background:var(--green);box-shadow:0 0 6px var(--green)}
+.svc-dot.down{background:var(--red);box-shadow:0 0 6px var(--red)}
+.svc-dot.warn{background:var(--yellow);box-shadow:0 0 6px var(--yellow)}
+ 
+/* MINI CHART (CSS bars) */
+.chart-bars{display:flex;align-items:flex-end;gap:3px;height:48px;padding-top:4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bar{width:100%;background:var(--accent-dim);border-radius:2px 2px 0 0;border:1px solid var(--accent-border);min-height:2px;transition:height .3s}
+.bar:hover{background:rgba(200,245,90,0.25)}
+.bar-label{font-size:0.55rem;font-family:var(--mono);color:var(--text-dim)}
+.chart-wrap{position:relative}
+.chart-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+.chart-stat{font-family:var(--mono);font-size:0.75rem;color:var(--text-muted)}
+.chart-val{font-size:1.25rem;font-weight:700;font-family:var(--mono);color:var(--text)}
+ 
+/* QUICK ACTIONS */
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.action-btn {
+  display:flex;flex-direction:column;align-items:flex-start;gap:0.25rem;
+  padding:0.75rem;border-radius:var(--radius);
+  background:var(--bg-raised);border:1px solid var(--border);
+  font-size:0.75rem;color:var(--text);cursor:pointer;
+  transition:border-color .15s,background .15s;text-align:left;
+}
+.action-btn:hover{border-color:var(--accent-border);background:var(--accent-dim)}
+.action-btn svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;margin-bottom:0.125rem}
+.action-btn .a-title{font-weight:600;font-size:0.775rem}
+.action-btn .a-sub{font-size:0.65rem;color:var(--text-muted)}
+ 
+/* MODAL */
+.modal-overlay {
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  z-index:100;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+.modal {
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;
+  width:90%;max-width:480px;
+}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-title{font-size:0.9rem;font-weight:600}
+.modal-close{color:var(--text-muted);padding:0.25rem;border-radius:var(--radius);transition:color .15s}
+.modal-close:hover{color:var(--text)}
+.modal-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.75rem;color:var(--text-muted);margin-bottom:0.375rem}
+.form-group input,.form-group select,.form-group textarea {
+  width:100%;background:var(--bg-raised);border:1px solid var(--border);
+  border-radius:var(--radius);padding:0.5rem 0.75rem;
+  font-size:0.8rem;color:var(--text);outline:none;
+  transition:border-color .15s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent-border)}
+.form-group textarea{resize:vertical;min-height:80px}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.25rem}
+.btn-secondary {
+  padding:0.5rem 1rem;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--bg-raised);
+  font-size:0.775rem;color:var(--text);cursor:pointer;
+  transition:border-color .15s;
+}
+.btn-secondary:hover{border-color:var(--border-hover)}
+.btn-primary {
+  padding:0.5rem 1rem;border-radius:var(--radius);
+  background:var(--accent);color:#0a0a0b;
+  font-size:0.775rem;font-weight:600;cursor:pointer;
+  border:none;transition:opacity .15s;
+}
+.btn-primary:hover{opacity:0.9}
+ 
+/* GENERATE PANEL */
+.generate-form{display:flex;flex-direction:column;gap:0.875rem}
+.generate-result {
+  background:var(--bg-raised);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem;
+  font-size:0.775rem;line-height:1.7;color:var(--text-muted);
+  font-family:var(--mono);min-height:120px;white-space:pre-wrap;
+  display:none;
+}
+.generate-result.visible{display:block}
+.generate-status{font-size:0.725rem;color:var(--text-dim);font-family:var(--mono);margin-top:0.375rem;display:none}
+.generate-status.visible{display:block}
+.spinner {
+  display:inline-block;width:10px;height:10px;
+  border:1.5px solid rgba(200,245,90,0.3);
+  border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:0.375rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+ 
+/* TOAST */
+.toast {
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:var(--bg-raised);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:0.75rem 1rem;
+  font-size:0.775rem;display:flex;align-items:center;gap:0.5rem;
+  z-index:200;transform:translateY(120%);
+  transition:transform .25s cubic-bezier(0.32,0.72,0,1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show{transform:translateY(0)}
+.toast.ok svg{stroke:var(--green)}
+.toast.err svg{stroke:var(--red)}
+.toast svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+ 
+/* MOBILE */
+.hamburger {
+  display:none;padding:0.375rem;
+  border-radius:var(--radius);border:1px solid var(--border);
+  color:var(--text-muted);cursor:pointer;
+}
+.hamburger svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round}
+ 
+@media(max-width:900px){
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .hamburger{display:flex}
+  .topbar{padding:0 1rem}
+  .content{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE: tapa el panel hasta que hay un token válido -->
+<div id="login-gate" style="position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:#0a0a0b;">
+  <form id="login-form" style="width:320px;display:flex;flex-direction:column;gap:0.75rem;font-family:var(--mono, monospace);">
+    <div style="color:#c8f55a;font-size:1rem;margin-bottom:0.5rem;">belentani · panel</div>
+    <input type="email" id="login-email" placeholder="email" required autocomplete="username"
+      style="padding:0.6rem;background:#161618;border:1px solid #2a2a2d;color:#f4f4f4;border-radius:6px;">
+    <input type="password" id="login-password" placeholder="contrasenya" required autocomplete="current-password"
+      style="padding:0.6rem;background:#161618;border:1px solid #2a2a2d;color:#f4f4f4;border-radius:6px;">
+    <button type="submit" style="padding:0.6rem;background:#c8f55a;color:#0a0a0b;border:none;border-radius:6px;font-weight:600;cursor:pointer;">
+      Entrar
+    </button>
+    <div id="login-error" style="color:#ef4444;font-size:0.8rem;min-height:1rem;"></div>
+  </form>
+</div>
+
+<div id="panel-root" style="display:none;">
+ 
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" role="navigation" aria-label="Navegació del panel">
+  <div class="sidebar-logo">
+    <span class="dot"></span>
+    belentani · panel
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Principal</div>
+    <div class="nav-item active" data-section="dashboard" onclick="navigate(this,'dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-section="clients" onclick="navigate(this,'clients')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Clients
+      <span class="nav-badge" id="badge-clients">4</span>
+    </div>
+    <div class="nav-item" data-section="webs" onclick="navigate(this,'webs')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+      Webs
+    </div>
+    <div class="nav-group-label">IA</div>
+    <div class="nav-item" data-section="generate" onclick="navigate(this,'generate')">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Generar contingut
+    </div>
+    <div class="nav-group-label">Sistema</div>
+    <div class="nav-item" data-section="services" onclick="navigate(this,'services')">
+      <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      Serveis
+    </div>
+    <div class="nav-item" data-section="logs" onclick="navigate(this,'logs')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Logs
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar">P</div>
+    <div class="sidebar-user">
+      <div class="name">Pedro Belentani</div>
+      <div class="role">Admin · belentani.cat</div>
+    </div>
+  </div>
+</aside>
+ 
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú" aria-expanded="false" aria-controls="sidebar">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="topbar-spacer"></div>
+    <div class="status-pill">
+      <span class="status-dot green"></span>
+      API online
+    </div>
+    <div class="status-pill" id="time-pill" style="font-family:var(--mono);font-size:0.65rem">—</div>
+  </header>
+ 
+  <div class="content">
+ 
+    <!-- DASHBOARD -->
+    <section class="section active" id="section-dashboard">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Clients actius
+          </div>
+          <div class="metric-value">4</div>
+          <div class="metric-delta up">↑ +1 aquest mes</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+            Webs desplegades
+          </div>
+          <div class="metric-value">6</div>
+          <div class="metric-delta up">↑ 2 en proves</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            MRR
+          </div>
+          <div class="metric-value" style="color:var(--accent)">788€</div>
+          <div class="metric-delta up">↑ +197€ vs mes passat</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Generacions IA
+          </div>
+          <div class="metric-value">23</div>
+          <div class="metric-delta">aquest mes</div>
+        </div>
+      </div>
+ 
+      <div class="grid-2">
+        <!-- Revenue chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Ingressos mensuals (€)</span>
+            <span class="card-stat" style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted)">2025–2026</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-meta">
+              <span class="chart-val">788€</span>
+              <span class="chart-stat">MRR actual</span>
+            </div>
+            <div class="chart-bars">
+              <div class="bar-col"><div class="bar" style="height:20%"></div><div class="bar-label">J</div></div>
+              <div class="bar-col"><div class="bar" style="height:35%"></div><div class="bar-label">A</div></div>
+              <div class="bar-col"><div class="bar" style="height:30%"></div><div class="bar-label">S</div></div>
+              <div class="bar-col"><div class="bar" style="height:55%"></div><div class="bar-label">O</div></div>
+              <div class="bar-col"><div class="bar" style="height:48%"></div><div class="bar-label">N</div></div>
+              <div class="bar-col"><div class="bar" style="height:70%"></div><div class="bar-label">D</div></div>
+              <div class="bar-col"><div class="bar" style="height:60%"></div><div class="bar-label">G</div></div>
+              <div class="bar-col"><div class="bar" style="height:80%"></div><div class="bar-label">F</div></div>
+              <div class="bar-col"><div class="bar" style="height:75%"></div><div class="bar-label">M</div></div>
+              <div class="bar-col"><div class="bar" style="height:90%"></div><div class="bar-label">A</div></div>
+              <div class="bar-col"><div class="bar" style="height:85%"></div><div class="bar-label">M</div></div>
+              <div class="bar-col"><div class="bar" style="height:100%;border-color:var(--accent);background:rgba(200,245,90,0.2)"></div><div class="bar-label" style="color:var(--accent)">J</div></div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Quick actions -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Accions ràpides</span>
+          </div>
+          <div class="card-body">
+            <div class="actions-grid">
+              <button class="action-btn" onclick="openModal('modal-client')">
+                <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                <div class="a-title">Nou client</div>
+                <div class="a-sub">Alta ràpida</div>
+              </button>
+              <button class="action-btn" onclick="navigate(document.querySelector('[data-section=generate]'),'generate')">
+                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <div class="a-title">Generar web</div>
+                <div class="a-sub">Via IA</div>
+              </button>
+              <button class="action-btn" onclick="checkServices()">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="a-title">Health check</div>
+                <div class="a-sub">Serveis actius</div>
+              </button>
+              <button class="action-btn" onclick="navigate(document.querySelector('[data-section=logs]'),'logs')">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <div class="a-title">Veure logs</div>
+                <div class="a-sub">Últimes activitats</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Recent activity -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Activitat recent</span>
+          <button class="card-action" onclick="navigate(document.querySelector('[data-section=logs]'),'logs')">Veure tot</button>
+        </div>
+        <div class="card-body" style="padding:0.5rem 1rem">
+          <div class="log-list" id="dash-activity"></div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- CLIENTS -->
+    <section class="section" id="section-clients">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <span class="section-title" style="margin:0">Clients</span>
+        <button class="btn-primary" onclick="openModal('modal-client')">+ Nou client</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Negoci</th>
+                <th>Pla</th>
+                <th>Estat</th>
+                <th>Alta</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- WEBS -->
+    <section class="section" id="section-webs">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <span class="section-title" style="margin:0">Webs</span>
+        <button class="btn-primary" onclick="openModal('modal-web')">+ Nova web</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Domini</th>
+                <th>Client</th>
+                <th>Pla</th>
+                <th>Estat</th>
+                <th>Lighthouse</th>
+                <th>Desplegat</th>
+              </tr>
+            </thead>
+            <tbody id="webs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- GENERATE -->
+    <section class="section" id="section-generate">
+      <div class="section-title">Generar contingut amb IA</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Paràmetres de generació</span></div>
+          <div class="card-body">
+            <div class="generate-form">
+              <div class="form-group">
+                <label>Tipus de negoci</label>
+                <input type="text" id="gen-niche" placeholder="Restaurant, perruqueria, mecànic...">
+              </div>
+              <div class="form-group">
+                <label>Localitat</label>
+                <input type="text" id="gen-city" value="L'Hospitalet de Llobregat">
+              </div>
+              <div class="form-group">
+                <label>Nom del negoci</label>
+                <input type="text" id="gen-name" placeholder="Restaurant Can Xavi">
+              </div>
+              <div class="form-group">
+                <label>Idioma</label>
+                <select id="gen-lang">
+                  <option value="ca">Català</option>
+                  <option value="es">Castellà</option>
+                  <option value="en">Anglès</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Secció a generar</label>
+                <select id="gen-section">
+                  <option value="hero">Hero (títol + subtítol + CTA)</option>
+                  <option value="about">Sobre nosaltres</option>
+                  <option value="services">Serveis i preus</option>
+                  <option value="faq">FAQ (5 preguntes)</option>
+                  <option value="meta">Meta descripció SEO</option>
+                </select>
+              </div>
+              <button class="btn-primary" onclick="generateContent()" style="align-self:flex-start">
+                Generar contingut
+              </button>
+              <div class="generate-status" id="gen-status"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Resultat</span></div>
+          <div class="card-body">
+            <div class="generate-result" id="gen-result">El contingut generat apareixerà aquí...</div>
+            <div style="color:var(--text-dim);font-size:0.75rem;text-align:center;padding:2rem 0" id="gen-placeholder">
+              Omple els paràmetres i clica "Generar contingut"
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- SERVICES -->
+    <section class="section" id="section-services">
+      <div class="section-title">Estat dels serveis</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Infraestructura</span>
+            <button class="card-action" onclick="checkServices()">Actualitzar</button>
+          </div>
+          <div class="card-body">
+            <div class="services-list" id="services-list"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Mètriques del sistema</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:0.75rem">
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.75rem">
+                  <span style="color:var(--text-muted)">CPU</span>
+                  <span style="font-family:var(--mono);color:var(--accent)">23%</span>
+                </div>
+                <div style="height:4px;background:var(--bg-raised);border-radius:2px">
+                  <div style="height:100%;width:23%;background:var(--accent);border-radius:2px"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.75rem">
+                  <span style="color:var(--text-muted)">RAM</span>
+                  <span style="font-family:var(--mono);color:var(--yellow)">61%</span>
+                </div>
+                <div style="height:4px;background:var(--bg-raised);border-radius:2px">
+                  <div style="height:100%;width:61%;background:var(--yellow);border-radius:2px"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.75rem">
+                  <span style="color:var(--text-muted)">Disc</span>
+                  <span style="font-family:var(--mono);color:var(--green)">34%</span>
+                </div>
+                <div style="height:4px;background:var(--bg-raised);border-radius:2px">
+                  <div style="height:100%;width:34%;background:var(--green);border-radius:2px"></div>
+                </div>
+              </div>
+              <div style="margin-top:0.5rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.725rem">
+                  <div><span style="color:var(--text-dim)">Uptime</span><div style="font-family:var(--mono);color:var(--green)">12d 4h 33m</div></div>
+                  <div><span style="color:var(--text-dim)">Req/h</span><div style="font-family:var(--mono);color:var(--text)">142</div></div>
+                  <div><span style="color:var(--text-dim)">Errors (24h)</span><div style="font-family:var(--mono);color:var(--red)">2</div></div>
+                  <div><span style="color:var(--text-dim)">P95 latency</span><div style="font-family:var(--mono);color:var(--text)">187ms</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- LOGS -->
+    <section class="section" id="section-logs">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <span class="section-title" style="margin:0">Logs del sistema</span>
+        <select id="log-filter" style="background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius);padding:0.3rem 0.6rem;font-size:0.75rem;color:var(--text);cursor:pointer" onchange="filterLogs()">
+          <option value="all">Tots</option>
+          <option value="ok">OK</option>
+          <option value="warn">Warning</option>
+          <option value="err">Error</option>
+          <option value="info">Info</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0.5rem 1rem">
+          <div class="log-list" id="logs-list"></div>
+        </div>
+      </div>
+    </section>
+ 
+  </div>
+</div>
+ 
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nou client</span>
+      <button class="modal-close" onclick="closeModal('modal-client')">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label>Nom complet *</label><input type="text" id="c-name" placeholder="Maria García"></div>
+    <div class="form-group"><label>Email *</label><input type="email" id="c-email" placeholder="maria@negoci.cat"></div>
+    <div class="form-group"><label>Tipus de negoci</label><input type="text" id="c-niche" placeholder="Restaurant, perruqueria..."></div>
+    <div class="form-group">
+      <label>Pla</label>
+      <select id="c-plan">
+        <option value="essencial">Web Essencial (497€)</option>
+        <option value="professional">Web Professional + IA (897€)</option>
+        <option value="seo">SEO Local + Contingut (197€/mes)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-client')">Cancel·lar</button>
+      <button class="btn-primary" onclick="addClient()">Crear client</button>
+    </div>
+  </div>
+</div>
+ 
+<div class="modal-overlay" id="modal-web">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nova web</span>
+      <button class="modal-close" onclick="closeModal('modal-web')">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label>Domini *</label><input type="text" id="w-domain" placeholder="restaurantxavi.cat"></div>
+    <div class="form-group"><label>Client *</label><input type="text" id="w-client" placeholder="Nom del client"></div>
+    <div class="form-group">
+      <label>Estat</label>
+      <select id="w-status">
+        <option value="draft">Esborrany</option>
+        <option value="review">En revisió</option>
+        <option value="live">En línia</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-web')">Cancel·lar</button>
+      <button class="btn-primary" onclick="addWeb()">Crear web</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Acció completada</span>
+</div>
+ 
+<script>
+// ─── UTILS ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  if (str == null) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+const API_BASE = window.BELENTANI_API_BASE || 'http://localhost:8000/api/v1';
+let authToken = sessionStorage.getItem('belentani_token') || null;
+
+function authHeaders(extra = {}) {
+  return authToken ? { ...extra, 'Authorization': `Bearer ${authToken}` } : extra;
+}
+
+async function apiFetch(path, options = {}) {
+  const resp = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: authHeaders({ 'Content-Type': 'application/json', ...(options.headers || {}) }),
+  });
+  if (resp.status === 401) {
+    sessionStorage.removeItem('belentani_token');
+    authToken = null;
+    showLoginGate('Sessió caducada, torna a entrar.');
+    throw new Error('401');
+  }
+  return resp;
+}
+
+function showLoginGate(error) {
+  document.getElementById('login-gate').style.display = 'flex';
+  document.getElementById('panel-root').style.display = 'none';
+  document.getElementById('login-error').textContent = error || '';
+}
+
+function showPanel() {
+  document.getElementById('login-gate').style.display = 'none';
+  document.getElementById('panel-root').style.display = '';
+  loadAll();
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  try {
+    const resp = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!resp.ok) throw new Error('Credencials incorrectes');
+    const data = await resp.json();
+    authToken = data.access_token;
+    sessionStorage.setItem('belentani_token', authToken);
+    showPanel();
+  } catch (err) {
+    document.getElementById('login-error').textContent = err.message || 'Error de connexió amb la API';
+  }
+});
+
+if (authToken) { showPanel(); } else { showLoginGate(); }
+
+// ─── STATE (caché en memoria de lo último cargado de la API) ─────────────────
+const state = { clients: [], webs: [], logs: [], services: [] };
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function navigate(el, section) {
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+section).classList.add('active');
+  const titles = {dashboard:'Dashboard',clients:'Clients',webs:'Webs',generate:'Generar contingut',services:'Serveis',logs:'Logs'};
+  document.getElementById('topbar-title').textContent = titles[section]||section;
+  if(window.innerWidth<640) document.getElementById('sidebar').classList.remove('open');
+}
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const btn = document.querySelector('.hamburger');
+  const isOpen = sb.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(isOpen));
+}
+
+// Escape key closes modals
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open'));
+  }
+});
+ 
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function badgeHTML(status){
+  const map = {active:['active','Actiu'],pending:['pending','Pendent'],inactive:['inactive','Inactiu'],lead:['pending','Lead'],paused:['inactive','Pausat'],churned:['inactive','Baixa'],live:['live','En línia'],draft:['inactive','Esborrany'],review:['pending','Revisió'],deployed:['live','Desplegat'],failed:['inactive','Error'],generating:['pending','Generant']};
+  const [cls,label] = map[status]||['inactive',status];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+function planLabel(p){return{essencial:'Essencial',professional:'Professional',seo:'SEO Local'}[p]||p||'—'}
+function fmtDate(iso){ return iso ? iso.slice(0,10) : '—'; }
+
+function renderClients(){
+  document.getElementById('clients-tbody').innerHTML = state.clients.map(c=>`
+    <tr>
+      <td><strong>${esc(c.name)}</strong></td>
+      <td style="color:var(--text-muted)">${esc(c.email)}</td>
+      <td>${esc(c.company)||'—'}</td>
+      <td style="font-size:0.7rem">${esc(c.city)||'—'}</td>
+      <td>${badgeHTML(c.status)}</td>
+      <td style="color:var(--text-dim);font-family:var(--mono);font-size:0.7rem">${fmtDate(c.created_at)}</td>
+    </tr>`).join('') || '<tr><td colspan="6" style="color:var(--text-dim)">Cap client encara</td></tr>';
+  document.getElementById('badge-clients').textContent = state.clients.filter(c=>c.status==='active').length;
+}
+ 
+function renderWebs(){
+  document.getElementById('webs-tbody').innerHTML = state.webs.map(w=>`
+    <tr>
+      <td><strong style="font-family:var(--mono);font-size:0.775rem">${esc(w.domain)}</strong></td>
+      <td style="color:var(--text-muted)">${w.client_id ? esc(w.client_id.slice(0,8)) : '—'}</td>
+      <td style="font-size:0.7rem">${esc(w.template)||'—'}</td>
+      <td>${badgeHTML(w.status)}</td>
+      <td style="font-family:var(--mono);font-size:0.75rem">—</td>
+      <td style="color:var(--text-dim);font-family:var(--mono);font-size:0.7rem">${fmtDate(w.created_at)}</td>
+    </tr>`).join('') || '<tr><td colspan="6" style="color:var(--text-dim)">Cap web encara</td></tr>';
+}
+ 
+function logIcon(type){
+  const icons={ok:'<polyline points="20 6 9 17 4 12"/>',warn:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',err:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',info:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'};
+  return `<div class="log-icon ${type}"><svg viewBox="0 0 24 24">${icons[type]}</svg></div>`;
+}
+
+function actionToLogType(action){
+  return {create:'ok', delete:'err', update:'info'}[action] || 'info';
+}
+function logFromAudit(a){
+  return { type: actionToLogType(a.action), msg: `${a.entity_type} · ${a.action} (${a.entity_id.slice(0,8)})`, time: a.created_at };
+}
+ 
+function renderLogs(logs, targetId){
+  document.getElementById(targetId).innerHTML = logs.map(l=>`
+    <div class="log-item" data-type="${esc(l.type)}">
+      ${logIcon(l.type)}
+      <div class="log-meta">
+        <div class="log-msg">${esc(l.msg)}</div>
+        <div class="log-time">${esc(l.time)}</div>
+      </div>
+    </div>`).join('') || '<div style="color:var(--text-dim);padding:1rem;">Cap activitat encara</div>';
+}
+ 
+function filterLogs(){
+  const val = document.getElementById('log-filter').value;
+  const filtered = val==='all' ? state.logs : state.logs.filter(l=>l.type===val);
+  renderLogs(filtered,'logs-list');
+}
+ 
+function renderServices(){
+  document.getElementById('services-list').innerHTML = state.services.map(s=>`
+    <div class="service-row">
+      <span class="svc-dot ${esc(s.status)}"></span>
+      <span class="service-name">${esc(s.name)}</span>
+      <span class="service-latency">${esc(s.latency)}</span>
+    </div>`).join('');
+}
+
+// ─── LOAD (datos reales desde la API) ─────────────────────────────────────────
+async function loadClients(){
+  try {
+    const resp = await apiFetch('/clients?limit=100');
+    state.clients = resp.ok ? await resp.json() : [];
+  } catch(e) { state.clients = []; }
+  renderClients();
+}
+
+async function loadWebs(){
+  try {
+    const resp = await apiFetch('/webs?limit=100');
+    state.webs = resp.ok ? await resp.json() : [];
+  } catch(e) { state.webs = []; }
+  renderWebs();
+  const sel = document.getElementById('w-client');
+  if (sel) sel.innerHTML = state.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+async function loadAuditLogs(){
+  try {
+    const resp = await apiFetch('/audit-logs?limit=20');
+    const raw = resp.ok ? await resp.json() : [];
+    state.logs = raw.map(logFromAudit);
+  } catch(e) { state.logs = []; }
+  renderLogs(state.logs.slice(0,6),'dash-activity');
+  renderLogs(state.logs,'logs-list');
+}
+
+async function loadServices(){
+  const services = [{name:'FastAPI backend', status:'up', latency:'—'}];
+  try {
+    const ready = await (await fetch(`${API_BASE.replace('/api/v1','')}/health/ready`)).json();
+    services.push({name:'PostgreSQL', status: ready.checks?.database ? 'up' : 'down', latency:'—'});
+    services.push({name:'Redis', status: ready.checks?.redis ? 'up' : 'down', latency:'—'});
+    services.push({name:'Ollama (local)', status: ready.checks?.ollama_local ? 'up' : 'warn', latency:'—'});
+  } catch(e) {
+    services.push({name:'PostgreSQL', status:'down', latency:'—'});
+    services.push({name:'Redis', status:'down', latency:'—'});
+    services.push({name:'Ollama (local)', status:'down', latency:'—'});
+  }
+  state.services = services;
+  renderServices();
+}
+
+// Actualitza els KPIs del dashboard amb una sola crida a /metrics
+async function loadDashboardKPIs(){
+  try {
+    const resp = await apiFetch('/metrics');
+    if (!resp.ok) return;
+    const data = await resp.json();
+
+    // Update metric cards with real data
+    const metricValues = document.querySelectorAll('.metric-value');
+    if (metricValues.length >= 4) {
+      metricValues[0].textContent = data.clients_active;
+      metricValues[1].textContent = data.webs_deployed;
+      metricValues[2].textContent = data.webs_total + ' webs';
+      metricValues[3].textContent = data.clients_total;
+    }
+
+    // Update badge
+    const badgeEl = document.getElementById('badge-clients');
+    if (badgeEl) badgeEl.textContent = data.clients_active;
+
+    // Services
+    if (data.services) {
+      state.services = [
+        {name:'FastAPI backend', status:'up', latency:'—'},
+        ...data.services.map(s => ({name: s.name, status: s.ok ? 'up' : 'down', latency:'—'}))
+      ];
+      renderServices();
+    }
+  } catch(e) { /* fail silenciosament */ }
+}
+
+async function loadAll(){
+  // Carregues en paral·lel: clients i webs junts, logs i serveis junts, KPIs independents
+  await Promise.all([loadClients(), loadWebs()]);
+  await Promise.all([loadAuditLogs(), loadServices(), loadDashboardKPIs()]);
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+ 
+async function addClient(){
+  const name=document.getElementById('c-name').value.trim();
+  const email=document.getElementById('c-email').value.trim();
+  if(!name||!email){showToast('Nom i email obligatoris','err');return}
+  try {
+    const resp = await apiFetch('/clients', {
+      method:'POST',
+      body: JSON.stringify({ name, email, company: document.getElementById('c-niche').value || null }),
+    });
+    if (!resp.ok) { const err = await resp.json(); throw new Error(err.detail || 'Error'); }
+    await loadClients();
+    await loadAuditLogs();
+    closeModal('modal-client');
+    showToast(`Client "${name}" creat`,'ok');
+    ['c-name','c-email','c-niche'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  } catch(e) { showToast(e.message,'err'); }
+}
+ 
+async function addWeb(){
+  const domain=document.getElementById('w-domain').value.trim();
+  const clientId=document.getElementById('w-client').value;
+  if(!domain||!clientId){showToast('Domini i client obligatoris','err');return}
+  try {
+    const resp = await apiFetch('/webs', {
+      method:'POST',
+      body: JSON.stringify({ client_id: clientId, domain, template: 'default' }),
+    });
+    if (!resp.ok) { const err = await resp.json(); throw new Error(err.detail || 'Error'); }
+    await loadWebs();
+    await loadAuditLogs();
+    closeModal('modal-web');
+    showToast(`Web "${domain}" creada`,'ok');
+    document.getElementById('w-domain').value='';
+  } catch(e) { showToast(e.message,'err'); }
+}
+ 
+async function checkServices(){
+  navigate(document.querySelector('[data-section=services]'),'services');
+  await loadServices();
+  showToast('Health check completat','ok');
+}
+ 
+// ─── AI GENERATION ────────────────────────────────────────────────────────────
+async function generateContent(){
+  const niche=document.getElementById('gen-niche').value.trim();
+  const city=document.getElementById('gen-city').value.trim();
+  const name=document.getElementById('gen-name').value.trim();
+  const lang=document.getElementById('gen-lang').value;
+  const section=document.getElementById('gen-section').value;
+  if(!niche||!name){showToast('Omple el tipus de negoci i el nom','err');return}
+ 
+  const status=document.getElementById('gen-status');
+  const result=document.getElementById('gen-result');
+  const placeholder=document.getElementById('gen-placeholder');
+ 
+  status.innerHTML='<span class="spinner"></span> Generant via IA...';
+  status.classList.add('visible');
+  result.classList.remove('visible');
+  placeholder.style.display='none';
+ 
+  const langLabel={ca:'català',es:'castellà',en:'English'}[lang];
+  const sectionLabel={hero:'hero section (H1 + subtítol + CTA)',about:'secció "Sobre nosaltres"',services:'serveis i preus',faq:'FAQ amb 5 preguntes i respostes',meta:'meta descripció SEO (max 155 caràcters)'}[section];
+ 
+  const prompt = `Genera el contingut per a la ${sectionLabel} d'un negoci de tipus "${niche}" anomenat "${name}", situat a ${city}. Escriu en ${langLabel}. Optimitzat per SEO local. Sense explicacions, només el contingut final llest per publicar.`;
+ 
+  try {
+    // generate-snippet no exige auth (ver backend/api/v1/ai.py), pero mandamos el header si existe igualmente
+    const res = await apiFetch('/ai/generate-snippet', { method:'POST', body: JSON.stringify({ prompt }) });
+    const data = await res.json();
+    const text = data.text || 'Error: resposta buida';
+    result.textContent = text;
+    result.classList.add('visible');
+    status.classList.remove('visible');
+    showToast('Contingut generat','ok');
+  } catch(e) {
+    status.innerHTML='<span style="color:var(--red)">Error: no es pot connectar amb la API</span>';
+    showToast('Error de connexió','err');
+  }
+}
+ 
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type='ok'){
+  const t=document.getElementById('toast');
+  const icon=t.querySelector('svg');
+  t.className=`toast ${type}`;
+  icon.innerHTML = type==='ok' ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+  document.getElementById('toast-msg').textContent=msg;
+  clearTimeout(toastTimer);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+ 
+// ─── CLOCK ───────────────────────────────────────────────────────────────────
+function updateClock(){
+  const now=new Date();
+  document.getElementById('time-pill').textContent=now.toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock,1000);updateClock();
+</script>
+
+</div><!-- /panel-root -->
+</body>
+</html>

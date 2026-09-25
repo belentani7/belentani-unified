@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ca" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>Política de cookies — Belentani · estudi digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0b;--border:rgba(255,255,255,0.07);
+  --text:#f0ede8;--muted:rgba(240,237,232,0.6);--dim:rgba(240,237,232,0.4);
+  --accent:#c8f55a;--accent-bg:rgba(200,245,90,0.1);
+  --sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.75}
+.wrap{max-width:680px;margin:0 auto;padding:3rem 1.5rem 6rem}
+.back{color:var(--muted);font-size:.85rem;text-decoration:none}
+.back:hover{color:var(--accent)}
+h1{font-size:1.75rem;font-weight:600;margin:1.5rem 0 .4rem}
+.updated{color:var(--dim);font-family:var(--mono);font-size:.75rem;margin-bottom:2rem}
+h2{font-size:1rem;font-weight:600;color:var(--accent);margin:2rem 0 .75rem}
+p,li{color:var(--muted);font-size:.93rem;margin-bottom:.7rem}
+ul{padding-left:1.3rem}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.83rem}
+th,td{border:1px solid var(--border);padding:.5rem .7rem;text-align:left;color:var(--muted)}
+th{color:var(--text);font-weight:500}
+hr{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.badge{display:inline-block;background:var(--accent-bg);color:var(--accent);padding:.15rem .5rem;border-radius:4px;font-size:.8em;font-family:var(--mono)}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Inici</a>
+  <h1>Política de cookies</h1>
+  <p class="updated">Darrera actualització: <span class="badge">juny 2026</span></p>
+
+  <h2>Resum</h2>
+  <p><strong>Aquest lloc no utilitza cookies de seguiment, publicitàries ni d'analítica de tercers.</strong>
+  No es mostra cap banner de consentiment de cookies perquè no n'hi ha cap que ho requereixi
+  legalment (art. 22.2 LSSI-CE).</p>
+
+  <h2>Detall d'emmagatzematge local</h2>
+  <table>
+    <tr>
+      <th>Servei / Component</th>
+      <th>Tipus</th>
+      <th>Cookie?</th>
+      <th>Detall</th>
+    </tr>
+    <tr>
+      <td>Plausible Analytics</td>
+      <td>Analítica web</td>
+      <td>No</td>
+      <td>Autohospedada. Mesura visites de forma agregada i anònima, sense identificar usuaris ni
+      emmagatzemar IPs. Conforme RGPD per disseny (<em>privacy-first</em>).</td>
+    </tr>
+    <tr>
+      <td>Panel intern (app.belentani.cat)</td>
+      <td>Autenticació</td>
+      <td>No — <code>sessionStorage</code></td>
+      <td>El token JWT d'accés al panel s'emmagatzema a <code>sessionStorage</code> del
+      navegador, no en una cookie. S'elimina automàticament quan es tanca la pestanya.
+      No es transmet a cap tercer.</td>
+    </tr>
+  </table>
+
+  <h2>Que són les cookies i per a què s'usen habitualment</h2>
+  <p>Una cookie és un petit arxiu de text que un lloc web pot desar al teu navegador per
+  recordar preferències o fer un seguiment de la teva activitat. Existeixen cookies tècniques
+  (necessàries per al funcionament del lloc), analítiques (mesuren l'ús) i publicitàries
+  (seguiment entre llocs per mostrar anuncis personalitzats).</p>
+  <p>Belentani · estudi digital no utilitza cap d'aquests tres tipus. L'analítica es realitza
+  amb Plausible, una alternativa que no requereix cap cookie.</p>
+
+  <h2>Com gestionar cookies al teu navegador</h2>
+  <p>Tot i que no tenim cookies pròpies, pots gestionar o eliminar les cookies de qualsevol
+  lloc web des de la configuració del teu navegador:</p>
+  <ul>
+    <li>Chrome — Configuració → Privacitat i seguretat → Cookies i altres dades del lloc</li>
+    <li>Firefox — Opcions → Privacitat i seguretat → Cookies i dades de llocs</li>
+    <li>Safari — Preferències → Privacitat → Gestiona les dades del lloc web</li>
+    <li>Edge — Configuració → Cookies i permisos del lloc</li>
+  </ul>
+
+  <hr>
+  <p>
+    <a href="/avis-legal">Avís legal</a> ·
+    <a href="/privacitat">Política de privacitat</a>
+  </p>
+</div>
+</body>
+</html>

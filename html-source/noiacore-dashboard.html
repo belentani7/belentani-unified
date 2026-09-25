@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoiCore Labs - MCP Server Dashboard</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --fg-primary: #e8e8f0;
+      --fg-muted: #6b6b80;
+      --accent-red: #ff003f;
+      --accent-red-glow: rgba(255, 0, 63, 0.4);
+      --card-bg: #1a1a24;
+      --border: #2a2a3a;
+      --success: #00ff88;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-primary);
+      color: var(--fg-primary);
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* Neon grid background */
+    .neon-bg {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 20%, var(--accent-red-glow), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, #00ff88, transparent 50%),
+        var(--bg-primary);
+      z-index: -1;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Header */
+    .header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, var(--accent-red), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .title {
+      font-size: 0.875rem;
+      color: var(--fg-muted);
+      margin-left: 1rem;
+    }
+
+    /* Main content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent-red), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-online {
+      background: var(--accent-red);
+      color: white;
+    }
+
+    .badge-offline {
+      background: #4a4a5a;
+      color: var(--fg-muted);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--fg-muted);
+      font-size: 0.75rem;
+    }
+
+    tr:hover td {
+      background: var(--card-bg);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent-red);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #ff6b6b;
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--fg-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-red);
+    }
+
+    .btn-danger {
+      background: #ff4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #ff6b6b;
+    }
+
+    /* Inputs */
+    input, select {
+      background: var(--bg-secondary);
+      color: var(--fg-primary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      width: 100%;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 3px var(--accent-red-glow);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px var(--accent-red) solid;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="neon-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <header class="header">
+    <div class="logo">NoiCore Labs</div>
+    <div class="title">MCP Server Dashboard</div>
+  </header>
+
+  <main class="main">
+    <!-- Connectivity Status -->
+    <div class="card">
+      <h3>Connectivity Status</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Server</th>
+            <th>Status</th>
+            <th>Response Time</th>
+            <th>Last Check</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Primary MCP Server</td>
+            <td><span class="badge badge-online">Online</span></td>
+            <td>45ms</td>
+            <td>Just now</td>
+          </tr>
+          <tr>
+            <td>Backup MCP Server</td>
+            <td><span class="badge badge-offline">Offline</span></td>
+            <td>—</td>
+            <td>5min ago</td>
+          </tr>
+          <tr>
+            <td>API Health Check</td>
+            <td><span class="badge badge-online">Online</span></td>
+            <td>120ms</td>
+            <td>2min ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Active Agents -->
+    <div class="card">
+      <h3>Active Agents (45 total)</h3>
+      <div style="max-height: 300px; overflow-y: auto;">
+        <ul style="padding: 0; margin: 0;">
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border); list-style: none;">
+            <span style="color: var(--fg-muted);">noiacore-labs/agent-01</span>
+            <span style="float: right; color: var(--accent-red);">✓ Active</span>
+          </li>
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border); list-style: none;">
+            <span style="color: var(--fg-muted);">noiacore-labs/agent-02</span>
+            <span style="float: right; color: var(--accent-red);">✓ Active</span>
+          </li>
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border); list-style: none;">
+            <span style="color: var(--fg-muted);">noiacore-labs/agent-03</span>
+            <span style="float: right; color: var(--success);">✗ Idle</span>
+          </li>
+          <!-- ... more agents -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Metrics Overview -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+      <div class="card" style="padding: 1rem;">
+        <div style="font-size: 2rem; color: var(--accent-red);">24/7</div>
+        <div style="color: var(--fg-muted);">Uptime</div>
+      </div>
+      <div class="card" style="padding: 1rem;">
+        <div style="font-size: 2rem; color: var(--success);">99.9%</div>
+        <div style="color: var(--fg-muted);">Availability</div>
+      </div>
+      <div class="card" style="padding: 1rem;">
+        <div style="font-size: 2rem; color: var(--fg-muted);">7,092</div>
+        <div style="color: var(--fg-muted);">Media Assets</div>
+      </div>
+      <div class="card" style="padding: 1rem;">
+        <div style="font-size: 2rem; color: var(--accent-red);">$0</div>
+        <div style="color: var(--fg-muted);">Monthly Cost</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="margin-top: 2rem; display: gap; flex-wrap: wrap;">
+      <button class="btn btn-primary">Refresh Status</button>
+      <button class="btn btn-secondary">Add New Agent</button>
+      <button class="btn btn-danger">Rotate Keys</button>
+    </div>
+  </main>
+
+  <footer class="footer" style="padding: 1.5rem 2rem; margin-top: 2rem; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 0.875rem;">
+    NoiCore Labs • Token Plan Enforced • Free Quota Only • <a href="#" style="color: var(--accent-red);">Dashboard v2.0</a>
+  </footer>
+
+  <script>
+    // Initialize tooltips and interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simple ripple effect for buttons
+      const buttons = document.querySelectorAll('.btn');
+      
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const ripple = document.createElement('span');
+          ripple.style.position = 'absolute';
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          ripple.style.width = '10px';
+          ripple.style.height = '10px';
+          ripple.style.background = 'rgba(255, 0, 63, 0.5)';
+          ripple.style.borderRadius = '50%';
+          ripple.style.transform = 'scale(0)';
+          ripple.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          ripple.style.pointerEvents = 'none';
+          
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.style.opacity = '0';
+            ripple.style.transform = 'scale(1)';
+          }, 10);
+          
+          setTimeout(() => ripple.remove(), 400);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

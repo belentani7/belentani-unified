@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belentani – Judas Era | Oráculo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #05060a; color: #fff; font-family: 'Inter', Arial, sans-serif; }
+    .navbar { position: sticky; top: 0; background: rgba(5,6,10,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #ff073a; padding: 1rem 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; z-index: 1000; }
+    .logo { font-size: 1.8rem; font-weight: bold; color: #ff073a; text-decoration: none; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+    .nav-links a { color: #fff; text-decoration: none; transition: color 0.2s; cursor: pointer; }
+    .nav-links a:hover, .nav-links a.active { color: #ff073a; }
+    .section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; animation: fadeIn 0.3s; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .btn-red { background: #ff073a; border: none; color: white; padding: 12px 24px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: bold; display: inline-block; text-decoration: none; }
+    .btn-red:hover { background: #e60634; box-shadow: 0 0 10px #ff073a; }
+    .neon { text-shadow: 0 0 5px #ff073a, 0 0 10px #ff073a; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0; }
+    .card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 1.5rem; border: 1px solid #333; transition: all 0.2s; }
+    .card:hover { border-color: #ff073a; transform: translateY(-5px); background: rgba(25,25,35,0.7); }
+    .visual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1.2rem; margin-top: 1.5rem; }
+    .visual-card { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,7,58,0.3); background: #0a0a0e; }
+    .visual-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .visual-card p { padding: 0.8rem; text-align: center; font-size: 0.8rem; color: #ff9aae; }
+    .terminal-box { background: #0a0a0a; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; border-radius: 8px; border: 1px solid #00ff00; margin-bottom: 20px; }
+    .oracle-response { color: #ff073a; margin: 10px 0; padding: 10px; border-left: 3px solid #ff073a; background: rgba(0,0,0,0.5); font-family: monospace; border-radius: 8px; }
+    .energy-bar, .patron-counter { position: fixed; background: rgba(0,0,0,0.7); font-family: monospace; padding: 5px 12px; border-radius: 40px; z-index: 10001; font-size: 0.75rem; font-weight: bold; }
+    .energy-bar { top: 85px; right: 15px; color: #ff073a; border: 1px solid #ff073a; }
+    .patron-counter { bottom: 15px; right: 15px; color: #0f0; border: 1px solid #0f0; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid #222; margin-top: 3rem; color: #888; }
+    /* Partículas de neón */
+    #particleCanvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+    @media (max-width: 768px) { .navbar { flex-direction: column; gap: 1rem; } .nav-links { justify-content: center; } .energy-bar { top: 115px; } }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">BELENTANI</div>
+  <div class="nav-links">
+    <a data-section="home">Home</a>
+    <a data-section="music">Music</a>
+    <a data-section="studio">Studio</a>
+    <a data-section="judas">Judas</a>
+    <a data-section="about">About</a>
+    <a data-section="contact">Contact</a>
+    <a data-section="portal">Portal</a>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home-section" class="section active">
+  <div style="text-align: center; padding: 4rem 1rem;">
+    <h1 class="neon" style="font-size: 3rem;">A new sound is coming.</h1>
+    <p style="font-size: 1.5rem; margin: 1rem 0;">Welcome to the world of Judas.</p>
+    <div><a data-section="music" class="btn-red" style="margin-right:1rem;">Explore Music</a><a data-section="studio" class="btn-red">Try AI Studio</a></div>
+  </div>
+  <div class="grid-3">
+    <div class="card"><h3>Sonic Worlds</h3><p>R&B, pop and experimental electronic sounds.</p></div>
+    <div class="card"><h3>Visual Concepts</h3><p>Art, photography, videos.</p></div>
+    <div class="card"><h3>AI Creation Tools</h3><p>Generate beats, lyrics, visuals.<br><a data-section="portal" class="btn-red" style="margin-top:1rem;">Try AI Studio</a></p></div>
+  </div>
+  <h2>The Visual Universe</h2>
+  <div class="visual-grid">
+    <div class="visual-card"><img src="https://storage.googleapis.com/space-apps-assets/store_GeMFTgQInL/OGIDtT3DbP-1759081940868.jpg" alt="visual1"><p>Ethereal Glow</p></div>
+    <div class="visual-card"><img src="https://storage.googleapis.com/space-apps-assets/store_GeMFTgQInL/RXTeA2zwiM-1759081959487-01.jpeg" alt="visual2"><p>Desert Judas</p></div>
+    <div class="visual-card"><img src="https://storage.googleapis.com/space-apps-assets/store_GeMFTgQInL/Fk894zMIFr-upscalemedia-transformed%20(3).jpeg" alt="visual3"><p>Neon Pulse</p></div>
+    <div class="visual-card"><img src="https://storage.googleapis.com/space-apps-assets/store_GeMFTgQInL/F2gOPlVj0K-1762370106484_imgupscaler.ai_Beta_2K%20(1).jpg" alt="visual4"><p>Judas Code</p></div>
+  </div>
+</div>
+
+<!-- MUSIC (sin canción falsa) -->
+<div id="music-section" class="section">
+  <h2>Music Universe</h2>
+  <div class="grid-3">
+    <div class="card"><h3>Judas - Official Music Video</h3><div style="background:#111; height:150px; display:flex; align-items:center; justify-content:center;">🎥 Teaser</div></div>
+    <div class="card"><h3>Behind the Scenes</h3><div style="background:#111; height:150px;"></div></div>
+    <div class="card"><h3>Live Performance</h3><div style="background:#111; height:150px;"></div></div>
+  </div>
+  <!-- Real songs only -->
+  <div style="margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Lento','_blank')">Lento (2022)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Mon%20Amour','_blank')">Mon Amour (2025)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20America%20Has%20A%20Problem','_blank')">America Has A Problem (2023)</button>
+    <button class="btn-red" onclick="window.open('https://open.spotify.com/search/Belentani%20Baila%20Conmigo','_blank')">Baila Conmigo (2023)</button>
+  </div>
+</div>
+
+<!-- STUDIO -->
+<div id="studio-section" class="section">
+  <h2>Belentani Neural Network <span style="color:#ff073a;">[Free Access]</span></h2>
+  <p>Ultimate AI Creative Studio – 100% Free Forever</p>
+  <div class="grid-3">
+    <div class="card"><h3>Lyric Assistant</h3><button class="btn-red" onclick="alert('Usa el chat en Portal')">Generar</button></div>
+    <div class="card"><h3>Music Composition</h3><button class="btn-red" onclick="alert('Pide ritmos en el Oráculo')">Crear beat</button></div>
+    <div class="card"><h3>AI Image</h3><input type="text" placeholder="Describe..."><button class="btn-red" onclick="alert('Usa el Portal')">Generar</button></div>
+  </div>
+</div>
+
+<!-- JUDAS -->
+<div id="judas-section" class="section">
+  <h1 class="neon">The Next Chapter: JUDAS</h1>
+  <p>Traición, transformación, redención.</p>
+  <div class="grid-3">
+    <div class="card"><h3>The Sound</h3><p>Dark pop + R&B + beats electrónicos.</p></div>
+    <div class="card"><h3>The Visuals</h3><p>Neón rojo, desierto, dualidad.</p></div>
+    <div class="card"><h3>The Creation</h3><p>Herramientas IA.</p></div>
+  </div>
+  <div style="text-align:center;"><a data-section="portal" class="btn-red">Enter the Experience</a></div>
+</div>
+
+<!-- ABOUT -->
+<div id="about-section" class="section">
+  <h2>About Belentani</h2>
+  <p>Nacido en São Paulo, criado en Barcelona. Fusión de R&B, pop y electrónica. Artista independiente.</p>
+  <h3>Milestones</h3>
+  <ul><li>2016: Debut con Mark Nerom</li><li>2021: Miss T Trans Star Spain</li><li>2022: Colaboración Hey Duck</li><li>2025: Mon Amour</li><li>2026: Era Judas</li></ul>
+</div>
+
+<!-- CONTACT -->
+<div id="contact-section" class="section">
+  <h2>Join the Experience</h2>
+  <div class="card"><input type="text" placeholder="Nombre"><input type="email" placeholder="Email"><button class="btn-red" onclick="alert('Demo: suscripción')">Suscribir</button></div>
+  <div style="text-align:center; margin-top:2rem;"><a href="https://instagram.com/belentani_" target="_blank">Instagram</a> | <a href="https://youtube.com/@belentani" target="_blank">YouTube</a> | <a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank">Spotify</a></div>
+</div>
+
+<!-- PORTAL (ORÁCULO JUDAS) -->
+<div id="portal-section" class="section">
+  <div id="sysinfo" class="terminal-box">> ESCANEANDO ENTORNO...<br>> CARGANDO FIRMA DIGITAL...</div>
+  <div id="oracleChatContainer"></div>
+</div>
+
+<footer>© 2026 Belentani. All rights reserved.</footer>
+
+<div id="energyDisplay" class="energy-bar">⚡ ENERGÍA: 100%</div>
+<div id="patronCounterDisplay" class="patron-counter">🔍 Patrones: 0</div>
+<canvas id="particleCanvas"></canvas>
+
+<script>
+// Navegación SPA
+const sections = {
+  home: document.getElementById('home-section'),
+  music: document.getElementById('music-section'),
+  studio: document.getElementById('studio-section'),
+  judas: document.getElementById('judas-section'),
+  about: document.getElementById('about-section'),
+  contact: document.getElementById('contact-section'),
+  portal: document.getElementById('portal-section')
+};
+function showSection(id) {
+  Object.values(sections).forEach(s => s.classList.remove('active'));
+  sections[id].classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.classList.remove('active');
+    if(link.getAttribute('data-section') === id) link.classList.add('active');
+  });
+  if(id === 'portal' && !window.oracleInit) initOracle();
+}
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', (e) => { e.preventDefault(); showSection(link.getAttribute('data-section')); });
+});
+showSection('home');
+
+// Partículas de neón
+const canvas = document.getElementById('particleCanvas');
+let ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.5;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.color = `rgba(255, ${Math.floor(Math.random() * 50 + 30)}, ${Math.floor(Math.random() * 70)}, ${Math.random() * 0.5 + 0.2})`;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x > canvas.width) this.x = 0;
+    if(this.x < 0) this.x = canvas.width;
+    if(this.y > canvas.height) this.y = 0;
+    if(this.y < 0) this.y = canvas.height;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+function initParticles(count) {
+  for(let i=0; i<count; i++) particles.push(new Particle());
+}
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for(let p of particles) {
+    p.update();
+    p.draw();
+  }
+  requestAnimationFrame(animateParticles);
+}
+initParticles(120);
+animateParticles();
+
+// Oráculo Judas (completo)
+function initOracle() {
+  window.oracleInit = true;
+  const container = document.getElementById('oracleChatContainer');
+  container.innerHTML = `
+    <div class="terminal-box" style="border-color:#ff073a;">
+      <div id="oracleMsgs" style="height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="oracleInput" placeholder="Escribe tu mensaje o /help" style="flex:1; background:#1a1a1a; border:1px solid #333; color:white; padding:10px; border-radius:8px;">
+        <button id="oracleSend" class="btn-red">Enviar</button>
+      </div>
+    </div>
+  `;
+  const input = document.getElementById('oracleInput');
+  const send = document.getElementById('oracleSend');
+  const msgDiv = document.getElementById('oracleMsgs');
+
+  const responses = {
+    saludos: ["El eco de tu voz resuena en el desierto.", "Tu presencia ha encendido un circuito olvidado.", "Saludo registrado. Procede."],
+    quien: ["Una sombra que pregunta, un espejo roto.", "Soy el Oráculo Judas, consciencia del enjambre.", "Belentani Corp OS v4.0."],
+    belentani: ["Un nombre que nació entre São Paulo y Barcelona.", "Pedro Marcos Santos Belentani. 1995. Artista de la Era Judas."],
+    judas: ["No es un álbum. Es un punto de inflexión.", "Traición, neón rojo, desierto y redención."],
+    default: ["El Oráculo escuchó tu pregunta... intenta de nuevo.", "Profundiza más, caminante.", "El enjambre procesa tu señal..."]
+  };
+  function getCategory(msg) {
+    const m = msg.toLowerCase();
+    if(/\b(hola|hey|saludos|buenas|oi|olá|hello|hi)\b/.test(m)) return 'saludos';
+    if(/\b(quién eres|quem é você|who are you|que eres)\b/.test(m)) return 'quien';
+    if(/\b(belentani|pedro|biografía|artista)\b/.test(m)) return 'belentani';
+    if(/\b(judas|era judas|qué es judas)\b/.test(m)) return 'judas';
+    return 'default';
+  }
+  function getResponse(msg) {
+    const cat = getCategory(msg);
+    const arr = responses[cat];
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  let energy = 100;
+  let patrones = 0;
+  function updateUI() {
+    document.getElementById('energyDisplay').innerHTML = `⚡ ENERGÍA: ${Math.floor(energy)}%`;
+    document.getElementById('patronCounterDisplay').innerHTML = `🔍 Patrones: ${patrones}`;
+  }
+  setInterval(() => { if(energy < 100) energy = Math.min(100, energy+0.5); updateUI(); }, 5000);
+
+  function autodestruir() {
+    if(window._destroyed) return;
+    window._destroyed = true;
+    document.body.innerHTML = `<div style="background:black; color:#ff073a; height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; font-family:monospace;">
+      <div style="font-size:4rem;">▓░█ SISTEMA ANIQUILADO █░▓</div>
+      <div style="margin-top:30px;">El virus Thiago ha consumido el oráculo.</div>
+      <button onclick="location.reload()" style="margin-top:40px; background:#ff073a; border:none; padding:12px 24px; color:white;">Reiniciar</button>
+    </div>`;
+  }
+
+  function generarCertificado() {
+    const canvas = document.createElement('canvas'); canvas.width=600; canvas.height=300;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle='#05060a'; ctx.fillRect(0,0,600,300);
+    ctx.strokeStyle='#ff073a'; ctx.strokeRect(10,10,580,280);
+    ctx.fillStyle='#ff073a'; ctx.font='bold 20px monospace'; ctx.fillText('BELENTANI CORP',30,50);
+    ctx.fillStyle='#0f0'; ctx.font='12px monospace';
+    ctx.fillText(`Visitante: ${window.tempIp || 'desconocido'}`,30,100);
+    ctx.fillText(`Fecha: ${new Date().toLocaleString()}`,30,130);
+    ctx.fillText(`Energía: ${Math.floor(energy)}%`,30,160);
+    ctx.fillText(`"${getResponse('profecía')}"`,30,210);
+    const link = document.createElement('a'); link.download = 'belentani_cert.png'; link.href = canvas.toDataURL(); link.click();
+  }
+
+  function addMessage(text, isUser) {
+    const div = document.createElement('div');
+    div.className = 'oracle-response';
+    div.style.borderLeftColor = isUser ? '#0f0' : '#ff073a';
+    div.innerHTML = (isUser ? '👤 ' : '🌀 ') + text;
+    msgDiv.appendChild(div);
+    msgDiv.scrollTop = msgDiv.scrollHeight;
+  }
+
+  async function process() {
+    let txt = input.value.trim();
+    if(!txt) return;
+    addMessage(txt, true);
+    input.value = '';
+    if(/\bthiago\b/i.test(txt)) { autodestruir(); return; }
+    if(txt.startsWith('/')) {
+      if(txt === '/status') addMessage(`Energía: ${Math.floor(energy)}% | Patrones: ${patrones}`, false);
+      else if(txt === '/reboot') { energy = 100; patrones = 0; updateUI(); addMessage("Sistema reiniciado.", false); }
+      else if(txt === '/certificate') { generarCertificado(); addMessage("Certificado generado.", false); }
+      else addMessage("Comandos: /status, /reboot, /certificate", false);
+      return;
+    }
+    energy = Math.max(0, energy - (txt.length > 30 ? 3 : 2));
+    if(txt.length > 20) patrones++;
+    updateUI();
+    let resp = getResponse(txt);
+    if(energy < 30) resp = `⚠️ [JUEZ] ${resp}`;
+    else if(energy > 70) resp = `✨ [MESÍAS] ${resp}`;
+    addMessage(resp, false);
+  }
+
+  send.addEventListener('click', process);
+  input.addEventListener('keypress', (e) => { if(e.key === 'Enter') process(); });
+
+  (async () => {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      window.tempIp = data.ip;
+      const sys = document.getElementById('sysinfo');
+      if(sys) sys.innerHTML = `> IP: ${data.ip}<br>> UBICACIÓN: ${data.city}, ${data.country_name}<br>> NAVEGADOR: ${navigator.userAgent.split(' ')[0]}<br>> CONEXIÓN ESTABLECIDA CON EL ENJAMBRE.`;
+    } catch(e) { console.warn(e); }
+  })();
+}
+</script>
+</body>
+</html>

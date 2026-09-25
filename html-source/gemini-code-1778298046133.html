@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI // JUDAS CORE // DEFINITIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-red: #ff1744;
+            --bg-deep: #000000;
+            --glass-panel: rgba(15, 15, 15, 0.8);
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            background: var(--bg-deep);
+            color: #f2f2f2;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- CAPAS DE FONDO --- */
+        #matrixCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 23, 68, 0.05) 0%, transparent 80%);
+            z-index: -2;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        .nav-system {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 23, 68, 0.2);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0; z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--neon-red);
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* --- HERO: MANIFIESTO --- */
+        .hero-section {
+            padding: 8rem 2rem 4rem 2rem;
+            text-align: center;
+        }
+
+        .title-glitch {
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: #fff;
+            line-height: 0.9;
+        }
+
+        .title-glitch span {
+            display: block;
+            font-size: 0.25em;
+            color: var(--neon-red);
+            letter-spacing: 12px;
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        .manifesto-box {
+            max-width: 750px;
+            margin: 4rem auto;
+            text-align: left;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #aaa;
+            border-left: 3px solid var(--neon-red);
+            padding-left: 2rem;
+            background: linear-gradient(90deg, rgba(255,23,68,0.03), transparent);
+        }
+
+        /* --- EL ORÁCULO JUDAS (INTERACTIVO) --- */
+        .oracle-container {
+            max-width: 900px;
+            margin: 0 auto 8rem auto;
+            background: var(--glass-panel);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .oracle-header {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--neon-red);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #oracleDisplay {
+            height: 180px;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #ff99aa;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #222;
+            padding-bottom: 1rem;
+            scrollbar-width: none;
+        }
+
+        .input-group { display: flex; gap: 15px; }
+
+        input {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--neon-red); box-shadow: 0 0 15px rgba(255,23,68,0.2); }
+
+        .btn-exec {
+            background: transparent;
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 0 2rem;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-exec:hover { background: var(--neon-red); color: #000; }
+
+        /* --- VIRUS THIAGO (SISTEMA DE FALLO) --- */
+        .melt-effect {
+            animation: system-shiver 0.1s infinite;
+            filter: invert(1) hue-rotate(280deg) contrast(4) saturate(2);
+            background: #fff !important;
+        }
+
+        @keyframes system-shiver {
+            0% { transform: translate(0) scale(1); }
+            33% { transform: translate(-15px, 10px) skewX(15deg); }
+            66% { transform: translate(15px, -5px) scale(1.02); }
+            100% { transform: translate(0) scale(1); }
+        }
+
+        /* --- FOOTER --- */
+        .footer-system {
+            text-align: center;
+            padding: 4rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: #444;
+            letter-spacing: 3px;
+        }
+    </style>
+</head>
+<body id="masterBody">
+
+<canvas id="matrixCanvas"></canvas>
+<div class="ambient-glow"></div>
+
+<nav class="nav-system">
+    <div class="logo">BELENTANI</div>
+    <div id="statusIndicator" style="font-family: 'Space Mono'; font-size: 0.6rem; color: #0f0;">● SYSTEM_STABLE</div>
+</nav>
+
+<header class="hero-section">
+    <h1 class="title-glitch">
+        JUDAS
+        <span>Sonic Architecture</span>
+    </h1>
+    
+    <div class="manifesto-box">
+        Judas no es una persona. Es un fallo en el sistema de las emociones humanas. 
+        Este universo nace de la ruptura, transformando el colapso en R&B cinematográfico 
+        y espiritualidad digital. Bienvenido a la era de la señal recuperada.
+    </div>
+</header>
+
+<div class="oracle-container">
+    <div class="oracle-header">
+        <span>Oracle_Interface_V4.0</span>
+        <span id="dataTimer">SYNC_ACTIVE</span>
+    </div>
+    <div id="oracleDisplay">
+        > NÚCLEO JUDAS LISTO.<br>
+        > ESPERANDO COMANDO DE ENTIDAD...<br>
+        > (Lorena, Natalia, Duck, Belentani Free)
+    </div>
+    <div class="input-group">
+        <input type="text" id="oracleInput" placeholder="INSERT QUERY..." autocomplete="off">
+        <button class="btn-exec" onclick="runLogic()">EXECUTE</button>
+    </div>
+</div>
+
+<footer class="footer-system">
+    ZION ORBIT // JUDAS ERA // 2026 // BELENTANI_RECORDS
+</footer>
+
+<script>
+    // --- MATRIX LOGIC ---
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = "0101BELENTANIJUDAS";
+    const drops = Array(Math.floor(canvas.width / 20)).fill(1);
+
+    function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#ff1744";
+        ctx.font = "14px monospace";
+        drops.forEach((y, i) => {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * 20, y * 20);
+            if (y * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(draw, 50);
+
+    // --- ORACLE & VIRUS LOGIC ---
+    const database = {
+        "lorena": "🌹 ARCHIVO LORENA: El refugio seguro del sistema. Frecuencia de protección activa.",
+        "natalia": "🦅 ARCHIVO NATALIA: El Halcón. Visión periférica sobre el Artifact. Guardiana.",
+        "duck": "🎹 DUCK PROD: El arquitecto. La base rítmica de la fractura emocional.",
+        "belentani free": "✨ MODO LIBRE: Sombras en pausa. Luz activada en el núcleo del sistema.",
+        "pedro": "⛰️ NÚCLEO PEDRO: Punto cero de la narrativa. La piedra que resiste el glitch."
+    };
+
+    function runLogic() {
+        const input = document.getElementById('oracleInput').value.toLowerCase().trim();
+        const display = document.getElementById('oracleDisplay');
+        const body = document.getElementById('masterBody');
+        const status = document.getElementById('statusIndicator');
+
+        display.innerHTML += `<br><span style="color:#fff;">> QUERY: ${input.toUpperCase()}</span>`;
+
+        if (input === 'thiago' || input === 'tiago') {
+            display.innerHTML += `<br><span style="color:red;">!! ERROR CRÍTICO !! VIRUS DETECTADO !! QUEMANDO NÚCLEO !!</span>`;
+            status.style.color = "red";
+            status.innerText = "● SYSTEM_FAILURE";
+            body.classList.add('melt-effect');
+            setTimeout(() => {
+                body.classList.remove('melt-effect');
+                location.reload();
+            }, 3500);
+            return;
+        }
+
+        const response = database[input] || "> DATOS NO INDEXADOS. REFORMULE LA FRECUENCIA.";
+        display.innerHTML += `<br>> ${response}`;
+        display.scrollTop = display.scrollHeight;
+        document.getElementById('oracleInput').value = "";
+    }
+
+    document.getElementById('oracleInput').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') runLogic();
+    });
+</script>
+
+</body>
+</html>

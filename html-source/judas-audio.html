@@ -1,0 +1,651 @@
+<body>
+
+  <!-- TRON GRID -->
+  <canvas id="grid-canvas"></canvas>
+
+  <!-- VISOR -->
+  <div id="visor">
+    <h1>JUDAS</h1>
+    <div class="sub">
+      <span id="status-led"></span>
+      <span id="status-text">INICIANDO...</span>
+    </div>
+  </div>
+
+  <!-- VISUALIZADOR -->
+  <div id="visualizer">
+    <canvas id="viz-canvas"></canvas>
+  </div>
+
+  <!-- LABEL 3D -->
+  <div id="sonic-label">〰 SONIC FIELD 〰</div>
+
+  <!-- HINT -->
+  <div id="interact-hint">☰ CLICK / MOVE / HOVER  ☰</div>
+
+  <!-- INFO -->
+  <div id="info-bar">
+    <div id="freq-display">LF: 0 Hz</div>
+    <div id="pos-display">X: 0  Y: 0</div>
+  </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//   JUDAS EXPERIENCE — SISTEMA DE AUDIO INMERSIVO
+//   Web Audio API + Tone.js + Howler.js
+//   Todo en un solo HTML, sin servidor
+// ═══════════════════════════════════════════════════════════
+
+const STATUS_LED  = document.getElementById('status-led');
+const STATUS_TXT  = document.getElementById('status-text');
+const FREQ_DISP   = document.getElementById('freq-display');
+const POS_DISP    = document.getElementById('pos-display');
+const SONIC_LABEL = document.getElementById('sonic-label');
+const HINT        = document.getElementById('interact-hint');
+const VIZ_CANVAS  = document.getElementById('viz-canvas');
+const VIZ_CTX     = VIZ_CANVAS.getContext('2d');
+
+// ─── CONFIG ───
+const CONFIG = {
+  droneBaseFreq: 55,           // Hz (A1)
+  droneLfoRate: 0.15,          // Hz
+  droneLfoDepth: 8,            // Hz
+  filterFreq: 180,
+  filterRes: 6,
+  reverbDecay: 4,
+  volumeMaster: -14,           // dB
+};
+
+// ─── ESTADO ───
+const state = {
+  initialized: false,
+  mouseX: 0, mouseY: 0,
+  normX: 0.5, normY: 0.5,
+  vizData: new Uint8Array(64).fill(128),
+  audioCtx: null,
+  dronePlaying: false,
+};
+
+// ═══════════════════════════════════════════════════════════
+//   TRON GRID (fondo animado)
+// ═══════════════════════════════════════════════════════════
+(function initGrid() {
+  const c = document.getElementById('grid-canvas');
+  const ctx = c.getContext('2d');
+  let w, h, t = 0;
+
+  function resize() {
+    w = c.width = window.innerWidth;
+    h = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function drawGrid() {
+    t += 0.005;
+    ctx.clearRect(0, 0, w, h);
+
+    const step = 40;
+    const offX = (t * 20) % step;
+
+    ctx.strokeStyle = '#ff073a';
+    ctx.lineWidth = 0.5;
+    ctx.globalAlpha = 0.3;
+
+    // Vertical
+    for (let x = offX; x < w; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      const fade = Math.sin((x / w) * Math.PI);
+      ctx.strokeStyle = `rgba(255, 7, 58, ${0.08 + fade * 0.15})`;
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+
+    // Horizontal con perspectiva
+    for (let y = -step; y < h + step; y += step) {
+      const sy = y + (t * 30) % step;
+      ctx.beginPath();
+      ctx.moveTo(0, sy);
+      const fadeY = Math.sin((sy / h) * Math.PI);
+      ctx.strokeStyle = `rgba(255, 7, 58, ${0.05 + fadeY * 0.12})`;
+      ctx.lineTo(w, sy + Math.sin(t + sy * 0.01) * 3);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(drawGrid);
+  }
+  drawGrid();
+})();
+
+// ═══════════════════════════════════════════════════════════
+//   INICIALIZACIÓN CON INTERACCIÓN (AUDIO CONTEXT)
+// ═══════════════════════════════════════════════════════════
+async function initAudio() {
+  if (state.initialized) return;
+
+  // Web Audio API — context nativo
+  state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Inicializar Tone.js con el mismo context
+  Tone.setContext(new Tone.Context(state.audioCtx));
+
+  // Configurar volúmenes
+  Tone.Destination.volume.value = CONFIG.volumeMaster;
+
+  await initDrone();
+  await initHowlerFX();
+
+  state.initialized = true;
+  STATUS_LED.classList.add('ready');
+  STATUS_TXT.textContent = 'SISTEMA ACTIVO';
+  HINT.classList.add('hidden');
+
+  console.log('[JUDAS] Audio inmersivo inicializado');
+}
+
+// ═══════════════════════════════════════════════════════════
+//   1) DRONE ATMOSFÉRICO DE BAJA FRECUENCIA
+//      Sintetizador con Tone.js: oscilador + LFO + filtro
+// ═══════════════════════════════════════════════════════════
+let drone = {
+  oscillator: null,
+  subOsc: null,
+  lfo: null,
+  filter: null,
+  gain: null,
+  reverb: null,
+};
+
+async function initDrone() {
+  const { audioCtx } = state;
+
+  // ——— REVERB con convolver sintético ———
+  drone.reverb = new Tone.Convolver();
+  // Generar respuesta al impulso sintética (decaimiento exponencial)
+  const sr = audioCtx.sampleRate;
+  const len = sr * CONFIG.reverbDecay;
+  const impulse = audioCtx.createBuffer(2, len, sr);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      const t = i / sr;
+      // Ruido coloreado con decaimiento exponencial
+      data[i] = (Math.random() * 2 - 1) *
+                Math.exp(-t * 1.8) *
+                (1 + Math.sin(t * 40) * 0.3);
+    }
+  }
+  drone.reverb.buffer = impulse;
+  drone.reverb.wet.value = 0.6;
+  drone.reverb.dry.value = 0.4;
+
+  // ——— FILTRO PASA BAJOS ———
+  drone.filter = new Tone.Filter({
+    type: 'lowpass',
+    frequency: CONFIG.filterFreq,
+    Q: CONFIG.filterRes,
+  });
+
+  // ——— LFO para movimiento del drone ———
+  drone.lfo = new Tone.LFO({
+    frequency: CONFIG.droneLfoRate,
+    type: 'sine',
+    min: CONFIG.droneBaseFreq - CONFIG.droneLfoDepth,
+    max: CONFIG.droneBaseFreq + CONFIG.droneLfoDepth,
+  });
+
+  // ——— OSCILADOR PRINCIPAL (sawtooth suave) ———
+  drone.oscillator = new Tone.Oscillator({
+    type: 'sawtooth',
+    frequency: CONFIG.droneBaseFreq,
+    volume: -12,
+  });
+
+  // ——— SUB-OSCILADOR (sinusoidal, una octava abajo) ———
+  drone.subOsc = new Tone.Oscillator({
+    type: 'sine',
+    frequency: CONFIG.droneBaseFreq / 2,
+    volume: -18,
+  });
+
+  // ——— GANANCIA MAESTRA del drone ———
+  drone.gain = new Tone.Gain(0);  // empieza mudo
+
+  // ——— RUTA DE SEÑAL ———
+  // LFO → frecuencia del oscilador (modulación)
+  drone.lfo.connect(drone.oscillator.frequency);
+  drone.lfo.connect(drone.subOsc.frequency);
+
+  // Osciladores → filtro → reverb → gain → master
+  drone.oscillator.chain(drone.filter, drone.reverb, drone.gain, Tone.Destination);
+  drone.subOsc.chain(drone.filter, drone.reverb, drone.gain, Tone.Destination);
+
+  // Iniciar LFO y osciladores (pero gain en 0)
+  drone.lfo.start();
+  drone.oscillator.start();
+  drone.subOsc.start();
+}
+
+// Fade in/out del drone
+function droneFadeIn(duration = 2) {
+  if (!state.initialized) return;
+  drone.gain.gain.rampTo(0.45, duration);
+  state.dronePlaying = true;
+}
+
+function droneFadeOut(duration = 1.5) {
+  if (!state.initialized) return;
+  drone.gain.gain.rampTo(0, duration);
+  state.dronePlaying = false;
+}
+
+function droneModulate(intensity) {
+  // intensity: 0-1 basado en posición Y del mouse
+  if (!state.initialized) return;
+  const freq = CONFIG.filterFreq + intensity * 600;
+  const res  = CONFIG.filterRes + intensity * 10;
+  drone.filter.frequency.rampTo(freq, 0.3);
+  drone.filter.Q.rampTo(res, 0.3);
+
+  // Modificar reverb wet
+  drone.reverb.wet.rampTo(0.4 + intensity * 0.4, 0.3);
+}
+
+// ═══════════════════════════════════════════════════════════
+//   2) EFECTOS DE SONIDO: hover / clicks
+//      Con Tone.js (síntesis inmediata, sin samples)
+// ═══════════════════════════════════════════════════════════
+function playHoverSound(intensity = 0.3) {
+  if (!state.initialized) return;
+
+  const now = Tone.now();
+
+  // Tono muy corto, casi un chasquido metálico
+  const synth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.02 },
+  }).toDestination();
+
+  synth.volume.value = -24 + intensity * 6;
+  synth.triggerAttackRelease(
+    CONFIG.droneBaseFreq * 4 + intensity * 200,
+    0.04 + intensity * 0.03,
+    now
+  );
+
+  // Ruido blanco muy breve (textura)
+  const noise = new Tone.Noise('white');
+  const noiseEnv = new Tone.Gain(0);
+  noise.chain(noiseEnv, Tone.Destination);
+  noiseEnv.gain.setValueAtTime(0.03 * intensity, now);
+  noiseEnv.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+  noise.start(now).stop(now + 0.03);
+
+  // Limpieza automática
+  setTimeout(() => {
+    synth.dispose();
+    noise.dispose();
+    noiseEnv.dispose();
+  }, 500);
+}
+
+function playClickSound() {
+  if (!state.initialized) return;
+
+  const now = Tone.now();
+
+  // Impacto tipo "golpe metálico"
+  const click = new Tone.MetalSynth({
+    frequency: 120,
+    envelope: { attack: 0.001, decay: 0.3, release: 0.1 },
+    harmonicity: 5.1,
+    modulationIndex: 16,
+    resonance: 800,
+  }).toDestination();
+
+  click.volume.value = -16;
+  click.triggerAttackRelease(CONFIG.droneBaseFreq * 8, 0.15, now);
+
+  // Sub-golpe (baja frecuencia)
+  const sub = new Tone.Synth({
+    oscillator: { type: 'triangle' },
+    envelope: { attack: 0.002, decay: 0.2, sustain: 0, release: 0.05 },
+  }).toDestination();
+
+  sub.volume.value = -14;
+  sub.triggerAttackRelease(CONFIG.droneBaseFreq * 2, 0.18, now);
+
+  setTimeout(() => {
+    click.dispose();
+    sub.dispose();
+  }, 500);
+}
+
+// ═══════════════════════════════════════════════════════════
+//   3) AUDIO POSICIONAL 3D (PANNER)
+//      Web Audio API PannerNode — sigue al ratón
+// ═══════════════════════════════════════════════════════════
+let panner = null;
+let pannerOsc = null;
+let pannerGain = null;
+
+function init3DAudio() {
+  if (!state.audioCtx || panner) return;
+
+  const { audioCtx } = state;
+
+  panner = audioCtx.createPanner();
+  panner.panningModel = 'HRTF';
+  panner.distanceModel = 'inverse';
+  panner.refDistance = 0.5;
+  panner.maxDistance = 3;
+  panner.rolloffFactor = 1.2;
+  panner.coneInnerAngle = 360;
+  panner.coneOuterAngle = 0;
+
+  // Sonido de campo: ruido filtrado muy suave
+  const bufferSize = audioCtx.sampleRate * 1;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * 0.02;
+  }
+
+  pannerOsc = audioCtx.createBufferSource();
+  pannerOsc.buffer = buffer;
+  pannerOsc.loop = true;
+
+  const filter3d = audioCtx.createBiquadFilter();
+  filter3d.type = 'bandpass';
+  filter3d.frequency.value = 2000;
+  filter3d.Q.value = 0.5;
+
+  pannerGain = audioCtx.createGain();
+  pannerGain.gain.value = 0;
+
+  pannerOsc.connect(filter3d);
+  filter3d.connect(pannerGain);
+  pannerGain.connect(panner);
+  panner.connect(audioCtx.destination);
+
+  pannerOsc.start();
+}
+
+function update3DPosition(x, y, intensity = 0.5) {
+  if (!panner || !state.initialized) return;
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // Mapear posición del mouse a espacio 3D
+  // X: -1 a 1 (izquierda a derecha)
+  // Y: 1 a -1 (arriba tiene más altura Z, abajo está cerca)
+  // Z: -1 a 1 (profundidad, basado en Y)
+  const posX = (x / w) * 2 - 1;
+  const posY = 1 - (y / h) * 2;
+  const posZ = 0.5 - (y / h);  // arriba = lejos, abajo = cerca
+
+  // Escalar para que se note el paneo
+  const scale = 2.5;
+  panner.positionX.value = posX * scale;
+  panner.positionY.value = posY * scale;
+  panner.positionZ.value = posZ * scale;
+
+  // Volumen basado en intensidad
+  pannerGain.gain.value = 0.025 + intensity * 0.06;
+}
+
+// ═══════════════════════════════════════════════════════════
+//   4) VISUALIZADOR DE AUDIO REACTIVO
+//      Analizador FFT en tiempo real
+// ═══════════════════════════════════════════════════════════
+let analyser = null;
+let vizRunning = false;
+
+function initVisualizer() {
+  if (!state.audioCtx || analyser) return;
+
+  analyser = state.audioCtx.createAnalyser();
+  analyser.fftSize = 128;
+  analyser.smoothingTimeConstant = 0.8;
+
+  // Conectar al master de Tone.js (la salida global)
+  // Tone.Destination es un Tone.Gain; obtenemos su nodo interno
+  const destNode = Tone.Destination._internalChannels?.[0] ||
+                   Tone.Destination.input?.input ||
+                   Tone.Destination.output;
+
+  // Alternativa: crear un nodo tap
+  const masterGain = state.audioCtx.createGain();
+  masterGain.gain.value = 1;
+
+  // Interceptar la salida: desconectar Tone.Destination del destino,
+  // meter nuestro analyser en medio
+  // (esto es más limpio: hacemos un tap usando createScriptProcessor / AudioWorklet no)
+  // Usamos un GainNode como tap
+  const ctx = state.audioCtx;
+  const tap = ctx.createGain();
+
+  // Desconectar lo que haya en Tone.Destination y reconectar via tap
+  // Tone.Destination.output lo podemos usar directamente
+  try {
+    if (Tone.Destination.output) {
+      Tone.Destination.output.disconnect();
+      Tone.Destination.output.connect(tap);
+      tap.connect(ctx.destination);
+      tap.connect(analyser);
+    } else {
+      // fallback: conectar analyser directo
+      Tone.Destination.connect(analyser);
+    }
+  } catch(e) {
+    // fallback: si todo falla, analyser desconectado
+    console.warn('Visualizer tap fallback:', e);
+  }
+
+  drawVisualizer();
+}
+
+function drawVisualizer() {
+  if (!analyser) {
+    requestAnimationFrame(drawVisualizer);
+    return;
+  }
+
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  analyser.getByteFrequencyData(dataArray);
+
+  state.vizData = dataArray;
+
+  const canvas = VIZ_CANVAS;
+  const ctx = VIZ_CTX;
+  const W = canvas.width = canvas.clientWidth * 2;
+  const H = canvas.height = canvas.clientHeight * 2;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const barWidth = W / bufferLength;
+
+  for (let i = 0; i < bufferLength; i++) {
+    const val = dataArray[i] / 255;
+    const barH = val * H * 0.9;
+    const x = i * barWidth;
+    const y = H - barH;
+
+    // Gradiente de rojo neón
+    const alpha = 0.15 + val * 0.85;
+    const hue = 350;  // rojo profundo
+    const sat = 100;
+    const light = 20 + val * 60;
+
+    // Brillo neón
+    ctx.shadowColor = '#ff073a';
+    ctx.shadowBlur = val * 30;
+    ctx.fillStyle = `hsla(${hue}, ${sat}%, ${light}%, ${alpha})`;
+    ctx.fillRect(x, y, barWidth - 1, barH);
+
+    // Línea superior de brillo
+    ctx.shadowBlur = val * 50;
+    ctx.fillStyle = `rgba(255, 7, 58, ${0.3 + val * 0.7})`;
+    ctx.fillRect(x, Math.max(0, y - 1), barWidth - 1, Math.min(3, barH));
+  }
+
+  // Onda superpuesta (time domain)
+  const timeData = new Uint8Array(bufferLength);
+  try { analyser.getByteTimeDomainData(timeData); } catch(e) {}
+
+  ctx.shadowBlur = 15;
+  ctx.strokeStyle = 'rgba(255, 7, 58, 0.25)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < bufferLength; i++) {
+    const v = (timeData[i] || 128) / 128;
+    const x = i * barWidth + barWidth / 2;
+    const y = H / 2 + (v - 1) * (H * 0.4);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  requestAnimationFrame(drawVisualizer);
+}
+
+// ═══════════════════════════════════════════════════════════
+//   EVENTOS DE INTERACCIÓN
+// ═══════════════════════════════════════════════════════════
+
+// Click → inicializar + feedback
+document.addEventListener('click', (e) => {
+  if (!state.initialized) {
+    initAudio().then(() => {
+      setTimeout(() => {
+        init3DAudio();
+        initVisualizer();
+        droneFadeIn(3);
+      }, 200);
+    });
+  }
+
+  if (state.initialized) {
+    playClickSound();
+
+    // Ripple visual
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = (e.clientX - 100) + 'px';
+    ripple.style.top  = (e.clientY - 100) + 'px';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 800);
+  }
+});
+
+// Mouse move → audio posicional 3D + hover fx
+document.addEventListener('mousemove', (e) => {
+  state.mouseX = e.clientX;
+  state.mouseY = e.clientY;
+  state.normX  = e.clientX / window.innerWidth;
+  state.normY  = e.clientY / window.innerHeight;
+
+  if (!state.initialized) return;
+
+  POS_DISP.textContent = `X: ${Math.round(state.normX * 100)}%  Y: ${Math.round((1 - state.normY) * 100)}%`;
+
+  // Intensidad: más intenso en bordes inferiores
+  const intensity = 1 - state.normY;
+
+  // Hover sound probabilístico (solo ~8% de movimientos)
+  if (Math.random() < 0.08) {
+    playHoverSound(intensity);
+  }
+
+  // Modulación del drone según posición Y
+  droneModulate(intensity);
+
+  // Audio 3D
+  update3DPosition(e.clientX, e.clientY, intensity);
+
+  // Etiqueta sónica
+  SONIC_LABEL.style.left = (e.clientX + 18) + 'px';
+  SONIC_LABEL.style.top  = (e.clientY - 10) + 'px';
+  SONIC_LABEL.classList.add('visible');
+
+  // Trail visual
+  if (Math.random() < 0.2) {
+    const trail = document.createElement('div');
+    trail.className = 'hover-trail';
+    trail.style.left = (e.clientX - 3) + 'px';
+    trail.style.top  = (e.clientY - 3) + 'px';
+    document.body.appendChild(trail);
+    setTimeout(() => trail.remove(), 600);
+  }
+
+  // Frecuencia en display
+  if (drone.oscillator) {
+    const freq = drone.oscillator.frequency.value;
+    FREQ_DISP.textContent = `LF: ${freq.toFixed(1)} Hz`;
+  }
+});
+
+// Mouse leave → ocultar label, silenciar
+document.addEventListener('mouseleave', () => {
+  SONIC_LABEL.classList.remove('visible');
+});
+
+// ═══════════════════════════════════════════════════════════
+//   TOUCH SUPPORT (móvil)
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('touchstart', (e) => {
+  if (!state.initialized) {
+    initAudio().then(() => {
+      setTimeout(() => {
+        init3DAudio();
+        initVisualizer();
+        droneFadeIn(3);
+      }, 200);
+    });
+  }
+
+  const touch = e.touches[0];
+  if (touch) {
+    state.mouseX = touch.clientX;
+    state.mouseY = touch.clientY;
+  }
+});
+
+document.addEventListener('touchmove', (e) => {
+  const touch = e.touches[0];
+  if (touch) {
+    state.mouseX = touch.clientX;
+    state.mouseY = touch.clientY;
+    state.normX  = touch.clientX / window.innerWidth;
+    state.normY  = touch.clientY / window.innerHeight;
+
+    if (state.initialized) {
+      const intensity = 1 - state.normY;
+      droneModulate(intensity);
+      update3DPosition(touch.clientX, touch.clientY, intensity);
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+//   RESIZE
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  if (analyser) {
+    VIZ_CANVAS.width = VIZ_CANVAS.clientWidth * 2;
+    VIZ_CANVAS.height = VIZ_CANVAS.clientHeight * 2;
+  }
+});
+
+// ─── MENSAJE INICIAL ───
+console.log('%c JUDAS EXPERIENCE — AUDIO INMERSIVO ',
+  'background:#ff073a;color:#000;font-size:14px;font-weight:bold;padding:4px 8px;');
+console.log('%c Click para activar el sistema de audio espacial ',
+  'color:#ff073a;font-style:italic;');
+
+</script>
+</body>
+</html>

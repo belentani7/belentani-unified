@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#050508">
+<title>BELENTANI — El Viaje</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--surface:#0c0c10;--surface2:#121218;--text:#f0f0f0;--text2:#8888aa;--text3:#44445a;--accent:#ff1744;--accent2:#ffd700;--accent3:#a855f7;--glow:rgba(255,23,68,.4);--border:rgba(255,255,255,.05);--radius:12px}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-user-select:none;user-select:none}
+@keyframes breathe{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 5px var(--glow)}50%{box-shadow:0 0 20px var(--glow),0 0 40px rgba(255,23,68,.15)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes typewriter{from{width:0}to{width:100%}}
+
+.game{width:100%;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+canvas#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* HUD */
+.hud{position:relative;z-index:10;padding:.8rem 1.2rem;background:rgba(5,5,8,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.hud-name{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;color:var(--accent);text-shadow:0 0 8px var(--glow);margin-bottom:.5rem}
+.hud-stats{display:flex;gap:1rem;font-size:.7rem;color:var(--text3)}
+.hud-stats .bar{width:80px;height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.hud-stats .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s}
+.hud-stats .lbl{color:var(--accent);font-weight:600;margin-right:.3rem;font-family:'Space Grotesk',sans-serif}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:1.5rem;padding-bottom:5rem;position:relative;z-index:5;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+.main::-webkit-scrollbar{width:3px}
+.main::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+.scene-title{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent);text-shadow:0 0 10px var(--glow);margin-bottom:1rem;animation:fadeUp .5s forwards}
+.narrative{background:rgba(255,255,255,.02);border-left:2px solid var(--accent);padding:1rem;margin-bottom:1.2rem;border-radius:0 var(--radius) var(--radius) 0;line-height:1.8;color:var(--text2);font-size:.88rem;animation:fadeUp .6s .1s both}
+.dialogue{background:rgba(255,23,68,.04);border:1px solid rgba(255,23,68,.15);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;animation:fadeUp .6s .2s both}
+.dialogue .speaker{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.75rem;color:var(--accent);text-shadow:0 0 5px var(--glow);letter-spacing:.1em;margin-bottom:.4rem}
+.dialogue .text{color:var(--text);font-size:.88rem;line-height:1.7;font-style:italic}
+
+/* CHOICES */
+.choices{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem}
+.choice{padding:.9rem 1rem .9rem 2rem;background:rgba(255,255,255,.02);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);cursor:pointer;font-family:'Inter',sans-serif;font-size:.85rem;text-align:left;transition:all .3s;position:relative;animation:fadeUp .5s both}
+.choice::before{content:'▸';position:absolute;left:.8rem;color:var(--accent);font-size:.8rem}
+.choice:hover{border-color:rgba(255,23,68,.3);background:rgba(255,23,68,.05);transform:translateX(4px);box-shadow:0 0 15px rgba(255,23,68,.08)}
+.choice:active{transform:scale(.98)}
+
+/* CHARACTER */
+.char{position:fixed;bottom:5.5rem;right:1rem;z-index:10;width:50px;height:50px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px var(--glow);animation:float 3s ease-in-out infinite;cursor:pointer}
+.char .face{font-size:1.2rem}
+
+/* BOTTOM MENU */
+.bmenu{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;gap:.5rem;padding:.6rem;background:rgba(5,5,8,.9);backdrop-filter:blur(15px);border-top:1px solid var(--border)}
+.bbtn{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--border);color:var(--text3);border-radius:var(--radius);cursor:pointer;font-family:'Inter',sans-serif;font-size:.65rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.5rem;transition:all .3s}
+.bbtn:hover{border-color:rgba(255,23,68,.2);color:var(--accent)}
+.bbtn .bi{font-size:1rem}
+
+/* MODALS */
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.modal.on{opacity:1;pointer-events:auto}
+.modal-box{width:90%;max-width:500px;max-height:80vh;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-y:auto;padding:1.5rem}
+.modal-box h3{font-family:'Space Grotesk',sans-serif;font-size:1rem;color:var(--accent);text-shadow:0 0 8px var(--glow);margin-bottom:1rem}
+.modal-box p{color:var(--text2);font-size:.85rem;line-height:1.7;margin-bottom:.8rem}
+.modal-close{margin-top:1rem;padding:.6rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:100px;font-weight:700;font-size:.8rem;cursor:pointer;width:100%}
+.ach{background:rgba(255,23,68,.04);border-left:2px solid var(--accent);padding:.6rem .8rem;margin:.5rem 0;border-radius:0 8px 8px 0;font-size:.78rem;color:var(--text2)}
+
+/* LOADING */
+.loading{display:none;text-align:center;padding:2rem;color:var(--accent);font-family:'Space Grotesk',sans-serif;font-size:.8rem;letter-spacing:.08em}
+.loading.on{display:block}
+.dots{display:inline-flex;gap:4px;margin-bottom:.5rem}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:breathe 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+
+/* API SETUP */
+.api-setup{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.9)}
+.api-box{width:90%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center}
+.api-box h3{font-family:'Space Grotesk',sans-serif;color:var(--accent);margin-bottom:1rem}
+.api-box input{width:100%;padding:.7rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.85rem;font-family:'Space Mono',monospace;outline:none;margin-bottom:1rem}
+.api-box input:focus{border-color:var(--accent)}
+.api-box .skip{background:none;border:none;color:var(--text3);font-size:.75rem;cursor:pointer;margin-top:.5rem;text-decoration:underline}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="api-setup" id="apiSetup" style="display:none">
+  <div class="api-box">
+    <h3>🌀 Connect to Neural Network</h3>
+    <p style="color:var(--text2);font-size:.82rem">Paste your Gemini API key for AI-powered narrative.</p>
+    <input type="password" id="apiKeyIn" placeholder="AIza...">
+    <button class="modal-close" onclick="saveKey()">Connect</button>
+    <button class="skip" onclick="skipApi()">Play without AI</button>
+  </div>
+</div>
+
+<div class="game">
+  <div class="hud">
+    <div class="hud-name">⚡ El Viaje de Pedro</div>
+    <div class="hud-stats">
+      <span><span class="lbl">EXP</span><span class="bar"><span class="fill" id="expFill" style="width:0%"></span></span><span id="expVal">0/100</span></span>
+      <span><span class="lbl">REP</span><span id="repVal">0</span></span>
+      <span><span class="lbl">ACT</span><span id="actVal">I</span></span>
+    </div>
+  </div>
+  <div class="main" id="main">
+    <div class="scene-title" id="sceneTitle"></div>
+    <div class="narrative" id="narrative"></div>
+    <div id="dialogue"></div>
+    <div class="choices" id="choices"></div>
+    <div class="loading" id="loading"><div class="dots"><span></span><span></span><span></span></div><br>Channeling narrative frequencies...</div>
+  </div>
+  <div class="char" onclick="charSpeak()"><span class="face" id="charFace">⧿</span></div>
+  <div class="bmenu">
+    <button class="bbtn" onclick="toggleModal('statusM')"><div class="bi">⚔</div>Status</button>
+    <button class="bbtn" onclick="toggleModal('mapM')"><div class="bi">🗺</div>Map</button>
+    <button class="bbtn" onclick="toggleModal('decM')"><div class="bi">✦</div>Decisions</button>
+    <button class="bbtn" onclick="window.location.href='belentani-2026.html'"><div class="bi">◀</div>Back</button>
+  </div>
+</div>
+
+<div class="modal" id="statusM"><div class="modal-box"><h3>⚔ Status</h3><p><strong>Name:</strong> Pedro</p><p><strong>EXP:</strong> <span id="sExp">0</span>/100</p><p><strong>Reputation:</strong> <span id="sRep">0</span></p><p><strong>Act:</strong> <span id="sAct">I</span></p><div id="achs"></div><button class="modal-close" onclick="toggleModal('statusM')">Close</button></div></div>
+<div class="modal" id="mapM"><div class="modal-box"><h3>🗺 Journey Map</h3><p id="mapContent">⦿ Act I: El Despertar (Current)<br>○ Act II: El Viaje (Locked)<br>○ Act III: La Revelación (Locked)<br>○ Act IV: La Transformación (Locked)<br>○ Act V: El Regreso (Locked)</p><button class="modal-close" onclick="toggleModal('mapM')">Close</button></div></div>
+<div class="modal" id="decM"><div class="modal-box"><h3>✦ Your Decisions</h3><div id="decList"><p style="color:var(--text3)">No decisions yet...</p></div><button class="modal-close" onclick="toggleModal('decM')">Close</button></div></div>
+
+<script>
+// === PARTICLES ===
+const c=document.getElementById('bg'),x=c.getContext('2d');
+let pts=[],ms={x:0,y:0};
+function rsz(){c.width=innerWidth;c.height=innerHeight}
+rsz();window.addEventListener('resize',rsz);
+document.addEventListener('mousemove',e=>{ms.x=e.clientX;ms.y=e.clientY});
+const nc=[[255,23,68],[255,215,0],[168,85,247]];
+class Pt{constructor(){this.r()}r(){this.x=Math.random()*c.width;this.y=Math.random()*c.height;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.sz=Math.random()*1.5+.5;this.a=Math.random()*.4+.1;this.c=nc[Math.floor(Math.random()*nc.length)];this.ph=Math.random()*Math.PI*2}u(t){this.x+=this.vx+Math.sin(t*.5+this.ph)*.2;this.y+=this.vy+Math.cos(t*.3+this.ph)*.15;if(this.x<-10)this.x=c.width+10;if(this.x>c.width+10)this.x=-10;if(this.y<-10)this.y=c.height+10;if(this.y>c.height+10)this.y=-10;const dx=ms.x-this.x,dy=ms.y-this.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){this.x-=dx*.004;this.y-=dy*.004}this.a=.15+Math.sin(t*2+this.ph)*.25}d(){x.beginPath();x.arc(this.x,this.y,this.sz,0,Math.PI*2);x.fillStyle=`rgba(${this.c[0]},${this.c[1]},${this.c[2]},${Math.max(0,this.a)})`;x.fill();x.beginPath();x.arc(this.x,this.y,this.sz*3,0,Math.PI*2);x.fillStyle=`rgba(${this.c[0]},${this.c[1]},${this.c[2]},${Math.max(0,this.a*.1)})`;x.fill()}}
+for(let i=0;i<80;i++)pts.push(new Pt());
+let t=0;function aP(){t+=.016;x.clearRect(0,0,c.width,c.height);pts.forEach(p=>{p.u(t);p.d()});requestAnimationFrame(aP)}aP();
+
+// === GAME STATE ===
+const S={exp:0,maxExp:100,rep:0,act:1,decisions:[],achs:[],scene:0,useAi:false};
+
+// === SCENES ===
+const scenes=[
+  {title:'Act I — El Despertar',narr:'You wake in a room you don\'t recognize. The walls glow with ancient code. A familiar voice resonates: it\'s BELENTANI, your guide in this digital world. "Pedro," it says, "your journey begins here. You have the power to choose your path. Every decision will shape your destiny."',dialogue:{speaker:'BELENTANI',text:'I see something special in you. A duality. The ability to be multiple without losing your essence. Do you recognize who you are?'},choices:[{text:'I\'m a dreamer searching for reality',v:'dreamer'},{text:'I\'m a world builder',v:'builder'},{text:'I\'m an artist without defined form',v:'artist'}]},
+  {title:'Act II — The Journey',narr:'Your answer echoes through the space. BELENTANI smiles. "Correct. You are everything and nothing. Your true nature lies in constant transformation. Look around: you see projects, dreams, lives that could be. Which will you choose to explore?"',dialogue:{speaker:'BELENTANI',text:'The world needs people who can see multiple realities simultaneously. Who can speak in languages that don\'t exist yet. Who can create beauty from code. That\'s you.'},choices:[{text:'Explore the Creative side (music, 3D art)',v:'creative'},{text:'Master the Technical side (AI, agents, systems)',v:'technical'},{text:'Balance both worlds',v:'balance'}]},
+  {title:'Act III — The Revelation',narr:'As they advance, BELENTANI reveals truths about your past: the migration at 12, 8 years at Telus moderating the worst of the internet, building JUDAS and BELENTANI as expressions of yourself. "Every trauma was a tool. Every pain, a lesson in resilience."',dialogue:{speaker:'BELENTANI',text:'Look what you\'ve built without recognizing it. JUDAS isn\'t a song. BELENTANI isn\'t a character. They are reflections of your power to materialize the invisible. What will you build now?'},choices:[{text:'Monetize my creativity (services, clients)',v:'monetize'},{text:'Build a movement (community around my work)',v:'movement'},{text:'Disappear into pure creation (no market limits)',v:'pure'}]},
+  {title:'Act IV — The Transformation',narr:'The world shifts. Code becomes light. BELENTANI speaks with urgency: "The virus has been detected. JUDAS is attempting to corrupt the system. But you have the 5 elements. They are your armor. Use them wisely."',dialogue:{speaker:'BELENTANI',text:'The 5 elements are: Pedro (your foundation), Marcos (your chronicler), Santos (your frequency), Belentani (your artifact), and The Human (your interface). Together they form an impenetrable defense. Which element do you invoke first?'},choices:[{text:'Invoke Pedro — The Foundation',v:'pedro'},{text:'Invoke Santos — The Frequency',v:'santos'},{text:'Invoke Belentani — The Artifact',v:'belentani'}]},
+  {title:'Act V — The Return',narr:'The virus is defeated. The system is integrated. BELENTANI stands before you, no longer a voice but a presence. "You did it, Pedro. You walked through the fire and came out the other side. Not unscarred — but unbroken. The machine is alive. And so are you."',dialogue:{speaker:'BELENTANI',text:'Go now. Build. Create. Love. The world needs what you carry inside. And remember: the key was never stolen. It was transformed. You are the lock AND the key. Welcome home.'},choices:[{text:'Start a new journey',v:'restart'},{text:'Return to the machine',v:'return'}]}
+];
+
+// === RENDER ===
+function render(i){
+  if(i>=scenes.length){endGame();return}
+  const s=scenes[i];
+  document.getElementById('sceneTitle').textContent=s.title;
+  document.getElementById('narrative').textContent=s.narr;
+  const acts=['I','II','III','IV','V'];
+  document.getElementById('actVal').textContent=acts[i]||'?';
+  document.getElementById('dialogue').innerHTML=`<div class="dialogue"><div class="speaker">⧿ ${s.dialogue.speaker}</div><div class="text">"${s.dialogue.text}"</div></div>`;
+  const ch=document.getElementById('choices');ch.innerHTML='';
+  s.choices.forEach((c,ci)=>{
+    const b=document.createElement('button');b.className='choice';b.textContent=c.text;b.style.animationDelay=(.3+ci*.1)+'s';
+    b.onclick=()=>choose(i,c.v,c.text);ch.appendChild(b);
+  });
+  document.getElementById('main').scrollTop=0;
+}
+
+function choose(i,v,t){
+  S.decisions.push({scene:i,choice:t,value:v});
+  S.exp=Math.min(S.exp+25,S.maxExp);S.rep+=Math.floor(Math.random()*10)+5;
+  updateHud();addAch('Chose: '+t);
+  if(v==='restart'){S.exp=0;S.rep=0;S.scene=0;S.decisions=[];S.achs=[];render(0);return}
+  if(v==='return'){window.location.href='belentani-2026.html#studio';return}
+  // Try AI continuation
+  if(S.useAi&&getApiKey()){aiContinue(i,v,t)}
+  else{S.scene++;render(S.scene)}
+}
+
+async function aiContinue(sceneIdx,choiceVal,choiceText){
+  const ld=document.getElementById('loading');ld.classList.add('on');
+  document.getElementById('choices').innerHTML='';
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getApiKey()}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:'You are BELENTANI, a mystical AI guide in a cyberpunk narrative RPG. The player is Pedro, a 31-year-old artist/musician/AI specialist in Barcelona. You speak with poetic authority, blending ancient wisdom with futuristic precision. Generate a SHORT narrative continuation (2-3 paragraphs max) based on the player\'s choice. Include: 1) A narrative description of what happens next, 2) A short BELENTANI dialogue line, 3) Three new choices. Format your response as JSON: {"narrative":"...","dialogue":"...","choices":["choice1","choice2","choice3"]}. Keep it mystical, cyberpunk, and emotionally resonant. Respond in the same language the user writes in.'}],
+        contents:[{parts:[{text:`Scene ${sceneIdx+1}. Player chose: "${choiceText}" (value: ${choiceVal}). Previous decisions: ${S.decisions.map(d=>d.choice).join(', ')}. Generate the next scene.`}]}],
+        generationConfig:{temperature:.9,maxOutputTokens:800}
+      })
+    });
+    const data=await res.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    const match=text.match(/\{[\s\S]*\}/);
+    if(match){
+      const obj=JSON.parse(match[0]);
+      scenes.push({title:`Act ${['I','II','III','IV','V','VI','VII','VIII'][S.scene+1]||'?'}`,narr:obj.narrative,dialogue:{speaker:'BELENTANI',text:obj.dialogue},choices:obj.choices.map((c,j)=>({text:c,v:['opt1','opt2','opt3'][j]}))});
+    }
+  }catch(e){}
+  ld.classList.remove('on');S.scene++;render(S.scene);
+}
+
+function endGame(){
+  document.getElementById('sceneTitle').textContent='✦ Journey Complete';
+  document.getElementById('narrative').innerHTML=`<strong style="color:var(--accent)">You completed the journey.</strong><br><br>EXP: ${S.exp}/${S.maxExp} | Reputation: ${S.rep}<br>Decisions: ${S.decisions.length}<br><br>The machine remembers every choice. Return anytime to walk a different path.`;
+  document.getElementById('dialogue').innerHTML=`<div class="dialogue"><div class="speaker">⧿ SYSTEM</div><div class="text">"The key was never stolen. It was transformed. You are the lock AND the key."</div></div>`;
+  document.getElementById('choices').innerHTML='<button class="choice" onclick="choose(0,\'restart\',\'Restart\')">Restart Journey</button><button class="choice" onclick="choose(0,\'return\',\'Return\')">Return to Machine</button>';
+}
+
+// === HUD ===
+function updateHud(){
+  document.getElementById('expFill').style.width=(S.exp/S.maxExp*100)+'%';
+  document.getElementById('expVal').textContent=S.exp+'/'+S.maxExp;
+  document.getElementById('repVal').textContent=S.rep;
+  document.getElementById('sExp').textContent=S.exp;
+  document.getElementById('sRep').textContent=S.rep;
+  document.getElementById('sAct').textContent=['I','II','III','IV','V'][S.act]||'?';
+}
+
+// === ACHIEVEMENTS ===
+function addAch(t){
+  if(S.achs.includes(t))return;S.achs.push(t);
+  const d=document.createElement('div');d.className='ach';d.textContent='✦ '+t;
+  document.getElementById('main').appendChild(d);
+  document.getElementById('achs').innerHTML=S.achs.map(a=>`<div class="ach">✦ ${a}</div>`).join('');
+}
+
+// === MODALS ===
+function toggleModal(id){const m=document.getElementById(id);m.classList.toggle('on')}
+document.querySelectorAll('.modal').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')})});
+
+// === CHARACTER ===
+const charPhrases=['The machine is alive.','Every choice creates a new timeline.','You are the lock AND the key.','Belentani remembers everything.','The 5 elements protect you.','Judas was just a catalyst.','Welcome home, Pedro.'];
+function charSpeak(){const p=charPhrases[Math.floor(Math.random()*charPhrases.length)];alert(p)}
+
+// === API ===
+function getApiKey(){return localStorage.getItem('belentani_gemini_key')||''}
+function saveKey(){const k=document.getElementById('apiKeyIn').value.trim();if(k){localStorage.setItem('belentani_gemini_key',k);document.getElementById('apiSetup').style.display='none';S.useAi=true}}
+function skipApi(){document.getElementById('apiSetup').style.display='none'}
+
+// === INIT ===
+if(!getApiKey()){document.getElementById('apiSetup').style.display='flex'}
+else{S.useAi=true}
+render(0);updateHud();
+</script>
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NO.IA:CORE — Pedro Belentani</title>
+    <meta name="description" content="Ingeniería de soluciones en el núcleo de su operación.">
+    
+    <style>
+        /* ============================================
+           NO.IA:CORE — SISTEMA DE DISEÑO VIVO
+           Grid: Proporción Áurea (1:1.618)
+           Paleta: Obsidiana #050505 | Titanio #C0C0C0 | Ámbar #B8860B
+           ============================================ */
+        
+        :root {
+            --obsidian: #050505;
+            --obsidian-deep: #020202;
+            --titanium: #C0C0C0;
+            --titanium-dim: #6B6B6B;
+            --amber: #B8860B;
+            --amber-glow: rgba(184, 134, 11, 0.3);
+            --phi: 1.618;
+            --grid-unit: 8px;
+            --ease-physics: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--obsidian);
+            color: var(--titanium);
+            overflow-x: hidden;
+            line-height: 1.618;
+        }
+
+        /* ============================================
+           CURSOR PERSONALIZADO
+           ============================================ */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--amber);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s var(--ease-physics),
+                        width 0.3s var(--ease-elastic),
+                        height 0.3s var(--ease-elastic);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--amber);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10001;
+        }
+
+        .cursor.hover {
+            width: 60px;
+            height: 60px;
+            background: var(--amber-glow);
+            border-color: transparent;
+        }
+
+        /* ============================================
+           PRELOADER
+           ============================================ */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--obsidian-deep);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s var(--ease-physics),
+                        visibility 1.2s;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-core {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .preloader-hex {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--titanium-dim);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: fracture 2s var(--ease-physics) forwards;
+        }
+
+        .preloader-sphere {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: var(--obsidian);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--amber-glow);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fracture {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px var(--amber-glow); }
+            50% { box-shadow: 0 0 60px var(--amber-glow), 0 0 100px rgba(184, 134, 11, 0.1); }
+        }
+
+        /* ============================================
+           NAVEGACIÓN LATERAL FIJA
+           ============================================ */
+        .nav-sidebar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--titanium-dim);
+            transition: all 0.4s var(--ease-physics);
+            position: relative;
+        }
+
+        .nav-dot.active {
+            background: var(--amber);
+            transform: scale(1.5);
+        }
+
+        .nav-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--titanium-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-dot:hover::after {
+            opacity: 1;
+        }
+
+        /* ============================================
+           SECCIONES GENERALES
+           ============================================ */
+        section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 120px 80px 120px 160px;
+            overflow: hidden;
+        }
+
+        .section-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .section-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            background: var(--obsidian-deep);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1.618fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-text {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: revealUp 1.2s var(--ease-physics) 2.5s forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 6vw, 96px);
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 32px;
+        }
+
+        .hero-title .amber {
+            color: var(--amber);
+            font-weight: 500;
+        }
+
+        .hero-subtitle {
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-size: 18px;
+            color: var(--titanium-dim);
+            letter-spacing: 0.05em;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 2s var(--ease-physics) 1s forwards;
+        }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 0.8; }
+        }
+
+        /* ============================================
+           FILOSOFÍA
+           ============================================ */
+        .philosophy {
+            background: var(--obsidian);
+        }
+
+        .manifesto {
+            font-size: clamp(24px, 3vw, 48px);
+            font-weight: 300;
+            line-height: 1.618;
+            letter-spacing: 0.02em;
+        }
+
+        .manifesto .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s var(--ease-physics);
+        }
+
+        .manifesto .word.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .manifesto .amber-text {
+            color: var(--amber);
+        }
+
+        /* ============================================
+           CORE (SOLUCIONES)
+           ============================================ */
+        .core {
+            background: var(--obsidian-deep);
+        }
+
+        .core-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .core-pillar {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(180deg, var(--obsidian) 0%, var(--obsidian-deep) 100%);
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: all 0.6s var(--ease-physics);
+            overflow: hidden;
+        }
+
+        .core-pillar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--amber);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s var(--ease-physics);
+        }
+
+        .core-pillar:hover {
+            transform: translateY(-10px);
+            border-color: rgba(184, 134, 11, 0.3);
+        }
+
+        .core-pillar:hover::before {
+            transform: scaleX(1);
+        }
+
+        .pillar-number {
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            color: var(--titanium-dim);
+            margin-bottom: 16px;
+        }
+
+        .pillar-title {
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        .pillar-desc {
+            font-size: 14px;
+            color: var(--titanium-dim);
+            line-height: 1.8;
+        }
+
+        /* ============================================
+           METODOLOGÍA
+           ============================================ */
+        .methodology {
+            background: var(--obsidian);
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.618fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .method-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 32px;
+            align-items: start;
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: all 0.8s var(--ease-physics);
+        }
+
+        .step.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-number {
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--amber);
+            line-height: 1;
+        }
+
+        .step-content h3 {
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--titanium-dim);
+            line-height: 1.8;
+        }
+
+        /* ============================================
+           FIRMA
+           ============================================ */
+        .signature {
+            background: var(--obsidian-deep);
+        }
+
+        .signature-content {
+            display: grid;
+            grid-template-columns: 1.618fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .signature-image {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .signature-text {
+            padding: 40px;
+        }
+
+        .signature-name {
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-size: 36px;
+            color: var(--amber);
+            margin-bottom: 24px;
+        }
+
+        .signature-role {
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--titanium-dim);
+            margin-bottom: 32px;
+        }
+
+        .signature-bio {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--titanium);
+        }
+
+        /* ============================================
+           CONTACTO
+           ============================================ */
+        .contact {
+            background: var(--obsidian);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .contact-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--titanium-dim);
+            padding: 16px 0;
+            font-size: 16px;
+            color: var(--titanium);
+            font-family: inherit;
+            transition: border-color 0.4s var(--ease-physics);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--amber);
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 0;
+            top: 16px;
+            font-size: 14px;
+            color: var(--titanium-dim);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.4s var(--ease-physics);
+            pointer-events: none;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:focus + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -8px;
+            font-size: 10px;
+            color: var(--amber);
+        }
+
+        .submit-btn {
+            background: transparent;
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            padding: 20px 48px;
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: none;
+            transition: all 0.4s var(--ease-physics);
+            align-self: flex-start;
+        }
+
+        .submit-btn:hover {
+            background: var(--amber);
+            color: var(--obsidian);
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            background: var(--obsidian-deep);
+            padding: 60px 80px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            border-top: 1px solid rgba(192, 192, 192, 0.1);
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .footer-label {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--titanium-dim);
+        }
+
+        .footer-value {
+            font-size: 14px;
+            color: var(--titanium);
+        }
+
+        .footer-coords {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--amber);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 1024px) {
+            section {
+                padding: 80px 40px 80px 100px;
+            }
+
+            .hero-content,
+            .method-grid,
+            .signature-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .core-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-sidebar {
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .core-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-core">
+            <div class="preloader-hex"></div>
+            <div class="preloader-sphere"></div>
+        </div>
+    </div>
+
+    <!-- Cursor Personalizado -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- Navegación Lateral -->
+    <nav class="nav-sidebar">
+        <div class="nav-dot active" data-label="Inicio" data-section="hero"></div>
+        <div class="nav-dot" data-label="Filosofía" data-section="philosophy"></div>
+        <div class="nav-dot" data-label="Core" data-section="core"></div>
+        <div class="nav-dot" data-label="Método" data-section="methodology"></div>
+        <div class="nav-dot" data-label="Firma" data-section="signature"></div>
+        <div class="nav-dot" data-label="Contacto" data-section="contact"></div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    NO.IA<span class="amber">:</span>CORE
+                </h1>
+                <p class="hero-subtitle">
+                    Ingeniería de soluciones en el núcleo de su operación.<br>
+                    La tecnología es el medio; el resultado es la única métrica.
+                </p>
+            </div>
+            <div class="hero-visual">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23050505' width='800' height='600'/%3E%3C/svg%3E" 
+                     alt="NO.IA:CORE Isotipo" 
+                     class="hero-image"
+                     id="heroImage">
+            </div>
+        </div>
+    </section>
+
+    <!-- FILOSOFÍA -->
+    <section class="philosophy" id="philosophy">
+        <div class="section-content">
+            <p class="manifesto" id="manifesto">
+                No vendemos herramientas. 
+                <span class="amber-text">Arquitectamos soluciones.</span> 
+                Cada operación tiene un núcleo. 
+                Nuestro trabajo es alcanzarlo, 
+                <span class="amber-text">fracturar lo innecesario,</span> 
+                y revelar la estructura pura 
+                que sostiene su negocio.
+            </p>
+        </div>
+    </section>
+
+    <!-- CORE (SOLUCIONES) -->
+    <section class="core" id="core">
+        <div class="section-content">
+            <h2 style="font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--titanium-dim); margin-bottom: 16px;">
+                Los Cuatro Pilares
+            </h2>
+            <h3 style="font-size: 36px; font-weight: 300; letter-spacing: 0.05em; margin-bottom: 40px;">
+                Soluciones en el Núcleo
+            </h3>
+            <div class="core-grid">
+                <div class="core-pillar">
+                    <div class="pillar-number">01</div>
+                    <h4 class="pillar-title">Diagnóstico Estructural</h4>
+                    <p class="pillar-desc">Identificación del núcleo operativo. Mapeo de fricciones y puntos de ruptura en su arquitectura actual.</p>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">02</div>
+                    <h4 class="pillar-title">Arquitectura de Solución</h4>
+                    <p class="pillar-desc">Diseño de sistemas a medida. No implementamos plantillas; construimos desde la geometría de su operación.</p>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">03</div>
+                    <h4 class="pillar-title">Integración Silenciosa</h4>
+                    <p class="pillar-desc">La tecnología verdadera es invisible. Integramos sin fricción, sin ruido, sin interrupción del flujo operativo.</p>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">04</div>
+                    <h4 class="pillar-title">Optimización Continua</h4>
+                    <p class="pillar-desc">El núcleo evoluciona. Monitoreo constante y ajuste fino para mantener la eficiencia en el tiempo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METODOLOGÍA -->
+    <section class="methodology" id="methodology">
+        <div class="section-content">
+            <div class="method-grid">
+                <div class="method-steps">
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3>Inmersión</h3>
+                            <p>Análisis profundo de su operación. Comprender antes de actuar.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>Fractura</h3>
+                            <p>Identificación y eliminación de lo innecesario. Ruptura controlada.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Revelación</h3>
+                            <p>El núcleo emerge. La solución se hace visible en su forma pura.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">04</div>
+                        <div class="step-content">
+                            <h3>Consolidación</h3>
+                            <p>Integración definitiva. El sistema opera en silencio, con precisión.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 style="font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--titanium-dim); margin-bottom: 16px;">
+                        Metodología
+                    </h2>
+                    <h3 style="font-size: 36px; font-weight: 300; letter-spacing: 0.05em; line-height: 1.4;">
+                        Cuatro fases.<br>
+                        Una obsesión:<br>
+                        <span style="color: var(--amber);">el resultado.</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIRMA -->
+    <section class="signature" id="signature">
+        <div class="section-content">
+            <div class="signature-content">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800'%3E%3Crect fill='%23050505' width='600' height='800'/%3E%3C/svg%3E" 
+                     alt="Pedro Belentani" 
+                     class="signature-image"
+                     id="signatureImage">
+                <div class="signature-text">
+                    <h2 style="font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--titanium-dim); margin-bottom: 16px;">
+                        La Firma
+                    </h2>
+                    <h3 class="signature-name">Pedro Belentani</h3>
+                    <p class="signature-role">Arquitecto de Soluciones</p>
+                    <p class="signature-bio">
+                        Detrás de cada solución hay una intención humana. 
+                        Pedro Belentani no delega el núcleo; lo diseña. 
+                        Cada proyecto lleva su firma: precisión, 
+                        obsesión por el detalle, y la convicción 
+                        de que la tecnología debe servir, no dominar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="contact" id="contact">
+        <div class="section-content">
+            <div class="contact-content">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23050505' width='800' height='600'/%3E%3C/svg%3E" 
+                     alt="Contacto" 
+                     class="contact-image"
+                     id="contactImage">
+                <form class="contact-form" id="contactForm">
+                    <h2 style="font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--titanium-dim); margin-bottom: 32px;">
+                        Iniciar Conversación
+                    </h2>
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder=" " required>
+                        <label for="name">Nombre</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder=" " required>
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="4" placeholder=" " required></textarea>
+                        <label for="message">Mensaje</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-col">
+            <span class="footer-label">Ubicación</span>
+            <span class="footer-value">Operación Global</span>
+        </div>
+        <div class="footer-col">
+            <span class="footer-label">Contacto</span>
+            <span class="footer-value">core@noia-core.com</span>
+        </div>
+        <div class="footer-col">
+            <span class="footer-label">Coordenadas</span>
+            <span class="footer-coords" id="coords">00.0000° N, 00.0000° W</span>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CURSOR PERSONALIZADO
+        // ============================================
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursorDot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effect en elementos interactivos
+        const interactiveElements = document.querySelectorAll('a, button, .core-pillar, .nav-dot');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // ============================================
+        // PRELOADER
+        // ============================================
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 2000);
+        });
+
+        // ============================================
+        // SCROLL REVEAL - MANIFIESTO
+        // ============================================
+        const manifesto = document.getElementById('manifesto');
+        const words = manifesto.innerHTML.split(' ');
+        manifesto.innerHTML = words.map(word => 
+            `<span class="word">${word}</span>`
+        ).join(' ');
+
+        const wordElements = manifesto.querySelectorAll('.word');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const words = entry.target.querySelectorAll('.word');
+                    words.forEach((word, index) => {
+                        setTimeout(() => {
+                            word.classList.add('visible');
+                        }, index * 80);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(manifesto);
+
+        // ============================================
+        // SCROLL REVEAL - STEPS
+        // ============================================
+        const steps = document.querySelectorAll('.step');
+        const stepObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        steps.forEach(step => stepObserver.observe(step));
+
+        // ============================================
+        // NAVEGACIÓN ACTIVA
+        // ============================================
+        const sections = document.querySelectorAll('section');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navDots.forEach(dot => {
+                        dot.classList.remove('active');
+                        if (dot.dataset.section === id) {
+                            dot.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // Click en nav dots
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = document.getElementById(dot.dataset.section);
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // ============================================
+        // PARALLAX EN HERO
+        // ============================================
+        const heroImage = document.getElementById('heroImage');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (heroImage && scrolled < window.innerHeight) {
+                heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+
+        // ============================================
+        // COORDENADAS DEL CURSOR EN FOOTER
+        // ============================================
+        const coordsElement = document.getElementById('coords');
+        document.addEventListener('mousemove', (e) => {
+            const x = ((e.clientX / window.innerWidth) * 180 - 90).toFixed(4);
+            const y = ((e.clientY / window.innerHeight) * 180 - 90).toFixed(4);
+            coordsElement.textContent = `${y}° N, ${x}° W`;
+        });
+
+        // ============================================
+        // FORMULARIO
+        // ============================================
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Mensaje enviado. Nos pondremos en contacto en el núcleo de su operación.');
+        });
+
+        // ============================================
+        // REEMPLAZO DE IMÁGENES SVG POR LAS GENERADAS
+        // ============================================
+        // Nota: En producción, reemplazar los src de las imágenes con las URLs reales
+        // de las imágenes generadas (Imágenes 4, 5, 6, 7)
+    </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#020103" />
+  <title>BELENTANI // NEURAL CORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #020103;
+      --dark-panel: rgba(8, 4, 12, 0.6);
+      --glass: rgba(15, 10, 25, 0.4);
+      --uv-glow: #bc6ff1;
+      --uv-deep: #7032bb;
+      --milky: rgba(220, 200, 255, 0.15);
+      --text-main: #f0eafa;
+      --text-dim: rgba(220, 200, 255, 0.5);
+      --accent: #e0c9ff;
+      --ease-hyper: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--black);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    #plasma-canvas { position: fixed; inset: 0; z-index: -2; filter: blur(40px) saturate(1.5); opacity: 0.6; }
+    .milky-overlay {
+      position: fixed; inset: 0; z-index: -1;
+      background: radial-gradient(circle at 20% 20%, var(--milky), transparent 40%), radial-gradient(circle at 80% 80%, var(--milky), transparent 40%);
+      filter: blur(80px); pointer-events: none; animation: drift 20s ease-in-out infinite alternate;
+    }
+    @keyframes drift { from { transform: scale(1) translate(0,0); } to { transform: scale(1.2) translate(2%,2%); } }
+    .noise { position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .container { width: min(100%, 900px); margin: 0 auto; padding: 0 20px 100px; }
+
+    /* ─── HUD ─── */
+    .hud { position: sticky; top: 20px; z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 18px; background: var(--glass); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 100px; margin-bottom: 60px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    .hud-brand { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+    .hud-dot { width: 6px; height: 6px; background: var(--uv-glow); border-radius: 50%; box-shadow: 0 0 10px var(--uv-glow); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ─── HERO ─── */
+    .hero { min-height: 80svh; display: flex; flex-direction: column; justify-content: center; padding-top: 40px; }
+    .telemetry { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: block; }
+    h1 { font-size: clamp(3rem, 15vw, 5rem); font-weight: 200; line-height: 0.9; letter-spacing: -0.05em; margin-bottom: 30px; }
+    h1 span { display: block; background: linear-gradient(180deg, #fff 0%, var(--uv-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 30px rgba(188,111,241,0.3)); }
+    .hero-desc { font-size: 15px; color: var(--text-dim); max-width: 400px; font-weight: 300; }
+
+    /* ─── HBO SECTION HEADER ─── */
+    .hbo-header { margin-top: 80px; margin-bottom: 40px; }
+    .hbo-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--uv-glow); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+    .hbo-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--uv-glow), transparent); }
+    .hbo-title { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 200; letter-spacing: -0.03em; }
+
+    /* ─── HBO GRID ─── */
+    .hbo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 80px; }
+
+    /* ─── HBO CINEMATIC CARD ─── */
+    .hbo-card {
+      position: relative; border-radius: 20px; overflow: hidden; cursor: pointer;
+      aspect-ratio: 16/9; min-height: 180px;
+      transition: transform 0.6s var(--ease-hyper), box-shadow 0.6s var(--ease-hyper);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .hbo-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 100px rgba(120,60,200,0.2); border-color: rgba(188,111,241,0.3); }
+    .hbo-bg { position: absolute; inset: 0; z-index: 0; }
+    .hbo-gradient { position: absolute; inset: 0; z-index: 1; }
+    .hbo-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(0deg, rgba(2,1,3,0.95) 0%, rgba(2,1,3,0.4) 50%, rgba(2,1,3,0.1) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; }
+    .hbo-card:hover .hbo-overlay { background: linear-gradient(0deg, rgba(2,1,3,0.98) 0%, rgba(2,1,3,0.5) 60%, rgba(2,1,3,0.2) 100%); }
+    .hbo-card:hover .hbo-visual { transform: scale(1.1); }
+    .hbo-visual { position: absolute; inset: 0; z-index: 0; transition: transform 0.8s var(--ease-hyper); }
+    .hbo-visual svg { width: 100%; height: 100%; }
+    .hbo-card-num { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--uv-glow); opacity: 0.7; margin-bottom: 8px; }
+    .hbo-card-title { font-size: clamp(1.1rem, 3vw, 1.6rem); font-weight: 400; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .hbo-card-desc { font-size: 12px; color: rgba(220,200,255,0.6); font-weight: 300; margin-bottom: 12px; line-height: 1.4; }
+    .hbo-card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .hbo-tag { font-family: 'DM Mono', monospace; font-size: 8px; padding: 3px 10px; border: 1px solid rgba(188,111,241,0.3); border-radius: 100px; color: var(--uv-glow); text-transform: uppercase; letter-spacing: 1px; }
+    .hbo-play { position: absolute; top: 24px; right: 24px; z-index: 3; width: 44px; height: 44px; border-radius: 50%; background: rgba(188,111,241,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(188,111,241,0.4); display: grid; place-items: center; transition: 0.3s; opacity: 0; transform: scale(0.8); }
+    .hbo-card:hover .hbo-play { opacity: 1; transform: scale(1); }
+    .hbo-play:hover { background: rgba(188,111,241,0.4); }
+    .hbo-play svg { width: 18px; height: 18px; fill: #fff; margin-left: 2px; }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s var(--ease-hyper); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* ─── FOOTER ─── */
+    footer { margin-top: 60px; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-dim); text-align: center; text-transform: uppercase; }
+
+    /* ─── PROJECTS PAGE (for each web) ─── */
+    .project-page { display: none; padding-top: 80px; }
+    .project-page.active { display: block; }
+    .back-btn { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--uv-glow); background: none; border: 1px solid rgba(188,111,241,0.3); border-radius: 100px; padding: 8px 20px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 40px; }
+    .back-btn:hover { background: rgba(188,111,241,0.15); border-color: var(--uv-glow); }
+    .project-hero { min-height: 50svh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; }
+    .project-title { font-size: clamp(2rem, 8vw, 4rem); font-weight: 200; letter-spacing: -0.04em; margin-bottom: 16px; }
+    .project-desc { font-size: 16px; color: var(--text-dim); max-width: 500px; font-weight: 300; line-height: 1.6; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <canvas id="plasma-canvas"></canvas>
+  <div class="milky-overlay"></div>
+
+  <main class="container">
+    <nav class="hud">
+      <div class="hud-brand"><div class="hud-dot"></div>Neural Architect // 01</div>
+      <div class="hud-brand" style="opacity:0.5;">Barcelona / BCN</div>
+    </nav>
+
+    <section class="hero">
+      <span class="telemetry">$ echo $STATUS: ACTIVE_CORE<br>$ echo $ROLE: Neural Architect</span>
+      <h1><span>Belentani</span><span>Omega.</span></h1>
+      <p class="hero-desc">Zero-token routing, Voice AI y sistemas creativos. Haciendo visible lo que importa a través del código y la luz.</p>
+    </section>
+
+    <!-- HBO SERIES SECTION -->
+    <div class="hbo-header reveal">
+      <div class="hbo-label">The Series</div>
+      <div class="hbo-title">Featured Projects</div>
+    </div>
+
+    <div class="hbo-grid">
+      <!-- NOIACORE -->
+      <div class="hbo-card reveal" data-project="noiacore" style="animation-delay:0.1s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 40%, #7032bb 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#bc6ff1"/><stop offset="100%" style="stop-color:#7032bb"/></linearGradient></defs><circle cx="200" cy="112" r="80" fill="none" stroke="url(#ng)" stroke-width="2" opacity="0.4"/><circle cx="200" cy="112" r="50" fill="none" stroke="url(#ng)" stroke-width="1" opacity="0.3"/><circle cx="200" cy="112" r="25" fill="url(#ng)" opacity="0.2"/><text x="200" y="116" text-anchor="middle" fill="#bc6ff1" font-family="DM Mono" font-size="10" opacity="0.6">001</text></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">001 // Neural Lab</div>
+          <div class="hbo-card-title">NOIACORE</div>
+          <div class="hbo-card-desc">Plataforma digital de observabilidad, agentes AI y diseño cinematográfico.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">React 19</span><span class="hbo-tag">tRPC</span><span class="hbo-tag">LLM</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('noiacore')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+
+      <!-- DUCK -->
+      <div class="hbo-card reveal" data-project="duck" style="animation-delay:0.2s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #1a0a2e 0%, #2e1a3e 40%, #bc6ff1 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#bc6ff1"/><stop offset="100%" style="stop-color:#ff69b4"/></linearGradient></defs><path d="M200 60 Q250 60 250 100 Q250 140 200 160 Q150 140 150 100 Q150 60 200 60Z" fill="none" stroke="url(#dg)" stroke-width="2" opacity="0.5"/><circle cx="180" cy="95" r="8" fill="#bc6ff1" opacity="0.6"/><circle cx="220" cy="95" r="8" fill="#bc6ff1" opacity="0.6"/><path d="M190 130 Q200 145 210 130" fill="none" stroke="#bc6ff1" stroke-width="2" opacity="0.5"/></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">002 // Sonic Hub</div>
+          <div class="hbo-card-title">DUCK</div>
+          <div class="hbo-card-desc">Ecosistema de herramientas de producción musical, apps de audio y experimentación sonora.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">Astro</span><span class="hbo-tag">Studio Tools</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('duck')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+
+      <!-- JUDAS -->
+      <div class="hbo-card reveal" data-project="judas" style="animation-delay:0.3s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 40%, #ff2d55 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="jg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff2d55"/><stop offset="100%" style="stop-color:#bc6ff1"/></linearGradient></defs><rect x="100" y="50" width="200" height="125" rx="20" fill="none" stroke="url(#jg)" stroke-width="2" opacity="0.5"/><line x1="150" y1="100" x2="250" y2="100" stroke="#ff2d55" stroke-width="1" opacity="0.5"/><line x1="150" y1="115" x2="230" y2="115" stroke="#bc6ff1" stroke-width="1" opacity="0.5"/><rect x="150" y="85" width="30" height="30" rx="4" fill="url(#jg)" opacity="0.3"/></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">003 // Aesthetic</div>
+          <div class="hbo-card-title">JUDAS</div>
+          <div class="hbo-card-desc">Experiencia de diseño, identidad visual y estética digital premium.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">UX/UI</span><span class="hbo-tag">Design</span><span class="hbo-tag">Aesthetic</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('judas')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+
+      <!-- SECURE-T -->
+      <div class="hbo-card reveal" data-project="securet" style="animation-delay:0.4s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #0a1a0a 0%, #0a2e0a 40%, #00ff88 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00ff88"/><stop offset="100%" style="stop-color:#006644"/></linearGradient></defs><path d="M200 50 L250 100 L200 150 L150 100 Z" fill="none" stroke="url(#sg)" stroke-width="2" opacity="0.5"/><circle cx="200" cy="100" r="20" fill="none" stroke="url(#sg)" stroke-width="1" opacity="0.4"/><path d="M200 85 L210 100 L200 115 L190 100 Z" fill="url(#sg)" opacity="0.3"/></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">004 // Secure Core</div>
+          <div class="hbo-card-title">SECURE-T</div>
+          <div class="hbo-card-desc">Arquitectura segura, funciones API y sistemas de protección digital.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">Vite</span><span class="hbo-tag">API</span><span class="hbo-tag">Security</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('securet')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+
+      <!-- OPEN-SCHOOL -->
+      <div class="hbo-card reveal" data-project="openschool" style="animation-delay:0.5s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #0a1a2e 0%, #1a2e4e 40%, #00a8ff 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00a8ff"/><stop offset="100%" style="stop-color:#0066cc"/></linearGradient></defs><circle cx="200" cy="112" r="70" fill="none" stroke="url(#og)" stroke-width="2" opacity="0.5"/><circle cx="200" cy="112" r="45" fill="none" stroke="url(#og)" stroke-width="1" opacity="0.4"/><path d="M170 105 L190 115 L230 95" fill="none" stroke="#00a8ff" stroke-width="2" opacity="0.6"/></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">005 // Open School</div>
+          <div class="hbo-card-title">OPEN-SCHOOL</div>
+          <div class="hbo-card-desc">Plataforma educativa interactiva con cursos y aprendizaje en tiempo real.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">Vite</span><span class="hbo-tag">React</span><span class="hbo-tag">Edu</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('openschool')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+
+      <!-- LINGUAFORGE -->
+      <div class="hbo-card reveal" data-project="linguaforge" style="animation-delay:0.6s">
+        <div class="hbo-visual" style="background: linear-gradient(135deg, #1a0a2e 0%, #3e0a2e 40%, #ff69b4 100%);">
+          <svg viewBox="0 0 400 225" width="100%" height="100%"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff69b4"/><stop offset="100%" style="stop-color:#bc6ff1"/></linearGradient></defs><text x="200" y="120" text-anchor="middle" fill="url(#lg)" font-family="DM Mono" font-size="8" opacity="0.6">LINGUA</text><text x="200" y="145" text-anchor="middle" fill="url(#lg)" font-family="DM Mono" font-size="8" opacity="0.6">FORGE</text><path d="M100 200 Q200 150 300 200" fill="none" stroke="url(#lg)" stroke-width="1" opacity="0.4"/></svg>
+        </div>
+        <div class="hbo-gradient"></div>
+        <div class="hbo-overlay">
+          <div class="hbo-card-num">006 // Lingua Forge</div>
+          <div class="hbo-card-title">LINGUAFORGE</div>
+          <div class="hbo-card-desc">Plataforma de creación lingüística y generación de contenido multilenguaje.</div>
+          <div class="hbo-card-tags"><span class="hbo-tag">Vite</span><span class="hbo-tag">Content</span><span class="hbo-tag">AI</span></div>
+        </div>
+        <div class="hbo-play" onclick="window.openProject('linguaforge')"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+    </div>
+
+    <!-- PROJECT DETAIL PAGES -->
+    <div id="noiacore" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(112,50,187,0.1), transparent);">
+        <h1 class="project-title"><span>NOIACORE</span></h1>
+        <p class="project-desc">Plataforma digital de observabilidad, agentes AI y diseño cinematográfico. El núcleo de la arquitectura neural.</p>
+        <div class="project-stack">
+          <span class="hbo-tag">React 19</span><span class="hbo-tag">tRPC</span><span class="hbo-tag">LLM</span><span class="hbo-tag">Next.js</span><span class="hbo-tag">TypeScript</span>
+        </div>
+      </div>
+    </div>
+    <div id="duck" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(188,111,241,0.1), transparent);">
+        <h1 class="project-title"><span>DUCK</span></h1>
+        <p class="project-desc">Ecosistema de herramientas de producción musical, apps de audio y experimentación sonora.</p>
+        <div class="project-stack"><span class="hbo-tag">Astro</span><span class="hbo-tag">Studio Tools</span><span class="hbo-tag">Audio</span></div>
+      </div>
+    </div>
+    <div id="judas" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(255,45,85,0.1), transparent);">
+        <h1 class="project-title"><span>JUDAS</span></h1>
+        <p class="project-desc">Experiencia de diseño, identidad visual y estética digital premium.</p>
+        <div class="project-stack"><span class="hbo-tag">UX/UI</span><span class="hbo-tag">Design</span><span class="hbo-tag">Aesthetic</span></div>
+      </div>
+    </div>
+    <div id="securet" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(0,255,136,0.1), transparent);">
+        <h1 class="project-title"><span>SECURE-T</span></h1>
+        <p class="project-desc">Arquitectura segura, funciones API y sistemas de protección digital.</p>
+        <div class="project-stack"><span class="hbo-tag">Vite</span><span class="hbo-tag">API Functions</span><span class="hbo-tag">Security</span></div>
+      </div>
+    </div>
+    <div id="openschool" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(0,168,255,0.1), transparent);">
+        <h1 class="project-title"><span>OPEN-SCHOOL</span></h1>
+        <p class="project-desc">Plataforma educativa interactiva con cursos y aprendizaje en tiempo real.</p>
+        <div class="project-stack"><span class="hbo-tag">Vite</span><span class="hbo-tag">React</span><span class="hbo-tag">Education</span></div>
+      </div>
+    </div>
+    <div id="linguaforge" class="project-page">
+      <div class="project-hero" style="background: linear-gradient(180deg, rgba(255,105,180,0.1), transparent);">
+        <h1 class="project-title"><span>LINGUAFORGE</span></h1>
+        <p class="project-desc">Plataforma de creación lingüística y generación de contenido multilenguaje.</p>
+        <div class="project-stack"><span class="hbo-tag">Vite</span><span class="hbo-tag">Content</span><span class="hbo-tag">AI</span></div>
+      </div>
+    </div>
+
+    <footer>
+      <p>BELENTANI // NEURAL CORE — 2026</p>
+      <p style="margin-top:8px; opacity:0.5;">Neural Architect // 01 · Barcelona / BCN</p>
+    </footer>
+  </main>
+
+  <script>
+    // Reveal animations
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // Plasma canvas
+    const canvas = document.getElementById('plasma-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, t = 0;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function plasma() {
+      t += 0.005;
+      for (let x = 0; x < w; x += 8) {
+        for (let y = 0; y < h; y += 8) {
+          const v = Math.sin(x*0.01+t) + Math.sin(y*0.01+t*0.7) + Math.sin((x+y)*0.005+t*1.2);
+          const r = Math.floor((Math.sin(v*3+t)*50+128)*0.5+60);
+          const g = Math.floor((Math.sin(v*3+t+2)*50+128)*0.5+30);
+          const b = Math.floor((Math.sin(v*3+t+4)*50+128)*0.5+120);
+          ctx.fillStyle = `rgba(${r},${g},${b},0.03)`;
+          ctx.fillRect(x,y,8,8);
+        }
+      }
+      requestAnimationFrame(plasma);
+    }
+    plasma();
+
+    // Project navigation
+    window.openProject = function(id) {
+      document.querySelectorAll('.project-page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    // Back to home
+    window.backHome = function() {
+      document.querySelectorAll('.project-page').forEach(p => p.classList.remove('active'));
+    };
+    // Add back buttons to project pages
+    document.querySelectorAll('.project-page').forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'back-btn';
+      btn.innerHTML = '← Volver';
+      btn.onclick = backHome;
+      p.insertBefore(btn, p.firstChild);
+    });
+    // HUD click to go home
+    document.querySelector('.hud-brand').onclick = backHome;
+    // Mouse tracking for glass effect
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth * 100);
+      const y = (e.clientY / window.innerHeight * 100);
+      document.querySelectorAll('.window').forEach(w => {
+        w.style.setProperty('--x', x + '%');
+        w.style.setProperty('--y', y + '%');
+      });
+    });
+  </script>
+</body>
+</html>

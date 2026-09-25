@@ -1,0 +1,1364 @@
+<!doctype html>
+<!-- ═══════════════════════════════════════════════════════════════
+     200 WEBS PREMIUM · NOIACORE 2060 ESTHETIC
+     Autocontenido · CRT Boot · 39 idiomas · 600+ aspectos
+     Fecha: 2026-08-06
+═══════════════════════════════════════════════════════════════ -->
+<html lang="es" data-theme="dark" data-mode="pesada">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#030308">
+<meta name="description" content="200 webs con diseño front-end más premium y premiadas del mundo. Awwwards, FWA, Webby, D&AD, Cannes Lions.">
+<meta property="og:title" content="200 Webs Premium · Front-Design Awards">
+<meta property="og:description" content="Las webs más premiadas por diseño front-end: Awwwards, FWA, Webby, D&AD y más.">
+<title>200 Webs Premium · Front-End Design Awards</title>
+<style>
+/* ── 1) VARIABLES & THEMES ── */
+:root{
+  --bg:#030308;--bg2:#08081a;--bg3:#0c0c24;
+  --line:#12122e;--line2:#1e1e44;
+  --txt:#eef0ff;--mut:#7a7aa8;--dim:#52527c;
+  --blue:#6b8bff;--purple:#a55cff;--violet:#8457ff;
+  --cyan:#5fd6ef;--red:#ff3b5c;--green:#4ade80;--gold:#fbbf24;
+  --glow-blue:0 0 28px -10px rgba(107,139,255,.55);
+  --glow-purple:0 0 28px -10px rgba(165,92,255,.55);
+  --glass:rgba(8,8,26,.5);
+  --spring:cubic-bezier(.22,1,.36,1);
+  --f-disp:"Newsreader",Georgia,serif;
+  --f-body:"Instrument Sans",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --radius:16px;
+}
+[data-theme="light"]{
+  --bg:#f4f4fb;--bg2:#ffffff;--bg3:#ececf7;
+  --line:#dcdcf0;--line2:#c6c6e4;
+  --txt:#101028;--mut:#5a5a86;--dim:#8a8ab0;
+  --glass:rgba(255,255,255,.6);
+}
+/* ── 2) RESET & BASE ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:var(--f-body);font-size:16px;line-height:1.55;
+  overflow-x:hidden;opacity:0;transition:opacity .6s ease;
+}
+body.on{opacity:1;}
+::selection{background:var(--purple);color:#fff;}
+a{color:var(--cyan);text-decoration:none;}
+button{font-family:var(--f-mono);cursor:pointer;}
+.skip{
+  position:absolute;left:-999px;top:0;
+  background:var(--purple);color:#fff;padding:8px 14px;z-index:3000;
+}
+.skip:focus{left:8px;top:8px;}
+.mono{font-family:var(--f-mono);}
+
+/* ── 3) NEON BACKGROUND ── */
+.neon-bg{
+  position:fixed;inset:0;z-index:-1;overflow:hidden;
+  opacity:0;transition:opacity 1.8s ease;
+}
+body.on .neon-bg{opacity:1;}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(120px);opacity:.35;will-change:transform;
+}
+#orb1{width:520px;height:520px;background:var(--violet);top:-160px;left:-120px;}
+#orb2{width:420px;height:420px;background:var(--blue);top:40%;right:-160px;}
+#orb3{width:380px;height:380px;background:var(--purple);bottom:-140px;left:30%;}
+.grid-overlay{
+  position:absolute;inset:0;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;opacity:.16;
+  mask-image:radial-gradient(ellipse at 50% 20%,#000 0%,transparent 70%);
+}
+
+/* ── 4) CRT BOOT ── */
+#crt{
+  position:fixed;inset:0;z-index:2000;background:#000;
+  display:grid;place-items:center;overflow:hidden;
+}
+#crt.off{display:none;}
+.crt-beam{
+  position:absolute;left:50%;top:50%;width:140%;height:2px;
+  transform:translate(-50%,-50%) scaleX(0);
+  background:linear-gradient(90deg,transparent,var(--purple),#fff,var(--cyan),transparent);
+  opacity:0;filter:drop-shadow(0 0 14px var(--purple));
+}
+#crt.b1 .crt-beam{animation:beamX .28s var(--spring) forwards;}
+@keyframes beamX{0%{transform:translate(-50%,-50%) scaleX(0);opacity:0;}60%{opacity:1;}100%{transform:translate(-50%,-50%) scaleX(1);opacity:1;}}
+.crt-screen{
+  position:absolute;inset:0;background:#05010d;
+  transform:scaleY(.004);opacity:0;
+}
+#crt.b2 .crt-screen{animation:expY .34s var(--spring) forwards;}
+@keyframes expY{to{transform:scaleY(1);opacity:1;}}
+.crt-static{
+  position:absolute;inset:-20px;opacity:0;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.5'/></svg>");
+}
+#crt.b3 .crt-static{animation:staticOn .85s steps(6) forwards;}
+@keyframes staticOn{
+  0%{opacity:0;transform:translate(0,0);}20%{opacity:.55;transform:translate(-6px,4px);}
+  40%{opacity:.35;transform:translate(5px,-6px);}60%{opacity:.6;transform:translate(-4px,-3px);}
+  80%{opacity:.4;transform:translate(6px,5px);}100%{opacity:.5;transform:translate(0,0);}
+}
+.crt-scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 4px);
+  pointer-events:none;
+}
+.crt-glitch{
+  position:absolute;inset:0;opacity:0;
+  background:linear-gradient(180deg,transparent 12%,rgba(165,92,255,.25) 13% 15%,transparent 16% 40%,rgba(95,214,239,.2) 41% 42%,transparent 43% 70%,rgba(255,59,92,.18) 71% 74%,transparent 75%);
+}
+#crt.b3 .crt-glitch{animation:glitchJit .5s steps(3) 2;}
+@keyframes glitchJit{0%{opacity:.9;transform:translateX(-8px);}50%{opacity:.5;transform:translateX(6px);}100%{opacity:.8;transform:translateX(0);}}
+.crt-logo{
+  position:relative;font-family:var(--f-mono);
+  font-size:clamp(18px,4vw,34px);letter-spacing:.42em;color:var(--txt);
+  text-shadow:-2px 0 var(--cyan),2px 0 var(--purple);opacity:0;
+}
+#crt.b3 .crt-logo{animation:logoIn .45s .08s var(--spring) forwards;}
+@keyframes logoIn{0%{opacity:0;transform:scale(1.15);filter:blur(6px);}100%{opacity:1;transform:scale(1);filter:blur(0);}}
+#crt.b4{animation:wipeOut .55s var(--spring) forwards;}
+@keyframes wipeOut{0%{clip-path:inset(0 0 0 0);filter:brightness(1);}30%{filter:brightness(1.6);}100%{clip-path:inset(0 0 100% 0);filter:brightness(2);}}
+#crt.liteboot{transition:opacity .5s ease;}
+#crt.liteboot.b4{opacity:0;}
+.crt-status{
+  position:absolute;bottom:18%;left:50%;transform:translateX(-50%);
+  font-family:var(--f-mono);font-size:12px;color:var(--mut);
+  letter-spacing:.2em;opacity:0;
+}
+#crt.b3 .crt-status{animation:fadeIn .3s .2s forwards;}
+@keyframes fadeIn{to{opacity:1;}}
+
+/* ── 5) HEADER GLASS ── */
+.head{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:14px;
+  padding:12px 20px;
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  background:var(--glass);border-bottom:1px solid var(--line);
+}
+.brand{
+  font-family:var(--f-disp);font-size:18px;font-weight:600;
+  letter-spacing:.02em;white-space:nowrap;
+}
+.brand b{
+  background:linear-gradient(90deg,var(--blue),var(--violet),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.head-controls{
+  display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;
+}
+.pill{
+  font-size:10px;padding:5px 10px;
+  border:1px solid var(--line2);border-radius:999px;
+  background:var(--bg2);color:var(--mut);
+  transition:all .3s var(--spring);white-space:nowrap;
+  font-family:var(--f-mono);
+}
+.pill:hover,.pill.active{
+  color:var(--txt);border-color:var(--purple);
+  box-shadow:var(--glow-purple);
+}
+.pill.active{background:rgba(165,92,255,.15);}
+select.pill{
+  appearance:none;padding-right:22px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237a7aa8'><path d='M2 4l4 4 4-4'/></svg>");
+  background-repeat:no-repeat;background-position:right 6px center;
+}
+
+/* ── 6) HERO ── */
+.hero{
+  max-width:1100px;margin:0 auto;padding:72px 24px 36px;
+  text-align:center;position:relative;
+}
+.kicker{
+  font-family:var(--f-mono);font-size:11px;
+  letter-spacing:.3em;color:var(--dim);text-transform:uppercase;
+}
+h1.title{
+  font-family:var(--f-disp);font-size:clamp(36px,6.5vw,76px);
+  line-height:1.04;margin:14px 0 12px;
+  background:linear-gradient(100deg,var(--blue),var(--violet) 45%,var(--purple) 80%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sub{color:var(--mut);max-width:620px;margin:0 auto 24px;font-size:15px;}
+.searchbox{
+  display:flex;gap:8px;max-width:580px;margin:0 auto 12px;
+}
+.searchbox input{
+  flex:1;padding:12px 16px;border-radius:14px;
+  border:1px solid var(--line2);background:var(--bg2);
+  color:var(--txt);font-family:var(--f-body);font-size:14px;
+  outline:none;transition:border .3s,box-shadow .3s;
+}
+.searchbox input:focus{
+  border-color:var(--violet);box-shadow:var(--glow-purple);
+}
+.btn{
+  padding:12px 18px;border-radius:14px;
+  border:1px solid var(--line2);
+  background:linear-gradient(120deg,var(--blue),var(--violet));
+  color:#fff;font-size:12px;font-family:var(--f-mono);
+  transition:transform .3s var(--spring),box-shadow .3s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--glow-blue);}
+
+/* ── 7) STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:10px;max-width:900px;margin:20px auto 0;padding:0 24px;
+}
+.stat{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg2);padding:16px 10px;text-align:center;
+  transition:transform .35s var(--spring),box-shadow .35s;
+}
+.stat:hover{transform:translateY(-4px);box-shadow:var(--glow-purple);}
+.stat .n{
+  font-family:var(--f-mono);font-size:24px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat .l{
+  font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;
+}
+
+/* ── 8) FILTER BAR ── */
+.filter-bar{
+  max-width:1200px;margin:0 auto;padding:8px 24px;
+  display:flex;gap:6px;flex-wrap:wrap;align-items:center;
+}
+.filter-bar .label{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--dim);letter-spacing:.15em;text-transform:uppercase;
+  margin-right:6px;
+}
+
+/* ── 9) CARDS GRID ── */
+.grid{
+  max-width:1200px;margin:0 auto;padding:16px 24px 60px;
+  display:grid;gap:14px;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+}
+.card{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg2);padding:18px;
+  transition:transform .35s var(--spring),box-shadow .35s,border-color .35s;
+  position:relative;overflow:hidden;
+  content-visibility:auto;contain-intrinsic-size:1px 180px;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 8px 32px -8px rgba(132,87,255,.25);
+  border-color:var(--line2);
+}
+.card-rank{
+  position:absolute;top:10px;right:12px;
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--dim);letter-spacing:.05em;
+}
+.card-icon{font-size:20px;margin-right:6px;}
+.card-head{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.card-flag{font-size:18px;}
+.card-name{
+  font-family:var(--f-disp);font-size:17px;font-weight:600;
+  color:var(--txt);line-height:1.2;
+}
+.card-domain{
+  font-family:var(--f-mono);font-size:11px;
+  color:var(--cyan);margin-bottom:8px;display:block;
+}
+.card-cat{
+  display:inline-block;font-family:var(--f-mono);font-size:9px;
+  padding:3px 8px;border-radius:999px;
+  background:rgba(107,139,255,.1);color:var(--blue);
+  border:1px solid rgba(107,139,255,.2);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-right:4px;margin-bottom:4px;
+}
+.card-awards{
+  font-size:10px;color:var(--gold);margin:6px 0 4px;
+  font-family:var(--f-mono);line-height:1.4;
+}
+.card-tech{
+  font-size:10px;color:var(--mut);line-height:1.4;
+}
+.card-actions{
+  display:flex;gap:6px;margin-top:10px;
+}
+.card-btn{
+  font-size:10px;padding:5px 10px;border-radius:8px;
+  border:1px solid var(--line2);background:var(--bg3);
+  color:var(--mut);font-family:var(--f-mono);
+  transition:all .25s var(--spring);
+  text-decoration:none;
+}
+.card-btn:hover{
+  color:var(--txt);border-color:var(--purple);
+  box-shadow:var(--glow-purple);
+}
+.card-btn.primary{
+  background:linear-gradient(120deg,var(--blue),var(--violet));
+  color:#fff;border-color:transparent;
+}
+.card-glow{
+  position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 50% 50%,rgba(132,87,255,.06),transparent 60%);
+  opacity:0;transition:opacity .5s;pointer-events:none;
+}
+.card:hover .card-glow{opacity:1;}
+
+/* ── 10) RESULTS COUNTER ── */
+.results-info{
+  max-width:1200px;margin:0 auto;padding:4px 24px;
+  font-family:var(--f-mono);font-size:11px;color:var(--dim);
+}
+
+/* ── 11) FOOTER ── */
+.foot{
+  max-width:1200px;margin:0 auto;padding:32px 24px;
+  border-top:1px solid var(--line);
+  font-family:var(--f-mono);font-size:10px;color:var(--dim);
+  text-align:center;letter-spacing:.08em;
+}
+
+/* ── 12) SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--purple);}
+
+/* ── 13) ANIMATIONS ── */
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px);}100%{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .5s var(--spring) forwards;opacity:0;}
+
+/* ── 14) RESPONSIVE ── */
+@media(max-width:768px){
+  .head{flex-wrap:wrap;gap:8px;padding:10px 14px;}
+  .head-controls{gap:5px;}
+  .grid{grid-template-columns:1fr;padding:12px 14px 40px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .hero{padding:48px 16px 24px;}
+  .filter-bar{padding:6px 14px;}
+  .results-info{padding:4px 14px;}
+}
+
+/* ── 15) REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- NEON BG -->
+<div class="neon-bg">
+  <div class="orb" id="orb1"></div>
+  <div class="orb" id="orb2"></div>
+  <div class="orb" id="orb3"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<!-- CRT BOOT -->
+<div id="crt">
+  <div class="crt-beam"></div>
+  <div class="crt-screen"></div>
+  <div class="crt-static"></div>
+  <div class="crt-scan"></div>
+  <div class="crt-glitch"></div>
+  <div class="crt-logo">PREMIUM·WEBS</div>
+  <div class="crt-status" id="crt-status">BOOTING SYSTEM...</div>
+</div>
+
+<!-- HEADER -->
+<header class="head">
+  <div class="brand"><b>PREMIUM</b>·WEBS</div>
+  <div class="head-controls">
+    <select class="pill" id="langSelect" title="Language" aria-label="Language"></select>
+    <button class="pill" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">☀</button>
+    <button class="pill" id="modeBtn" title="Toggle mode" aria-label="Toggle mode">LITE</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main id="main">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker" data-i18n="boot">FRONT-END DESIGN AWARDS 2026</div>
+    <h1 class="title" data-i18n="title">200 Webs Premium</h1>
+    <p class="sub" data-i18n="sub">Las webs con diseño front-end más premiadas del mundo</p>
+    <div class="searchbox">
+      <input type="search" id="searchInput" data-i18n-placeholder="search" placeholder="Buscar web, categoría o tecnología..." autocomplete="off" aria-label="Search">
+      <button class="btn" id="clearBtn" data-i18n="clear" style="display:none">Limpiar</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats" id="statsBar">
+    <div class="stat"><div class="n">200</div><div class="l" data-i18n="sites">Webs</div></div>
+    <div class="stat"><div class="n">22</div><div class="l" data-i18n="categories">Categorías</div></div>
+    <div class="stat"><div class="n">23</div><div class="l" data-i18n="countries">Países</div></div>
+    <div class="stat"><div class="n">39</div><div class="l" data-i18n="languages">Idiomas</div></div>
+    <div class="stat"><div class="n">8+</div><div class="l" data-i18n="awards">Premios</div></div>
+    <div class="stat"><div class="n">600+</div><div class="l" data-i18n="aspects">Aspectos+</div></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filterBar">
+    <span class="label" data-i18n="filter">Filtrar</span>
+  </div>
+
+  <!-- RESULTS INFO -->
+  <div class="results-info" id="resultsInfo"></div>
+
+  <!-- CARDS GRID -->
+  <div class="grid" id="grid"></div>
+</main>
+
+<!-- FOOTER -->
+<footer class="foot">
+  NOIACORE · 200 WEBS PREMIUM · FRONT-END DESIGN AWARDS · 2026 · 39 IDIOMAS · 600+ ASPECTOS
+</footer>
+
+<script>
+// ── DATA ──
+const SITES = [
+  {id:1,name:"Stripe",domain:"stripe.com",cat:"product",awards:"Awwwards SOTY, Webby",tech:"React, CSS-in-JS, Micro-interactions",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:2,name:"Linear",domain:"linear.app",cat:"product",awards:"Awwwards SOTD, CSSDA",tech:"React, Motion, Dark UI",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:3,name:"Notion",domain:"notion.so",cat:"product",awards:"Webby, CSSDA",tech:"React, Block editor",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:4,name:"Vercel",domain:"vercel.com",cat:"product",awards:"Awwwards SOTD",tech:"Next.js, GSAP, 3D",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:5,name:"Raycast",domain:"raycast.com",cat:"product",awards:"Awwwards, CSSDA",tech:"React, Framer Motion",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:6,name:"Arc Browser",domain:"arc.net",cat:"product",awards:"Awwwards SOTD",tech:"React, Lottie, Gradient",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:7,name:"Figma",domain:"figma.com",cat:"product",awards:"Webby, ADC",tech:"React, Canvas, WebGL",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:8,name:"Framer",domain:"framer.com",cat:"product",awards:"Awwwards SOTD",tech:"React, Motion, Variants",country:"NL",flag:"🇳🇱",icon:"◆"},
+  {id:9,name:"Loom",domain:"loom.com",cat:"product",awards:"Webby",tech:"React, Video embed",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:10,name:"Pitch",domain:"pitch.com",cat:"product",awards:"Awwwards, CSSDA",tech:"React, Canvas, WebGL",country:"DE",flag:"🇩🇪",icon:"◆"},
+  {id:11,name:"Airtable",domain:"airtable.com",cat:"product",awards:"Webby",tech:"React, Grid UI",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:12,name:"Superlist",domain:"superlist.com",cat:"product",awards:"Awwwards SOTD, FWA",tech:"Next.js, GSAP, 3D scroll",country:"DE",flag:"🇩🇪",icon:"◆"},
+  {id:13,name:"Polywork",domain:"polywork.com",cat:"product",awards:"Awwwards SOTD",tech:"Next.js, Animation",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:14,name:"Mailchimp",domain:"mailchimp.com",cat:"product",awards:"Webby, D&AD",tech:"React, Illustration",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:15,name:"Lottiefiles",domain:"lottiefiles.com",cat:"product",awards:"Awwwards",tech:"React, Canvas, Lottie",country:"CA",flag:"🇨🇦",icon:"◆"},
+  {id:16,name:"Readwise",domain:"readwise.io",cat:"product",awards:"CSSDA",tech:"React, Typography",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:17,name:"Descript",domain:"descript.com",cat:"product",awards:"Webby",tech:"React, Audio viz",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:18,name:"Grammarly",domain:"grammarly.com",cat:"product",awards:"Webby",tech:"React, NLP UI",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:19,name:"1Password",domain:"1password.com",cat:"product",awards:"Awwwards",tech:"Next.js, Illustration, Motion",country:"CA",flag:"🇨🇦",icon:"◆"},
+  {id:20,name:"Slack",domain:"slack.com",cat:"product",awards:"Webby, D&AD",tech:"React, Animation",country:"US",flag:"🇺🇸",icon:"◆"},
+  {id:21,name:"Apple",domain:"apple.com",cat:"brand",awards:"Webby, D&AD, Cannes Lions",tech:"Scroll-driven, Typography, Photography",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:22,name:"Aesop",domain:"aesop.com",cat:"brand",awards:"Awwwards SOTD, Webby",tech:"Editorial, Slow UX, Typography",country:"AU",flag:"🇦🇺",icon:"✦"},
+  {id:23,name:"Tesla",domain:"tesla.com",cat:"brand",awards:"Webby, Awwwards",tech:"React, 3D configurator, Scroll",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:24,name:"Nike",domain:"nike.com",cat:"brand",awards:"Cannes Lions, D&AD, Webby",tech:"React, WebGL, Motion",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:25,name:"Spotify",domain:"spotify.com",cat:"brand",awards:"Webby, D&AD",tech:"React, Data viz, Color",country:"SE",flag:"🇸🇪",icon:"✦"},
+  {id:26,name:"Netflix",domain:"netflix.com",cat:"brand",awards:"Webby, Emmy",tech:"React, Personalization UI",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:27,name:"Patagonia",domain:"patagonia.com",cat:"brand",awards:"Webby",tech:"React, Editorial, Film",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:28,name:"Glossier",domain:"glossier.com",cat:"brand",awards:"Awwwards, CSSDA",tech:"React, Pastel, Micro-anim",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:29,name:"Away",domain:"awaytravel.com",cat:"brand",awards:"Awwwards",tech:"Next.js, Editorial, Scroll",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:30,name:"Warby Parker",domain:"warbyparker.com",cat:"brand",awards:"Webby",tech:"React, 3D try-on",country:"US",flag:"🇺🇸",icon:"✦"},
+  {id:31,name:"Rimowa",domain:"rimowa.com",cat:"brand",awards:"Awwwards, FWA",tech:"WebGL, 3D product, Scroll",country:"DE",flag:"🇩🇪",icon:"✦"},
+  {id:32,name:"Balenciaga",domain:"balenciaga.com",cat:"brand",awards:"Awwwards SOTD, FWA",tech:"WebGL, Avant-garde, Brutalist",country:"FR",flag:"🇫🇷",icon:"✦"},
+  {id:33,name:"Acne Studios",domain:"acnestudios.com",cat:"brand",awards:"Awwwards, FWA",tech:"WebGL, 3D, Drag interaction",country:"SE",flag:"🇸🇪",icon:"✦"},
+  {id:34,name:"Loewe",domain:"loewe.com",cat:"brand",awards:"Awwwards, FWA",tech:"WebGL, 3D puzzle, Craft",country:"ES",flag:"🇪🇸",icon:"✦"},
+  {id:35,name:"Bottega Veneta",domain:"bottegaveneta.com",cat:"brand",awards:"Awwwards, FWA",tech:"WebGL, Immersive, Scroll",country:"IT",flag:"🇮🇹",icon:"✦"},
+  {id:36,name:"Gucci",domain:"gucci.com",cat:"brand",awards:"Awwwards, Webby",tech:"React, WebGL, Fashion film",country:"IT",flag:"🇮🇹",icon:"✦"},
+  {id:37,name:"Hermes",domain:"hermes.com",cat:"brand",awards:"Webby",tech:"Editorial, Slow, Illustration",country:"FR",flag:"🇫🇷",icon:"✦"},
+  {id:38,name:"Omega",domain:"omegawatches.com",cat:"brand",awards:"Awwwards",tech:"WebGL, 3D, Configurator",country:"CH",flag:"🇨🇭",icon:"✦"},
+  {id:39,name:"Muji",domain:"muji.com",cat:"brand",awards:"Webby",tech:"Minimal, Clean, Wabi-sabi",country:"JP",flag:"🇯🇵",icon:"✦"},
+  {id:40,name:"Line Friends",domain:"linefriends.com",cat:"brand",awards:"Awwwards",tech:"3D, Character, Kawaii",country:"KR",flag:"🇰🇷",icon:"✦"},
+  {id:41,name:"Active Theory",domain:"activetheory.net",cat:"agency",awards:"Awwwards SOTY, FWA, CSSDA",tech:"WebGL, Shaders, Three.js",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:42,name:"Locomotive",domain:"locomotive.ca",cat:"agency",awards:"Awwwards SOTY, FWA",tech:"GSAP, ScrollTrigger, Locomotive Scroll",country:"CA",flag:"🇨🇦",icon:"▲"},
+  {id:43,name:"Dogstudio",domain:"dogstudio.co",cat:"agency",awards:"Awwwards SOTD, FWA",tech:"WebGL, Three.js, GSAP",country:"BE",flag:"🇧🇪",icon:"▲"},
+  {id:44,name:"Huge",domain:"hugeinc.com",cat:"agency",awards:"Webby, D&AD, Cannes Lions",tech:"React, Motion, WebGL",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:45,name:"Resn",domain:"resn.co.nz",cat:"agency",awards:"Awwwards SOTD, FWA",tech:"WebGL, Three.js, Absurd",country:"NZ",flag:"🇳🇿",icon:"▲"},
+  {id:46,name:"Buro Ulf L",domain:"bureaulf.com",cat:"agency",awards:"Awwwards SOTD",tech:"Minimal, Typography, Grid",country:"CH",flag:"🇨🇭",icon:"▲"},
+  {id:47,name:"Instrument",domain:"instrument.com",cat:"agency",awards:"Awwwards, D&AD",tech:"React, Film, Motion",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:48,name:"ManvsMachine",domain:"manvsmachine.co.uk",cat:"agency",awards:"D&AD, Cannes Lions",tech:"WebGL, 3D, Brand film",country:"UK",flag:"🇬🇧",icon:"▲"},
+  {id:49,name:"Buck",domain:"buck.co",cat:"agency",awards:"ADC, D&AD",tech:"Animation, Character, 3D",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:50,name:"Framestore",domain:"framestore.com",cat:"agency",awards:"D&AD, Cannes Lions",tech:"WebGL, 3D, VFX",country:"UK",flag:"🇬🇧",icon:"▲"},
+  {id:51,name:"MediaMonks",domain:"mediamonks.com",cat:"agency",awards:"Cannes Lions, FWA",tech:"WebGL, Three.js, Immersive",country:"NL",flag:"🇳🇱",icon:"▲"},
+  {id:52,name:"Goodby Silverstein",domain:"gspsf.com",cat:"agency",awards:"Cannes Lions, D&AD",tech:"Interactive, WebGL",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:53,name:"AKQA",domain:"akqa.com",cat:"agency",awards:"Cannes Lions, D&AD, Webby",tech:"React, Motion, Data viz",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:54,name:"R/GA",domain:"rga.com",cat:"agency",awards:"Cannes Lions, D&AD, Webby",tech:"React, Innovation, IoT",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:55,name:"IDEO",domain:"ideo.org",cat:"agency",awards:"Webby, D&AD",tech:"Design thinking, Storytelling",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:56,name:"Pentagram",domain:"pentagram.com",cat:"agency",awards:"D&AD, ADC, TDC",tech:"Typography, Grid, Identity",country:"UK",flag:"🇬🇧",icon:"▲"},
+  {id:57,name:"MetaLab",domain:"metalab.co",cat:"agency",awards:"Awwwards",tech:"React, Product design, UI",country:"CA",flag:"🇨🇦",icon:"▲"},
+  {id:58,name:"Fantasy",domain:"fantasy.co",cat:"agency",awards:"Awwwards, FWA",tech:"React, 3D, Brand",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:59,name:"Basic",domain:"basicagency.com",cat:"agency",awards:"Awwwards, CSSDA",tech:"E-commerce, Motion, Clean",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:60,name:"Work & Co",domain:"work.co",cat:"agency",awards:"Cannes Lions, Webby",tech:"React, Prototyping, Motion",country:"US",flag:"🇺🇸",icon:"▲"},
+  {id:61,name:"Bruno Simon",domain:"bruno-simon.com",cat:"portfolio",awards:"Awwwards SOTY, FWA",tech:"Three.js, Physics, 3D drive",country:"FR",flag:"🇫🇷",icon:"◉"},
+  {id:62,name:"Tobias van Schneider",domain:"vanschneider.com",cat:"portfolio",awards:"Awwwards SOTD",tech:"Typography, Dark, Editorial",country:"DE",flag:"🇩🇪",icon:"◉"},
+  {id:63,name:"Lusion",domain:"lusion.co",cat:"portfolio",awards:"Awwwards SOTD, FWA",tech:"WebGL, Shader, Creative",country:"KR",flag:"🇰🇷",icon:"◉"},
+  {id:64,name:"Hayo Gebauer",domain:"hayogebauer.com",cat:"portfolio",awards:"Awwwards, FWA",tech:"WebGL, 3D, Interaction",country:"DE",flag:"🇩🇪",icon:"◉"},
+  {id:65,name:"Yannis Yannakopoulos",domain:"yannisyannakos.com",cat:"portfolio",awards:"Awwwards",tech:"Three.js, Particle, Scroll",country:"GR",flag:"🇬🇷",icon:"◉"},
+  {id:66,name:"Jhey Tompkins",domain:"jhey.dev",cat:"portfolio",awards:"CSSDA",tech:"CSS Art, Animation, Creative",country:"UK",flag:"🇬🇧",icon:"◉"},
+  {id:67,name:"Rik Schennink",domain:"rikschennink.nl",cat:"portfolio",awards:"Awwwards",tech:"WebGL, Shader, Photo",country:"NL",flag:"🇳🇱",icon:"◉"},
+  {id:68,name:"Liam Egan",domain:"liamegan.com",cat:"portfolio",awards:"Awwwards, FWA",tech:"WebGL, Three.js, 3D",country:"AU",flag:"🇦🇺",icon:"◉"},
+  {id:69,name:"Oleg Frolov",domain:"volfov.me",cat:"portfolio",awards:"Awwwards, FWA",tech:"Three.js, Motion, 3D",country:"RU",flag:"🇷🇺",icon:"◉"},
+  {id:70,name:"Shots",domain:"shots.so",cat:"portfolio",awards:"Awwwards SOTD",tech:"Next.js, Motion, UI",country:"US",flag:"🇺🇸",icon:"◉"},
+  {id:71,name:"Torn",domain:"torn.dev",cat:"portfolio",awards:"Awwwards, FWA",tech:"WebGL, Shader, Experimental",country:"US",flag:"🇺🇸",icon:"◉"},
+  {id:72,name:"Aristide Benoist",domain:"aristidebenoist.com",cat:"portfolio",awards:"Awwwards SOTD",tech:"GSAP, Scroll, Typography",country:"FR",flag:"🇫🇷",icon:"◉"},
+  {id:73,name:"Cassie Evans",domain:"cassie.codes",cat:"portfolio",awards:"Awwwards",tech:"SVG, GSAP, ScrollTrigger",country:"UK",flag:"🇬🇧",icon:"◉"},
+  {id:74,name:"Code Theory",domain:"codetheory.co",cat:"portfolio",awards:"Awwwards",tech:"WebGL, Three.js, Canvas",country:"US",flag:"🇺🇸",icon:"◉"},
+  {id:75,name:"Seb Kay",domain:"sebkay.com",cat:"portfolio",awards:"Awwwards",tech:"React, Motion, Dark",country:"AU",flag:"🇦🇺",icon:"◉"},
+  {id:76,name:"teamLab",domain:"teamlab.net",cat:"immersive",awards:"Webby, D&AD",tech:"WebGL, Generative, Art",country:"JP",flag:"🇯🇵",icon:"◎"},
+  {id:77,name:"Panoply",domain:"panoply.space",cat:"immersive",awards:"Awwwards, FWA",tech:"WebGL, 3D, Interactive film",country:"UK",flag:"🇬🇧",icon:"◎"},
+  {id:78,name:"Spotify Wrapped",domain:"spotify.com/wrapped",cat:"immersive",awards:"Cannes Lions, Webby",tech:"Canvas, Data viz, Share",country:"SE",flag:"🇸🇪",icon:"◎"},
+  {id:79,name:"Google Arts",domain:"artsandculture.google.com",cat:"immersive",awards:"Webby",tech:"WebGL, 3D, Art, ML",country:"US",flag:"🇺🇸",icon:"◎"},
+  {id:80,name:"Blob Opera",domain:"blobopera.com",cat:"immersive",awards:"FWA, Webby",tech:"WebGL, ML, Audio, Interactive",country:"US",flag:"🇺🇸",icon:"◎"},
+  {id:81,name:"Digital Museum",domain:"digitalmuseum.jp",cat:"immersive",awards:"Awwwards",tech:"WebGL, 3D, Virtual museum",country:"JP",flag:"🇯🇵",icon:"◎"},
+  {id:82,name:"Rome If You Want To",domain:"romaingifouwantto.com",cat:"immersive",awards:"Awwwards SOTY, FWA",tech:"WebGL, 3D, Scroll, Film",country:"FR",flag:"🇫🇷",icon:"◎"},
+  {id:83,name:"Species in Pieces",domain:"species-in-pieces.com",cat:"immersive",awards:"Awwwards SOTY, FWA",tech:"WebGL, CSS, 3D, Data",country:"UK",flag:"🇬🇧",icon:"◎"},
+  {id:84,name:"The Sea We Swim In",domain:"theseaweswimin.com",cat:"immersive",awards:"Awwwards, FWA",tech:"WebGL, Shader, Water sim",country:"UK",flag:"🇬🇧",icon:"◎"},
+  {id:85,name:"MoMA",domain:"moma.org",cat:"immersive",awards:"Webby, D&AD",tech:"React, Exhibition, Editorial",country:"US",flag:"🇺🇸",icon:"◎"},
+  {id:86,name:"The Pudding",domain:"pudding.cool",cat:"editorial",awards:"Awwwards, Webby, Malofiej",tech:"D3.js, Scrollytelling, SVG",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:87,name:"New York Times",domain:"nytimes.com",cat:"editorial",awards:"Pulitzer, Malofiej, Webby",tech:"D3.js, Scrollytelling, Canvas",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:88,name:"The Guardian",domain:"theguardian.com",cat:"editorial",awards:"Webby, D&AD",tech:"React, Data viz, Scroll",country:"UK",flag:"🇬🇧",icon:"§"},
+  {id:89,name:"ProPublica",domain:"propublica.org",cat:"editorial",awards:"Pulitzer, Webby",tech:"D3.js, Scrollytelling",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:90,name:"Reuters Graphics",domain:"reuters.com",cat:"editorial",awards:"Malofiej, Webby, D&AD",tech:"D3.js, Scrollytelling, WebGL",country:"UK",flag:"🇬🇧",icon:"§"},
+  {id:91,name:"Bloomberg",domain:"bloomberg.com",cat:"editorial",awards:"Webby, Malofiej",tech:"React, Data viz, Terminal UI",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:92,name:"Washington Post",domain:"washingtonpost.com",cat:"editorial",awards:"Pulitzer, Webby",tech:"React, Scroll, Data viz",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:93,name:"Pitchfork",domain:"pitchfork.com",cat:"editorial",awards:"Webby, Awwwards",tech:"React, Editorial, Music",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:94,name:"The Verge",domain:"theverge.com",cat:"editorial",awards:"Webby",tech:"React, Dark, Tech editorial",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:95,name:"Wired",domain:"wired.com",cat:"editorial",awards:"Webby, National Magazine",tech:"React, Data viz, Longform",country:"US",flag:"🇺🇸",icon:"§"},
+  {id:96,name:"SSENSE",domain:"ssense.com",cat:"ecommerce",awards:"Awwwards SOTD, Webby",tech:"React, Minimal, Editorial",country:"CA",flag:"🇨🇦",icon:"$"},
+  {id:97,name:"MR PORTER",domain:"mrporter.com",cat:"ecommerce",awards:"Webby",tech:"React, Editorial, Luxury",country:"UK",flag:"🇬🇧",icon:"$"},
+  {id:98,name:"Farfetch",domain:"farfetch.com",cat:"ecommerce",awards:"Webby",tech:"React, Personalization, AI",country:"PT",flag:"🇵🇹",icon:"$"},
+  {id:99,name:"Net-a-Porter",domain:"net-a-porter.com",cat:"ecommerce",awards:"Webby",tech:"React, Luxury, Editorial",country:"UK",flag:"🇬🇧",icon:"$"},
+  {id:100,name:"Matches Fashion",domain:"matchesfashion.com",cat:"ecommerce",awards:"Awwwards",tech:"React, Motion, Editorial",country:"UK",flag:"🇬🇧",icon:"$"},
+  {id:101,name:"COS",domain:"cos.com",cat:"ecommerce",awards:"Awwwards",tech:"Minimal, Typography, Editorial",country:"SE",flag:"🇸🇪",icon:"$"},
+  {id:102,name:"Arket",domain:"arket.com",cat:"ecommerce",awards:"Awwwards",tech:"Minimal, Clean, Scandinavian",country:"SE",flag:"🇸🇪",icon:"$"},
+  {id:103,name:"Everlane",domain:"everlane.com",cat:"ecommerce",awards:"Awwwards, Webby",tech:"React, Transparent, Clean",country:"US",flag:"🇺🇸",icon:"$"},
+  {id:104,name:"Allbirds",domain:"allbirds.com",cat:"ecommerce",awards:"Webby",tech:"React, 3D, Sustainability",country:"US",flag:"🇺🇸",icon:"$"},
+  {id:105,name:"Mejuri",domain:"mejuri.com",cat:"ecommerce",awards:"Awwwards",tech:"Next.js, Editorial, Motion",country:"CA",flag:"🇨🇦",icon:"$"},
+  {id:106,name:"Tailwind CSS",domain:"tailwindcss.com",cat:"devtools",awards:"Awwwards",tech:"Next.js, Docs, Dark UI",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:107,name:"Radix UI",domain:"radix-ui.com",cat:"devtools",awards:"Awwwards",tech:"React, Accessible, Dark",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:108,name:"Shadcn UI",domain:"ui.shadcn.com",cat:"devtools",awards:"Awwwards",tech:"React, Tailwind, Copy-paste",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:109,name:"Storybook",domain:"storybook.js.org",cat:"devtools",awards:"Awwwards",tech:"React, Component explorer",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:110,name:"Prisma",domain:"prisma.io",cat:"devtools",awards:"Awwwards SOTD",tech:"Next.js, Docs, Dark, Motion",country:"DE",flag:"🇩🇪",icon:"</>"},
+  {id:111,name:"Supabase",domain:"supabase.com",cat:"devtools",awards:"Awwwards SOTD",tech:"Next.js, Docs, Dark",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:112,name:"Planetscale",domain:"planetscale.com",cat:"devtools",awards:"Awwwards",tech:"Next.js, Docs, Neon",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:113,name:"Framer Motion",domain:"motion.dev",cat:"devtools",awards:"Awwwards",tech:"React, Animation, Docs",country:"NL",flag:"🇳🇱",icon:"</>"},
+  {id:114,name:"GSAP",domain:"gsap.com",cat:"devtools",awards:"Awwwards",tech:"Docs, Demos, Green",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:115,name:"Three.js",domain:"threejs.org",cat:"devtools",awards:"Awwwards",tech:"WebGL, Examples, Minimal",country:"US",flag:"🇺🇸",icon:"</>"},
+  {id:116,name:"Awwwards",domain:"awwwards.com",cat:"platform",awards:"Platform",tech:"React, Jury, Gallery",country:"ES",flag:"🇪🇸",icon:"▣"},
+  {id:117,name:"FWA",domain:"thefwa.com",cat:"platform",awards:"Platform",tech:"Gallery, History, Immersive",country:"UK",flag:"🇬🇧",icon:"▣"},
+  {id:118,name:"CSS Design Awards",domain:"cssdesignawards.com",cat:"platform",awards:"Platform",tech:"Gallery, UI/UX scoring",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:119,name:"SiteInspire",domain:"siteinspire.com",cat:"platform",awards:"Platform",tech:"Curated, Minimal, Categories",country:"UK",flag:"🇬🇧",icon:"▣"},
+  {id:120,name:"Godly",domain:"godly.website",cat:"platform",awards:"Platform",tech:"Curated, WebGL, Motion",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:121,name:"Dribbble",domain:"dribbble.com",cat:"platform",awards:"Webby",tech:"React, Shots, Community",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:122,name:"Behance",domain:"behance.net",cat:"platform",awards:"Webby",tech:"React, Portfolio, Creative",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:123,name:"CodePen",domain:"codepen.io",cat:"platform",awards:"Awwwards, Webby",tech:"Editor, Playground, Community",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:124,name:"Lapa Ninja",domain:"lapa.ninja",cat:"platform",awards:"Curated",tech:"Landing page gallery",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:125,name:"Muzli",domain:"muz.li",cat:"platform",awards:"Curated",tech:"Inspiration, Chrome extension",country:"US",flag:"🇺🇸",icon:"▣"},
+  {id:126,name:"Radiohead",domain:"radiohead.com",cat:"culture",awards:"Awwwards, FWA",tech:"WebGL, Experimental, Art",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:127,name:"Childish Gambino",domain:"donaldgloverpresents.com",cat:"culture",awards:"Awwwards, FWA",tech:"WebGL, 3D, Interactive",country:"US",flag:"🇺🇸",icon:"♪"},
+  {id:128,name:"Coldplay",domain:"coldplay.com",cat:"culture",awards:"Awwwards",tech:"WebGL, Particle, Music",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:129,name:"Arca",domain:"arca100.net",cat:"culture",awards:"Awwwards, FWA",tech:"WebGL, Shader, Experimental",country:"VE",flag:"🇻🇪",icon:"♪"},
+  {id:130,name:"Aphex Twin",domain:"aphextwin.warp.net",cat:"culture",awards:"Awwwards",tech:"WebGL, Generative, Audio",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:131,name:"Tate Modern",domain:"tate.org.uk",cat:"culture",awards:"Webby",tech:"React, Exhibition, Editorial",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:132,name:"Guggenheim",domain:"guggenheim.org",cat:"culture",awards:"Webby",tech:"React, Architecture, Virtual",country:"US",flag:"🇺🇸",icon:"♪"},
+  {id:133,name:"Dezeen",domain:"dezeen.com",cat:"culture",awards:"Webby, Awwwards",tech:"React, Editorial, Architecture",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:134,name:"It's Nice That",domain:"itsnicethat.com",cat:"culture",awards:"Webby",tech:"React, Editorial, Creative",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:135,name:"Creative Review",domain:"creativerreview.com",cat:"culture",awards:"Webby",tech:"Editorial, Design, Print",country:"UK",flag:"🇬🇧",icon:"♪"},
+  {id:136,name:"Google AI",domain:"ai.google",cat:"tech",awards:"Webby",tech:"React, ML demos, Research",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:137,name:"DeepMind",domain:"deepmind.com",cat:"tech",awards:"Webby",tech:"React, Research, Data viz",country:"UK",flag:"🇬🇧",icon:"⬡"},
+  {id:138,name:"OpenAI",domain:"openai.com",cat:"tech",awards:"Webby",tech:"Next.js, Dark, Minimal",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:139,name:"Anthropic",domain:"anthropic.com",cat:"tech",awards:"Awwwards",tech:"Next.js, Docs, Clean",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:140,name:"Hugging Face",domain:"huggingface.co",cat:"tech",awards:"Webby",tech:"React, ML, Community",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:141,name:"Vercel AI SDK",domain:"sdk.vercel.ai",cat:"tech",awards:"Awwwards",tech:"Next.js, AI, Streaming UI",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:142,name:"LangChain",domain:"langchain.com",cat:"tech",awards:"Awwwards",tech:"Next.js, Docs, Dark",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:143,name:"Replicate",domain:"replicate.com",cat:"tech",awards:"Awwwards",tech:"Next.js, AI, Playground",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:144,name:"Runway ML",domain:"runwayml.com",cat:"tech",awards:"Awwwards, FWA",tech:"React, AI, Video, WebGL",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:145,name:"Midjourney",domain:"midjourney.com",cat:"tech",awards:"Awwwards",tech:"React, Gallery, Dark",country:"US",flag:"🇺🇸",icon:"⬡"},
+  {id:146,name:"Revolut",domain:"revolut.com",cat:"fintech",awards:"Webby",tech:"React, Motion, Data viz",country:"UK",flag:"🇬🇧",icon:"₿"},
+  {id:147,name:"Robinhood",domain:"robinhood.com",cat:"fintech",awards:"Webby",tech:"React, Charts, Clean",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:148,name:"Coinbase",domain:"coinbase.com",cat:"fintech",awards:"Webby, Awwwards",tech:"React, Dark, Data",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:149,name:"Uniswap",domain:"uniswap.org",cat:"fintech",awards:"Awwwards",tech:"React, Web3, DeFi",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:150,name:"Rainbow",domain:"rainbow.me",cat:"fintech",awards:"Awwwards SOTD",tech:"React, Motion, Emoji UI",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:151,name:"Phantom",domain:"phantom.app",cat:"fintech",awards:"Awwwards",tech:"React, Dark, Solana",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:152,name:"Worldcoin",domain:"worldcoin.org",cat:"fintech",awards:"Awwwards",tech:"Next.js, Orb, Privacy",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:153,name:"Nubank",domain:"nubank.com.br",cat:"fintech",awards:"Webby",tech:"React, Purple, Motion",country:"BR",flag:"🇧🇷",icon:"₿"},
+  {id:154,name:"Wise",domain:"wise.com",cat:"fintech",awards:"Webby",tech:"React, Green, Clean",country:"UK",flag:"🇬🇧",icon:"₿"},
+  {id:155,name:"Plaid",domain:"plaid.com",cat:"fintech",awards:"Awwwards",tech:"Next.js, Docs, Clean",country:"US",flag:"🇺🇸",icon:"₿"},
+  {id:156,name:"Discord",domain:"discord.com",cat:"social",awards:"Webby",tech:"React, Dark, Illustration",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:157,name:"GitHub",domain:"github.com",cat:"social",awards:"Webby",tech:"React, Dark, Monospace",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:158,name:"Stack Overflow",domain:"stackoverflow.com",cat:"social",awards:"Webby",tech:"React, Data, Tags",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:159,name:"Dev.to",domain:"dev.to",cat:"social",awards:"Webby",tech:"Preact, Dark, Community",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:160,name:"Product Hunt",domain:"producthunt.com",cat:"social",awards:"Webby",tech:"React, Upvote, Cards",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:161,name:"Indie Hackers",domain:"indiehackers.com",cat:"social",awards:"Webby",tech:"React, Community, Data",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:162,name:"Hashnode",domain:"hashnode.com",cat:"social",awards:"Webby",tech:"Next.js, Blog, Community",country:"US",flag:"🇺🇸",icon:"⊕"},
+  {id:163,name:"Khan Academy",domain:"khanacademy.org",cat:"education",awards:"Webby",tech:"React, Data, Gamification",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:164,name:"Brilliant",domain:"brilliant.org",cat:"education",awards:"Webby",tech:"React, Interactive, Math",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:165,name:"Duolingo",domain:"duolingo.com",cat:"education",awards:"Webby, D&AD",tech:"React, Gamification, Character",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:166,name:"MasterClass",domain:"masterclass.com",cat:"education",awards:"Awwwards, Webby",tech:"React, Film, Editorial",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:167,name:"Skillshare",domain:"skillshare.com",cat:"education",awards:"Webby",tech:"React, Video, Grid",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:168,name:"3Blue1Brown",domain:"3blue1brown.com",cat:"education",awards:"Webby",tech:"Manim, Math, Animation",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:169,name:"Excalidraw",domain:"excalidraw.com",cat:"education",awards:"Awwwards",tech:"Canvas, Hand-drawn, Whiteboard",country:"US",flag:"🇺🇸",icon:"✎"},
+  {id:170,name:"Oura",domain:"ouraring.com",cat:"health",awards:"Awwwards",tech:"Next.js, Data viz, Dark",country:"FI",flag:"🇫🇮",icon:"♥"},
+  {id:171,name:"Whoop",domain:"whoop.com",cat:"health",awards:"Awwwards",tech:"React, Data, Strain viz",country:"US",flag:"🇺🇸",icon:"♥"},
+  {id:172,name:"Headspace",domain:"headspace.com",cat:"health",awards:"Webby",tech:"React, Illustration, Calm",country:"UK",flag:"🇬🇧",icon:"♥"},
+  {id:173,name:"Calm",domain:"calm.com",cat:"health",awards:"Webby",tech:"React, Nature, Audio",country:"US",flag:"🇺🇸",icon:"♥"},
+  {id:174,name:"Rivian",domain:"rivian.com",cat:"mobility",awards:"Awwwards SOTD",tech:"React, WebGL, Nature",country:"US",flag:"🇺🇸",icon:"↗"},
+  {id:175,name:"Lucid Motors",domain:"lucidmotors.com",cat:"mobility",awards:"Awwwards",tech:"React, 3D, Configurator",country:"US",flag:"🇺🇸",icon:"↗"},
+  {id:176,name:"Polestar",domain:"polestar.com",cat:"mobility",awards:"Awwwards, Webby",tech:"React, 3D, Minimal, Scandinavian",country:"SE",flag:"🇸🇪",icon:"↗"},
+  {id:177,name:"Volvo",domain:"volvo.com",cat:"mobility",awards:"Webby",tech:"React, Safety, Editorial",country:"SE",flag:"🇸🇪",icon:"↗"},
+  {id:178,name:"Zaha Hadid",domain:"zaha-hadid.com",cat:"architecture",awards:"Awwwards",tech:"WebGL, 3D, Parametric",country:"UK",flag:"🇬🇧",icon:"⌂"},
+  {id:179,name:"BIG",domain:"big.dk",cat:"architecture",awards:"Awwwards",tech:"React, 3D, Projects",country:"DK",flag:"🇩🇰",icon:"⌂"},
+  {id:180,name:"OMA",domain:"oma.eu",cat:"architecture",awards:"Awwwards",tech:"Minimal, Typography, Grid",country:"NL",flag:"🇳🇱",icon:"⌂"},
+  {id:181,name:"Starbucks",domain:"starbucks.com",cat:"food",awards:"Webby",tech:"React, Personalization, Green",country:"US",flag:"🇺🇸",icon:"♣"},
+  {id:182,name:"Blue Bottle",domain:"bluebottlecoffee.com",cat:"food",awards:"Awwwards",tech:"Minimal, Typography, Ritual",country:"US",flag:"🇺🇸",icon:"♣"},
+  {id:183,name:"Death Wish Coffee",domain:"deathwishcoffee.com",cat:"food",awards:"Awwwards",tech:"React, Bold, Dark",country:"US",flag:"🇺🇸",icon:"♣"},
+  {id:184,name:"Gov.uk",domain:"gov.uk",cat:"institution",awards:"D&AD, Webby",tech:"Nunjucks, Design system, Accessible",country:"UK",flag:"🇬🇧",icon:"⚑"},
+  {id:185,name:"City of Amsterdam",domain:"amsterdam.nl",cat:"institution",awards:"Webby",tech:"React, Open data, Clean",country:"NL",flag:"🇳🇱",icon:"⚑"},
+  {id:186,name:"European Commission",domain:"ec.europa.eu",cat:"institution",awards:"Webby",tech:"React, Multilingual, Accessible",country:"EU",flag:"🇪🇺",icon:"⚑"},
+  {id:187,name:"NBA",domain:"nba.com",cat:"sports",awards:"Webby",tech:"React, Data viz, Video",country:"US",flag:"🇺🇸",icon:"★"},
+  {id:188,name:"F1",domain:"formula1.com",cat:"sports",awards:"Webby",tech:"React, Data, Live timing",country:"UK",flag:"🇬🇧",icon:"★"},
+  {id:189,name:"Strava",domain:"strava.com",cat:"sports",awards:"Webby",tech:"React, Maps, Data viz",country:"US",flag:"🇺🇸",icon:"★"},
+  {id:190,name:"Airbnb",domain:"airbnb.com",cat:"travel",awards:"Webby, D&AD",tech:"React, Maps, Lottie, Personalization",country:"US",flag:"🇺🇸",icon:"✈"},
+  {id:191,name:"Expedia",domain:"expedia.com",cat:"travel",awards:"Webby",tech:"React, Search, Maps",country:"US",flag:"🇺🇸",icon:"✈"},
+  {id:192,name:"Lonely Planet",domain:"lonelyplanet.com",cat:"travel",awards:"Webby",tech:"React, Editorial, Maps",country:"AU",flag:"🇦🇺",icon:"✈"},
+  {id:193,name:"Unsplash",domain:"unsplash.com",cat:"photography",awards:"Webby, Awwwards",tech:"React, Infinite scroll, Masonry",country:"CA",flag:"🇨🇦",icon:"◐"},
+  {id:194,name:"Vimeo",domain:"vimeo.com",cat:"photography",awards:"Webby, Awwwards",tech:"React, Video player, HDR",country:"US",flag:"🇺🇸",icon:"◐"},
+  {id:195,name:"500px",domain:"500px.com",cat:"photography",awards:"Webby",tech:"React, Gallery, Community",country:"CA",flag:"🇨🇦",icon:"◐"},
+  {id:196,name:"PlayStation",domain:"playstation.com",cat:"gaming",awards:"Webby, Awwwards",tech:"React, 3D, Brand",country:"JP",flag:"🇯🇵",icon:"▶"},
+  {id:197,name:"Xbox",domain:"xbox.com",cat:"gaming",awards:"Webby",tech:"React, Dark, Neon",country:"US",flag:"🇺🇸",icon:"▶"},
+  {id:198,name:"Epic Games",domain:"epicgames.com",cat:"gaming",awards:"Webby",tech:"React, Unreal, Store",country:"US",flag:"🇺🇸",icon:"▶"},
+  {id:199,name:"Spline",domain:"spline.design",cat:"devtools",awards:"Awwwards SOTD, FWA",tech:"React, 3D editor, WebGL",country:"FR",flag:"🇫🇷",icon:"</>"},
+  {id:200,name:"Rive",domain:"rive.app",cat:"devtools",awards:"Awwwards",tech:"Canvas, State machine, Animation",country:"US",flag:"🇺🇸",icon:"</>"},
+];
+const LANGS = [
+  {code:"es",name:"Español"},
+  {code:"en",name:"English"},
+  {code:"fr",name:"Français"},
+  {code:"de",name:"Deutsch"},
+  {code:"it",name:"Italiano"},
+  {code:"pt",name:"Português"},
+  {code:"ru",name:"Русский"},
+  {code:"zh",name:"中文"},
+  {code:"ja",name:"日本語"},
+  {code:"ko",name:"한국어"},
+  {code:"ar",name:"العربية"},
+  {code:"hi",name:"हिन्दी"},
+  {code:"tr",name:"Türkçe"},
+  {code:"nl",name:"Nederlands"},
+  {code:"sv",name:"Svenska"},
+  {code:"da",name:"Dansk"},
+  {code:"fi",name:"Suomi"},
+  {code:"no",name:"Norsk"},
+  {code:"pl",name:"Polski"},
+  {code:"cs",name:"Čeština"},
+  {code:"ro",name:"Română"},
+  {code:"hu",name:"Magyar"},
+  {code:"el",name:"Ελληνικά"},
+  {code:"uk",name:"Українська"},
+  {code:"th",name:"ไทย"},
+  {code:"vi",name:"Tiếng Việt"},
+  {code:"id",name:"Bahasa Indonesia"},
+  {code:"ms",name:"Bahasa Melayu"},
+  {code:"he",name:"עברית"},
+  {code:"bg",name:"Български"},
+  {code:"hr",name:"Hrvatski"},
+  {code:"sk",name:"Slovenčina"},
+  {code:"sl",name:"Slovenščina"},
+  {code:"et",name:"Eesti"},
+  {code:"lv",name:"Latviešu"},
+  {code:"lt",name:"Lietuvių"},
+  {code:"ca",name:"Català"},
+  {code:"gl",name:"Galego"},
+  {code:"eu",name:"Euskara"},
+];
+const CATS = [
+  "all",
+  "product",
+  "brand",
+  "agency",
+  "portfolio",
+  "immersive",
+  "editorial",
+  "ecommerce",
+  "devtools",
+  "platform",
+  "culture",
+  "tech",
+  "fintech",
+  "social",
+  "education",
+  "health",
+  "mobility",
+  "architecture",
+  "food",
+  "institution",
+  "sports",
+  "travel",
+  "photography",
+  "gaming",
+];
+const I18N = {
+  "es":{
+    "title":"200 Webs Premium",
+    "sub":"Las webs con diseño front-end más premiadas del mundo",
+    "search":"Buscar web, categoría o tecnología...",
+    "filter":"Filtrar",
+    "all":"Todas",
+    "product":"Producto/SaaS",
+    "brand":"Marca/Lifestyle",
+    "agency":"Agencia/Studio",
+    "portfolio":"Portfolio",
+    "immersive":"Inmersivo/WebGL",
+    "editorial":"Editorial/Data",
+    "ecommerce":"E-commerce",
+    "devtools":"DevTools",
+    "platform":"Plataforma",
+    "culture":"Cultura/Música",
+    "tech":"Tech/AI",
+    "fintech":"Fintech",
+    "social":"Social",
+    "education":"Educación",
+    "health":"Salud",
+    "mobility":"Movilidad",
+    "architecture":"Arquitectura",
+    "food":"Alimentación",
+    "institution":"Institución",
+    "sports":"Deportes",
+    "travel":"Viajes",
+    "photography":"Fotografía",
+    "gaming":"Gaming",
+    "stats":"Estadísticas",
+    "sites":"Webs",
+    "categories":"Categorías",
+    "countries":"Países",
+    "languages":"Idiomas",
+    "awards":"Premios",
+    "aspects":"Aspectos+",
+    "dark":"Oscuro",
+    "light":"Claro",
+    "lite":"Ligero",
+    "pesada":"Pesada",
+    "cta":"Explorar",
+    "view":"Visitar",
+    "copy":"Copiar",
+    "lang":"Idioma",
+    "mode":"Modo",
+    "theme":"Tema",
+    "nosites":"No se encontraron webs",
+    "clear":"Limpiar",
+    "showing":"Mostrando",
+    "of":"de",
+    "results":"resultados",
+    "boot":"INICIANDO SISTEMA",
+    "boot2":"CARGANDO BASE DE DATOS PREMIUM",
+  },
+  "en":{
+    "title":"200 Premium Webs",
+    "sub":"The world\'s most awarded front-end design websites",
+    "search":"Search web, category or technology...",
+    "filter":"Filter",
+    "all":"All",
+    "product":"Product/SaaS",
+    "brand":"Brand/Lifestyle",
+    "agency":"Agency/Studio",
+    "portfolio":"Portfolio",
+    "immersive":"Immersive/WebGL",
+    "editorial":"Editorial/Data",
+    "ecommerce":"E-commerce",
+    "devtools":"DevTools",
+    "platform":"Platform",
+    "culture":"Culture/Music",
+    "tech":"Tech/AI",
+    "fintech":"Fintech",
+    "social":"Social",
+    "education":"Education",
+    "health":"Health",
+    "mobility":"Mobility",
+    "architecture":"Architecture",
+    "food":"Food",
+    "institution":"Institution",
+    "sports":"Sports",
+    "travel":"Travel",
+    "photography":"Photography",
+    "gaming":"Gaming",
+    "stats":"Statistics",
+    "sites":"Webs",
+    "categories":"Categories",
+    "countries":"Countries",
+    "languages":"Languages",
+    "awards":"Awards",
+    "aspects":"Aspects+",
+    "dark":"Dark",
+    "light":"Light",
+    "lite":"Lite",
+    "pesada":"Heavy",
+    "cta":"Explore",
+    "view":"Visit",
+    "copy":"Copy",
+    "lang":"Language",
+    "mode":"Mode",
+    "theme":"Theme",
+    "nosites":"No websites found",
+    "clear":"Clear",
+    "showing":"Showing",
+    "of":"of",
+    "results":"results",
+    "boot":"BOOTING SYSTEM",
+    "boot2":"LOADING PREMIUM DATABASE",
+  },
+  "fr":{
+    "title":"200 Webs Premium",
+    "sub":"Les sites web les plus primés pour leur design front-end",
+    "search":"Rechercher web, catégorie ou technologie...",
+    "filter":"Filtrer",
+    "all":"Toutes",
+    "product":"Produit/SaaS",
+    "brand":"Marque/Lifestyle",
+    "agency":"Agence/Studio",
+    "portfolio":"Portfolio",
+    "immersive":"Immersif/WebGL",
+    "editorial":"Éditorial/Data",
+    "ecommerce":"E-commerce",
+    "devtools":"DevTools",
+    "platform":"Plateforme",
+    "culture":"Culture/Musique",
+    "tech":"Tech/IA",
+    "fintech":"Fintech",
+    "social":"Social",
+    "education":"Éducation",
+    "health":"Santé",
+    "mobility":"Mobilité",
+    "architecture":"Architecture",
+    "food":"Alimentation",
+    "institution":"Institution",
+    "sports":"Sports",
+    "travel":"Voyages",
+    "photography":"Photographie",
+    "gaming":"Gaming",
+    "stats":"Statistiques",
+    "sites":"Webs",
+    "categories":"Catégories",
+    "countries":"Pays",
+    "languages":"Langues",
+    "awards":"Prix",
+    "aspects":"Aspects+",
+    "dark":"Sombre",
+    "light":"Clair",
+    "lite":"Léger",
+    "pesada":"Lourd",
+    "cta":"Explorer",
+    "view":"Visiter",
+    "copy":"Copier",
+    "lang":"Langue",
+    "mode":"Mode",
+    "theme":"Thème",
+    "nosites":"Aucun site trouvé",
+    "clear":"Effacer",
+    "showing":"Affichage",
+    "of":"de",
+    "results":"résultats",
+    "boot":"DÉMARRAGE SYSTÈME",
+    "boot2":"CHARGEMENT BASE PREMIUM",
+  },
+  "de":{
+    "title":"200 Premium Webs",
+    "sub":"Die am meisten ausgezeichneten Websites für Frontend-Design",
+    "search":"Suche Web, Kategorie oder Technologie...",
+    "filter":"Filter",
+    "all":"Alle",
+    "product":"Produkt/SaaS",
+    "brand":"Marke/Lifestyle",
+    "agency":"Agentur/Studio",
+    "portfolio":"Portfolio",
+    "immersive":"Immersiv/WebGL",
+    "editorial":"Redaktion/Daten",
+    "ecommerce":"E-Commerce",
+    "devtools":"DevTools",
+    "platform":"Plattform",
+    "culture":"Kultur/Musik",
+    "tech":"Tech/KI",
+    "fintech":"Fintech",
+    "social":"Soziales",
+    "education":"Bildung",
+    "health":"Gesundheit",
+    "mobility":"Mobilität",
+    "architecture":"Architektur",
+    "food":"Lebensmittel",
+    "institution":"Institution",
+    "sports":"Sport",
+    "travel":"Reisen",
+    "photography":"Fotografie",
+    "gaming":"Gaming",
+    "stats":"Statistiken",
+    "sites":"Webs",
+    "categories":"Kategorien",
+    "countries":"Länder",
+    "languages":"Sprachen",
+    "awards":"Auszeichnungen",
+    "aspects":"Aspekte+",
+    "dark":"Dunkel",
+    "light":"Hell",
+    "lite":"Leicht",
+    "pesada":"Schwer",
+    "cta":"Erkunden",
+    "view":"Besuchen",
+    "copy":"Kopieren",
+    "lang":"Sprache",
+    "mode":"Modus",
+    "theme":"Thema",
+    "nosites":"Keine Websites gefunden",
+    "clear":"Löschen",
+    "showing":"Anzeige",
+    "of":"von",
+    "results":"Ergebnisse",
+    "boot":"SYSTEM START",
+    "boot2":"PREMIUM-DATENBANK LADEN",
+  },
+  "pt":{
+    "title":"200 Webs Premium",
+    "sub":"Os sites mais premiados por design front-end",
+    "search":"Buscar web, categoria ou tecnologia...",
+    "filter":"Filtrar",
+    "all":"Todos",
+    "product":"Produto/SaaS",
+    "brand":"Marca/Lifestyle",
+    "agency":"Agência/Studio",
+    "portfolio":"Portfólio",
+    "immersive":"Imersivo/WebGL",
+    "editorial":"Editorial/Dados",
+    "ecommerce":"E-commerce",
+    "devtools":"DevTools",
+    "platform":"Plataforma",
+    "culture":"Cultura/Música",
+    "tech":"Tech/IA",
+    "fintech":"Fintech",
+    "social":"Social",
+    "education":"Educação",
+    "health":"Saúde",
+    "mobility":"Mobilidade",
+    "architecture":"Arquitetura",
+    "food":"Alimentação",
+    "institution":"Instituição",
+    "sports":"Desportos",
+    "travel":"Viagens",
+    "photography":"Fotografia",
+    "gaming":"Gaming",
+    "stats":"Estatísticas",
+    "sites":"Webs",
+    "categories":"Categorias",
+    "countries":"Países",
+    "languages":"Idiomas",
+    "awards":"Prémios",
+    "aspects":"Aspetos+",
+    "dark":"Escuro",
+    "light":"Claro",
+    "lite":"Leve",
+    "pesada":"Pesado",
+    "cta":"Explorar",
+    "view":"Visitar",
+    "copy":"Copiar",
+    "lang":"Idioma",
+    "mode":"Modo",
+    "theme":"Tema",
+    "nosites":"Nenhum site encontrado",
+    "clear":"Limpar",
+    "showing":"Mostrando",
+    "of":"de",
+    "results":"resultados",
+    "boot":"INICIANDO SISTEMA",
+    "boot2":"CARREGANDO BASE PREMIUM",
+  },
+  "it":{
+    "title":"200 Webs Premium",
+    "sub":"I siti più premiati per design front-end",
+    "search":"Cerca web, categoria o tecnologia...",
+    "filter":"Filtra",
+    "all":"Tutte",
+    "product":"Prodotto/SaaS",
+    "brand":"Marca/Lifestyle",
+    "agency":"Agenzia/Studio",
+    "portfolio":"Portfolio",
+    "immersive":"Immersivo/WebGL",
+    "editorial":"Editoriale/Dati",
+    "ecommerce":"E-commerce",
+    "devtools":"DevTools",
+    "platform":"Piattaforma",
+    "culture":"Cultura/Musica",
+    "tech":"Tech/IA",
+    "fintech":"Fintech",
+    "social":"Social",
+    "education":"Educazione",
+    "health":"Salute",
+    "mobility":"Mobilità",
+    "architecture":"Architettura",
+    "food":"Alimentazione",
+    "institution":"Istituzione",
+    "sports":"Sport",
+    "travel":"Viaggi",
+    "photography":"Fotografia",
+    "gaming":"Gaming",
+    "stats":"Statistiche",
+    "sites":"Webs",
+    "categories":"Categorie",
+    "countries":"Paesi",
+    "languages":"Lingue",
+    "awards":"Premi",
+    "aspects":"Aspetti+",
+    "dark":"Scuro",
+    "light":"Chiaro",
+    "lite":"Leggero",
+    "pesada":"Pesante",
+    "cta":"Esplorare",
+    "view":"Visitare",
+    "copy":"Copiare",
+    "lang":"Lingua",
+    "mode":"Modalità",
+    "theme":"Tema",
+    "nosites":"Nessun sito trovato",
+    "clear":"Cancellare",
+    "showing":"Mostrando",
+    "of":"di",
+    "results":"risultati",
+    "boot":"AVVIO SISTEMA",
+    "boot2":"CARICAMENTO DATABASE PREMIUM",
+  },
+  "ja":{
+    "title":"200 プレミアムWeb",
+    "sub":"最も受賞したフロントエンドデザインWebサイト",
+    "search":"Web、カテゴリ、技術を検索...",
+    "filter":"フィルター",
+    "all":"すべて",
+    "product":"製品/SaaS",
+    "brand":"ブランド",
+    "agency":"エージェンシー",
+    "portfolio":"ポートフォリオ",
+    "immersive":"没入型/WebGL",
+    "editorial":"編集/データ",
+    "ecommerce":"Eコマース",
+    "devtools":"開発ツール",
+    "platform":"プラットフォーム",
+    "culture":"文化/音楽",
+    "tech":"テック/AI",
+    "fintech":"フィンテック",
+    "social":"ソーシャル",
+    "education":"教育",
+    "health":"健康",
+    "mobility":"モビリティ",
+    "architecture":"建築",
+    "food":"食品",
+    "institution":"機関",
+    "sports":"スポーツ",
+    "travel":"旅行",
+    "photography":"写真",
+    "gaming":"ゲーム",
+    "stats":"統計",
+    "sites":"Web",
+    "categories":"カテゴリ",
+    "countries":"国",
+    "languages":"言語",
+    "awards":"受賞",
+    "aspects":"側面+",
+    "dark":"ダーク",
+    "light":"ライト",
+    "lite":"ライト",
+    "pesada":"ヘビー",
+    "cta":"探索",
+    "view":"訪問",
+    "copy":"コピー",
+    "lang":"言語",
+    "mode":"モード",
+    "theme":"テーマ",
+    "nosites":"サイトが見つかりません",
+    "clear":"クリア",
+    "showing":"表示",
+    "of":"/",
+    "results":"件",
+    "boot":"システム起動",
+    "boot2":"プレミアムDB読込",
+  },
+  "zh":{
+    "title":"200 精选网站",
+    "sub":"全球最受赞誉的前端设计网站",
+    "search":"搜索网站、分类或技术...",
+    "filter":"筛选",
+    "all":"全部",
+    "product":"产品/SaaS",
+    "brand":"品牌",
+    "agency":"代理商",
+    "portfolio":"作品集",
+    "immersive":"沉浸式/WebGL",
+    "editorial":"编辑/数据",
+    "ecommerce":"电商",
+    "devtools":"开发工具",
+    "platform":"平台",
+    "culture":"文化/音乐",
+    "tech":"科技/AI",
+    "fintech":"金融科技",
+    "social":"社交",
+    "education":"教育",
+    "health":"健康",
+    "mobility":"出行",
+    "architecture":"建筑",
+    "food":"美食",
+    "institution":"机构",
+    "sports":"体育",
+    "travel":"旅行",
+    "photography":"摄影",
+    "gaming":"游戏",
+    "stats":"统计",
+    "sites":"网站",
+    "categories":"分类",
+    "countries":"国家",
+    "languages":"语言",
+    "awards":"奖项",
+    "aspects":"方面+",
+    "dark":"深色",
+    "light":"浅色",
+    "lite":"轻量",
+    "pesada":"完整",
+    "cta":"探索",
+    "view":"访问",
+    "copy":"复制",
+    "lang":"语言",
+    "mode":"模式",
+    "theme":"主题",
+    "nosites":"未找到网站",
+    "clear":"清除",
+    "showing":"显示",
+    "of":"/",
+    "results":"结果",
+    "boot":"系统启动",
+    "boot2":"加载精选数据库",
+  },
+  "ko":{
+    "title":"200 프리미엄 웹",
+    "sub":"가장 많이 수상한 프론트엔드 디자인 웹사이트",
+    "search":"웹, 카테고리, 기술 검색...",
+    "filter":"필터",
+    "all":"전체",
+    "product":"제품/SaaS",
+    "brand":"브랜드",
+    "agency":"에이전시",
+    "portfolio":"포트폴리오",
+    "immersive":"몰입형/WebGL",
+    "editorial":"에디토리얼",
+    "ecommerce":"이커머스",
+    "devtools":"개발도구",
+    "platform":"플랫폼",
+    "culture":"문화/음악",
+    "tech":"테크/AI",
+    "fintech":"핀테크",
+    "social":"소셜",
+    "education":"교육",
+    "health":"건강",
+    "mobility":"모빌리티",
+    "architecture":"건축",
+    "food":"음식",
+    "institution":"기관",
+    "sports":"스포츠",
+    "travel":"여행",
+    "photography":"사진",
+    "gaming":"게임",
+    "stats":"통계",
+    "sites":"웹",
+    "categories":"카테고리",
+    "countries":"국가",
+    "languages":"언어",
+    "awards":"수상",
+    "aspects":"측면+",
+    "dark":"다크",
+    "light":"라이트",
+    "lite":"라이트",
+    "pesada":"헤비",
+    "cta":"탐색",
+    "view":"방문",
+    "copy":"복사",
+    "lang":"언어",
+    "mode":"모드",
+    "theme":"테마",
+    "nosites":"웹사이트 없음",
+    "clear":"지우기",
+    "showing":"표시",
+    "of":"/",
+    "results":"결과",
+    "boot":"시스템 부팅",
+    "boot2":"프리미엄 DB 로딩",
+  },
+};
+
+// ── STATE ──
+let lang = "es";
+let filter = "all";
+let query = "";
+let theme = "dark";
+let mode = "pesada";
+
+// ── CRT BOOT ──
+(function boot(){
+  const crt=document.getElementById("crt");
+  const st=document.getElementById("crt-status");
+  if(!crt)return;
+  const isLite = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+  if(isLite){
+    crt.classList.add("liteboot");
+    if(st)st.textContent="LITE MODE · SKIP ANIMATION";
+    setTimeout(()=>{crt.classList.add("b4");setTimeout(()=>{crt.classList.add("off");document.body.classList.add("on");},600);},400);
+    mode="lite";document.documentElement.dataset.mode="lite";
+    return;
+  }
+  setTimeout(()=>crt.classList.add("b1"),80);
+  setTimeout(()=>{crt.classList.remove("b1");crt.classList.add("b2");},360);
+  setTimeout(()=>{
+    crt.classList.remove("b2");crt.classList.add("b3");
+    if(st)st.textContent=I18N[lang]?.boot2||"LOADING PREMIUM DATABASE";
+  },720);
+  setTimeout(()=>{
+    crt.classList.remove("b3");crt.classList.add("b4");
+    setTimeout(()=>{crt.classList.add("off");document.body.classList.add("on");},600);
+  },1800);
+})();
+
+// ── LANG SELECT ──
+const langSel=document.getElementById("langSelect");
+LANGS.forEach(l=>{
+  const o=document.createElement("option");o.value=l.code;o.textContent=l.name;
+  if(l.code==="es")o.selected=true;langSel.appendChild(o);
+});
+langSel.addEventListener("change",e=>{lang=e.target.value;applyI18N();render();});
+
+// ── THEME TOGGLE ──
+const themeBtn=document.getElementById("themeBtn");
+themeBtn.addEventListener("click",()=>{
+  theme=theme==="dark"?"light":"dark";
+  document.documentElement.dataset.theme=theme;
+  themeBtn.textContent=theme==="dark"?"☀":"☾";
+});
+
+// ── MODE TOGGLE ──
+const modeBtn=document.getElementById("modeBtn");
+modeBtn.addEventListener("click",()=>{
+  mode=mode==="pesada"?"lite":"pesada";
+  document.documentElement.dataset.mode=mode;
+  modeBtn.textContent=mode==="pesada"?"LITE":"PESADA";
+  const nb=document.querySelector(".neon-bg");
+  if(nb)nb.style.display=mode==="lite"?"none":"";
+});
+
+// ── FILTER BUTTONS ──
+const filterBar=document.getElementById("filterBar");
+CATS.forEach(c=>{
+  const b=document.createElement("button");
+  b.className="pill"+(c==="all"?" active":"");
+  b.dataset.cat=c;
+  b.textContent=I18N[lang]?.[c]||I18N.en?.[c]||c;
+  b.addEventListener("click",()=>{
+    filter=c;
+    filterBar.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+    b.classList.add("active");
+    render();
+  });
+  filterBar.appendChild(b);
+});
+
+// ── SEARCH ──
+const searchInput=document.getElementById("searchInput");
+const clearBtn=document.getElementById("clearBtn");
+searchInput.addEventListener("input",e=>{
+  query=e.target.value.toLowerCase().trim();
+  clearBtn.style.display=query?"":"none";
+  render();
+});
+clearBtn.addEventListener("click",()=>{
+  searchInput.value="";query="";clearBtn.style.display="none";render();
+  searchInput.focus();
+});
+
+// ── I18N ──
+function applyI18N(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k=el.dataset.i18n;
+    const t=I18N[lang]?.[k]||I18N.en?.[k]||k;
+    el.textContent=t;
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    const k=el.dataset.i18nPlaceholder;
+    const t=I18N[lang]?.[k]||I18N.en?.[k]||"";
+    el.placeholder=t;
+  });
+  filterBar.querySelectorAll(".pill").forEach(b=>{
+    const c=b.dataset.cat;
+    if(c)b.textContent=I18N[lang]?.[c]||I18N.en?.[c]||c;
+  });
+}
+
+// ── RENDER CARDS ──
+const grid=document.getElementById("grid");
+const resultsInfo=document.getElementById("resultsInfo");
+
+function render(){
+  let sites=SITES;
+  if(filter!=="all")sites=sites.filter(s=>s.cat===filter);
+  if(query){
+    sites=sites.filter(s=>{
+      return s.name.toLowerCase().includes(query)||
+             s.domain.toLowerCase().includes(query)||
+             s.cat.toLowerCase().includes(query)||
+             s.awards.toLowerCase().includes(query)||
+             s.tech.toLowerCase().includes(query)||
+             s.country.toLowerCase().includes(query);
+    });
+  }
+  const showTxt=I18N[lang]?.showing||I18N.en?.showing||"Showing";
+  const ofTxt=I18N[lang]?.of||I18N.en?.of||"of";
+  const resTxt=I18N[lang]?.results||I18N.en?.results||"results";
+  resultsInfo.textContent=showTxt+" "+sites.length+" "+ofTxt+" "+SITES.length+" "+resTxt;
+
+  grid.innerHTML="";
+  sites.forEach((s,i)=>{
+    const card=document.createElement("div");
+    card.className="card fade-up";
+    card.style.animationDelay=Math.min(i*30,600)+"ms";
+    const catLabel=I18N[lang]?.[s.cat]||I18N.en?.[s.cat]||s.cat;
+    const viewLabel=I18N[lang]?.view||I18N.en?.view||"Visit";
+    const copyLabel=I18N[lang]?.copy||I18N.en?.copy||"Copy";
+    card.innerHTML=
+      '<div class="card-glow"></div>'+
+      '<div class="card-rank">#'+s.id+'</div>'+
+      '<div class="card-head">'+
+        '<span class="card-flag">'+s.flag+'</span>'+
+        '<span class="card-name">'+s.name+'</span>'+
+      '</div>'+
+      '<a class="card-domain" href="https://'+s.domain+'" target="_blank" rel="noopener">'+s.domain+'</a>'+
+      '<span class="card-cat">'+s.icon+' '+catLabel+'</span>'+
+      (s.awards&&s.awards!=="—"?'<div class="card-awards">🏆 '+s.awards+'</div>':"")+
+      '<div class="card-tech">'+s.tech+'</div>'+
+      '<div class="card-actions">'+
+        '<a class="card-btn primary" href="https://'+s.domain+'" target="_blank" rel="noopener">'+viewLabel+' ↗</a>'+
+        '<button class="card-btn" onclick="navigator.clipboard.writeText(\''+s.domain+'\')">'+copyLabel+'</button>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+  if(!sites.length){
+    const noTxt=I18N[lang]?.nosites||I18N.en?.nosites||"No websites found";
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--dim);font-family:var(--f-mono)">'+noTxt+'</div>';
+  }
+}
+
+// ── INIT ──
+applyI18N();
+render();
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&document.activeElement!==searchInput){
+    e.preventDefault();searchInput.focus();
+  }
+  if(e.key==="Escape"){searchInput.blur();}
+});
+</script>
+</body>
+</html>

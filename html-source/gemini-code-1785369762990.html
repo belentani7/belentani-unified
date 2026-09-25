@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es" style="scroll-behavior:smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BELENTANI // JUDAS ERA — OMEGA ULTIMATE CORE</title>
+  
+  <!-- CDN Dependencies: Three.js r128, GSAP 3.12, FontAwesome, Google Fonts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,500;0,700;1,300&family=Cinzel+Decorative:wght@700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-void: #050505;
+      --bg-dark: #0a0a0a;
+      --red-blood: #FF003C;
+      --red-glow: rgba(255, 0, 60, 0.8);
+      --red-40: rgba(255, 0, 60, 0.4);
+      --red-05: rgba(255, 0, 60, 0.05);
+      --gold-sacred: #FFD700;
+      --cyan-aether: #00FFFF;
+      --purple-void: #B026FF;
+      --green-matrix: #00FF41;
+      --txt-main: #FFFFFF;
+      --txt-dim: rgba(255, 255, 255, 0.6);
+      --txt-mute: rgba(255, 255, 255, 0.3);
+      --font-display: 'Orbitron', sans-serif;
+      --font-fantasy: 'Cinzel Decorative', serif;
+      --font-ui: 'Chakra Petch', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --border-glass: rgba(255, 0, 60, 0.3);
+      --border-mute: rgba(255, 255, 255, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100%;
+      background-color: var(--bg-void);
+      color: var(--txt-main);
+      font-family: var(--font-ui);
+      cursor: none;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* CURSOR CUSTOM SYSTEM */
+    .cur-dot, .cur-ring, .cur-cross {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%); will-change: transform;
+    }
+    .cur-dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff; }
+    .cur-ring { width: 40px; height: 40px; border: 1px solid var(--red-blood); border-radius: 50%; transition: width .2s, height .2s; }
+    .cur-cross { width: 20px; height: 20px; opacity: 0.4; }
+    .cur-cross::before, .cur-cross::after { content: ''; position: absolute; background: var(--red-blood); }
+    .cur-cross::before { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+    .cur-cross::after { left: 50%; top: 0; height: 100%; width: 1px; transform: translateX(-50%); }
+
+    /* WEBGL BACKGROUND CANVAS */
+    #webgl-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .vignette {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(circle at center, transparent 30%, rgba(5,0,2,0.85) 75%, var(--bg-void) 100%);
+    }
+
+    /* OMEGA SIDEBAR */
+    #omega-sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+      background: rgba(3, 0, 1, 0.94); backdrop-filter: blur(25px);
+      border-right: 1px solid var(--border-glass); z-index: 500;
+      display: flex; flex-direction: column; padding: 20px 0; font-family: var(--font-mono);
+    }
+    .sb-logo { display: flex; align-items: center; gap: 12px; padding: 0 20px 20px; border-bottom: 1px solid var(--border-glass); }
+    .sb-logo .bl-icon {
+      width: 36px; height: 36px; background: var(--red-blood);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 900; color: #000; font-size: 18px;
+      box-shadow: 0 0 15px var(--red-glow);
+    }
+    .sb-logo span { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 2px; }
+    .sb-logo small { display: block; font-size: 8px; color: var(--red-blood); letter-spacing: 1px; }
+
+    .sb-nav { flex: 1; margin-top: 15px; }
+    .sb-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      font-size: 11px; letter-spacing: 2px; color: var(--txt-dim); text-decoration: none;
+      transition: all .25s; border-left: 2px solid transparent;
+    }
+    .sb-item:hover, .sb-item.active { color: #fff; background: var(--red-05); border-left-color: var(--red-blood); text-shadow: 0 0 8px var(--red-blood); }
+
+    /* TELEMETRY BAR HEADER */
+    #omega-telemetry {
+      position: fixed; top: 0; left: 220px; right: 0; height: 40px;
+      background: rgba(2, 0, 1, 0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass); z-index: 490;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 25px;
+      font-family: var(--font-mono); font-size: 9px; color: var(--txt-mute);
+    }
+    #omega-telemetry span { color: var(--red-blood); font-weight: 700; }
+
+    /* MAIN WRAPPER */
+    #main-wrapper { margin-left: 220px; position: relative; z-index: 5; }
+
+    /* SECTIONS COMMON */
+    .sec {
+      min-height: 100vh; padding: 100px 50px 60px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      position: relative; border-bottom: 1px solid rgba(255, 0, 60, 0.1);
+    }
+    .sec-title {
+      font-family: var(--font-display); font-size: clamp(32px, 5vw, 70px); font-weight: 900;
+      text-align: center; margin-bottom: 10px; letter-spacing: 6px;
+      color: transparent; -webkit-text-stroke: 1px var(--txt-dim);
+    }
+    .sec-title span { color: #fff; -webkit-text-stroke: 0; text-shadow: 0 0 25px var(--red-glow); }
+    .sec-sub { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--red-blood); letter-spacing: 4px; margin-bottom: 50px; }
+
+    /* HERO SECTION */
+    #home h1 {
+      font-family: var(--font-display); font-size: clamp(50px, 8vw, 120px); font-weight: 900;
+      letter-spacing: 12px; color: #fff; text-shadow: 0 0 40px var(--red-glow);
+      margin-bottom: 10px; text-align: center;
+    }
+    .hero-quote { font-family: var(--font-fantasy); font-size: 18px; color: var(--gold-sacred); letter-spacing: 2px; text-align: center; margin-bottom: 30px; }
+    .cta-btn {
+      padding: 15px 40px; background: transparent; border: 1px solid var(--red-blood);
+      color: var(--red-blood); font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 4px; cursor: pointer; transition: all .3s; box-shadow: 0 0 15px rgba(255,0,60,0.2);
+    }
+    .cta-btn:hover { background: var(--red-blood); color: #000; box-shadow: 0 0 30px var(--red-glow); transform: scale(1.05); }
+
+    /* 5 ARCHE TYPE GEMS GRID */
+    .gems-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 30px; }
+    .gem-card {
+      background: rgba(10, 10, 10, 0.8); border: 1px solid var(--border-glass);
+      padding: 25px; text-align: center; transition: all .4s; backdrop-filter: blur(10px);
+    }
+    .gem-card:hover { transform: translateY(-8px); border-color: var(--red-blood); box-shadow: 0 10px 30px rgba(255,0,60,0.3); }
+    .gem-icon { font-size: 30px; margin-bottom: 15px; }
+    .gem-card.pedro .gem-icon { color: var(--gold-sacred); }
+    .gem-card.marcos .gem-icon { color: var(--cyan-aether); }
+    .gem-card.santos .gem-icon { color: var(--purple-void); }
+    .gem-card.belentani .gem-icon { color: var(--red-blood); }
+    .gem-card.human .gem-icon { color: #fff; }
+    .gem-title { font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; margin-bottom: 8px; }
+
+    /* IDE WORKSPACE SIMULATOR */
+    #ide-sim {
+      width: 100%; max-width: 1200px; height: 480px; background: rgba(2, 0, 2, 0.95);
+      border: 1px solid var(--red-blood); display: flex; flex-direction: column;
+      box-shadow: 0 0 40px rgba(255,0,60,0.2); font-family: var(--font-mono); margin-top: 20px;
+    }
+    .ide-header { background: #080003; border-bottom: 1px solid var(--border-glass); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .ide-body { display: flex; flex: 1; overflow: hidden; }
+    .ide-sidebar-panel { width: 220px; background: #050001; border-right: 1px solid var(--border-glass); padding: 15px; font-size: 11px; }
+    .ide-code-panel { flex: 1; padding: 20px; background: #030001; color: #a9b7c6; font-size: 12px; overflow-y: auto; line-height: 1.6; }
+    .ide-console { height: 120px; border-top: 1px solid var(--border-glass); background: #000; padding: 12px 20px; font-size: 10px; color: var(--green-matrix); overflow-y: auto; }
+
+    /* AI CHAT WIDGET */
+    .aichat-box {
+      position: fixed; bottom: 25px; right: 25px; width: 360px; height: 420px;
+      background: rgba(4, 0, 2, 0.96); backdrop-filter: blur(20px);
+      border: 1px solid var(--red-blood); z-index: 1000; display: flex; flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(255,0,60,0.3);
+    }
+    .ch-head { padding: 12px 18px; background: rgba(255, 0, 60, 0.15); border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
+    .ch-head span { font-family: var(--font-display); font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 2px; }
+    .ch-msgs { flex: 1; padding: 15px; overflow-y: auto; font-size: 11px; font-family: var(--font-mono); display: flex; flex-direction: column; gap: 10px; }
+    .msg { padding: 8px 12px; border-radius: 2px; max-width: 85%; }
+    .msg.ai { background: rgba(255,0,60,0.1); border-left: 2px solid var(--red-blood); color: #eee; align-self: flex-start; }
+    .msg.user { background: rgba(255,255,255,0.08); border-right: 2px solid var(--gold-sacred); color: #fff; align-self: flex-end; }
+    .ch-input { padding: 10px; border-top: 1px solid var(--border-glass); display: flex; gap: 8px; background: #000; }
+    .ch-in { flex: 1; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: #fff; font-family: var(--font-mono); font-size: 11px; outline: none; }
+    .ch-send { padding: 8px 16px; background: var(--red-blood); border: none; color: #000; font-family: var(--font-display); font-weight: 900; font-size: 10px; cursor: pointer; }
+
+    /* RUNE CIRCLE SVG CAPA */
+    .rune-container { width: 180px; height: 180px; margin: 20px auto; animation: rotateRune 20s linear infinite; }
+    @keyframes rotateRune { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cur-dot" id="curDot"></div>
+  <div class="cur-ring" id="curRing"></div>
+  <div class="cur-cross" id="curCross"></div>
+
+  <!-- THREE.JS WEBGL CANVAS -->
+  <canvas id="webgl-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <!-- OMEGA SIDEBAR NAV -->
+  <aside id="omega-sidebar">
+    <div class="sb-logo">
+      <div class="bl-icon">B</div>
+      <div>
+        <span>BELENTANI</span>
+        <small>JUDAS ERA // OS v6.0</small>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <a href="#home" class="sb-item active"><i class="fa-solid fa-house"></i> 00 // CORE</a>
+      <a href="#artist" class="sb-item"><i class="fa-solid fa-user-ninja"></i> 01 // ARTIST</a>
+      <a href="#music" class="sb-item"><i class="fa-solid fa-compact-disc"></i> 02 // MUSIC</a>
+      <a href="#judas" class="sb-item"><i class="fa-solid fa-skull"></i> 03 // JUDAS ERA</a>
+      <a href="#ide" class="sb-item"><i class="fa-solid fa-code"></i> 04 // IDE ENGINE</a>
+    </nav>
+  </aside>
+
+  <!-- TELEMETRY HEADER -->
+  <header id="omega-telemetry">
+    <div>SYS.NODE: <span>JUDAS-CORE-07</span></div>
+    <div>FREQ: <span>432.00 Hz</span></div>
+    <div>LAT/LON: <span>41.36° N, 2.11° E</span></div>
+    <div>STATUS: <span style="color:var(--green-matrix)">ONLINE [BYOK]</span></div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <div id="main-wrapper">
+
+    <!-- HERO SECTION -->
+    <section class="sec" id="home">
+      <div class="rune-container">
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#FF003C" stroke-width="1.5" stroke-dasharray="8 4"/>
+          <circle cx="100" cy="100" r="75" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.6"/>
+          <polygon points="100,15 173,145 27,145" fill="none" stroke="#FF003C" stroke-width="1"/>
+          <text x="100" y="105" fill="#FFFFFF" font-family="Orbitron" font-size="10" text-anchor="middle" letter-spacing="3">AETHERIUM</text>
+        </svg>
+      </div>
+      <h1>BELENTANI</h1>
+      <p class="hero-quote">"La traición no es el final. Es el input."</p>
+      <button class="cta-btn" onclick="document.getElementById('artist').scrollIntoView({behavior:'smooth'})">[ ENTER GALACTIC CORE ]</button>
+    </section>
+
+    <!-- THE ARTIST SECTION -->
+    <section class="sec" id="artist">
+      <h2 class="sec-title">THE <span>ARTIST</span></h2>
+      <p class="sec-sub">ARCHIVE // VENOM // PROTOCOL_01</p>
+      
+      <div class="gems-grid">
+        <div class="gem-card pedro">
+          <div class="gem-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3 class="gem-title" style="color:var(--gold-sacred)">PEDRO</h3>
+          <p style="font-size:11px; color:var(--txt-dim)">El Hombre Integrado. Origen y vulnerabilidad radical.</p>
+        </div>
+        <div class="gem-card marcos">
+          <div class="gem-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3 class="gem-title" style="color:var(--cyan-aether)">MARCOS</h3>
+          <p style="font-size:11px; color:var(--txt-dim)">El Analista. Estructuras lógicas y código de precisión.</p>
+        </div>
+        <div class="gem-card santos">
+          <div class="gem-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3 class="gem-title" style="color:var(--purple-void)">SANTOS</h3>
+          <p style="font-size:11px; color:var(--txt-dim)">La Sacralidad. Redención y elevación mística.</p>
+        </div>
+        <div class="gem-card belentani">
+          <div class="gem-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3 class="gem-title" style="color:var(--red-blood)">BELENTANI</h3>
+          <p style="font-size:11px; color:var(--txt-dim)">El Exoesqueleto. Producción musical y potencia pura.</p>
+        </div>
+        <div class="gem-card human">
+          <div class="gem-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3 class="gem-title" style="color:#fff">THE HUMAN</h3>
+          <p style="font-size:11px; color:var(--txt-dim)">La Conciencia Suprema. El observador detrás del arte.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MUSIC SECTION -->
+    <section class="sec" id="music">
+      <h2 class="sec-title">SONIC <span>ARCHIVE</span></h2>
+      <p class="sec-sub">AUDIO SYNTHESIS MODULE // FREQUENCY DISCS</p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; width:100%; max-width:1100px;">
+        <div style="background:rgba(10,10,10,0.9); border:1px solid var(--border-glass); padding:20px;">
+          <h4 style="font-family:var(--font-display); color:var(--red-blood)">01. MON AMOUR</h4>
+          <p style="font-size:11px; color:var(--txt-dim); margin:10px 0;">Single líder. R&B alternativo cargado de sintetizadores oscuros.</p>
+          <a href="https://spotify.com" target="_blank" style="color:var(--gold-sacred); font-size:10px; font-family:var(--font-mono); text-decoration:none;">[ STREAM SPOTIFY ]</a>
+        </div>
+        <div style="background:rgba(10,10,10,0.9); border:1px solid var(--border-glass); padding:20px;">
+          <h4 style="font-family:var(--font-display); color:var(--red-blood)">02. SLEEP TALKING</h4>
+          <p style="font-size:11px; color:var(--txt-dim); margin:10px 0;">El primer hito. +5K reproducciones independientes.</p>
+          <a href="https://spotify.com" target="_blank" style="color:var(--gold-sacred); font-size:10px; font-family:var(--font-mono); text-decoration:none;">[ STREAM SPOTIFY ]</a>
+        </div>
+        <div style="background:rgba(10,10,10,0.9); border:1px solid var(--border-glass); padding:20px;">
+          <h4 style="font-family:var(--font-display); color:var(--red-blood)">03. JUDAS</h4>
+          <p style="font-size:11px; color:var(--txt-dim); margin:10px 0;">Himno principal. Fusión electromagnética y catarsis vocal.</p>
+          <a href="https://spotify.com" target="_blank" style="color:var(--gold-sacred); font-size:10px; font-family:var(--font-mono); text-decoration:none;">[ STREAM SPOTIFY ]</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- JUDAS ERA SECTION -->
+    <section class="sec" id="judas">
+      <h2 class="sec-title">JUDAS <span>ERA</span></h2>
+      <p class="sec-sub">TRANSMEDIA NARRATIVE // SYSTEM RECOVERY</p>
+      <div style="max-width:800px; text-align:center; background:rgba(5,0,2,0.8); border:1px solid var(--red-blood); padding:40px;">
+        <p style="font-family:var(--font-fantasy); font-size:16px; color:var(--gold-sacred); margin-bottom:15px;">"Recuperaremos la llave. O cambiaremos la cerradura."</p>
+        <p style="font-size:12px; color:var(--txt-dim); line-height:1.8;">
+          La Era Judas no documenta una derrota. Transforma el trauma personal de la traición en un algoritmo de creación masivo. En este sistema operativo, las cicatrices no se ocultan: se convierten en los componentes de hardware que impulsan cada synth y cada línea de código.
+        </p>
+      </div>
+    </section>
+
+    <!-- IDE MULTIVERSE SIMULATOR -->
+    <section class="sec" id="ide">
+      <h2 class="sec-title">IDE <span>ENGINE</span></h2>
+      <p class="sec-sub">CURSOR / CLAUDE CODE / CLINE / MAXIMIA / UNIFFAM SIMULATOR</p>
+      
+      <div id="ide-sim">
+        <div class="ide-header">
+          <div><i class="fa-solid fa-terminal" style="color:var(--red-blood)"></i> WORKSPACE // OMEGA-UNIFIED</div>
+          <div>MODE: <span style="color:var(--green-matrix)">AUTONOMOUS AGENT</span></div>
+        </div>
+        <div class="ide-body">
+          <div class="ide-sidebar-panel">
+            <div style="color:var(--red-blood); font-weight:700; margin-bottom:10px;">> EXPLORER</div>
+            <div style="color:#fff; margin-bottom:5px;"><i class="fa-solid fa-file-code"></i> index.html</div>
+            <div style="color:var(--txt-mute); margin-bottom:5px;"><i class="fa-solid fa-cubes"></i> ThreeEngine.js</div>
+            <div style="color:var(--txt-mute);"><i class="fa-solid fa-fire"></i> Shaders.glsl</div>
+          </div>
+          <div class="ide-code-panel">
+            <span style="color:#e66">import</span> { JudasCore } <span style="color:#e66">from</span> <span style="color:#a5c261">'@belentani/core'</span>;<br><br>
+            <span style="color:#cc7832">const</span> system = <span style="color:#e66">new</span> JudasCore({<br>
+            &nbsp;&nbsp;archetypes: [<span style="color:#a5c261">'PEDRO'</span>, <span style="color:#a5c261">'MARCOS'</span>, <span style="color:#a5c261">'SANTOS'</span>, <span style="color:#a5c261">'BELENTANI'</span>],<br>
+            &nbsp;&nbsp;glslShaders: [<span style="color:#a5c261">'VORTEX'</span>, <span style="color:#a5c261">'PLASMA'</span>, <span style="color:#a5c261">'GLITCH'</span>],<br>
+            &nbsp;&nbsp;status: <span style="color:#a5c261">'UNSTOPPABLE'</span><br>
+            });<br><br>
+            system.deployMultiverse();
+          </div>
+        </div>
+        <div class="ide-console" id="ideConsole">
+          > [CLAUDE CODE]: Architecture audit complete. 0 vulnerabilities found.<br>
+          > [CURSOR]: Real-time GLSL Shader compilation successful.<br>
+          > [CLINE]: Autonomous execution loop operational. Running at 60 FPS.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- AI CHAT TERMINAL WIDGET -->
+  <div class="aichat-box">
+    <div class="ch-head">
+      <span><i class="fa-solid fa-robot" style="color:var(--red-blood)"></i> OMEGA AI TERMINAL</span>
+      <span style="font-size:9px; color:var(--green-matrix)">ONLINE</span>
+    </div>
+    <div class="ch-msgs" id="chatMsgs">
+      <div class="msg ai">Bienvenido al núcleo OMEGA de Belentani. ¿Qué consulta deseas realizar sobre la Era Judas o la arquitectura del sistema?</div>
+    </div>
+    <div class="ch-input">
+      <input type="text" class="ch-in" id="chatInput" placeholder="Escribe tu comando o pregunta..." onkeypress="if(event.key==='Enter') sendMsg()">
+      <button class="ch-send" onclick="sendMsg()">SEND</button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC & THREE.JS SHADER ENGINE -->
+  <script>
+    // CURSOR FOLLOW LOGIC
+    const dot = document.getElementById('curDot');
+    const ring = document.getElementById('curRing');
+    const cross = document.getElementById('curCross');
+
+    window.addEventListener('mousemove', (e) => {
+      const { clientX: x, clientY: y } = e;
+      dot.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      cross.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      
+      gsap.to(ring, {
+        x: x, y: y, duration: 0.15, ease: 'power2.out'
+      });
+    });
+
+    // THREE.JS GLSL SHADER CANVAS SETUP
+    const canvas = document.getElementById('webgl-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    // CUSTOM GLSL SHADER MATERIAL (PLASMA + VORTEX)
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform float uTime;
+      uniform vec2 uResolution;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 st = gl_FragCoord.xy / uResolution.xy;
+        st.x *= uResolution.x / uResolution.y;
+
+        vec2 colorSt = vUv * 3.0 - 1.5;
+        float dist = length(colorSt);
+        
+        float v = sin(dist * 10.0 - uTime * 2.0);
+        vec3 color = mix(vec3(0.02, 0.0, 0.01), vec3(1.0, 0.0, 0.235), smoothstep(-1.0, 1.0, v) * 0.3);
+        color += vec3(1.0, 0.84, 0.0) * (0.02 / dist); // Golden core glow
+
+        gl_FragColor = vec4(color, 0.85);
+      }
+    `;
+
+    const uniforms = {
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+    };
+
+    const geometry = new THREE.PlaneGeometry(15, 15);
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      transparent: true
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // PARTICLE SYSTEM (1400 NODES)
+    const particleGeo = new THREE.BufferGeometry();
+    const count = 1400;
+    const posArray = new Float32Array(count * 3);
+
+    for (let i = 0; i < count * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 15;
+    }
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.015,
+      color: 0xFF003C,
+      transparent: true,
+      opacity: 0.6
+    });
+
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+
+    // RENDER LOOP
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
+
+      uniforms.uTime.value = elapsedTime;
+      particles.rotation.y = elapsedTime * 0.05;
+      particles.rotation.x = elapsedTime * 0.02;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // RESIZE EVENT
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    });
+
+    // CHAT WIDGET INTERACTIVE LOGIC
+    function sendMsg() {
+      const input = document.getElementById('chatInput');
+      const msgs = document.getElementById('chatMsgs');
+      if (!input.value.trim()) return;
+
+      const userDiv = document.createElement('div');
+      userDiv.className = 'msg user';
+      userDiv.innerText = input.value;
+      msgs.appendChild(userDiv);
+
+      const query = input.value.toLowerCase();
+      input.value = '';
+
+      setTimeout(() => {
+        const aiDiv = document.createElement('div');
+        aiDiv.className = 'msg ai';
+        
+        if (query.includes('judas') || query.includes('era')) {
+          aiDiv.innerText = "La Era Judas es el núcleo narrativo donde el trauma personal se convierte en código y sintetizadores. La traición es el input inicial.";
+        } else if (query.includes('pedro') || query.includes('belentani')) {
+          aiDiv.innerText = "Pedro Belentani es el artista y arquitecto. El sistema se divide en 5 gemas: Pedro, Marcos, Santos, Belentani y The Human.";
+        } else {
+          aiDiv.innerText = "Comando procesado por OMEGA CORE. Todos los módulos operativos al 100%.";
+        }
+        
+        msgs.appendChild(aiDiv);
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 500);
+    }
+  </script>
+</body>
+</html>

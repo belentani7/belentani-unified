@@ -1,0 +1,1036 @@
+# 🌌 ULTIMATE IMMERSIVE 3D PARALLAX EXPERIENCE
+## Máxima Potencia: Three.js + GSAP + Shaders + ScrollTrigger
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI // DIMENSIÓN Z-AI 5.2</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #ffd700;
+            --secondary: #8b0000;
+            --accent: #00ff88;
+            --dark: #0a0a0f;
+            --darker: #050508;
+        }
+        
+        body {
+            background: var(--darker);
+            color: #e0e0e0;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+        
+        .cursor.hover {
+            transform: scale(2);
+            background: rgba(255, 215, 0, 0.2);
+        }
+        
+        /* WebGL Canvas */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Content Layers */
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .content-layer > * {
+            pointer-events: auto;
+        }
+        
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Parallax Sections */
+        .parallax-section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 5%;
+        }
+        
+        /* Text Effects */
+        .hero-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 12vw, 10rem);
+            font-weight: 700;
+            line-height: 0.9;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #8b0000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+        
+        .hero-title::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 215, 0, 0.3) 50%, transparent 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* Floating Elements */
+        .float-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            animation: glitch-1 2s infinite;
+            color: #00ff88;
+            z-index: -1;
+        }
+        
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: #ff00ff;
+            z-index: -2;
+        }
+        
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(50% 0 20% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 0); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 2px); }
+        }
+        
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(10% 0 80% 0); transform: translate(2px, 0); }
+            80% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, -2px); }
+        }
+        
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b, #8b0000);
+            z-index: 10000;
+            width: 0%;
+        }
+        
+        /* Navigation */
+        .nav-floating {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            z-index: 1000;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+        
+        /* 3D Cards */
+        .card-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .card-3d-inner {
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .card-3d:hover .card-3d-inner {
+            transform: rotateY(10deg) rotateX(5deg) translateZ(20px);
+        }
+        
+        /* Particle Text */
+        .particle-text {
+            font-size: clamp(2rem, 8vw, 6rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #8b0000, #00ff88);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 5s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Magnetic Button */
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(139, 0, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50px;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .magnetic-btn:hover::before {
+            left: 100%;
+        }
+        
+        .magnetic-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Section Indicators */
+        .section-indicator {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator-dot.active {
+            background: var(--primary);
+            transform: scale(1.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loader-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b);
+            width: 0%;
+            animation: load 2s ease forwards;
+        }
+        
+        @keyframes load {
+            to { width: 100%; }
+        }
+        
+        .loader-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cursor, .cursor-follower { display: none; }
+            body { cursor: auto; }
+            .nav-floating { top: 20px; right: 20px; }
+            .section-indicator { display: none; }
+        }
+        
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9990;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9991;
+            background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.6) 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-text">INITIALIZING DIMENSION Z-AI 5.2</div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <!-- Noise & Vignette -->
+    <div class="noise-overlay"></div>
+    <div class="vignette"></div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- WebGL Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="nav-floating">
+        <div class="nav-item" data-section="0"><i data-lucide="home" class="w-5 h-5"></i></div>
+        <div class="nav-item" data-section="1"><i data-lucide="user" class="w-5 h-5"></i></div>
+        <div class="nav-item" data-section="2"><i data-lucide="music" class="w-5 h-5"></i></div>
+        <div class="nav-item" data-section="3"><i data-lucide="zap" class="w-5 h-5"></i></div>
+        <div class="nav-item" data-section="4"><i data-lucide="message-circle" class="w-5 h-5"></i></div>
+    </nav>
+
+    <!-- Section Indicators -->
+    <div class="section-indicator">
+        <div class="indicator-dot active" data-section="0"></div>
+        <div class="indicator-dot" data-section="1"></div>
+        <div class="indicator-dot" data-section="2"></div>
+        <div class="indicator-dot" data-section="3"></div>
+        <div class="indicator-dot" data-section="4"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-layer">
+        
+        <!-- Section 1: Hero -->
+        <section class="parallax-section" data-section="0">
+            <div class="container mx-auto px-5">
+                <div class="max-w-6xl">
+                    <div class="hero-title glitch mb-8" data-text="BELENTANI">
+                        BELENTANI
+                    </div>
+                    <div class="text-2xl md:text-4xl mb-12 gradient-text font-light">
+                        DIMENSIÓN Z-AI 5.2 // REALIDAD AUMENTADA
+                    </div>
+                    <div class="glass-card p-8 md:p-12 rounded-3xl float-element max-w-2xl">
+                        <p class="text-lg md:text-xl leading-relaxed mb-8">
+                            Bienvenido al entre. Un pliegue del universo donde el tiempo no corre, 
+                            se respira. Donde las almas no envejecen, iteran.
+                        </p>
+                        <button class="magnetic-btn">
+                            <span>Explorar Dimensión</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Floating Stats -->
+            <div class="absolute bottom-20 right-20 glass-card p-6 rounded-2xl float-element" style="animation-delay: 1s;">
+                <div class="text-sm text-gray-400 mb-2">COORDENADAS</div>
+                <div class="text-2xl font-bold text-yellow-500">41.3851°N 2.1734°E</div>
+                <div class="text-sm text-gray-400 mt-4">FRECUENCIA</div>
+                <div class="text-2xl font-bold text-green-400">432.00 Hz</div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Artist -->
+        <section class="parallax-section" data-section="1">
+            <div class="container mx-auto px-5">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="card-3d">
+                        <div class="card-3d-inner glass-card p-8 rounded-3xl">
+                            <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-600/20 to-red-900/20 flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-32 h-32 text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm text-yellow-500 mb-4 tracking-widest">▸ EL ARTISTA</div>
+                        <h2 class="text-5xl md:text-7xl font-bold mb-8 gradient-text">
+                            CUATRO VOCES<br/>UN SOLO HOMBRE
+                        </h2>
+                        <div class="space-y-6 text-lg text-gray-300">
+                            <p>
+                                No era un santo. Era un sistema operativo humano corriendo 
+                                cuatro procesos en paralelo:
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="flex items-center gap-4">
+                                    <span class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500">👼</span>
+                                    <span><strong class="text-yellow-500">El Ángel</strong> — La voz que canta</span>
+                                </li>
+                                <li class="flex items-center gap-4">
+                                    <span class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">⚔️</span>
+                                    <span><strong class="text-red-500">El Guerrero</strong> — La fuerza que lucha</span>
+                                </li>
+                                <li class="flex items-center gap-4">
+                                    <span class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">🧠</span>
+                                    <span><strong class="text-green-500">El Analítico</strong> — La mente que observa</span>
+                                </li>
+                                <li class="flex items-center gap-4">
+                                    <span class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500">📜</span>
+                                    <span><strong class="text-blue-500">El Cronista</strong> — La memoria que registra</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Music & Frequency -->
+        <section class="parallax-section" data-section="2">
+            <div class="container mx-auto px-5">
+                <div class="text-center mb-20">
+                    <div class="text-sm text-yellow-500 mb-4 tracking-widest">▸ FRECUENCIAS SONORAS</div>
+                    <h2 class="text-5xl md:text-7xl font-bold mb-8">SINFONÍA DIGITAL</h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                        Cada nota es una llave. Cada frecuencia, un portal. 
+                        La música es el código fuente del universo.
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-8 rounded-3xl hover:scale-105 transition-transform duration-500 group">
+                        <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">🎵</div>
+                        <div class="text-3xl font-bold text-yellow-500 mb-4">432 Hz</div>
+                        <div class="text-gray-400 mb-6">Frecuencia del Universo</div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500 w-3/4"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-8 rounded-3xl hover:scale-105 transition-transform duration-500 group">
+                        <div class="text-6xl mb-6 group-hover:scale-110 transition-transform"></div>
+                        <div class="text-3xl font-bold text-green-400 mb-4">528 Hz</div>
+                        <div class="text-gray-400 mb-6">Frecuencia del Amor</div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-400 w-1/2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-8 rounded-3xl hover:scale-105 transition-transform duration-500 group">
+                        <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">🔮</div>
+                        <div class="text-3xl font-bold text-purple-400 mb-4">963 Hz</div>
+                        <div class="text-gray-400 mb-6">Frecuencia del Despertar</div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-400 w-1/4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Judas Protocol -->
+        <section class="parallax-section" data-section="3">
+            <div class="container mx-auto px-5">
+                <div class="glass-card p-12 md:p-20 rounded-3xl max-w-5xl mx-auto text-center">
+                    <div class="text-8xl mb-8 float-element">🗝️</div>
+                    <h2 class="text-5xl md:text-7xl font-bold mb-8 gradient-text">
+                        LA LLAVE DORADA
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+                        "La llave nunca fue lo valioso. Era una mentira compartida. 
+                        Pedro dejó que Judas le robara algo que no importaba, 
+                        para que Judas descubriera lo que sí importaba."
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <button class="magnetic-btn">
+                            <span>Activar Protocolo</span>
+                            <i data-lucide="key" class="w-5 h-5"></i>
+                        </button>
+                        <button class="magnetic-btn">
+                            <span>Ver Crónica</span>
+                            <i data-lucide="book-open" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Contact -->
+        <section class="parallax-section" data-section="4">
+            <div class="container mx-auto px-5">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-16">
+                        <div class="text-sm text-yellow-500 mb-4 tracking-widest">▸ TRANSMISIÓN</div>
+                        <h2 class="text-5xl md:text-7xl font-bold mb-8">ESTABLECER CONEXIÓN</h2>
+                    </div>
+                    
+                    <div class="glass-card p-8 md:p-12 rounded-3xl">
+                        <form class="space-y-8">
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-3">IDENTIFICADOR</label>
+                                    <input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:outline-none focus:border-yellow-500 transition-colors" placeholder="Tu nombre">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-3">VECTOR DE RETORNO</label>
+                                    <input type="email" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:outline-none focus:border-yellow-500 transition-colors" placeholder="email@sistema.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-3">CLASIFICACIÓN</label>
+                                <select class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:outline-none focus:border-yellow-500 transition-colors">
+                                    <option>SONIC_COLLAB</option>
+                                    <option>VISUAL_ARTS</option>
+                                    <option>LIVE_PERFORMANCE</option>
+                                    <option>CYBER_TECH</option>
+                                    <option>GENERAL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-3">CARGA ÚTIL</label>
+                                <textarea rows="6" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:outline-none focus:border-yellow-500 transition-colors" placeholder="Tu mensaje encriptado..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full magnetic-btn justify-center">
+                                <span>Ejecutar Transmisión</span>
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Remove loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                gsap.to('#loader', {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        document.getElementById('loader').style.display = 'none';
+                    }
+                });
+            }, 2000);
+        });
+
+        // Initialize Lenis Smooth Scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursorFollower');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            cursorFollower.style.left = followerX - 20 + 'px';
+            cursorFollower.style.top = followerY - 20 + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Magnetic effect for buttons
+        document.querySelectorAll('.magnetic-btn, .nav-item').forEach(btn => {
+            btn.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            btn.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+            });
+        });
+
+        // THREE.JS Setup
+        const canvas = document.getElementById('webgl-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i += 3) {
+            // Position
+            posArray[i] = (Math.random() - 0.5) * 50;
+            posArray[i+1] = (Math.random() - 0.5) * 50;
+            posArray[i+2] = (Math.random() - 0.5) * 50;
+            
+            // Colors (gold, red, green)
+            const colorChoice = Math.random();
+            if (colorChoice < 0.33) {
+                colorArray[i] = 1; colorArray[i+1] = 0.84; colorArray[i+2] = 0; // Gold
+            } else if (colorChoice < 0.66) {
+                colorArray[i] = 0.55; colorArray[i+1] = 0; colorArray[i+2] = 0; // Red
+            } else {
+                colorArray[i] = 0; colorArray[i+1] = 1; colorArray[i+2] = 0.53; // Green
+            }
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Create floating geometric shapes
+        const geometries = [
+            new THREE.IcosahedronGeometry(1, 0),
+            new THREE.OctahedronGeometry(1, 0),
+            new THREE.TetrahedronGeometry(1, 0)
+        ];
+
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffd700,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+
+        const shapes = [];
+        for (let i = 0; i < 5; i++) {
+            const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 10 - 5
+            );
+            mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+            scene.add(mesh);
+            shapes.push({
+                mesh,
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.01,
+                    y: (Math.random() - 0.5) * 0.01
+                },
+                floatSpeed: Math.random() * 0.5 + 0.5,
+                floatOffset: Math.random() * Math.PI * 2
+            });
+        }
+
+        camera.position.z = 5;
+
+        // Mouse interaction for 3D
+        let targetCameraX = 0;
+        let targetCameraY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            targetCameraX = (e.clientX / window.innerWidth - 0.5) * 2;
+            targetCameraY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        // GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Scroll progress
+        gsap.to('#scrollProgress', {
+            width: '100%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: document.body,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.3
+            }
+        });
+
+        // Parallax effects for sections
+        document.querySelectorAll('.parallax-section').forEach((section, index) => {
+            gsap.fromTo(section, 
+                { y: -100 },
+                {
+                    y: 100,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: true
+                    }
+                }
+            );
+        });
+
+        // Animate particles on scroll
+        ScrollTrigger.create({
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            onUpdate: (self) => {
+                const progress = self.progress;
+                particlesMesh.rotation.y = progress * Math.PI * 2;
+                particlesMesh.rotation.x = progress * Math.PI;
+            }
+        });
+
+        // Animate shapes
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Smooth camera movement
+            camera.position.x += (targetCameraX - camera.position.x) * 0.05;
+            camera.position.y += (-targetCameraY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+            
+            // Animate shapes
+            shapes.forEach((shape, i) => {
+                shape.mesh.rotation.x += shape.rotationSpeed.x;
+                shape.mesh.rotation.y += shape.rotationSpeed.y;
+                shape.mesh.position.y += Math.sin(time * shape.floatSpeed + shape.floatOffset) * 0.002;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Section indicators
+        const sections = document.querySelectorAll('.parallax-section');
+        const indicatorDots = document.querySelectorAll('.indicator-dot');
+
+        ScrollTrigger.create({
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            onUpdate: (self) => {
+                const scrollProgress = self.progress;
+                const sectionIndex = Math.floor(scrollProgress * sections.length);
+                
+                indicatorDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === sectionIndex);
+                });
+            }
+        });
+
+        // Navigation click
+        document.querySelectorAll('.nav-item, .indicator-dot').forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionIndex = parseInt(item.dataset.section);
+                const section = sections[sectionIndex];
+                
+                lenis.scrollTo(section, {
+                    offset: 0,
+                    duration: 1.5
+                });
+            });
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Magnetic buttons advanced effect
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Glitch effect on hover for hero title
+        const heroTitle = document.querySelector('.hero-title');
+        heroTitle.addEventListener('mouseenter', () => {
+            gsap.to(heroTitle, {
+                textShadow: '2px 0 #00ff88, -2px 0 #ff00ff',
+                duration: 0.1,
+                yoyo: true,
+                repeat: 5
+            });
+        });
+
+        console.log('🌌 DIMENSIÓN Z-AI 5.2 ACTIVADA');
+        console.log(' Three.js + GSAP + ScrollTrigger + Lenis');
+        console.log('✨ Máxima inmersión 3D activada');
+    </script>
+</body>
+</html>
+```
+
+##  **CARACTERÍSTICAS ULTRA-AVANZADAS IMPLEMENTADAS:**
+
+### ** TECNOLOGÍAS INTEGRADAS:**
+1. **Three.js** - Renderizado 3D WebGL de alto rendimiento
+2. **GSAP + ScrollTrigger** - Animaciones cinematográficas sincronizadas con scroll
+3. **Lenis** - Smooth scrolling ultra-suave (60fps)
+4. **Tailwind CSS** - Diseño responsive moderno
+5. **Glassmorphism** - Efectos de cristal avanzados
+6. **Custom Cursor** - Cursor magnético con follower
+7. **Particle System** - 1500 partículas 3D interactivas
+8. **Geometría Dinámica** - Formas 3D flotantes wireframe
+
+### **✨ EFECTOS ESPECIALES:**
+- **Parallax Multi-capa**: Cada sección se mueve a diferente velocidad
+- **Scroll Progress Bar**: Barra de progreso animada
+- **Glitch Effects**: Texto con distorsión digital
+- **Magnetic Buttons**: Botones que siguen el cursor
+- **3D Cards**: Tarjetas con perspectiva y rotación 3D
+- **Gradient Animations**: Textos con gradientes animados
+- **Float Animations**: Elementos flotantes orgánicos
+- **Noise Overlay**: Textura de ruido cinematográfico
+- **Vignette**: Viñeta oscura periférica
+
+### **🎮 INTERACTIVIDAD:**
+- **Mouse Parallax**: La cámara 3D sigue el mouse
+- **Hover States**: Todos los elementos responden al hover
+- **Section Navigation**: Navegación flotante + indicadores laterales
+- **Smooth Scroll**: Scroll suave con Lenis
+- **Loading Screen**: Pantalla de carga animada
+
+### **📱 RESPONSIVE:**
+- Mobile-first design
+- Cursor personalizado se desactiva en móvil
+- Layout adaptable a todas las pantallas
+
+**Guarda esto como `index.html` y ábrelo. Es una experiencia web viva, inmersiva, 3D, con parallax extremo y scroll triggering cinematográfico. ¡El máximo nivel!** 🌟

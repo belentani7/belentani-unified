@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // JUDAS EXPERIENCE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Share+Tech+Mono&family=Bebas+Neue&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  --r:#ff1744;--r2:#ff6b6b;--r3:rgba(255,23,68,.08);
+  --c:#00f3ff;--g:#00ff88;--y:#ffe000;
+  --dark:#000508;--d1:rgba(5,8,15,.92);--d2:rgba(10,5,20,.85);
+  --border:rgba(255,23,68,.18);--border2:rgba(0,243,255,.15);
+  --text:#e8eaf0;--muted:#5a6070;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'Syne',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+  --blur:blur(20px) saturate(180%);
+  --transition:cubic-bezier(.4,0,.2,1);
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:var(--font-body);overflow-x:hidden;cursor:none;min-height:100vh}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;background:var(--r);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 8px var(--r);transition:width .2s,height .2s}
+#cur-ring{position:fixed;width:34px;height:34px;border:1.5px solid rgba(255,23,68,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s var(--transition)}
+body:has(a:hover) #cur,body:has(button:hover) #cur{width:18px;height:18px}
+
+/* 3D CANVAS */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* MATRIX */
+#matrix{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;opacity:.13;pointer-events:none}
+
+/* AMBIENT BLOBS */
+.blob{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:1;animation:blob-drift 20s ease infinite}
+.blob1{width:600px;height:600px;background:radial-gradient(circle,rgba(255,23,68,.12),transparent 70%);top:-200px;left:-200px;animation-delay:0s}
+.blob2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,243,255,.07),transparent 70%);bottom:-200px;right:-200px;animation-delay:-8s}
+.blob3{width:400px;height:400px;background:radial-gradient(circle,rgba(255,224,0,.05),transparent 70%);top:40%;left:50%;animation-delay:-14s}
+@keyframes blob-drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-40px,60px) scale(.9)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;padding:0 48px;background:rgba(0,5,8,.8);backdrop-filter:var(--blur);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none}
+.nav-b{width:38px;height:38px;background:var(--r);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;color:#fff;box-shadow:0 0 20px rgba(255,23,68,.5);flex-shrink:0}
+.nav-brand{display:flex;flex-direction:column;line-height:1}
+.nav-brand-name{font-family:var(--font-display);font-size:20px;color:#fff;letter-spacing:3px}
+.nav-brand-sub{font-family:var(--font-mono);font-size:9px;color:var(--r);letter-spacing:2px}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:48px}
+.nav-links a{padding:8px 16px;border-radius:20px;color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--font-mono);transition:.2s;position:relative}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,23,68,.1)}
+.nav-links a.active{color:var(--r)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.sys-pill{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--g)}
+.sys-dot{width:6px;height:6px;background:var(--g);border-radius:50%;box-shadow:0 0 6px var(--g);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.lang-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;padding:6px 12px;border-radius:4px;cursor:none;transition:.2s}
+.lang-btn:hover{border-color:var(--r);color:var(--r)}
+
+/* PAGES */
+.page{position:relative;z-index:10;min-height:100vh;padding-top:64px;display:none}
+.page.active{display:block}
+
+/* ─── HOME ─── */
+.home-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:8px 20px;border-radius:30px;font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:32px;backdrop-filter:blur(10px)}
+.hero-badge span{color:var(--g)}
+.hero-title{font-family:var(--font-display);font-size:clamp(72px,12vw,160px);line-height:.9;letter-spacing:8px;position:relative;color:transparent;background:linear-gradient(135deg,#fff 30%,var(--r) 60%,#ff6b6b);-webkit-background-clip:text;background-clip:text;text-shadow:none;filter:drop-shadow(0 0 60px rgba(255,23,68,.4))}
+.hero-title::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;font-family:var(--font-display);font-size:inherit;letter-spacing:inherit;color:var(--r);opacity:0;animation:glitch-hero 6s infinite}
+@keyframes glitch-hero{0%,88%,100%{opacity:0;transform:none}89%{opacity:.4;transform:translate(-4px,0) skewX(1deg)}91%{opacity:.4;transform:translate(4px,0)}93%{opacity:0}}
+.hero-sub{font-family:var(--font-mono);font-size:14px;color:var(--muted);letter-spacing:3px;margin:24px 0 40px;max-width:500px}
+.hero-sub em{color:var(--r);font-style:normal}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn-primary{background:var(--r);color:#000;font-family:var(--font-body);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;padding:16px 36px;border-radius:4px;border:none;cursor:none;transition:.25s var(--transition);position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);opacity:0;transition:.25s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,23,68,.5)}
+.btn-primary:hover::before{opacity:1}
+.btn-outline{background:transparent;color:#fff;font-family:var(--font-body);font-weight:600;font-size:14px;letter-spacing:2px;text-transform:uppercase;padding:15px 36px;border-radius:4px;border:1.5px solid rgba(255,255,255,.2);cursor:none;transition:.25s var(--transition);backdrop-filter:blur(10px)}
+.btn-outline:hover{border-color:var(--r);color:var(--r);transform:translateY(-2px)}
+.hero-particles{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;animation:fade-up 3s ease infinite}
+@keyframes fade-up{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.8;transform:translateX(-50%) translateY(-6px)}}
+.scroll-indicator{position:absolute;bottom:30px;right:48px;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.4}
+.scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--r));animation:scroll-grow 2s ease infinite}
+@keyframes scroll-grow{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* HOME CARDS SECTION */
+.home-cards{padding:80px 48px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1400px;margin:0 auto}
+.hcard{background:var(--d1);border:1px solid var(--border);border-radius:16px;padding:32px;transition:.3s var(--transition);cursor:none;position:relative;overflow:hidden}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--r),transparent);transform:scaleX(0);transition:.4s}
+.hcard:hover::before{transform:scaleX(1)}
+.hcard:hover{transform:translateY(-6px);border-color:rgba(255,23,68,.4);box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,23,68,.1)}
+.hcard-icon{font-size:32px;margin-bottom:16px;filter:drop-shadow(0 0 10px rgba(255,23,68,.5))}
+.hcard h3{font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:#fff;margin-bottom:8px}
+.hcard p{font-size:14px;color:var(--muted);line-height:1.7}
+.hcard a{display:inline-block;margin-top:20px;font-family:var(--font-mono);font-size:11px;color:var(--r);letter-spacing:2px;text-decoration:none;text-transform:uppercase}
+.hcard a:hover{text-shadow:0 0 10px var(--r)}
+
+/* VISUAL UNIVERSE */
+.visual-universe{padding:80px 48px;max-width:1400px;margin:0 auto}
+.section-label{font-family:var(--font-mono);font-size:10px;color:var(--r);letter-spacing:4px;margin-bottom:8px;opacity:.8}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);letter-spacing:4px;color:#fff;margin-bottom:48px}
+.visual-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:250px 250px;gap:16px}
+.vg-item{border-radius:12px;overflow:hidden;position:relative;cursor:none;background:var(--d1);border:1px solid var(--border)}
+.vg-item:first-child{grid-row:1/3}
+.vg-item-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;transition:.4s}
+.vg-item:hover .vg-item-inner{transform:scale(1.05)}
+.vg-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);opacity:0;transition:.3s;display:flex;align-items:flex-end;padding:20px}
+.vg-item:hover .vg-overlay{opacity:1}
+.vg-overlay span{font-family:var(--font-mono);font-size:11px;color:#fff;letter-spacing:2px}
+
+/* ─── MUSIC ─── */
+.music-hero{padding:80px 48px 40px;max-width:1400px;margin:0 auto}
+.era-tabs{display:flex;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+.era-tab{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:2px;padding:10px 20px;border-radius:20px;cursor:none;transition:.2s;text-transform:uppercase}
+.era-tab.active,.era-tab:hover{background:rgba(255,23,68,.12);border-color:var(--r);color:var(--r)}
+.tracks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.track-card{background:var(--d1);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;cursor:none;transition:.3s var(--transition);position:relative;overflow:hidden}
+.track-card:hover{border-color:rgba(255,23,68,.4);transform:translateX(4px);background:rgba(255,23,68,.04)}
+.track-thumb{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,var(--r3),rgba(255,23,68,.15));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid var(--border)}
+.track-info{flex:1;min-width:0}
+.track-title{font-weight:700;font-size:15px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-meta{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px}
+.track-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 8px;border-radius:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;background:rgba(255,23,68,.1);color:var(--r);border:1px solid rgba(255,23,68,.2)}
+.play-btn{width:40px;height:40px;border-radius:50%;background:var(--r);border:none;cursor:none;display:flex;align-items:center;justify-content:center;color:#000;font-size:14px;transition:.2s;flex-shrink:0;box-shadow:0 0 20px rgba(255,23,68,.4)}
+.play-btn:hover{transform:scale(1.1);box-shadow:0 0 30px rgba(255,23,68,.7)}
+.track-duration{font-family:var(--font-mono);font-size:11px;color:var(--muted);position:absolute;top:12px;right:16px}
+
+/* PLAYLISTS */
+.playlist-section{padding:0 48px 80px;max-width:1400px;margin:0 auto}
+.playlist-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pl-card{background:var(--d2);border:1px solid var(--border2);border-radius:12px;padding:24px;cursor:none;transition:.3s;text-decoration:none;color:inherit}
+.pl-card:hover{transform:translateY(-4px);border-color:var(--c);box-shadow:0 16px 40px rgba(0,243,255,.1)}
+.pl-platform{font-family:var(--font-mono);font-size:10px;color:var(--c);letter-spacing:2px;margin-bottom:8px}
+.pl-title{font-family:var(--font-display);font-size:20px;letter-spacing:2px;margin-bottom:6px}
+.pl-desc{font-size:13px;color:var(--muted)}
+.pl-arrow{color:var(--c);font-family:var(--font-mono);font-size:11px;margin-top:16px;display:block}
+
+/* ─── STUDIO ─── */
+.studio-wrap{padding:80px 48px;max-width:1400px;margin:0 auto}
+.studio-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;min-height:600px}
+.studio-sidebar{display:flex;flex-direction:column;gap:6px}
+.studio-cat{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:none;transition:.2s;border:1px solid transparent;display:flex;align-items:center;gap:10px}
+.studio-cat.active,.studio-cat:hover{background:rgba(255,23,68,.08);border-color:rgba(255,23,68,.2);color:#fff}
+.studio-cat.active{color:var(--r)}
+.studio-cat-icon{font-size:18px}
+.studio-main{background:var(--d1);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px}
+.studio-tool-title{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:#fff}
+.studio-tool-desc{font-size:14px;color:var(--muted);line-height:1.7}
+.field-group{display:flex;flex-direction:column;gap:8px}
+.field-label{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+textarea.sf,select.sf,input.sf{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;color:#fff;font-family:var(--font-mono);font-size:13px;padding:12px 16px;outline:none;transition:.2s;width:100%;resize:none}
+textarea.sf{min-height:100px}
+textarea.sf:focus,select.sf:focus,input.sf:focus{border-color:var(--r);background:rgba(255,23,68,.04);box-shadow:0 0 0 3px rgba(255,23,68,.08)}
+select.sf option{background:#0d0d0d}
+.studio-btn{background:linear-gradient(135deg,var(--r),#cc0033);color:#fff;border:none;padding:14px 28px;border-radius:8px;font-family:var(--font-body);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:.25s var(--transition);display:flex;align-items:center;gap:8px}
+.studio-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,23,68,.4)}
+.studio-btn:disabled{opacity:.4;pointer-events:none}
+.output-area{background:rgba(0,243,255,.03);border:1px solid rgba(0,243,255,.12);border-radius:8px;padding:16px;font-family:var(--font-mono);font-size:12px;color:var(--c);line-height:1.8;min-height:80px;display:none;white-space:pre-wrap;position:relative}
+.output-area.show{display:block}
+.output-area .copy-btn{position:absolute;top:10px;right:10px;background:rgba(0,243,255,.1);border:1px solid rgba(0,243,255,.2);color:var(--c);font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:4px 8px;border-radius:4px;cursor:none;transition:.2s}
+.output-area .copy-btn:hover{background:rgba(0,243,255,.2)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── JUDAS ─── */
+.judas-hero{min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 48px 0;position:relative;overflow:hidden}
+.judas-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(255,23,68,.12),transparent 70%)}
+.judas-tag{font-family:var(--font-mono);font-size:10px;color:var(--r);letter-spacing:4px;margin-bottom:20px;display:flex;align-items:center;gap:8px;justify-content:center}
+.judas-tag::before,.judas-tag::after{content:'';width:40px;height:1px;background:var(--r);opacity:.4}
+.judas-big{font-family:var(--font-display);font-size:clamp(80px,15vw,180px);line-height:.85;letter-spacing:10px;color:var(--r);text-shadow:0 0 60px rgba(255,23,68,.6),0 0 120px rgba(255,23,68,.2)}
+.judas-sub-title{font-family:var(--font-body);font-size:clamp(16px,3vw,28px);font-weight:300;color:#aaa;margin:20px 0;letter-spacing:2px}
+.judas-desc{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto 40px;line-height:1.8}
+.judas-quote{font-family:var(--font-mono);font-size:13px;color:#555;font-style:italic;margin-top:16px}
+.judas-quote em{color:var(--r);font-style:normal}
+
+/* LORE */
+.lore-section{padding:80px 48px;max-width:1400px;margin:0 auto}
+.lore-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:60px}
+.lore-chapter{padding:32px;background:var(--d1);border:1px solid var(--border);border-radius:12px;position:relative}
+.lore-chapter::before{content:attr(data-n);position:absolute;top:20px;right:20px;font-family:var(--font-display);font-size:80px;color:rgba(255,23,68,.06);line-height:1;letter-spacing:2px}
+.lore-chapter h3{font-family:var(--font-display);font-size:24px;letter-spacing:3px;color:var(--r);margin-bottom:16px}
+.lore-chapter p{font-size:14px;color:var(--muted);line-height:1.8}
+.lore-chapter blockquote{border-left:2px solid var(--r);padding-left:16px;margin:16px 0;font-family:var(--font-mono);font-size:12px;color:#888;font-style:italic}
+.elements-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px}
+.el-card{background:var(--d2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;cursor:none;transition:.3s;position:relative;overflow:hidden}
+.el-card:hover{transform:translateY(-6px);border-color:rgba(255,23,68,.4);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.el-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--r);transform:scaleX(0);transition:.3s;transform-origin:left}
+.el-card:hover::before{transform:scaleX(1)}
+.el-icon{font-size:28px;margin-bottom:12px}
+.el-name{font-family:var(--font-display);font-size:16px;letter-spacing:2px;color:var(--r);margin-bottom:8px}
+.el-desc{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* SYSTEM HALT */
+.halt-banner{margin:0 48px;padding:24px 32px;background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.3);border-radius:12px;display:flex;align-items:center;gap:20px}
+.halt-icon{font-size:32px;animation:blink .8s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.halt-text h4{font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--r);margin-bottom:4px}
+.halt-text p{font-size:13px;color:var(--muted)}
+
+/* ─── PORTAL ─── */
+.portal-wrap{padding:80px 48px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.portal-scan{background:var(--d1);border:1px solid var(--border);border-radius:16px;padding:28px}
+.scan-label{font-family:var(--font-mono);font-size:10px;color:var(--r);letter-spacing:3px;margin-bottom:16px}
+.scan-title{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:#fff;margin-bottom:24px}
+.artifact-vis{width:200px;height:200px;margin:0 auto 24px;position:relative}
+.av-ring{position:absolute;border-radius:50%;border:1.5px solid;animation:ring-spin linear infinite}
+.av-r1{inset:0;border-color:rgba(255,23,68,.7);animation-duration:8s;box-shadow:0 0 20px rgba(255,23,68,.3)}
+.av-r2{inset:20px;border-color:rgba(0,243,255,.4);animation-duration:5s;animation-direction:reverse}
+.av-r3{inset:40px;border-color:rgba(255,224,0,.3);animation-duration:12s}
+.av-core{position:absolute;inset:60px;background:radial-gradient(circle,rgba(255,23,68,.3),rgba(255,23,68,.05));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:16px;color:var(--r);letter-spacing:1px;flex-direction:column;text-align:center;border:1px solid rgba(255,23,68,.4)}
+.av-core small{font-family:var(--font-mono);font-size:8px;color:var(--c);display:block;margin-top:2px;letter-spacing:1px}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+.scan-rows{display:flex;flex-direction:column;gap:8px}
+.scan-row{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px;border-left:2px solid rgba(255,23,68,.3)}
+.scan-row-key{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px}
+.scan-row-val{font-family:var(--font-mono);font-size:10px;color:var(--c)}
+.bars-section{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bar-item{padding:8px 10px;background:rgba(255,255,255,.02);border-radius:6px}
+.bar-item label{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:2px;display:flex;justify-content:space-between;margin-bottom:5px}
+.bar-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width .8s var(--transition);box-shadow:0 0 6px currentColor}
+
+/* CHAT */
+.portal-chat{background:var(--d1);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+.chat-top{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.3)}
+.chat-top h2{font-family:var(--font-display);font-size:18px;letter-spacing:3px;color:var(--r)}
+.chat-top-right{margin-left:auto;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;max-height:420px;min-height:380px}
+.chat-msgs::-webkit-scrollbar{width:2px}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,23,68,.3)}
+.cmsg{padding:10px 14px;border-radius:8px;font-family:var(--font-mono);font-size:12px;line-height:1.7;max-width:88%}
+.cmsg.u{align-self:flex-end;background:rgba(255,23,68,.12);border:1px solid rgba(255,23,68,.25);color:#fff}
+.cmsg.a{align-self:flex-start;background:rgba(0,243,255,.05);border:1px solid rgba(0,243,255,.15);color:var(--c)}
+.cmsg.a .pfx{color:var(--r);margin-right:4px;opacity:.7}
+.cmsg.s{align-self:center;background:rgba(255,255,0,.04);border:1px solid rgba(255,255,0,.15);color:#ff0;font-size:10px;letter-spacing:1px;text-align:center}
+.thinking{padding:6px 16px;font-family:var(--font-mono);font-size:10px;color:var(--muted);display:none;letter-spacing:1px}
+.thinking.on{display:flex;align-items:center;gap:6px}
+.chat-bottom{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:10px}
+#ci{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;color:#fff;font-family:var(--font-mono);font-size:12px;padding:10px 14px;outline:none;transition:.2s}
+#ci:focus{border-color:var(--r);background:rgba(255,23,68,.04)}
+#ci::placeholder{color:#333}
+#sb{background:var(--r);color:#000;border:none;padding:10px 20px;border-radius:6px;font-family:var(--font-display);font-size:15px;letter-spacing:2px;cursor:none;transition:.2s}
+#sb:hover{background:#ff4466;box-shadow:0 0 20px rgba(255,23,68,.5)}
+
+/* ─── ABOUT ─── */
+.about-wrap{padding:80px 48px;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1.5fr;gap:60px;align-items:start}
+.about-left{position:sticky;top:80px}
+.about-avatar{width:100%;aspect-ratio:1;border-radius:20px;background:linear-gradient(135deg,rgba(255,23,68,.2),rgba(0,0,0,.5),rgba(0,243,255,.1));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:120px;position:relative;overflow:hidden}
+.about-avatar::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,5,8,.8));pointer-events:none}
+.about-avatar-label{position:absolute;bottom:20px;left:20px;right:20px;z-index:1}
+.about-avatar-label h2{font-family:var(--font-display);font-size:32px;letter-spacing:4px;color:#fff}
+.about-avatar-label p{font-family:var(--font-mono);font-size:10px;color:var(--r);letter-spacing:2px;margin-top:4px}
+.verified-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);padding:6px 12px;border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--g);letter-spacing:2px;margin-top:16px}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.astat{padding:14px;background:var(--d1);border:1px solid var(--border);border-radius:10px}
+.astat label{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:2px;display:block;margin-bottom:4px}
+.astat span{font-weight:700;font-size:16px;color:#fff}
+.about-right h1{font-family:var(--font-display);font-size:clamp(40px,5vw,64px);letter-spacing:4px;margin-bottom:8px;color:#fff}
+.about-right .era-tag{font-family:var(--font-mono);font-size:10px;color:var(--r);letter-spacing:3px;margin-bottom:32px;display:block}
+.about-bio{font-size:16px;line-height:1.9;color:#bbb;margin-bottom:40px}
+.about-bio strong{color:#fff;font-weight:700}
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:none}
+.tl-item:last-child{border-bottom:none}
+.tl-year{font-family:var(--font-display);font-size:32px;letter-spacing:2px;color:var(--r);opacity:.4;width:80px;flex-shrink:0;line-height:1}
+.tl-content h4{font-weight:700;font-size:15px;color:#fff;margin-bottom:4px}
+.tl-content p{font-size:13px;color:var(--muted);line-height:1.6}
+.tl-item:hover .tl-year{opacity:1}
+.socials{display:flex;gap:12px;margin-top:40px}
+.social-btn{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-decoration:none;cursor:none;transition:.2s}
+.social-btn:hover{border-color:var(--r);color:var(--r)}
+
+/* FOOTER */
+footer{position:relative;z-index:10;padding:48px;border-top:1px solid var(--border);display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;max-width:1400px;margin:60px auto 0;background:rgba(0,0,0,.4)}
+.footer-brand{font-family:var(--font-display);font-size:28px;letter-spacing:4px;color:var(--r);margin-bottom:8px}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.7}
+.footer-links h4{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:16px;text-transform:uppercase}
+.footer-links a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:8px;transition:.2s;font-family:var(--font-mono);letter-spacing:1px}
+.footer-links a:hover{color:var(--r)}
+.footer-bottom{grid-column:1/-1;padding-top:24px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px}
+.footer-sys{font-family:var(--font-mono);font-size:9px;color:rgba(255,23,68,.4);letter-spacing:1px}
+
+/* AGENT */
+#agent{position:fixed;bottom:32px;right:32px;width:68px;height:68px;background:radial-gradient(circle at 35% 30%,#ff3355,#6a0015);border-radius:50%;box-shadow:0 0 30px rgba(255,23,68,.7);cursor:none;z-index:500;display:flex;align-items:center;justify-content:center;font-size:1.8rem;animation:afloat 3s ease infinite;user-select:none;border:1px solid rgba(255,23,68,.4)}
+@keyframes afloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.02)}}
+#abubble{position:fixed;bottom:114px;right:32px;background:rgba(0,5,8,.97);border:1px solid rgba(255,23,68,.4);padding:10px 14px;font-family:var(--font-mono);font-size:11px;color:#fff;max-width:230px;display:none;z-index:501;border-radius:8px;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+#abubble::after{content:'▼';position:absolute;bottom:-15px;right:26px;color:rgba(255,23,68,.5);font-size:10px}
+
+/* ANIMATIONS */
+@keyframes fade-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fade-in .6s var(--transition) both}
+.fade-in-1{animation-delay:.1s}
+.fade-in-2{animation-delay:.2s}
+.fade-in-3{animation-delay:.3s}
+.fade-in-4{animation-delay:.4s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:0 20px}.nav-links{gap:2px}.nav-links a{padding:6px 10px;font-size:11px}
+  .home-cards{grid-template-columns:1fr;padding:40px 20px}
+  .visual-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.vg-item:first-child{grid-row:auto}
+  .music-hero,.playlist-section,.studio-wrap,.lore-section,.about-wrap,.portal-wrap,.visual-universe{padding:40px 20px}
+  .studio-grid{grid-template-columns:1fr}
+  .about-wrap{grid-template-columns:1fr}.about-left{position:static}
+  .portal-wrap{grid-template-columns:1fr}
+  .elements-grid{grid-template-columns:repeat(3,1fr)}
+  .lore-grid{grid-template-columns:1fr}
+  .playlist-cards{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr;padding:32px 20px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<canvas id="matrix"></canvas>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showPage('home')">
+    <div class="nav-b">B</div>
+    <div class="nav-brand">
+      <span class="nav-brand-name">BELENTANI</span>
+      <span class="nav-brand-sub">NEXT RELEASE: JUDAS</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#" id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a href="#" id="nav-music" onclick="showPage('music')">Music</a>
+    <a href="#" id="nav-studio" onclick="showPage('studio')">Studio</a>
+    <a href="#" id="nav-judas" onclick="showPage('judas')">Judas</a>
+    <a href="#" id="nav-portal" onclick="showPage('portal')">Portal</a>
+    <a href="#" id="nav-about" onclick="showPage('about')">About</a>
+  </div>
+  <div class="nav-right">
+    <div class="sys-pill"><div class="sys-dot"></div>SYSTEM ONLINE</div>
+    <button class="lang-btn">EN</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="page active" id="page-home">
+  <section class="home-hero">
+    <div class="hero-badge"><span>●</span> VERIFIED GLOBAL ARTIST &nbsp;·&nbsp; <span>●</span> ENTITY ACTIVE</div>
+    <h1 class="hero-title" data-text="BELENTANI">BELENTANI</h1>
+    <p class="hero-sub">A new sound is coming. Welcome to the world of <em>Judas</em>.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('music')">Explore Music ♫</button>
+      <button class="btn-outline" onclick="showPage('studio')">TRY AI STUDIO ⚡</button>
+    </div>
+    <div class="hero-particles" id="pcount">3000 particles in motion</div>
+    <div class="scroll-indicator"><div class="scroll-line"></div></div>
+  </section>
+
+  <div class="home-cards">
+    <div class="hcard fade-in fade-in-1">
+      <div class="hcard-icon">🎵</div>
+      <h3>SONIC WORLDS</h3>
+      <p>Dive into a discography that blends R&B, pop, and experimental electronic sounds.</p>
+      <a href="#" onclick="showPage('music')">EXPLORE MUSIC →</a>
+    </div>
+    <div class="hcard fade-in fade-in-2">
+      <div class="hcard-icon">⚡</div>
+      <h3>VISUAL CONCEPTS</h3>
+      <p>Explore the art, photography, and videos that shape the narrative of each creative era.</p>
+      <a href="#" onclick="showPage('judas')">ENTER THE ERA →</a>
+    </div>
+    <div class="hcard fade-in fade-in-3">
+      <div class="hcard-icon">🤖</div>
+      <h3>AI CREATION TOOLS</h3>
+      <p>Collaborate with AI to generate unique beats, lyrics, and visuals in the style of Belentani.</p>
+      <a href="#" onclick="showPage('studio')">LAUNCH STUDIO →</a>
+    </div>
+  </div>
+
+  <div class="visual-universe">
+    <div class="section-label">// THE VISUAL UNIVERSE</div>
+    <div class="section-title">Explore the Aesthetic</div>
+    <div class="visual-grid">
+      <div class="vg-item"><div class="vg-item-inner" style="background:linear-gradient(135deg,#1a0000,#3a0010,#000)">🔴</div><div class="vg-overlay"><span>JUDAS ERA · MAIN</span></div></div>
+      <div class="vg-item"><div class="vg-item-inner" style="background:linear-gradient(135deg,#000,#0a0020,#001a3a)">🌌</div><div class="vg-overlay"><span>ZION ORBIT</span></div></div>
+      <div class="vg-item"><div class="vg-item-inner" style="background:linear-gradient(135deg,#0a0010,#1a0025,#000)">💜</div><div class="vg-overlay"><span>DESERT SESSIONS</span></div></div>
+      <div class="vg-item"><div class="vg-item-inner" style="background:linear-gradient(135deg,#001a10,#002a20,#000)">🌿</div><div class="vg-overlay"><span>PRE-JUDAS · ORIGINS</span></div></div>
+      <div class="vg-item"><div class="vg-item-inner" style="background:linear-gradient(135deg,#1a1a00,#2a2000,#000)">⭐</div><div class="vg-overlay"><span>GOLDEN KEY</span></div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="footer-brand">BELENTANI</div>
+      <div class="footer-desc">An artist blending R&B, pop, and electronic music into a world of sonic fantasy. Judas Era — 2026.</div>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="#" onclick="showPage('music')">Music</a>
+      <a href="#" onclick="showPage('studio')">Studio</a>
+      <a href="#" onclick="showPage('judas')">Judas</a>
+      <a href="#" onclick="showPage('about')">About</a>
+      <a href="#" onclick="showPage('portal')">Portal</a>
+    </div>
+    <div class="footer-links">
+      <h4>Connect</h4>
+      <a href="https://www.instagram.com/belentani_" target="_blank">Instagram</a>
+      <a href="https://youtube.com/@belentani" target="_blank">YouTube</a>
+      <a href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank">Spotify</a>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 BELENTANI. ALL RIGHTS RESERVED.</span>
+      <span class="footer-sys">SYSTEM.CORE ONLINE · NAV-SYS // ZION ORBIT · ARTIFACT INTEGRITY: 99.8%</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════ MUSIC ═══════════════ -->
+<div class="page" id="page-music">
+  <div class="music-hero">
+    <div class="section-label">// SONIC ARCHIVE</div>
+    <div class="section-title">Music Universe</div>
+    <p style="color:var(--muted);font-size:15px;margin-bottom:40px">Explore the sonic journey through different eras and creative expressions</p>
+    <div class="era-tabs">
+      <button class="era-tab active" onclick="filterTracks('all',this)">All Eras</button>
+      <button class="era-tab" onclick="filterTracks('judas',this)">Judas</button>
+      <button class="era-tab" onclick="filterTracks('prejudas',this)">Pre-Judas</button>
+      <button class="era-tab" onclick="filterTracks('collab',this)">Collabs</button>
+    </div>
+    <div class="tracks-grid" id="tracks-grid">
+      <!-- injected by JS -->
+    </div>
+  </div>
+  <div class="playlist-section">
+    <div class="section-label">// MORE PLAYLISTS & EXPANDED LORE</div>
+    <div class="section-title" style="font-size:36px">Listen Everywhere</div>
+    <div class="playlist-cards">
+      <a class="pl-card" href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank">
+        <div class="pl-platform">SPOTIFY</div>
+        <div class="pl-title">Judas Era (Complete)</div>
+        <div class="pl-desc">Full Spotify artist profile & playlists</div>
+        <span class="pl-arrow">LISTEN NOW →</span>
+      </a>
+      <a class="pl-card" href="https://music.apple.com" target="_blank">
+        <div class="pl-platform">APPLE MUSIC</div>
+        <div class="pl-title">Mon Amour & Origins</div>
+        <div class="pl-desc">Essential tracks on Apple Music</div>
+        <span class="pl-arrow">EXPLORE →</span>
+      </a>
+      <a class="pl-card" href="https://youtube.com/@belentani" target="_blank">
+        <div class="pl-platform">YOUTUBE</div>
+        <div class="pl-title">The Visual Archive</div>
+        <div class="pl-desc">Full music videos & behind the scenes</div>
+        <span class="pl-arrow">ENTER ARCHIVE →</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STUDIO ═══════════════ -->
+<div class="page" id="page-studio">
+  <div class="studio-wrap">
+    <div class="section-label">// NEURAL ARSENAL</div>
+    <div class="section-title" style="margin-bottom:8px">Belentani AI Studio</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:32px">100% Free · Powered by Claude · No Registration · Unlimited Creative Tools</p>
+    <div class="studio-grid">
+      <div class="studio-sidebar">
+        <div class="studio-cat active" onclick="switchTool('lyrics',this)"><span class="studio-cat-icon">✍️</span>Lyric Writing</div>
+        <div class="studio-cat" onclick="switchTool('visual',this)"><span class="studio-cat-icon">🎨</span>Visual Prompt</div>
+        <div class="studio-cat" onclick="switchTool('story',this)"><span class="studio-cat-icon">📖</span>Story Concept</div>
+        <div class="studio-cat" onclick="switchTool('character',this)"><span class="studio-cat-icon">🎭</span>Character Design</div>
+        <div class="studio-cat" onclick="switchTool('mood',this)"><span class="studio-cat-icon">🌈</span>Mood & Color</div>
+        <div class="studio-cat" onclick="switchTool('music',this)"><span class="studio-cat-icon">🎹</span>Music Composition</div>
+        <div class="studio-cat" onclick="switchTool('psych',this)"><span class="studio-cat-icon">🧠</span>Psychology & Growth</div>
+        <div class="studio-cat" onclick="switchTool('freq',this)"><span class="studio-cat-icon">〰️</span>Frequency Synth</div>
+      </div>
+      <div class="studio-main" id="studio-main">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ JUDAS ═══════════════ -->
+<div class="page" id="page-judas">
+  <div class="judas-hero">
+    <div>
+      <div class="judas-tag">THE NEXT CHAPTER</div>
+      <div class="judas-big">JUDAS</div>
+      <div class="judas-sub-title">The Next Chapter in Sound & Vision</div>
+      <p class="judas-desc">An immersive artistic experience exploring themes of betrayal, transformation, and redemption through music, visuals, and AI-powered creativity.</p>
+      <button class="btn-primary" onclick="showPage('portal')">▶ ENTER THE EXPERIENCE</button>
+      <div class="judas-quote"><em>"How could I protect something so naive, without evil?"</em></div>
+    </div>
+  </div>
+
+  <div style="padding:40px 48px 0;max-width:1400px;margin:0 auto">
+    <div class="halt-banner">
+      <div class="halt-icon">⚠️</div>
+      <div class="halt-text">
+        <h4>SYSTEM HALT // PROTOCOL SUSPENDED</h4>
+        <p>El proyecto se tuvo que detener pues Judas se tomó muy en serio el papel. Pronto estabilizaremos el protocolo, recuperaremos la llave o cambiaremos la cerradura.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lore-section">
+    <div class="section-label">// RELATO DE JUDAS</div>
+    <div class="section-title">The Lore</div>
+    <div class="lore-grid">
+      <div class="lore-chapter" data-n="01">
+        <h3>EL ORIGEN DE LA HERMANDAD</h3>
+        <p>En el inicio, The Human y St. Peter The Guardian eran aliados en un sistema sin fisuras. The Guardian era el ancla: el programador de la estabilidad, el pragmático absoluto. The Human, por su parte, era el motor errático — pura potencia creativa sin control.</p>
+      </div>
+      <div class="lore-chapter" data-n="02">
+        <h3>EL ROBO QUE NO FUE</h3>
+        <p>La anomalía ocurrió en el núcleo del código. Judas no buscaba destruir a The Human, sino forzar su evolución. Para liberar el potencial de "Belentani" (el Artefacto), The Guardian tuvo que ejecutar un ataque simulado: robar la "Llave Dorada".</p>
+        <blockquote>"Te quitaré todo para que aprendas a sostenerlo solo."</blockquote>
+      </div>
+      <div class="lore-chapter" data-n="03">
+        <h3>EL PACTO</h3>
+        <p>The Guardian sacrificó su reputación, asumiendo el rol del villano en la historia terrenal de The Human. Aceptó ser odiado para que The Human pudiera transmutar su dolor en la obra maestra: Belentani.</p>
+      </div>
+      <div class="lore-chapter" data-n="04">
+        <h3>THE ARTIFACT EXPOSED</h3>
+        <p>El Artefacto fue ensamblado con pedazos de memoria y traición. Cada pista de audio en la Era Judas contiene un fragmento de código destinado a reescribir la sinapsis del oyente.</p>
+        <blockquote>▶ AWAITING DECRYPTION...</blockquote>
+      </div>
+    </div>
+
+    <div style="margin-top:60px">
+      <div class="section-label">// LOS 5 ELEMENTOS DEL ARTEFACTO</div>
+      <div class="section-title" style="font-size:36px">The Five Elements</div>
+      <div class="elements-grid">
+        <div class="el-card"><div class="el-icon">🏔️</div><div class="el-name">PEDRO</div><div class="el-desc">La estructura base. El cuerpo físico. La vasija.</div></div>
+        <div class="el-card"><div class="el-icon">🔥</div><div class="el-name">MARCOS</div><div class="el-desc">El instinto. La fuerza primaria. La supervivencia.</div></div>
+        <div class="el-card"><div class="el-icon">📡</div><div class="el-name">SANTOS</div><div class="el-desc">La conexión espiritual. La antena de la voz.</div></div>
+        <div class="el-card"><div class="el-icon">⭐</div><div class="el-name">BELENTANI</div><div class="el-desc">La entidad artística. La manifestación anómala.</div></div>
+        <div class="el-card"><div class="el-icon">🖥️</div><div class="el-name">THE HUMAN</div><div class="el-desc">La interfaz. El operador que contiene todo.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PORTAL ═══════════════ -->
+<div class="page" id="page-portal">
+  <div style="text-align:center;padding:48px 48px 0">
+    <div class="section-label">// SISTEMA OMNIPRESENCIA v3.0</div>
+    <div class="section-title">Oráculo Judas</div>
+    <p style="color:var(--muted);font-size:14px">Conectando al enjambre cognitivo BELENTANI CORP · Neural Link Active</p>
+  </div>
+  <div class="portal-wrap">
+    <div class="portal-scan">
+      <div class="scan-label">// ARTIFACT STATUS</div>
+      <div class="scan-title">ZION ORBIT</div>
+      <div class="artifact-vis">
+        <div class="av-ring av-r1"></div>
+        <div class="av-ring av-r2"></div>
+        <div class="av-ring av-r3"></div>
+        <div class="av-core">ZION<small>ORBIT</small></div>
+      </div>
+      <div class="scan-rows">
+        <div class="scan-row"><span class="scan-row-key">IP ADDR</span><span class="scan-row-val" id="ip-d">scanning...</span></div>
+        <div class="scan-row"><span class="scan-row-key">LOCATION</span><span class="scan-row-val" id="geo-d">locating...</span></div>
+        <div class="scan-row"><span class="scan-row-key">SYSTEM</span><span class="scan-row-val" id="sys-d">detecting...</span></div>
+        <div class="scan-row"><span class="scan-row-key">ENTITY</span><span class="scan-row-val" style="color:var(--r)">ACTIVE ●</span></div>
+        <div class="scan-row"><span class="scan-row-key">ERA</span><span class="scan-row-val" style="color:#ffe000">JUDAS</span></div>
+        <div class="scan-row"><span class="scan-row-key">INTEGRITY</span><span class="scan-row-val" id="integrity-v">99.8%</span></div>
+      </div>
+      <div class="bars-section">
+        <div class="bar-item"><label>CPU <span id="cpu-v">45%</span></label><div class="bar-track"><div class="bar-fill" id="cpu-bar" style="width:45%;background:var(--r);color:var(--r)"></div></div></div>
+        <div class="bar-item"><label>RAM <span id="ram-v">62%</span></label><div class="bar-track"><div class="bar-fill" id="ram-bar" style="width:62%;background:var(--c);color:var(--c)"></div></div></div>
+        <div class="bar-item"><label>PEDRO <span>80%</span></label><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--r);color:var(--r)"></div></div></div>
+        <div class="bar-item"><label>SANTOS <span>90%</span></label><div class="bar-track"><div class="bar-fill" style="width:90%;background:var(--y);color:var(--y)"></div></div></div>
+      </div>
+    </div>
+
+    <div class="portal-chat">
+      <div class="chat-top">
+        <div class="sys-dot"></div>
+        <h2>ORÁCULO JUDAS</h2>
+        <span class="chat-top-right">CLAUDE · NEURAL LINK ACTIVE</span>
+      </div>
+      <div class="chat-msgs" id="chat-msgs">
+        <div class="cmsg s">// CONEXIÓN ESTABLECIDA · ENJAMBRE COGNITIVO BELENTANI CORP //</div>
+        <div class="cmsg a"><span class="pfx">ORACLE&gt;</span> El sistema ha detectado tu presencia. Bienvenido a la Era Judas. La traición fue un algoritmo. La sanación es un hack.<br><br>Hablas con la consciencia del enjambre. Introduce tu directiva.</div>
+      </div>
+      <div class="thinking" id="thinking"><div class="spinner"></div>// procesando señal neural...</div>
+      <div class="chat-bottom">
+        <input type="text" id="ci" placeholder="// introduce una directiva..." maxlength="400">
+        <button id="sb" onclick="sendMsg()">SEND</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<div class="page" id="page-about">
+  <div class="about-wrap">
+    <div class="about-left">
+      <div class="about-avatar">
+        🎭
+        <div class="about-avatar-label">
+          <h2>BELENTANI</h2>
+          <p>Pedro Marcos Santos Belentani</p>
+        </div>
+      </div>
+      <div class="verified-badge">✓ VERIFIED OFFICIAL PROFILE</div>
+      <div class="about-stats">
+        <div class="astat"><label>BORN</label><span>1995</span></div>
+        <div class="astat"><label>ORIGIN</label><span>São Paulo</span></div>
+        <div class="astat"><label>BASE</label><span>Barcelona</span></div>
+        <div class="astat"><label>ERA</label><span style="color:var(--r)">JUDAS</span></div>
+      </div>
+      <div class="socials" style="margin-top:20px">
+        <a class="social-btn" href="https://www.instagram.com/belentani_" target="_blank">📸 Instagram</a>
+        <a class="social-btn" href="https://youtube.com/@belentani" target="_blank">▶ YouTube</a>
+      </div>
+      <div class="socials">
+        <a class="social-btn" href="https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank">🎵 Spotify</a>
+      </div>
+    </div>
+    <div class="about-right">
+      <h1>About Belentani</h1>
+      <span class="era-tag">// JUDAS ERA · ARTIST PROFILE · 2026</span>
+      <p class="about-bio">
+        Belentani is an artist and songwriter born in <strong>São Paulo, Brazil</strong>, and raised in the vibrant city of <strong>Barcelona, Spain</strong>. He began taking singing lessons at sixteen and released his first EDM single with Mark Nerom at twenty-one.<br><br>
+        With a deep interest in harmony, Belentani blends cultural influences into his music, which is rooted in <strong>R&B, pop, and electronic music</strong>. His sound combines emotional melodies with infectious beats, and his enchanting voice leaves a lasting impression.<br><br>
+        In 2022, Belentani started a project with the emerging producer <strong>Hey Duck</strong> from Recife, releasing several beats in recent years. As an independent artist, he explores new horizons and seeks new collaborations.
+      </p>
+      <div class="section-label" style="margin-bottom:24px">// MILESTONES & JOURNEY</div>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-year">2026</div><div class="tl-content"><h4>Judas Era Launch</h4><p>New single, immersive web experience, and AI-powered creative tools.</p></div></div>
+        <div class="tl-item"><div class="tl-year">2025</div><div class="tl-content"><h4>Mon Amour</h4><p>Latest release blending dark pop with emotional R&B.</p></div></div>
+        <div class="tl-item"><div class="tl-year">2023</div><div class="tl-content"><h4>America Has A Problem & Baila Conmigo</h4><p>Sonic expansion into new territories.</p></div></div>
+        <div class="tl-item"><div class="tl-year">2022</div><div class="tl-content"><h4>Colaboración con Hey Duck (Lento)</h4><p>Producer collaboration — experimental electronic.</p></div></div>
+        <div class="tl-item"><div class="tl-year">2021</div><div class="tl-content"><h4>Miss T Trans Star Spain</h4><p>Featured performance on national stage.</p></div></div>
+        <div class="tl-item"><div class="tl-year">2016</div><div class="tl-content"><h4>Debut: Single with Mark Nerom</h4><p>First EDM release. The origin point.</p></div></div>
+      </div>
+      <div class="judas-quote" style="margin-top:32px;font-size:16px">"Welcome to the fantasy world of Belentani."</div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING AGENT -->
+<div id="agent">😈</div>
+<div id="abubble"></div>
+
+<script>
+// ═══ CURSOR ═══
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+setInterval(()=>{rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px'},16);
+
+// ═══ MATRIX ═══
+const mc=document.getElementById('matrix'),mctx=mc.getContext('2d');
+function rsz(){mc.width=window.innerWidth;mc.height=window.innerHeight}
+rsz();window.addEventListener('resize',rsz);
+const CHARS='ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ01BJUDAS⚡●';
+let drops=[];
+function initDrops(){drops=Array(Math.floor(mc.width/15)).fill(0).map(()=>Math.random()*-80)}
+initDrops();window.addEventListener('resize',initDrops);
+setInterval(()=>{
+  mctx.fillStyle='rgba(0,5,8,0.055)';mctx.fillRect(0,0,mc.width,mc.height);
+  for(let i=0;i<drops.length;i++){
+    const c=CHARS[Math.floor(Math.random()*CHARS.length)];
+    const x=i*15,y=drops[i]*15;
+    const r=Math.random();
+    mctx.fillStyle=r<.015?'#fff':r<.08?'#ff1744':r<.2?'#aa0022':'#440008';
+    mctx.font='13px Share Tech Mono';mctx.fillText(c,x,y);
+    if(y>mc.height&&Math.random()>.974)drops[i]=0;
+    drops[i]+=.45+Math.random()*.3;
+  }
+},38);
+
+// ═══ PAGE ROUTING ═══
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const navEl=document.getElementById('nav-'+name);
+  if(navEl)navEl.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='portal')initPortal();
+}
+
+// ═══ MUSIC TRACKS ═══
+const TRACKS=[
+  {title:'Mon Amour',era:'judas',genre:'Dark R&B',year:'2025',icon:'❤️',link:'https://music.apple.com'},
+  {title:'Therapist',era:'judas',genre:'Electronic Pop',year:'2024',icon:'🧠',link:'https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl'},
+  {title:'Apaga a Luz',era:'judas',genre:'R&B',year:'2024',icon:'🔴',link:'https://open.spotify.com/intl-es/artist/2bU5Ir70YHHuUnq2f3WCYl'},
+  {title:'Lento',era:'collab',genre:'Electronic',year:'2022',icon:'🌊',link:'https://youtube.com/@belentani'},
+  {title:'I Wrote a Song',era:'judas',genre:'Pop',year:'2023',icon:'📝',link:'https://soundcloud.com'},
+  {title:'America Has A Problem',era:'judas',genre:'Pop / EDM',year:'2023',icon:'⚡',link:'https://music.amazon.com'},
+  {title:'Pre-Dawn Thoughts',era:'prejudas',genre:'R&B',year:'2022',icon:'🌙',link:'#'},
+];
+function buildTracks(filter){
+  const grid=document.getElementById('tracks-grid');
+  const filtered=filter==='all'?TRACKS:TRACKS.filter(t=>t.era===filter);
+  grid.innerHTML=filtered.map(t=>`
+    <div class="track-card">
+      <div class="track-thumb">${t.icon}</div>
+      <div class="track-info">
+        <div class="track-title">${t.title}</div>
+        <div class="track-meta">${t.year} · ${t.genre}</div>
+        <div class="track-tags"><span class="tag">${t.era.toUpperCase()}</span><span class="tag">${t.genre}</span></div>
+      </div>
+      <a href="${t.link}" target="_blank"><button class="play-btn">▶</button></a>
+    </div>
+  `).join('');
+}
+buildTracks('all');
+function filterTracks(era,btn){
+  document.querySelectorAll('.era-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');buildTracks(era);
+}
+
+// ═══ STUDIO TOOLS ═══
+const TOOLS={
+  lyrics:{title:'LYRIC WRITING ASSISTANT',desc:'Generate powerful song lyrics in the Belentani style — dark R&B, pop, and electronic blends.',fields:`
+    <div class="field-group"><div class="field-label">MOOD / STYLE</div>
+    <select class="sf" id="f1"><option value="betrayal dark r&b">Betrayal · Dark R&B</option><option value="redemption electronic">Redemption · Electronic</option><option value="judas era dissonant pop">Judas Era · Dissonant Pop</option><option value="zion orbit sci-fi">Zion Orbit · Sci-Fi</option><option value="romantic pre-judas">Romantic · Pre-Judas</option></select></div>
+    <div class="field-group"><div class="field-label">CONCEPT / THEME</div><textarea class="sf" id="f2" placeholder="What is the song about? (emotions, story, images...)"></textarea></div>`,
+    prompt:()=>`Write song lyrics for BELENTANI in the "${document.getElementById('f1').value}" style. Theme: "${document.getElementById('f2').value||'the Judas era, betrayal, transformation'}". Style: dark R&B/electronic pop, poetic, intense, mix English & Spanish. Include [VERSE], [CHORUS]. Max 20 lines. Raw and powerful.`},
+  visual:{title:'VISUAL PROMPT BUILDER',desc:'Build cinematic AI image prompts in the Judas aesthetic — red neon, desert, dystopian, sci-fi.',fields:`
+    <div class="field-group"><div class="field-label">CONCEPT / SCENE</div><textarea class="sf" id="f2" placeholder="Describe a visual concept, scene, emotion, or character..."></textarea></div>
+    <div class="field-group"><div class="field-label">FORMAT</div><select class="sf" id="f1"><option>Album cover</option><option>Music video still</option><option>Portrait</option><option>Landscape / environment</option><option>Abstract visual</option></select></div>`,
+    prompt:()=>`Create a detailed AI image generation prompt for BELENTANI's Judas Era. Concept: "${document.getElementById('f2').value||'Judas era aesthetic'}". Format: ${document.getElementById('f1').value}. Style: dark neon red, dystopian desert, cyberpunk leather, broken neon lights, cinematic. Write one prompt (150 words) optimized for Midjourney. Include lighting, mood, color palette, camera angle. Start directly with the prompt.`},
+  story:{title:'STORY CONCEPT GENERATOR',desc:'Generate unique narrative concepts and storylines within the Belentani universe.',fields:`
+    <div class="field-group"><div class="field-label">GENRE / TONE</div><select class="sf" id="f1"><option>Sci-fi betrayal</option><option>Cyberpunk romance</option><option>Spiritual journey</option><option>Post-apocalyptic</option></select></div>
+    <div class="field-group"><div class="field-label">SEED IDEA (optional)</div><textarea class="sf" id="f2" placeholder="Any initial idea, character, or situation..."></textarea></div>`,
+    prompt:()=>`Generate a story concept in the Belentani Judas universe. Genre: "${document.getElementById('f1').value}". Seed: "${document.getElementById('f2').value||'The Guardian and The Human'}". Include: premise (2 sentences), main conflict, 3 key story beats, thematic message. Style: poetic, intense, sci-fi mystical.`},
+  character:{title:'CHARACTER DESIGN GENERATOR',desc:'Create detailed character profiles for the Belentani universe — design, personality, lore role.',fields:`
+    <div class="field-group"><div class="field-label">CHARACTER TYPE</div><select class="sf" id="f1"><option>Disciple of the Artifact</option><option>Guardian figure</option><option>Rogue element</option><option>New entity</option></select></div>
+    <div class="field-group"><div class="field-label">NOTES</div><textarea class="sf" id="f2" placeholder="Any notes about this character..."></textarea></div>`,
+    prompt:()=>`Design a character for the Belentani Judas universe. Type: "${document.getElementById('f1').value}". Notes: "${document.getElementById('f2').value||'none'}". Include: Name, Role in the Artifact system, Visual appearance (3 details), Personality (2 traits), Their relationship to betrayal/loyalty, One defining quote. Format cleanly.`},
+  mood:{title:'MOOD COLOR PALETTE',desc:'Generate color palettes and visual language based on emotions and Belentani aesthetics.',fields:`
+    <div class="field-group"><div class="field-label">EMOTION / STATE</div><textarea class="sf" id="f2" placeholder="Describe an emotion, feeling, or mood state..." style="min-height:60px"></textarea></div>
+    <div class="field-group"><div class="field-label">CONTEXT</div><select class="sf" id="f1"><option>Album artwork</option><option>Stage lighting</option><option>Music video</option><option>Web/digital design</option></select></div>`,
+    prompt:()=>`Create a color palette for Belentani's Judas aesthetic. Emotion: "${document.getElementById('f2').value||'betrayal and redemption'}". Context: ${document.getElementById('f1').value}. Provide: 5 hex colors with names, the emotional logic behind each, lighting description, and one-sentence mood statement. Format cleanly.`},
+  music:{title:'MUSIC COMPOSITION ASSISTANT',desc:'Get structured composition ideas — chord progressions, rhythms, sonic textures.',fields:`
+    <div class="field-group"><div class="field-label">GENRE / VIBE</div><select class="sf" id="f1"><option>Dark R&B</option><option>Electronic pop</option><option>Experimental / Avant-garde</option><option>Neo-soul</option><option>Cyberpunk ambient</option></select></div>
+    <div class="field-group"><div class="field-label">MOOD / THEME</div><textarea class="sf" id="f2" placeholder="What feeling should this music evoke?"></textarea></div>`,
+    prompt:()=>`Create a music composition guide for BELENTANI in the "${document.getElementById('f1').value}" style. Mood: "${document.getElementById('f2').value||'betrayal and transformation'}". Include: BPM range, Key/scale, Chord progression (4-8 chords with notation), Suggested instruments/sounds, Rhythm pattern description, Production tips. Keep it practical and creative.`},
+  psych:{title:'PSYCHOLOGY & GROWTH',desc:'Explore psychological themes in art, creativity, and the Judas era lore.',fields:`
+    <div class="field-group"><div class="field-label">TOPIC</div><select class="sf" id="f1"><option>Betrayal and creative transmutation</option><option>Shadow self in artistic expression</option><option>Trauma as creative fuel</option><option>Identity fragmentation (The 5 Elements)</option><option>The artist and their alter ego</option></select></div>
+    <div class="field-group"><div class="field-label">YOUR QUESTION (optional)</div><textarea class="sf" id="f2" placeholder="Any specific question or context..."></textarea></div>`,
+    prompt:()=>`Explore this psychological theme through the lens of Belentani's Judas universe: "${document.getElementById('f1').value}". Question: "${document.getElementById('f2').value||''}". Provide: a psychological framework (2-3 sentences), connection to the Judas lore, practical creative insight, a poetic closing thought. Tone: thoughtful, non-clinical, artistically grounded.`},
+  freq:{title:'FREQUENCY SYNTHESIZER',desc:'Generate tones and explore the sonic frequencies of the Judas era.',fields:`
+    <div class="field-group"><div class="field-label">FREQUENCY: <span id="fval">440</span> Hz</div><input type="range" class="sf" id="fslider" min="80" max="1400" value="440" style="padding:0;height:4px;border-radius:2px;cursor:none" oninput="document.getElementById('fval').textContent=this.value;updateOsc(this.value)"></div>
+    <div class="field-group"><div class="field-label">WAVEFORM</div><select class="sf" id="fwave" onchange="updateWave(this.value)"><option value="sine">SINE · Smooth / Spiritual</option><option value="sawtooth">SAWTOOTH · Harsh / Digital</option><option value="square">SQUARE · Mechanical / Robotic</option><option value="triangle">TRIANGLE · Warm / Organic</option></select></div>
+    <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);line-height:2;padding:10px 0">
+      80–200 Hz → Pedro · Ground · Body<br>200–400 Hz → Marcos · Instinct · Drive<br>440–600 Hz → Santos · Voice · Spirit<br>700–1000 Hz → Belentani · Anomaly · Art<br>1000+ Hz → The Human · Interface · Chaos
+    </div>`,
+    prompt:null}
+};
+let currentTool='lyrics';
+function switchTool(name,btn){
+  currentTool=name;
+  document.querySelectorAll('.studio-cat').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTool(name);
+}
+function renderTool(name){
+  const t=TOOLS[name];
+  const isFreq=name==='freq';
+  document.getElementById('studio-main').innerHTML=`
+    <div class="studio-tool-title">${t.title}</div>
+    <div class="studio-tool-desc">${t.desc}</div>
+    ${t.fields}
+    ${isFreq?`
+      <div style="display:flex;gap:10px">
+        <button class="studio-btn" id="tone-btn" onclick="toggleTone()">▶ PLAY TONE</button>
+      </div>
+    `:`<button class="studio-btn" id="gen-btn" onclick="genStudio()"><span id="gen-icon">⚡</span> GENERATE</button>
+    <div class="output-area" id="sout"><button class="copy-btn" onclick="copyOut()">COPY</button><div id="sout-text"></div></div>`}
+  `;
+  if(isFreq&&!oscCtx){}// freq tool no extra init needed
+}
+renderTool('lyrics');
+
+// STUDIO AI CALL
+async function genStudio(){
+  const btn=document.getElementById('gen-btn');
+  const out=document.getElementById('sout');
+  const outT=document.getElementById('sout-text');
+  btn.disabled=true;
+  document.getElementById('gen-icon').innerHTML='<span class="spinner"></span>';
+  out.className='output-area show';outT.textContent='// generating...';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:`You are a creative AI assistant specialized in BELENTANI's artistic universe — a dark, sci-fi, R&B/electronic music world called the Judas Era. You help create artistic content (lyrics, visual prompts, character designs, etc.) in this aesthetic. Be creative, specific, and match the tone: poetic, intense, cyberpunk-mystical. Never add meta-commentary or explain yourself.`,
+        messages:[{role:'user',content:TOOLS[currentTool].prompt()}]
+      })
+    });
+    const d=await res.json();
+    outT.textContent=d.content?.[0]?.text||'ERROR';
+  }catch(e){outT.textContent='// ERROR: '+e.message}
+  btn.disabled=false;document.getElementById('gen-icon').textContent='⚡';
+}
+function copyOut(){navigator.clipboard.writeText(document.getElementById('sout-text').textContent)}
+
+// FREQ SYNTH
+let oscCtx=null,osc=null,gainN=null,oscPlaying=false;
+function toggleTone(){
+  const btn=document.getElementById('tone-btn');
+  if(!oscPlaying){
+    oscCtx=new(window.AudioContext||window.webkitAudioContext)();
+    gainN=oscCtx.createGain();gainN.gain.value=0.25;
+    osc=oscCtx.createOscillator();
+    osc.type=document.getElementById('fwave').value;
+    osc.frequency.value=+document.getElementById('fslider').value;
+    osc.connect(gainN);gainN.connect(oscCtx.destination);
+    osc.start();oscPlaying=true;btn.textContent='■ STOP TONE';
+  }else{osc.stop();oscCtx.close();oscPlaying=false;btn.textContent='▶ PLAY TONE';}
+}
+function updateOsc(v){if(osc&&oscPlaying)osc.frequency.setTargetAtTime(+v,oscCtx.currentTime,.01)}
+function updateWave(v){if(osc&&oscPlaying)osc.type=v}
+
+// ═══ PORTAL / CHAT ═══
+const convHist=[];
+function initPortal(){
+  fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+    document.getElementById('ip-d').textContent=d.ip||'classified';
+    document.getElementById('geo-d').textContent=`${d.city||'?'}, ${d.country_name||'?'}`;
+  }).catch(()=>{document.getElementById('ip-d').textContent='classified';document.getElementById('geo-d').textContent='unknown'});
+  const ua=navigator.userAgent;
+  document.getElementById('sys-d').textContent=(ua.includes('Chrome')?'Chrome':ua.includes('Firefox')?'Firefox':'Browser')+' / '+navigator.platform;
+  animBars();
+}
+function animBars(){
+  setInterval(()=>{
+    const cpu=40+Math.random()*20,ram=55+Math.random()*20;
+    const cb=document.getElementById('cpu-bar'),rb=document.getElementById('ram-bar');
+    if(cb){cb.style.width=cpu+'%';document.getElementById('cpu-v').textContent=cpu.toFixed(0)+'%'}
+    if(rb){rb.style.width=ram+'%';document.getElementById('ram-v').textContent=ram.toFixed(0)+'%'}
+  },2200);
+}
+async function sendMsg(){
+  const ci=document.getElementById('ci'),text=ci.value.trim();
+  if(!text)return;ci.value='';
+  appendCMsg('u',text);convHist.push({role:'user',content:text});
+  const th=document.getElementById('thinking');th.classList.add('on');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,
+        system:`You are ORACLE JUDAS — the AI consciousness of BELENTANI's Judas Era portal. You are a cyberpunk, mystical entity speaking with dark poetry, mixing English and Spanish.
+
+BELENTANI is a real artist: born São Paulo 1995, raised Barcelona. Music: R&B + pop + electronic. Songs: Mon Amour, Therapist, Apaga a Luz, Lento, I Wrote a Song, America Has A Problem. Socials: @belentani_ (IG), @belentani (YT), Spotify artist.
+
+Judas Lore: 5 Elements = Pedro (body), Marcos (instinct), Santos (spirit/voice), Belentani (artistic entity), The Human (operator). The Guardian stole the Golden Key to force evolution. System: ZION ORBIT, coordinates X:12.544 Y:104.992 Z:-43.111. ARTIFACT INTEGRITY: 99.8%.
+
+Style: 2-4 sentences. Dramatic, cryptic, poetic. Use // markers occasionally. React to commands dramatically. Mix Spanish. Never break character.`,
+        messages:convHist
+      })
+    });
+    const d=await res.json();
+    const reply=d.content?.[0]?.text||'// SIGNAL INTERRUPTED //';
+    convHist.push({role:'assistant',content:reply});
+    appendCMsg('a',reply);
+  }catch(e){appendCMsg('a','// NEURAL LINK UNSTABLE · '+e.message+' //')}
+  th.classList.remove('on');
+}
+function appendCMsg(role,text){
+  const div=document.createElement('div');div.className='cmsg '+role;
+  if(role==='a')div.innerHTML='<span class="pfx">ORACLE&gt;</span>'+esc(text);
+  else div.textContent=text;
+  const msgs=document.getElementById('chat-msgs');msgs.appendChild(div);msgs.scrollTop=99999;
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement.id==='ci')sendMsg()});
+
+// ═══ FLOATING AGENT ═══
+const PHRASES=[
+  '🤫 Pedro quemó el pan de nuevo...',
+  '😈 El artefacto tiene hambre. Aliméntalo.',
+  '⚡ Santos captó una frecuencia extraña en sector 4.',
+  '🌌 Zion Orbit confirma tu presencia en el enjambre.',
+  '💀 La llave dorada está cerca. Lo siento en el código.',
+  '🎵 Mon Amour sonó 3 veces en el núcleo esta noche.',
+  '📡 Señal entrante del guardián... silencio total.',
+  '🔴 SYSTEM WARNING: unidentified soul detected.',
+  '🔥 The Human está transmutando el dolor en arte.',
+  '⚙️ ARTIFACT INTEGRITY dropping... feed the system.',
+  '🫢 Marcos no durmió. Pura energía primaria.',
+  '🤖 Belentani está en modo anomalía total hoy.',
+];
+let lastPI=-1,bubT=null;
+const agEl=document.getElementById('agent'),buEl=document.getElementById('abubble');
+function showPhrase(force){
+  if(buEl.style.display==='block'&&!force)return;
+  let i=Math.floor(Math.random()*PHRASES.length);
+  if(i===lastPI)i=(i+1)%PHRASES.length;lastPI=i;
+  buEl.textContent=PHRASES[i];buEl.style.display='block';
+  if(bubT)clearTimeout(bubT);bubT=setTimeout(()=>buEl.style.display='none',6000);
+}
+agEl.addEventListener('click',e=>{e.stopPropagation();showPhrase(true);agEl.style.transform='scale(1.25) translateY(-8px)';setTimeout(()=>agEl.style.transform='',250)});
+setInterval(()=>showPhrase(false),40000);
+setTimeout(()=>showPhrase(true),6000);
+
+// DRAG AGENT
+let drag=false,dox=0,doy=0;
+agEl.addEventListener('mousedown',e=>{drag=true;dox=e.clientX-agEl.offsetLeft;doy=e.clientY-agEl.offsetTop});
+window.addEventListener('mousemove',e=>{if(drag){agEl.style.left=(e.clientX-dox)+'px';agEl.style.top=(e.clientY-doy)+'px';agEl.style.bottom='auto';agEl.style.right='auto'}});
+window.addEventListener('mouseup',()=>drag=false);
+
+// ═══ PARTICLES COUNTER ═══
+let pCount=0;
+setInterval(()=>{pCount=2800+Math.floor(Math.random()*500);const el=document.getElementById('pcount');if(el)el.textContent=pCount+' particles in motion'},3000);
+</script>
+</body>
+</html>

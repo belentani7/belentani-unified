@@ -1,0 +1,144 @@
+<body>
+    <canvas id="matrix"></canvas>
+    <div class="scanlines"></div>
+
+    <nav style="position:fixed;top:0;left:0;right:0;z-index:90;background:rgba(0,0,0,0.9);border-bottom:1px solid var(--green);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:14px;color:var(--green);letter-spacing:3px;">◢ BELENTANI <span style="color:var(--neon);">JUDAS ERA</span></div>
+        <div style="font-size:10px;color:var(--gray);">SYSTEM ONLINE ● <span id="clock" style="color:var(--green);">00:00:00</span></div>
+    </nav>
+
+    <div class="hud">
+        CPU: 67%<br>
+        RAM: 70%<br>
+        NET: ACTIVE<br>
+        NODE: ZION-1<br>
+        FREQ: <span style="color:var(--neon);">440Hz</span>
+    </div>
+
+    <div class="section" style="padding-top:100px;">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-title">SYSTEM_LOG.LIVE</span>
+                <span class="terminal-rec">●REC</span>
+            </div>
+            <div class="line"><span class="prompt">root@zion:~$</span> <span class="cmd">init --protocol=judas</span></div>
+            <div class="line output">Neural network stabilizing...</div>
+            <div class="line output">Syncing with global data streams...</div>
+            <div class="line output">Biometric scan complete · identity verified</div>
+            <div class="line output">Accessing Judas core memories...</div>
+            <div class="line output">Quantum nodes active · 47 synced</div>
+            <div class="line output">Encryption layer reinforced</div>
+            <div class="line output">Particle field stable at 3000 units</div>
+            <div class="line output">Archive neural hash verified</div>
+            <div class="line output">Subroutine 0xJUDAS listening...</div>
+            <div class="line output">Visual cortex link established</div>
+            <div class="line"><span class="prompt">root@zion:~$</span> <span class="cmd" id="typed"></span><span class="prompt">|</span></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 style="font-size:28px;color:var(--neon);margin-bottom:20px;letter-spacing:2px;">
+            <span class="glitch" data-text="BELENTANI">BELENTANI</span>
+        </h2>
+        <p style="color:var(--gray);font-size:14px;line-height:1.8;max-width:600px;">
+            Un proyecto artístico transmedia que combina R&B, pop y electrónica con narrativa cyberpunk. 
+            La era Judas explora traición, redención y la frontera entre lo humano y lo sintético.
+        </p>
+    </div>
+
+    <div class="section">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;">
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:20px;">
+                <div style="color:var(--neon);font-size:11px;letter-spacing:2px;margin-bottom:8px;">01 · JUDAS</div>
+                <div style="color:var(--gray);font-size:12px;">Intro · Neural awakening</div>
+                <div style="color:var(--green);font-size:11px;margin-top:8px;">02:14</div>
+            </div>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:20px;">
+                <div style="color:var(--neon);font-size:11px;letter-spacing:2px;margin-bottom:8px;">02 · PURSUIT</div>
+                <div style="color:var(--gray);font-size:12px;">Synthwave / cyber chase</div>
+                <div style="color:var(--green);font-size:11px;margin-top:8px;">03:42</div>
+            </div>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:20px;">
+                <div style="color:var(--neon);font-size:11px;letter-spacing:2px;margin-bottom:8px;">03 · SHATTER</div>
+                <div style="color:var(--gray);font-size:12px;">Glitchstep · breakdown</div>
+                <div style="color:var(--green);font-size:11px;margin-top:8px;">04:08</div>
+            </div>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:20px;">
+                <div style="color:var(--neon);font-size:11px;letter-spacing:2px;margin-bottom:8px;">04 · CORE</div>
+                <div style="color:var(--gray);font-size:12px;">R&B / vocal layering</div>
+                <div style="color:var(--green);font-size:11px;margin-top:8px;">03:21</div>
+            </div>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:20px;">
+                <div style="color:var(--neon);font-size:11px;letter-spacing:2px;margin-bottom:8px;">05 · SYSTEM ONLINE</div>
+                <div style="color:var(--gray);font-size:12px;">Electronic · outro pulse</div>
+                <div style="color:var(--green);font-size:11px;margin-top:8px;">02:55</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" style="text-align:center;">
+        <div class="terminal" style="max-width:500px;margin:0 auto;">
+            <div class="terminal-header">
+                <span class="terminal-title">NUCLEO NEURAL ACTIVO</span>
+            </div>
+            <div class="line output">BELENTANI_CORE v3.0 INICIADO...</div>
+            <div class="line output">Escaneando biometría simulada...</div>
+            <div class="line output">Conexión neural establecida.</div>
+            <div class="line"><span class="prompt">>></span> <span class="cmd">Escribe un comando...</span></div>
+        </div>
+    </div>
+
+    <footer style="text-align:center;padding:30px;border-top:1px solid rgba(0,255,136,0.1);font-size:10px;color:var(--gray);">
+        © 2026 BELENTANI · JUDAS ERA · SYSTEM ONLINE
+    </footer>
+
+    <script>
+    // Matrix rain
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = 'BELENTANI JUDAS ZION NEURAL ◢ ◤ ◥ ⌬ ⌘ ▲ ■ ▣'.split('');
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff88';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 50);
+
+    // Typing effect
+    const commands = ['scan --biometric', 'access --judas-core', 'decode --neural', 'init --zion'];
+    let cmdIdx = 0, charIdx = 0;
+    const typed = document.getElementById('typed');
+    function typeCmd() {
+        if (charIdx < commands[cmdIdx].length) {
+            typed.textContent += commands[cmdIdx][charIdx];
+            charIdx++;
+            setTimeout(typeCmd, 80);
+        } else {
+            setTimeout(() => { typed.textContent = ''; charIdx = 0; cmdIdx = (cmdIdx + 1) % commands.length; typeCmd(); }, 2000);
+        }
+    }
+    typeCmd();
+
+    // Clock
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').textContent = 
+            String(now.getHours()).padStart(2,'0') + ':' + 
+            String(now.getMinutes()).padStart(2,'0') + ':' + 
+            String(now.getSeconds()).padStart(2,'0');
+    }, 1000);
+    </script>
+</body>
+</html>

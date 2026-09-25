@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belentani Corp — Windows App</title>
+<style>
+:root{--bg:#0a0a0f;--surface:#12121a;--accent:#00ff88;--text:#fff;--text-sec:#8888aa;--border:rgba(255,255,255,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;-webkit-app-region:drag}
+.titlebar{height:32px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;-webkit-app-region:drag;flex-shrink:0}
+.titlebar .title{font-size:.75rem;color:var(--text-sec);font-weight:500}
+.titlebar .controls{display:flex;gap:8px;-webkit-app-region:no-drag}
+.titlebar .controls button{width:14px;height:14px;border-radius:50%;border:none;cursor:pointer}
+.btn-min{background:#f59e0b}.btn-max{background:#22c55e}.btn-close{background:#ef4444}
+.app{display:flex;flex:1;overflow:hidden}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+.sidebar h3{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.1em;padding:.5rem .75rem;margin-top:.5rem}
+.nav-btn{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.5rem;font-size:.8rem;color:var(--text-sec);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s}
+.nav-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-btn.active{background:var(--accent);color:#000;font-weight:600}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.main-content{flex:1;padding:1.5rem;overflow-y:auto}
+.status-bar{height:28px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;font-size:.7rem;color:var(--text-sec);flex-shrink:0}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Dashboard cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem}
+.card h4{font-size:.95rem;margin-bottom:.75rem}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1rem;text-align:center}
+.stat .val{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.stat .lbl{font-size:.75rem;color:var(--text-sec);margin-top:.25rem}
+
+/* Quick actions */
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.action{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1rem;cursor:pointer;text-align:center;transition:all .2s}
+.action:hover{border-color:var(--accent);transform:translateY(-2px)}
+.action .icon{font-size:1.5rem;margin-bottom:.5rem}
+.action .name{font-size:.8rem;font-weight:600}
+.action .desc{font-size:.7rem;color:var(--text-sec);margin-top:.25rem}
+
+/* Client list */
+.client-list{display:flex;flex-direction:column;gap:.5rem}
+.client-item{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:.75rem;cursor:pointer;transition:all .2s}
+.client-item:hover{border-color:var(--accent)}
+.client-avatar{width:36px;height:36px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.client-info{flex:1}
+.client-info .name{font-size:.85rem;font-weight:600}
+.client-info .type{font-size:.7rem;color:var(--text-sec)}
+.client-badge{padding:.2rem .5rem;border-radius:1rem;font-size:.65rem;font-weight:600}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- Titlebar -->
+<div class="titlebar">
+  <span class="title">Belentani Corp v1.0</span>
+  <div class="controls">
+    <button class="btn-min" title="Minimizar"></button>
+    <button class="btn-max" title="Maximizar"></button>
+    <button class="btn-close" title="Cerrar"></button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <button class="nav-btn active" onclick="showSection('home',this)">🏠 Inicio</button>
+    <button class="nav-btn" onclick="showSection('clients',this)">👥 Clientes</button>
+    <button class="nav-btn" onclick="showSection('bookings',this)">📅 Reservas</button>
+    <button class="nav-btn" onclick="showSection('templates',this)">🧩 Templates</button>
+    <h3>Herramientas</h3>
+    <button class="nav-btn" onclick="showSection('agent',this)">🤖 Agente IA</button>
+    <button class="nav-btn" onclick="showSection('generator',this)">📄 Generador PDF</button>
+    <button class="nav-btn" onclick="showSection('qr',this)">📱 Generador QR</button>
+    <h3>Sistema</h3>
+    <button class="nav-btn" onclick="showSection('analytics',this)">📈 Analytics</button>
+    <button class="nav-btn" onclick="showSection('settings',this)">⚙️ Config</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="main-content">
+      <!-- Home -->
+      <div id="sec-home">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Bienvenido, Pedro</h2>
+        <div class="stat-row">
+          <div class="stat"><div class="val">12</div><div class="lbl">Clientes activos</div></div>
+          <div class="stat"><div class="val">47</div><div class="lbl">Reservas este mes</div></div>
+          <div class="stat"><div class="val">€8.4k</div><div class="lbl">Ingresos mensuales</div></div>
+          <div class="stat"><div class="val">4.9</div><div class="lbl">Rating promedio</div></div>
+        </div>
+        <div class="actions">
+          <div class="action" onclick="showSection('clients',document.querySelectorAll('.nav-btn')[1])"><div class="icon">👥</div><div class="name">Nuevo cliente</div><div class="desc">Añadir negocio al portfolio</div></div>
+          <div class="action" onclick="showSection('templates',document.querySelectorAll('.nav-btn')[3])"><div class="icon">🧩</div><div class="name">Asignar template</div><div class="desc">Personalizar sitio del cliente</div></div>
+          <div class="action" onclick="showSection('agent',document.querySelectorAll('.nav-btn')[4])"><div class="icon">🤖</div><div class="name">Agente IA</div><div class="desc">Automatizar tareas repetitivas</div></div>
+          <div class="action" onclick="showSection('generator',document.querySelectorAll('.nav-btn')[5])"><div class="icon">📄</div><div class="name">Generar PDF</div><div class="desc">Press kit, contratos, informes</div></div>
+          <div class="action" onclick="showSection('qr',document.querySelectorAll('.nav-btn')[6])"><div class="icon">📱</div><div class="name">Generar QR</div><div class="desc">QR para clientes y marketing</div></div>
+          <div class="action" onclick="openDashboard()"><div class="icon">🌐</div><div class="name">Dashboard Web</div><div class="desc">Abrir panel completo en navegador</div></div>
+        </div>
+      </div>
+
+      <!-- Clients -->
+      <div id="sec-clients" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Clientes</h2>
+        <div class="client-list" id="clientList">
+          <div class="client-item"><div class="client-avatar" style="background:rgba(0,255,136,.15)">🏨</div><div class="client-info"><div class="name">Hotel Barcelona Plaza</div><div class="type">Hotel · Barcelona</div></div><span class="client-badge" style="background:rgba(34,197,94,.12);color:#22c55e">Activo</span></div>
+          <div class="client-item"><div class="client-avatar" style="background:rgba(255,0,128,.15)">💇</div><div class="client-info"><div class="name">Maison Colette</div><div class="type">Salón · Barcelona</div></div><span class="client-badge" style="background:rgba(34,197,94,.12);color:#22c55e">Activo</span></div>
+          <div class="client-item"><div class="client-avatar" style="background:rgba(245,158,11,.15)">🛍️</div><div class="client-info"><div class="name">Arte Que Veste</div><div class="type">E-commerce · Online</div></div><span class="client-badge" style="background:rgba(59,130,246,.12);color:#3b82f6">Setup</span></div>
+          <div class="client-item"><div class="client-avatar" style="background:rgba(59,130,246,.15)">🍽️</div><div class="client-info"><div class="name">Restaurante Ejemplo</div><div class="type">Restaurante · Madrid</div></div><span class="client-badge" style="background:rgba(245,158,11,.12);color:#f59e0b">Pendiente</span></div>
+        </div>
+      </div>
+
+      <!-- Bookings -->
+      <div id="sec-bookings" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Reservas recientes</h2>
+        <div class="card"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:.5rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase">Ref</th><th style="text-align:left;padding:.5rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase">Cliente</th><th style="text-align:left;padding:.5rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase">Servicio</th><th style="text-align:left;padding:.5rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase">Fecha</th><th style="text-align:left;padding:.5rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase">Estado</th></tr></thead><tbody><tr><td style="padding:.5rem;font-size:.8rem;font-family:'JetBrains Mono',monospace">BC-20260724-0001</td><td style="padding:.5rem;font-size:.8rem">Ana García</td><td style="padding:.5rem;font-size:.8rem">Suite Presidencial</td><td style="padding:.5rem;font-size:.8rem">25 Jul 2026</td><td style="padding:.5rem"><span style="padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;background:rgba(34,197,94,.12);color:#22c55e;font-weight:600">Confirmada</span></td></tr><tr><td style="padding:.5rem;font-size:.8rem;font-family:'JetBrains Mono',monospace">BC-20260724-0002</td><td style="padding:.5rem;font-size:.8rem">Carlos López</td><td style="padding:.5rem;font-size:.8rem">Corte + Barba</td><td style="padding:.5rem;font-size:.8rem">26 Jul 2026</td><td style="padding:.5rem"><span style="padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;background:rgba(245,158,11,.12);color:#f59e0b;font-weight:600">Pendiente</span></td></tr></tbody></table></div>
+      </div>
+
+      <!-- Templates -->
+      <div id="sec-templates" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Templates</h2>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem">
+          <div class="card" style="cursor:pointer"><div style="font-size:1.5rem;margin-bottom:.5rem">🏨</div><h4>Hotel & Resort</h4><p style="font-size:.8rem;color:var(--text-sec)">Booking wizard + gallery + mapa</p><div style="font-size:1.2rem;font-weight:700;color:var(--accent);margin-top:.5rem">€299/mes</div></div>
+          <div class="card" style="cursor:pointer"><div style="font-size:1.5rem;margin-bottom:.5rem">💇</div><h4>Salón & Barbería</h4><p style="font-size:.8rem;color:var(--text-sec)">Reserva + equipo + lookbook</p><div style="font-size:1.2rem;font-weight:700;color:var(--accent);margin-top:.5rem">€199/mes</div></div>
+          <div class="card" style="cursor:pointer"><div style="font-size:1.5rem;margin-bottom:.5rem">🛍️</div><h4>E-commerce</h4><p style="font-size:.8rem;color:var(--text-sec)">Tienda + carrito + checkout</p><div style="font-size:1.2rem;font-weight:700;color:var(--accent);margin-top:.5rem">€249/mes</div></div>
+          <div class="card" style="cursor:pointer"><div style="font-size:1.5rem;margin-bottom:.5rem">🍽️</div><h4>Restaurante</h4><p style="font-size:.8rem;color:var(--text-sec)">Menú + reservas + delivery</p><div style="font-size:1.2rem;font-weight:700;color:var(--accent);margin-top:.5rem">€179/mes</div></div>
+        </div>
+      </div>
+
+      <!-- Agent -->
+      <div id="sec-agent" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Agente IA</h2>
+        <div class="card"><h4>Proveedor activo: GPT-4o</h4><p style="font-size:.85rem;color:var(--text-sec);margin-top:.5rem">El agente gestiona reservas, leads, y automatiza seguimiento con clientes.</p><div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="padding:.5rem 1rem;border:none;border-radius:.5rem;background:var(--accent);color:#000;font-weight:600;font-size:.8rem;cursor:pointer">💚 GPT-4o</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text-sec);font-size:.8rem;cursor:pointer">🔵 Gemini</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text-sec);font-size:.8rem;cursor:pointer">📱 MiMo</button></div></div>
+        <div class="card"><h4>Tareas autónomas</h4><div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem"><div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:rgba(255,255,255,.03);border-radius:.5rem"><span style="font-size:.8rem">📧 Seguimiento leads nuevos</span><span style="padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;background:rgba(34,197,94,.12);color:#22c55e">Activo</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:rgba(255,255,255,.03);border-radius:.5rem"><span style="font-size:.8rem">📅 Recordatorio 24h antes</span><span style="padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;background:rgba(34,197,94,.12);color:#22c55e">Activo</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:rgba(255,255,255,.03);border-radius:.5rem"><span style="font-size:.8rem">📊 Informe semanal</span><span style="padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;background:rgba(245,158,11,.12);color:#f59e0b">Lunes 9am</span></div></div></div>
+      </div>
+
+      <!-- Generator -->
+      <div id="sec-generator" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Generador de documentos</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem">
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">📄</div><h4>Press Kit</h4><p style="font-size:.75rem;color:var(--text-sec)">PDF profesional de la empresa</p></div>
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">📋</div><h4>Contrato</h4><p style="font-size:.75rem;color:var(--text-sec)">Contrato de servicios</p></div>
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">📊</div><h4>Informe</h4><p style="font-size:.75rem;color:var(--text-sec)">Informe mensual cliente</p></div>
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">🧾</div><h4>Factura</h4><p style="font-size:.75rem;color:var(--text-sec)">Factura con Stripe</p></div>
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">📑</div><h4>Propuesta</h4><p style="font-size:.75rem;color:var(--text-sec)">Propuesta comercial</p></div>
+          <div class="card" style="text-align:center;cursor:pointer"><div style="font-size:2rem;margin-bottom:.5rem">📝</div><h4>NDA</h4><p style="font-size:.75rem;color:var(--text-sec)">Acuerdo de confidencialidad</p></div>
+        </div>
+      </div>
+
+      <!-- QR -->
+      <div id="sec-qr" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Generador QR</h2>
+        <div class="card"><p style="font-size:.85rem;color:var(--text-sec);margin-bottom:1rem">Genera QRs para tus clientes: menús, reservas, WiFi, redes sociales.</p><div style="display:flex;gap:.75rem;flex-wrap:wrap"><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text);font-size:.8rem;cursor:pointer">🍽️ Menú restaurante</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text);font-size:.8rem;cursor:pointer">📅 Link de reserva</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text);font-size:.8rem;cursor:pointer">📶 WiFi del local</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text);font-size:.8rem;cursor:pointer">📱 Instagram</button></div></div>
+      </div>
+
+      <!-- Analytics -->
+      <div id="sec-analytics" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Analytics</h2>
+        <div class="stat-row">
+          <div class="stat"><div class="val">€47.8k</div><div class="lbl">Ingresos anuales</div></div>
+          <div class="stat"><div class="val">1,247</div><div class="lbl">Reservas totales</div></div>
+          <div class="stat"><div class="val">94%</div><div class="lbl">Satisfacción</div></div>
+          <div class="stat"><div class="val">4.8★</div><div class="lbl">Rating</div></div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div id="sec-settings" class="hidden">
+        <h2 style="font-size:1.3rem;margin-bottom:1rem">Configuración</h2>
+        <div class="card"><h4>Proveedor IA</h4><p style="font-size:.85rem;color:var(--text-sec)">Selecciona el modelo para el agente autónomo.</p><div style="display:flex;gap:.5rem;margin-top:1rem"><button style="padding:.5rem 1rem;border:1px solid var(--accent);border-radius:.5rem;background:var(--accent);color:#000;font-size:.8rem;font-weight:600;cursor:pointer">💚 GPT-4o</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text-sec);font-size:.8rem;cursor:pointer">🔵 Gemini</button><button style="padding:.5rem 1rem;border:1px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text-sec);font-size:.8rem;cursor:pointer">📱 MiMo</button></div></div>
+        <div class="card"><h4>API Key</h4><input type="password" placeholder="sk-..." style="width:100%;padding:.5rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:.5rem;color:var(--text);font-size:.85rem;margin-top:.5rem"></div>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div><span class="status-dot"></span>Belentani Corp v1.0 — Conectado</div>
+      <div>Pedro Belentani · Barcelona</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('[id^="sec-"]').forEach(s => s.classList.add('hidden'));
+  document.getElementById('sec-' + id).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+function openDashboard() { window.open('http://localhost:8000', '_blank'); }
+</script>
+</body>
+</html>

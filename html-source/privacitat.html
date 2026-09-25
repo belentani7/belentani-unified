@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ca" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>Política de privacitat — Belentani · estudi digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0b;--border:rgba(255,255,255,0.07);
+  --text:#f0ede8;--muted:rgba(240,237,232,0.6);--dim:rgba(240,237,232,0.4);
+  --accent:#c8f55a;--accent-bg:rgba(200,245,90,0.1);
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.75}
+.wrap{max-width:680px;margin:0 auto;padding:3rem 1.5rem 6rem}
+.back{color:var(--muted);font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.back:hover{color:var(--accent)}
+h1{font-size:1.75rem;font-weight:600;margin:1.5rem 0 .4rem}
+.updated{color:var(--dim);font-family:var(--mono);font-size:.75rem;margin-bottom:2rem}
+h2{font-size:1rem;font-weight:600;color:var(--accent);margin:2rem 0 .75rem}
+p,li{color:var(--muted);font-size:.93rem;margin-bottom:.7rem}
+ul{padding-left:1.3rem}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.83rem}
+th,td{border:1px solid var(--border);padding:.5rem .7rem;text-align:left;color:var(--muted)}
+th{color:var(--text);font-weight:500}
+hr{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.ph{background:var(--accent-bg);color:var(--accent);padding:.1rem .35rem;border-radius:3px;font-family:var(--mono);font-size:.8em}
+.notice{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:.83rem;color:rgba(248,113,113,.9);line-height:1.6}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Inici</a>
+  <h1>Política de privacitat</h1>
+  <p class="updated">Darrera actualització: <span class="ph">[DATA]</span></p>
+
+  <div class="notice">
+    Els camps <span class="ph">[PLACEHOLDER]</span> requereixen les dades reals del titular
+    abans de publicar. El contingut de la taula de tractaments (secció 3) reflecteix els models
+    de dades reals implementats al backend — mantenir-lo sincronitzat si el model canvia.
+  </div>
+
+  <h2>1. Responsable del tractament</h2>
+  <ul>
+    <li><strong>Responsable:</strong> <span class="ph">[Nom complet]</span> — Belentani · estudi digital</li>
+    <li><strong>NIF:</strong> <span class="ph">[NIF]</span></li>
+    <li><strong>Domicili:</strong> <span class="ph">[Adreça]</span>, L'Hospitalet de Llobregat</li>
+    <li><strong>Contacte:</strong> <span class="ph">[email]</span></li>
+  </ul>
+
+  <h2>2. Marc legal</h2>
+  <p>El tractament de dades es regeix pel Reglament (UE) 2016/679 (RGPD), la Llei Orgànica
+  3/2018 de Protecció de Dades Personals (LOPDGDD) i la Llei 34/2002 de Serveis de la Societat
+  de la Informació (LSSI-CE).</p>
+
+  <h2>3. Quines dades tractem i amb quina finalitat</h2>
+  <p>La taula següent reflecteix el model de dades real del sistema implementat:</p>
+  <table>
+    <tr>
+      <th>Origen</th>
+      <th>Dades</th>
+      <th>Finalitat</th>
+      <th>Base legal (art. RGPD)</th>
+    </tr>
+    <tr>
+      <td>Formulari de contacte</td>
+      <td>Nom, email, missatge</td>
+      <td>Respondre la consulta</td>
+      <td>Consentiment (6.1.a)</td>
+    </tr>
+    <tr>
+      <td>Clients del servei</td>
+      <td>Nom, email, telèfon, empresa, NIF, ciutat</td>
+      <td>Prestació del servei contractat</td>
+      <td>Execució de contracte (6.1.b)</td>
+    </tr>
+    <tr>
+      <td>Facturació</td>
+      <td>Dades fiscals del client</td>
+      <td>Obligacions tributàries i mercantils</td>
+      <td>Obligació legal (6.1.c)</td>
+    </tr>
+    <tr>
+      <td>Registre d'auditoria intern</td>
+      <td>Tipus d'acció, referència de l'entitat afectada, marca de temps</td>
+      <td>Traçabilitat i seguretat del sistema. No cedim ni compartim</td>
+      <td>Interès legítim (6.1.f)</td>
+    </tr>
+  </table>
+  <p><strong>No recollim dades de navegació identificatives.</strong> L'eina d'analítica
+  (Plausible Analytics, autohospedada) mesura visites de forma agregada sense cookies i sense
+  emmagatzemar adreces IP. No es requereix banner de consentiment de cookies per l'analítica.</p>
+
+  <h2>4. Conservació</h2>
+  <p>Les dades de clients es conserven durant la vigència de la relació contractual i,
+  posteriorment, durant els terminis legals de prescripció (amb caràcter general, 6 anys per a
+  dades amb rellevància fiscal/mercantil, art. 30 del Codi de Comerç). Les dades de contacte
+  sense relació contractual posterior es conserven un màxim de
+  <span class="ph">[X mesos — definir]</span> des de la darrera interacció.</p>
+
+  <h2>5. Destinataris</h2>
+  <p>No cedim dades a tercers fora dels proveïdors necessaris per a la prestació del servei,
+  amb els quals existeix el corresponent contracte d'encarregat de tractament (art. 28 RGPD):</p>
+  <ul>
+    <li><strong>Allotjament:</strong> <span class="ph">[proveïdor + país UE/EEE]</span></li>
+    <li><strong>Email transaccional:</strong> Brevo (Sendinblue SAS, França — UE)</li>
+    <li><strong>Analítica:</strong> Plausible Analytics (autohospedada en servidors propis — sense dades personals)</li>
+  </ul>
+  <p>No realitzem transferències de dades fora de l'Espai Econòmic Europeu.</p>
+
+  <h2>6. Drets</h2>
+  <p>Pots exercir els drets d'accés, rectificació, supressió, limitació, portabilitat i oposició
+  enviant un correu a <span class="ph">[email]</span> amb còpia d'un document d'identitat vàlid.
+  Tens dret a presentar una reclamació davant l'Agència Espanyola de Protecció de Dades
+  (<a href="https://www.aepd.es">www.aepd.es</a>).</p>
+
+  <h2>7. Seguretat tècnica</h2>
+  <p>Les contrasenyes s'emmagatzemen xifrades amb bcrypt (mai en text pla). L'accés al panel de
+  gestió requereix autenticació JWT. Les comunicacions es realitzen sobre HTTPS/TLS. Es manté un
+  registre d'auditoria de les operacions sobre dades personals.</p>
+
+  <hr>
+  <p>
+    <a href="/avis-legal">Avís legal</a> ·
+    <a href="/cookies">Política de cookies</a>
+  </p>
+</div>
+</body>
+</html>

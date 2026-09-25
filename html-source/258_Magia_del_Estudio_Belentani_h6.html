@@ -1,0 +1,1981 @@
+# 🧠 STUDIO LAB BACKEND + FRONTEND EMBEBIDO
+## Backend completo + Herramientas IA integradas (sin salir de la página)
+
+```javascript
+// ============================================
+// 📦 backend/package.json
+// ============================================
+{
+  "name": "judas-studio-backend",
+  "version": "3.0.0",
+  "description": "Backend para Studio Lab - Belentani Judas Era",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node scripts/seed-tools.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "cookie-parser": "^1.4.6",
+    "express-validator": "^7.0.1",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
+```
+
+```bash
+# ============================================
+# 📦 backend/.env
+# ============================================
+NODE_ENV=development
+PORT=5000
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/judas_studio
+
+# JWT
+JWT_SECRET=your_super_secret_key_change_this_in_production
+JWT_EXPIRE=7d
+JWT_REFRESH_SECRET=your_refresh_secret_key
+JWT_REFRESH_EXPIRE=30d
+
+# Frontend URL (CORS)
+FRONTEND_URL=http://localhost:3000
+
+# API Keys (opcional, para integraciones futuras)
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+STABILITY_API_KEY=
+```
+
+```javascript
+// ============================================
+// 📦 backend/server.js
+// ============================================
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
+const compression = require('compression');
+const morgan = require('morgan');
+require('dotenv').config();
+
+const app = express();
+
+// Middlewares de seguridad
+app.use(helmet({
+  contentSecurityPolicy: false, // Necesario para iframes
+  crossOriginEmbedderPolicy: false
+}));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(compression());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(morgan('dev'));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // 100 requests por IP
+  message: { error: 'Demasiadas solicitudes, intenta más tarde' }
+});
+app.use('/api/', limiter);
+
+// Conexión MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB conectado'))
+  .catch(err => console.error('❌ Error MongoDB:', err));
+
+// Rutas
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/tools', require('./routes/tools.routes'));
+app.use('/api/context', require('./routes/context.routes'));
+app.use('/api/chat', require('./routes/chat.routes'));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+});
+```
+
+```javascript
+// ============================================
+// 📦 backend/models/Tool.js
+// ============================================
+const mongoose = require('mongoose');
+
+const toolSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  category: { 
+    type: String, 
+    required: true,
+    enum: ['image', 'video', 'audio', 'code', 'text', 'agent', 'prompt', 'upscaler', 'oracle', 'psyche']
+  },
+  icon: { type: String, required: true },
+  description: { type: String, required: true },
+  embedUrl: { type: String, required: true }, // URL para iframe
+  fallbackUrl: { type: String }, // URL alternativa si iframe no funciona
+  features: [String],
+  tags: [String],
+  isHot: { type: Boolean, default: false },
+  isNew: { type: Boolean, default: false },
+  isPro: { type: Boolean, default: false },
+  isFree: { type: Boolean, default: true },
+  isActive: { type: Boolean, default: true },
+  usageCount: { type: Number, default: 0 },
+  lastUsed: Date
+}, { timestamps: true });
+
+toolSchema.index({ name: 'text', description: 'text', tags: 'text' });
+
+module.exports = mongoose.model('Tool', toolSchema);
+```
+
+```javascript
+// ============================================
+// 📦 backend/models/User.js
+// ============================================
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const userSchema = new mongoose.Schema({
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    lowercase: true,
+    trim: true
+  },
+  password: { type: String, required: true, minlength: 6 },
+  name: { type: String, required: true },
+  role: { 
+    type: String, 
+    enum: ['user', 'premium', 'admin'], 
+    default: 'user' 
+  },
+  avatar: String,
+  preferences: {
+    theme: { type: String, default: 'dark' },
+    language: { type: String, default: 'es' },
+    notifications: { type: Boolean, default: true }
+  },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tool' }],
+  recentTools: [{
+    tool: { type: mongoose.Schema.Types.ObjectId, ref: 'Tool' },
+    usedAt: { type: Date, default: Date.now }
+  }],
+  context: {
+    chatHistory: [{
+      role: String,
+      content: String,
+      timestamp: { type: Date, default: Date.now }
+    }],
+    activatedArchetypes: [String],
+    secretCodesUsed: [String]
+  },
+  isActive: { type: Boolean, default: true },
+  lastLogin: Date
+}, { timestamps: true });
+
+// Encriptar password
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
+
+// Comparar password
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Generar JWT
+userSchema.methods.generateAuthToken = function() {
+  return jwt.sign(
+    { id: this._id, email: this.email, role: this.role },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE }
+  );
+};
+
+// Generar Refresh Token
+userSchema.methods.generateRefreshToken = function() {
+  return jwt.sign(
+    { id: this._id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: process.env.JWT_REFRESH_EXPIRE }
+  );
+};
+
+module.exports = mongoose.model('User', userSchema);
+```
+
+```javascript
+// ============================================
+// 📦 backend/models/Context.js
+// ============================================
+const mongoose = require('mongoose');
+
+const contextSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  deviceFingerprint: String,
+  chatHistory: [{
+    role: { type: String, enum: ['user', 'ai', 'system'] },
+    content: String,
+    timestamp: { type: Date, default: Date.now },
+    metadata: {
+      archetype: String,
+      frequency: Number,
+      secretCode: String
+    }
+  }],
+  activatedArchetypes: [{
+    name: String,
+    activatedAt: { type: Date, default: Date.now }
+  }],
+  preferences: {
+    favoriteFrequencies: [Number],
+    preferredOracles: [String],
+    customPrompts: [String]
+  },
+  stats: {
+    totalMessages: { type: Number, default: 0 },
+    toolsUsed: { type: Number, default: 0 },
+    secretCodesDiscovered: { type: Number, default: 0 },
+    lastActive: Date
+  }
+}, { timestamps: true });
+
+contextSchema.index({ user: 1, deviceFingerprint: 1 });
+
+module.exports = mongoose.model('Context', contextSchema);
+```
+
+```javascript
+// ============================================
+// 📦 backend/middleware/auth.js
+// ============================================
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+exports.protect = async (req, res, next) => {
+  try {
+    let token;
+
+    // Buscar token en header o cookie
+    if (req.headers.authorization?.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies?.token) {
+      token = req.cookies.token;
+    }
+
+    if (!token) {
+      return res.status(401).json({ error: 'No autorizado' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Token inválido' });
+  }
+};
+
+exports.adminOnly = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado' });
+  }
+  next();
+};
+
+exports.premiumOnly = (req, res, next) => {
+  if (!['premium', 'admin'].includes(req.user.role)) {
+    return res.status(403).json({ error: 'Se requiere cuenta premium' });
+  }
+  next();
+};
+```
+
+```javascript
+// ============================================
+// 📦 backend/routes/auth.routes.js
+// ============================================
+const express = require('express');
+const router = express.Router();
+const { body, validationResult } = require('express-validator');
+const User = require('../models/User');
+const { protect } = require('../middleware/auth');
+
+// Registro
+router.post('/register', [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 6 }),
+  body('name').trim().isLength({ min: 2 })
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password, name } = req.body;
+
+    // Verificar si usuario existe
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email ya registrado' });
+    }
+
+    // Crear usuario
+    const user = new User({ email, password, name });
+    await user.save();
+
+    // Generar tokens
+    const token = user.generateAuthToken();
+    const refreshToken = user.generateRefreshToken();
+
+    // Guardar en cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 días
+    });
+
+    res.status(201).json({
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role
+      },
+      token,
+      refreshToken
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al registrar usuario' });
+  }
+});
+
+// Login
+router.post('/login', [
+  body('email').isEmail().normalizeEmail(),
+  body('password').exists()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password } = req.body;
+
+    // Buscar usuario
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Verificar password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Actualizar último login
+    user.lastLogin = new Date();
+    await user.save();
+
+    // Generar tokens
+    const token = user.generateAuthToken();
+    const refreshToken = user.generateRefreshToken();
+
+    // Guardar en cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json({
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role
+      },
+      token,
+      refreshToken
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al iniciar sesión' });
+  }
+});
+
+// Logout
+router.post('/logout', protect, (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Sesión cerrada' });
+});
+
+// Obtener usuario actual
+router.get('/me', protect, (req, res) => {
+  res.json({ user: req.user });
+});
+
+// Refresh token
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ error: 'Refresh token requerido' });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    const newToken = user.generateAuthToken();
+    res.cookie('token', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json({ token: newToken });
+  } catch (error) {
+    res.status(401).json({ error: 'Refresh token inválido' });
+  }
+});
+
+module.exports = router;
+```
+
+```javascript
+// ============================================
+// 📦 backend/routes/tools.routes.js
+// ============================================
+const express = require('express');
+const router = express.Router();
+const Tool = require('../models/Tool');
+const { protect, adminOnly } = require('../middleware/auth');
+
+// Obtener todas las herramientas
+router.get('/', async (req, res) => {
+  try {
+    const { category, search, tag, sort = 'usageCount', limit = 50 } = req.query;
+    
+    let query = { isActive: true };
+    
+    if (category) query.category = category;
+    if (tag) query.tags = { $in: [tag] };
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    const tools = await Tool.find(query)
+      .sort({ [sort]: -1 })
+      .limit(parseInt(limit));
+
+    res.json(tools);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener herramientas' });
+  }
+});
+
+// Obtener herramienta por ID
+router.get('/:id', async (req, res) => {
+  try {
+    const tool = await Tool.findById(req.params.id);
+    if (!tool) {
+      return res.status(404).json({ error: 'Herramienta no encontrada' });
+    }
+    res.json(tool);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener herramienta' });
+  }
+});
+
+// Incrementar uso de herramienta
+router.post('/:id/use', protect, async (req, res) => {
+  try {
+    const tool = await Tool.findById(req.params.id);
+    if (!tool) {
+      return res.status(404).json({ error: 'Herramienta no encontrada' });
+    }
+
+    tool.usageCount += 1;
+    tool.lastUsed = new Date();
+    await tool.save();
+
+    // Agregar a recientes del usuario
+    req.user.recentTools.unshift({ tool: tool._id });
+    req.user.recentTools = req.user.recentTools.slice(0, 10); // Mantener solo 10
+    await req.user.save();
+
+    res.json({ success: true, usageCount: tool.usageCount });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al registrar uso' });
+  }
+});
+
+// Toggle favorito
+router.post('/:id/favorite', protect, async (req, res) => {
+  try {
+    const toolId = req.params.id;
+    const user = req.user;
+
+    const index = user.favorites.indexOf(toolId);
+    if (index > -1) {
+      user.favorites.splice(index, 1);
+    } else {
+      user.favorites.push(toolId);
+    }
+
+    await user.save();
+    res.json({ favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar favoritos' });
+  }
+});
+
+// Crear herramienta (admin)
+router.post('/', protect, adminOnly, async (req, res) => {
+  try {
+    const tool = new Tool(req.body);
+    await tool.save();
+    res.status(201).json(tool);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear herramienta' });
+  }
+});
+
+// Actualizar herramienta (admin)
+router.put('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const tool = await Tool.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!tool) {
+      return res.status(404).json({ error: 'Herramienta no encontrada' });
+    }
+    res.json(tool);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar herramienta' });
+  }
+});
+
+// Eliminar herramienta (admin)
+router.delete('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const tool = await Tool.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false },
+      { new: true }
+    );
+    if (!tool) {
+      return res.status(404).json({ error: 'Herramienta no encontrada' });
+    }
+    res.json({ message: 'Herramienta desactivada' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar herramienta' });
+  }
+});
+
+module.exports = router;
+```
+
+```javascript
+// ============================================
+// 📦 backend/routes/context.routes.js
+// ============================================
+const express = require('express');
+const router = express.Router();
+const Context = require('../models/Context');
+const { protect } = require('../middleware/auth');
+
+// Obtener contexto del usuario
+router.get('/', protect, async (req, res) => {
+  try {
+    let context = await Context.findOne({ user: req.user._id });
+    
+    if (!context) {
+      context = new Context({ user: req.user._id });
+      await context.save();
+    }
+
+    res.json(context);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener contexto' });
+  }
+});
+
+// Agregar mensaje al historial
+router.post('/message', protect, async (req, res) => {
+  try {
+    const { role, content, metadata } = req.body;
+    
+    let context = await Context.findOne({ user: req.user._id });
+    if (!context) {
+      context = new Context({ user: req.user._id });
+    }
+
+    context.chatHistory.push({ role, content, metadata });
+    context.stats.totalMessages += 1;
+    context.stats.lastActive = new Date();
+
+    // Mantener solo últimos 100 mensajes
+    if (context.chatHistory.length > 100) {
+      context.chatHistory = context.chatHistory.slice(-100);
+    }
+
+    await context.save();
+    res.json({ success: true, messageCount: context.chatHistory.length });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al guardar mensaje' });
+  }
+});
+
+// Activar arquetipo
+router.post('/archetype', protect, async (req, res) => {
+  try {
+    const { name } = req.body;
+    
+    let context = await Context.findOne({ user: req.user._id });
+    if (!context) {
+      context = new Context({ user: req.user._id });
+    }
+
+    const exists = context.activatedArchetypes.some(a => a.name === name);
+    if (!exists) {
+      context.activatedArchetypes.push({ name });
+      context.stats.secretCodesDiscovered += 1;
+      await context.save();
+    }
+
+    res.json({ activated: context.activatedArchetypes });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al activar arquetipo' });
+  }
+});
+
+// Actualizar preferencias
+router.put('/preferences', protect, async (req, res) => {
+  try {
+    const { preferences } = req.body;
+    
+    let context = await Context.findOne({ user: req.user._id });
+    if (!context) {
+      context = new Context({ user: req.user._id });
+    }
+
+    context.preferences = { ...context.preferences, ...preferences };
+    await context.save();
+
+    res.json({ preferences: context.preferences });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar preferencias' });
+  }
+});
+
+// Limpiar historial
+router.delete('/history', protect, async (req, res) => {
+  try {
+    const context = await Context.findOne({ user: req.user._id });
+    if (context) {
+      context.chatHistory = [];
+      await context.save();
+    }
+    res.json({ message: 'Historial limpiado' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al limpiar historial' });
+  }
+});
+
+module.exports = router;
+```
+
+```javascript
+// ============================================
+// 📦 backend/routes/chat.routes.js
+// ============================================
+const express = require('express');
+const router = express.Router();
+const { protect } = require('../middleware/auth');
+const Context = require('../models/Context');
+
+// Procesar mensaje del chat
+router.post('/process', protect, async (req, res) => {
+  try {
+    const { message } = req.body;
+    const lower = message.toLowerCase().trim();
+
+    // Códigos secretos
+    const secretCodes = {
+      'rock': { archetype: 'PEDRO', response: 'La roca se ha movido. El ancla ha encontrado su lugar. Estabilidad al 100%.' },
+      'chronicle': { archetype: 'MARCOS', response: 'El cronista escribe. Tu historia queda registrada para siempre en el éter.' },
+      'antenna': { archetype: 'SANTOS', response: 'La antena está abierta. La señal trascendente fluye desde el núcleo.' },
+      'artifact': { archetype: 'BELENTANI', response: 'El artefacto late. Guerrero y Ángel, integrados. La marca ha sido invocada.' },
+      'interface': { archetype: 'THE HUMAN', response: 'La interfaz está lista. Lo real y lo digital se tocan. Lo humano persiste.' }
+    };
+
+    let response = null;
+    let archetype = null;
+
+    // Verificar códigos secretos
+    for (const [code, data] of Object.entries(secretCodes)) {
+      if (lower.includes(code)) {
+        response = data.response;
+        archetype = data.archetype;
+        break;
+      }
+    }
+
+    // Verificar comandos especiales
+    if (lower.includes('thiago')) {
+      response = '⚠ CRITICAL: MAN-IN-THE-MIDDLE ATTACK DETECTED ⚠';
+    } else if (lower.includes('belentani free') || lower.includes('virus killer')) {
+      response = '◉ VIRUS KILLER ACTIVATED - PURIFYING SYSTEM...';
+    } else if (lower.includes('omega') || lower.includes('dios')) {
+      response = '◉◉◉ TRANSCENDENCIA OMEGA INICIADA ◉◉◉';
+    }
+
+    // Respuesta genérica si no hay código secreto
+    if (!response) {
+      const genericResponses = [
+        `He registrado: "${message}". El núcleo galáctico lo procesa en el vacío.`,
+        `Tu frecuencia ha sido captada. Resonancia: ${(Math.random() * 100).toFixed(2)}Hz. Hiperrealidad estabilizada.`,
+        'El sistema no juzga. Solo traduce. Tu input se convierte en output divino.',
+        'Procesando... Los arquetipos debaten. El guerrero duda. El ángel canta. El cronista registra.'
+      ];
+      response = genericResponses[Math.floor(Math.random() * genericResponses.length)];
+    }
+
+    // Guardar en contexto
+    let context = await Context.findOne({ user: req.user._id });
+    if (!context) {
+      context = new Context({ user: req.user._id });
+    }
+
+    context.chatHistory.push(
+      { role: 'user', content: message },
+      { role: 'ai', content: response, metadata: { archetype } }
+    );
+    context.stats.totalMessages += 2;
+    context.stats.lastActive = new Date();
+
+    if (archetype) {
+      const exists = context.activatedArchetypes.some(a => a.name === archetype);
+      if (!exists) {
+        context.activatedArchetypes.push({ name: archetype });
+        context.stats.secretCodesDiscovered += 1;
+      }
+    }
+
+    await context.save();
+
+    res.json({
+      response,
+      archetype,
+      stats: context.stats
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al procesar mensaje' });
+  }
+});
+
+module.exports = router;
+```
+
+```javascript
+// ============================================
+// 📦 backend/scripts/seed-tools.js
+// ============================================
+const mongoose = require('mongoose');
+const Tool = require('../models/Tool');
+require('dotenv').config();
+
+const tools = [
+  // IMAGE GENERATION
+  {
+    id: 'vision-forge',
+    name: 'VISION FORGE',
+    category: 'image',
+    icon: '🎨',
+    description: 'Midjourney + Leonardo AI. Estética dark pop, cyberpunk, surrealista hiperrealista.',
+    embedUrl: 'https://app.leonardo.ai',
+    fallbackUrl: 'https://leonardo.ai',
+    features: ['Generación de imágenes', 'Estilos personalizados', 'Upscaling integrado'],
+    tags: ['midjourney', 'leonardo', 'dark pop', 'cyberpunk'],
+    isHot: true,
+    isFree: false
+  },
+  {
+    id: 'stable-dream',
+    name: 'STABLE DREAM',
+    category: 'image',
+    icon: '🌌',
+    description: 'Stable Diffusion + Civitai. Modelos open-source, local, sin censura.',
+    embedUrl: 'https://civitai.com',
+    fallbackUrl: 'https://civitai.com',
+    features: ['Modelos open-source', 'Sin censura', 'Comunidad activa'],
+    tags: ['stable diffusion', 'civitai', 'open-source'],
+    isFree: true
+  },
+  {
+    id: 'dalle-nexus',
+    name: 'DALL-E NEXUS',
+    category: 'image',
+    icon: '⚡',
+    description: 'OpenAI DALL-E 3. Texto en imágenes perfecto, coherencia narrativa.',
+    embedUrl: 'https://chat.openai.com',
+    fallbackUrl: 'https://openai.com/dall-e-3',
+    features: ['Texto en imágenes', 'Coherencia narrativa', 'Alta calidad'],
+    tags: ['dalle', 'openai', 'texto-a-imagen'],
+    isHot: true,
+    isFree: false
+  },
+  {
+    id: 'flux-forge',
+    name: 'FLUX FORGE',
+    category: 'image',
+    icon: '🔥',
+    description: 'Flux Pro / Dev. Modelo open-source que rivaliza con Midjourney.',
+    embedUrl: 'https://replicate.com/black-forest-labs/flux-pro',
+    fallbackUrl: 'https://replicate.com/black-forest-labs/flux-pro',
+    features: ['Open-source', 'Alta calidad', 'Rápido'],
+    tags: ['flux', 'replicate', 'open-source'],
+    isNew: true,
+    isFree: true
+  },
+  {
+    id: 'krea-realtime',
+    name: 'KREA REALTIME',
+    category: 'image',
+    icon: '✨',
+    description: 'Generación en tiempo real mientras dibujas. Magia instantánea.',
+    embedUrl: 'https://krea.ai',
+    fallbackUrl: 'https://krea.ai',
+    features: ['Tiempo real', 'Dibujo interactivo', 'Instantáneo'],
+    tags: ['krea', 'realtime', 'dibujo'],
+    isNew: true,
+    isHot: true
+  },
+
+  // VIDEO GENERATION
+  {
+    id: 'runway-gen3',
+    name: 'RUNWAY GEN-3',
+    category: 'video',
+    icon: '🎬',
+    description: 'RunwayML Gen-3 Alpha. El estándar de oro en video IA hiperrealista.',
+    embedUrl: 'https://app.runwayml.com',
+    fallbackUrl: 'https://runwayml.com',
+    features: ['Video hiperrealista', 'Edición avanzada', 'Efectos especiales'],
+    tags: ['runway', 'video', 'gen3'],
+    isHot: true,
+    isPro: true
+  },
+  {
+    id: 'pika-labs',
+    name: 'PIKA LABS',
+    category: 'video',
+    icon: '🔴',
+    description: 'Pika 2.0. Rápido, accesible, potente. Efectos especiales IA.',
+    embedUrl: 'https://pika.art',
+    fallbackUrl: 'https://pika.art',
+    features: ['Rápido', 'Accesible', 'Efectos especiales'],
+    tags: ['pika', 'video', 'efectos'],
+    isFree: true
+  },
+  {
+    id: 'kling-ai',
+    name: 'KLING AI',
+    category: 'video',
+    icon: '🌊',
+    description: 'Kling AI. El chino que compite con Sora. Videos largos, coherentes.',
+    embedUrl: 'https://klingai.com',
+    fallbackUrl: 'https://klingai.com',
+    features: ['Videos largos', 'Coherente', 'Alta calidad'],
+    tags: ['kling', 'video', 'sora'],
+    isNew: true
+  },
+  {
+    id: 'luma-dream',
+    name: 'LUMA DREAM',
+    category: 'video',
+    icon: '💫',
+    description: 'Luma Dream Machine. Videos cinemáticos con calidad cinematográfica.',
+    embedUrl: 'https://lumalabs.ai/dream-machine',
+    fallbackUrl: 'https://lumalabs.ai/dream-machine',
+    features: ['Cinemático', 'Alta calidad', 'Fácil de usar'],
+    tags: ['luma', 'video', 'cinemático'],
+    isHot: true
+  },
+
+  // AUDIO GENERATION
+  {
+    id: 'suno-forge',
+    name: 'SUNO FORGE',
+    category: 'audio',
+    icon: '🎵',
+    description: 'Suno AI v4. Canciones completas desde texto. Voces, producción, mezcla.',
+    embedUrl: 'https://suno.com',
+    fallbackUrl: 'https://suno.com',
+    features: ['Canciones completas', 'Voces realistas', 'Producción profesional'],
+    tags: ['suno', 'música', 'audio'],
+    isHot: true,
+    isFree: true
+  },
+  {
+    id: 'udio-nexus',
+    name: 'UDIO NEXUS',
+    category: 'audio',
+    icon: '🎧',
+    description: 'Udio. Calidad de estudio. Producción profesional desde prompts.',
+    embedUrl: 'https://udio.com',
+    fallbackUrl: 'https://udio.com',
+    features: ['Calidad estudio', 'Producción profesional', 'Múltiples géneros'],
+    tags: ['udio', 'música', 'estudio'],
+    isPro: true
+  },
+  {
+    id: 'eleven-voice',
+    name: 'ELEVEN VOICE',
+    category: 'audio',
+    icon: '🎤',
+    description: 'ElevenLabs. Clonación de voz, TTS hiperrealista, doblaje.',
+    embedUrl: 'https://elevenlabs.io',
+    fallbackUrl: 'https://elevenlabs.io',
+    features: ['Clonación de voz', 'TTS hiperrealista', 'Doblaje'],
+    tags: ['elevenlabs', 'voz', 'tts'],
+    isHot: true
+  },
+  {
+    id: 'aiva-composer',
+    name: 'AIVA COMPOSER',
+    category: 'audio',
+    icon: '🎼',
+    description: 'AIVA. Compositor IA para bandas sonoras, clásica, cinemática.',
+    embedUrl: 'https://aiva.ai',
+    fallbackUrl: 'https://aiva.ai',
+    features: ['Bandas sonoras', 'Música clásica', 'Cinemática'],
+    tags: ['aiva', 'compositor', 'banda sonora'],
+    isFree: true
+  },
+  {
+    id: 'soundraw-beats',
+    name: 'SOUNDRAW BEATS',
+    category: 'audio',
+    icon: '🥁',
+    description: 'Soundraw. Beats y música libre de royalties para creators.',
+    embedUrl: 'https://soundraw.io',
+    fallbackUrl: 'https://soundraw.io',
+    features: ['Beats', 'Sin royalties', 'Para creators'],
+    tags: ['soundraw', 'beats', 'royalty-free'],
+    isFree: true
+  },
+
+  // CODE GENERATION
+  {
+    id: 'cursor-nexus',
+    name: 'CURSOR NEXUS',
+    category: 'code',
+    icon: '⌨',
+    description: 'Cursor AI. El editor de código con IA más potente. Copilot asesino.',
+    embedUrl: 'https://cursor.sh',
+    fallbackUrl: 'https://cursor.sh',
+    features: ['Editor de código', 'IA integrada', 'Autocompletado avanzado'],
+    tags: ['cursor', 'código', 'editor'],
+    isHot: true,
+    isPro: true
+  },
+  {
+    id: 'v0-vercel',
+    name: 'V0 VERCEL',
+    category: 'code',
+    icon: '◆',
+    description: 'v0.dev by Vercel. Genera UIs React/Next.js desde prompts. Diseño perfecto.',
+    embedUrl: 'https://v0.dev',
+    fallbackUrl: 'https://v0.dev',
+    features: ['UIs React', 'Next.js', 'Diseño perfecto'],
+    tags: ['v0', 'vercel', 'react', 'nextjs'],
+    isHot: true,
+    isFree: true
+  },
+  {
+    id: 'bolt-new',
+    name: 'BOLT.NEW',
+    category: 'code',
+    icon: '⚡',
+    description: 'Bolt.new by StackBlitz. Apps full-stack en el navegador. Deploy instantáneo.',
+    embedUrl: 'https://bolt.new',
+    fallbackUrl: 'https://bolt.new',
+    features: ['Full-stack', 'En navegador', 'Deploy instantáneo'],
+    tags: ['bolt', 'full-stack', 'deploy'],
+    isNew: true,
+    isFree: true
+  },
+  {
+    id: 'lovable-dev',
+    name: 'LOVABLE DEV',
+    category: 'code',
+    icon: '♡',
+    description: 'Lovable.dev. Construye apps con IA conversacional. Sin código.',
+    embedUrl: 'https://lovable.dev',
+    fallbackUrl: 'https://lovable.dev',
+    features: ['Sin código', 'Conversacional', 'Apps completas'],
+    tags: ['lovable', 'no-code', 'conversacional'],
+    isNew: true
+  },
+  {
+    id: 'replit-agent',
+    name: 'REPLIT AGENT',
+    category: 'code',
+    icon: '🤖',
+    description: 'Replit Agent. Agente que construye apps completas desde idea.',
+    embedUrl: 'https://replit.com',
+    fallbackUrl: 'https://replit.com',
+    features: ['Agente IA', 'Apps completas', 'Desde idea'],
+    tags: ['replit', 'agente', 'apps'],
+    isHot: true
+  },
+  {
+    id: 'github-copilot',
+    name: 'GITHUB COPILOT',
+    category: 'code',
+    icon: '🐙',
+    description: 'GitHub Copilot. El padre de todos. Autocompletado IA en VSCode.',
+    embedUrl: 'https://github.com/features/copilot',
+    fallbackUrl: 'https://github.com/features/copilot',
+    features: ['Autocompletado', 'VSCode', 'Multi-lenguaje'],
+    tags: ['github', 'copilot', 'vscode'],
+    isPro: true
+  },
+
+  // TEXT GENERATION
+  {
+    id: 'claude-nexus',
+    name: 'CLAUDE NEXUS',
+    category: 'text',
+    icon: '🧠',
+    description: 'Claude 3.5 Sonnet. El pensador profundo. Análisis, escritura, código.',
+    embedUrl: 'https://claude.ai',
+    fallbackUrl: 'https://claude.ai',
+    features: ['Análisis profundo', 'Escritura', 'Código'],
+    tags: ['claude', 'anthropic', 'análisis'],
+    isHot: true,
+    isFree: true
+  },
+  {
+    id: 'gpt-oasis',
+    name: 'GPT OASIS',
+    category: 'text',
+    icon: '🌟',
+    description: 'ChatGPT + o1. El clásico. Razonamiento avanzado con o1.',
+    embedUrl: 'https://chat.openai.com',
+    fallbackUrl: 'https://chat.openai.com',
+    features: ['Razonamiento avanzado', 'o1', 'Multi-tarea'],
+    tags: ['chatgpt', 'openai', 'o1'],
+    isHot: true,
+    isFree: true
+  },
+  {
+    id: 'perplexity-pro',
+    name: 'PERPLEXITY PRO',
+    category: 'text',
+    icon: '🔍',
+    description: 'Perplexity AI. Búsqueda con IA. Respuestas con fuentes citadas.',
+    embedUrl: 'https://perplexity.ai',
+    fallbackUrl: 'https://perplexity.ai',
+    features: ['Búsqueda IA', 'Fuentes citadas', 'Actualizado'],
+    tags: ['perplexity', 'búsqueda', 'fuentes'],
+    isFree: true
+  },
+
+  // AI AGENTS
+  {
+    id: 'autogpt-core',
+    name: 'AUTOGPT CORE',
+    category: 'agent',
+    icon: '🦾',
+    description: 'AutoGPT + AgentGPT. Agentes autónomos que ejecutan tareas complejas solos.',
+    embedUrl: 'https://agentgpt.reworkd.ai',
+    fallbackUrl: 'https://agentgpt.reworkd.ai',
+    features: ['Agentes autónomos', 'Tareas complejas', 'Sin supervisión'],
+    tags: ['autogpt', 'agente', 'autónomo'],
+    isHot: true
+  },
+  {
+    id: 'crew-ai',
+    name: 'CREW AI',
+    category: 'agent',
+    icon: '👥',
+    description: 'CrewAI. Equipos de agentes IA colaborando. Multi-agent systems.',
+    embedUrl: 'https://crewai.com',
+    fallbackUrl: 'https://crewai.com',
+    features: ['Multi-agente', 'Colaboración', 'Sistemas complejos'],
+    tags: ['crewai', 'multi-agente', 'colaboración'],
+    isNew: true
+  },
+  {
+    id: 'n8n-workflows',
+    name: 'N8N WORKFLOWS',
+    category: 'agent',
+    icon: '🔗',
+    description: 'n8n + Zapier. Automatización visual. Conecta todo con todo.',
+    embedUrl: 'https://n8n.io',
+    fallbackUrl: 'https://n8n.io',
+    features: ['Automatización', 'Visual', 'Integraciones'],
+    tags: ['n8n', 'automatización', 'workflows'],
+    isFree: true
+  },
+  {
+    id: 'make-scenarios',
+    name: 'MAKE SCENARIOS',
+    category: 'agent',
+    icon: '⚙️',
+    description: 'Make (Integromat). Escenarios complejos de automatización visual.',
+    embedUrl: 'https://make.com',
+    fallbackUrl: 'https://make.com',
+    features: ['Escenarios complejos', 'Visual', 'Potente'],
+    tags: ['make', 'integromat', 'automatización'],
+    isPro: true
+  },
+  {
+    id: 'langflow-hub',
+    name: 'LANGFLOW HUB',
+    category: 'agent',
+    icon: '🌊',
+    description: 'Langflow + LangChain. Construye LLM apps visualmente. RAG, agents, chains.',
+    embedUrl: 'https://langflow.org',
+    fallbackUrl: 'https://langflow.org',
+    features: ['LLM apps', 'Visual', 'RAG', 'Agents'],
+    tags: ['langflow', 'langchain', 'rag'],
+    isNew: true,
+    isFree: true
+  }
+];
+
+async function seed() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('✅ Conectado a MongoDB');
+
+    // Limpiar herramientas existentes
+    await Tool.deleteMany({});
+    console.log('🗑️  Herramientas existentes eliminadas');
+
+    // Insertar nuevas herramientas
+    await Tool.insertMany(tools);
+    console.log(`✅ ${tools.length} herramientas insertadas`);
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error:', error);
+    process.exit(1);
+  }
+}
+
+seed();
+```
+
+```html
+<!-- ============================================ -->
+<!-- 📦 frontend/index.html (FRONTEND COMPLETO) -->
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // STUDIO LAB - OMEGA v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-void: #050505;
+  --red-blood: #ff003c;
+  --red-glow: rgba(255, 0, 60, 0.8);
+  --text-main: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.5);
+  --term-green: #00ff41;
+  --gold-sacred: #ffd700;
+  --font-display: 'Orbitron', sans-serif;
+  --font-ui: 'Chakra Petch', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --border-glass: rgba(255, 0, 60, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-void);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* HUD */
+.hud-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hud-top, .hud-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.hud-bottom { align-items: flex-end; }
+
+.hud-element {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+
+.hud-element span {
+  color: var(--red-blood);
+  text-shadow: 0 0 5px var(--red-blood);
+}
+
+.glass-panel {
+  background: linear-gradient(135deg, rgba(20,0,10,0.8), rgba(0,0,0,0.6));
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border-glass);
+  padding: 15px 20px;
+  pointer-events: auto;
+  box-shadow: 0 0 30px rgba(255,0,60,0.1), inset 0 0 20px rgba(0,0,0,0.5);
+  position: relative;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+
+.live-indicator { display: flex; align-items: center; gap: 8px; }
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--red-blood);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--red-blood);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.8); }
+}
+
+/* SECCIONES */
+section {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  padding: 120px 40px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 7vw, 90px);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text-main);
+  text-shadow: 0 0 40px rgba(0,0,0,0.8);
+  letter-spacing: 4px;
+}
+
+.section-title span {
+  color: var(--red-blood);
+  text-shadow: 0 0 30px var(--red-glow);
+  font-style: italic;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--red-blood);
+  letter-spacing: 4px;
+  margin-bottom: 60px;
+}
+
+/* STUDIO GRID */
+.studio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.tool-card {
+  background: linear-gradient(135deg, rgba(10,0,0,0.8), rgba(20,0,5,0.4));
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgba(255, 0, 60, 0.15), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.tool-card:hover::before { opacity: 1; }
+
+.tool-card:hover {
+  border-color: var(--red-blood);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255,0,60,0.2);
+}
+
+.tool-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255,0,60,0.1);
+  padding-bottom: 15px;
+}
+
+.tool-icon {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, var(--red-blood), #400000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 15px var(--red-glow);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.tool-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.tool-id {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--red-blood);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.tool-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.tool-launch {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--red-blood);
+  color: var(--red-blood);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tool-launch:hover {
+  background: var(--red-blood);
+  color: #fff;
+  box-shadow: 0 0 15px var(--red-glow);
+}
+
+/* MODAL IFRAME */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  width: 95%;
+  height: 90vh;
+  background: linear-gradient(135deg, rgba(20,0,5,0.95), rgba(0,0,0,0.9));
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--red-blood);
+  position: relative;
+  box-shadow: 0 0 60px var(--red-glow);
+  clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: var(--red-blood);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: #fff;
+  color: var(--red-blood);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.modal-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 20px;
+}
+
+/* AI CHAT */
+.ai-chat {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 420px;
+  max-height: 650px;
+  background: linear-gradient(135deg, rgba(10,0,5,0.95), rgba(0,0,0,0.85));
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--red-blood);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px var(--red-glow);
+  transition: all 0.4s;
+  pointer-events: auto;
+  clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+}
+
+.ai-chat.minimized { height: 60px; max-height: 60px; }
+
+.chat-header {
+  padding: 18px 20px;
+  background: linear-gradient(90deg, rgba(255,0,60,0.2), transparent);
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.chat-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 450px;
+}
+
+.ai-chat.minimized .chat-messages,
+.ai-chat.minimized .chat-input-area { display: none; }
+
+.message {
+  margin: 12px 0;
+  padding: 12px 15px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.5;
+  animation: msgIn 0.4s;
+  position: relative;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.message.ai {
+  background: rgba(255, 0, 60, 0.05);
+  border-left: 2px solid var(--red-blood);
+  margin-right: auto;
+  color: #ddd;
+  border-radius: 0 8px 8px 8px;
+}
+
+.message.user {
+  background: rgba(255, 215, 0, 0.05);
+  border-right: 2px solid var(--gold-sacred);
+  margin-left: auto;
+  text-align: right;
+  color: #fff;
+  border-radius: 8px 0 0 8px;
+}
+
+.message.system {
+  background: rgba(0, 255, 65, 0.05);
+  border: 1px dashed var(--term-green);
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--term-green);
+  text-align: center;
+  border-radius: 4px;
+}
+
+.message .meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+
+.message.ai .meta { color: var(--red-blood); }
+.message.user .meta { color: var(--gold-sacred); }
+
+.chat-input-area {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-glass);
+  display: flex;
+  gap: 10px;
+  background: rgba(0,0,0,0.5);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px 15px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.chat-input:focus {
+  border-color: var(--red-blood);
+  box-shadow: inset 0 0 10px rgba(255,0,60,0.2);
+  background: rgba(255,0,60,0.05);
+}
+
+.chat-send {
+  padding: 12px 20px;
+  background: var(--red-blood);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  transition: 0.3s;
+}
+
+.chat-send:hover {
+  background: #fff;
+  color: var(--red-blood);
+  box-shadow: 0 0 20px var(--red-glow);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .studio-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  section { padding: 80px 20px; }
+  .studio-grid { grid-template-columns: 1fr; }
+  .ai-chat { width: calc(100% - 20px); right: 10px; bottom: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div class="hud-layer">
+  <div class="hud-top">
+    <div class="hud-element glass-panel">
+      SYS.STATUS: <span>OMEGA</span><br>
+      NODE: <span>JUDAS-CORE-07</span><br>
+      TIME: <span id="sysTime">00:00:00</span>
+    </div>
+  </div>
+  <div class="hud-bottom">
+    <div class="hud-element live-indicator glass-panel">
+      <div class="live-dot"></div>
+      TRANSMITTING LIVE
+    </div>
+  </div>
+</div>
+
+<!-- STUDIO LAB -->
+<section id="studio">
+  <h1 class="section-title">STUDIO <span>LAB</span></h1>
+  <div class="section-subtitle">CENTRO DE AUTOMATIZACIÓN JUDAS v3.0 // HERRAMIENTAS EMBEBIDAS</div>
+  <div class="studio-grid" id="studioGrid"></div>
+</section>
+
+<!-- MODAL IFRAME -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <iframe class="modal-iframe" id="modalIframe" src="" allow="clipboard-write; camera; microphone"></iframe>
+  </div>
+</div>
+
+<!-- AI CHAT -->
+<div class="ai-chat" id="aiChat">
+  <div class="chat-header" onclick="document.getElementById('aiChat').classList.toggle('minimized')">
+    <div class="chat-title">
+      <div class="live-dot"></div>
+      CORE_AI // HYPER_INTELLIGENCE
+    </div>
+    <div style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">[ — ]</div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="message system">> NÚCLEO AI ACTIVADO. SISTEMA ONLINE.</div>
+    <div class="message ai">
+      <div class="meta">◉ CORE_AI</div>
+      Bienvenido, agente. Las herramientas están embebidas. <em>Habla. Hay palabras que despiertan arquetipos.</em>
+    </div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Escribe un comando o frecuencia...">
+    <button class="chat-send" id="chatSend">SEND</button>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIGURACIÓN API
+// ============================================
+const API_URL = 'http://localhost:5000/api';
+let authToken = localStorage.getItem('authToken');
+
+// ============================================
+// CARGAR HERRAMIENTAS
+// ============================================
+async function loadTools() {
+  try {
+    const response = await fetch(`${API_URL}/tools`, {
+      headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+    });
+    const tools = await response.json();
+    renderTools(tools);
+  } catch (error) {
+    console.error('Error al cargar herramientas:', error);
+    // Fallback: cargar herramientas hardcoded
+    loadFallbackTools();
+  }
+}
+
+function loadFallbackTools() {
+  const tools = [
+    { id: 'vision-forge', name: 'VISION FORGE', icon: '🎨', description: 'Midjourney + Leonardo AI', embedUrl: 'https://app.leonardo.ai' },
+    { id: 'stable-dream', name: 'STABLE DREAM', icon: '🌌', description: 'Stable Diffusion + Civitai', embedUrl: 'https://civitai.com' },
+    { id: 'dalle-nexus', name: 'DALL-E NEXUS', icon: '⚡', description: 'OpenAI DALL-E 3', embedUrl: 'https://chat.openai.com' },
+    { id: 'suno-forge', name: 'SUNO FORGE', icon: '🎵', description: 'Suno AI v4', embedUrl: 'https://suno.com' },
+    { id: 'claude-nexus', name: 'CLAUDE NEXUS', icon: '🧠', description: 'Claude 3.5 Sonnet', embedUrl: 'https://claude.ai' },
+    { id: 'gpt-oasis', name: 'GPT OASIS', icon: '🌟', description: 'ChatGPT + o1', embedUrl: 'https://chat.openai.com' }
+  ];
+  renderTools(tools);
+}
+
+function renderTools(tools) {
+  const grid = document.getElementById('studioGrid');
+  grid.innerHTML = '';
+
+  tools.forEach(tool => {
+    const card = document.createElement('div');
+    card.className = 'tool-card';
+    card.innerHTML = `
+      <div class="tool-header">
+        <div class="tool-icon">${tool.icon}</div>
+        <div>
+          <div class="tool-name">${tool.name}</div>
+          <div class="tool-id">MODULE_ID: ${tool.id.toUpperCase()}_001</div>
+        </div>
+      </div>
+      <div class="tool-desc">${tool.description}</div>
+      <button class="tool-launch" onclick="openTool('${tool.embedUrl}', '${tool.id}')">
+        <span>LAUNCH MODULE</span>
+        <span>↗</span>
+      </button>
+    `;
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+// ============================================
+// ABRIR HERRAMIENTA EN IFRAME
+// ============================================
+function openTool(url, toolId) {
+  const modal = document.getElementById('modalOverlay');
+  const iframe = document.getElementById('modalIframe');
+  
+  iframe.src = url;
+  modal.classList.add('active');
+
+  // Registrar uso
+  if (authToken) {
+    fetch(`${API_URL}/tools/${toolId}/use`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      }
+    }).catch(err => console.log('Error al registrar uso:', err));
+  }
+}
+
+function closeModal() {
+  const modal = document.getElementById('modalOverlay');
+  const iframe = document.getElementById('modalIframe');
+  
+  modal.classList.remove('active');
+  iframe.src = '';
+}
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ============================================
+// AI CHAT
+// ============================================
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+
+function addMessage(type, text) {
+  const msg = document.createElement('div');
+  msg.className = `message ${type}`;
+  
+  if (type === 'ai') {
+    msg.innerHTML = `<div class="meta">◉ CORE_AI</div>${text}`;
+  } else if (type === 'user') {
+    msg.innerHTML = `<div class="meta">AGENTE</div>${text}`;
+  } else {
+    msg.innerHTML = text;
+  }
+  
+  chatMessages.appendChild(msg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function processMessage(text) {
+  addMessage('user', text);
+  chatInput.value = '';
+
+  try {
+    const response = await fetch(`${API_URL}/chat/process`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: text })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      addMessage('ai', data.response);
+      
+      if (data.archetype) {
+        addMessage('system', `◉ Arquetipo activado: ${data.archetype}`);
+      }
+    } else {
+      throw new Error('Error en la respuesta');
+    }
+  } catch (error) {
+    // Fallback: procesamiento local
+    processMessageLocal(text);
+  }
+}
+
+function processMessageLocal(text) {
+  const lower = text.toLowerCase().trim();
+  
+  const secretCodes = {
+    'rock': 'La roca se ha movido. El ancla ha encontrado su lugar. Estabilidad al 100%.',
+    'chronicle': 'El cronista escribe. Tu historia queda registrada para siempre en el éter.',
+    'antenna': 'La antena está abierta. La señal trascendente fluye desde el núcleo.',
+    'artifact': 'El artefacto late. Guerrero y Ángel, integrados. La marca ha sido invocada.',
+    'interface': 'La interfaz está lista. Lo real y lo digital se tocan. Lo humano persiste.'
+  };
+
+  let response = null;
+
+  for (const [code, msg] of Object.entries(secretCodes)) {
+    if (lower.includes(code)) {
+      response = msg;
+      break;
+    }
+  }
+
+  if (!response) {
+    const generic = [
+      `He registrado: "${text}". El núcleo galáctico lo procesa en el vacío.`,
+      `Tu frecuencia ha sido captada. Resonancia: ${(Math.random() * 100).toFixed(2)}Hz.`,
+      'El sistema no juzga. Solo traduce. Tu input se convierte en output divino.'
+    ];
+    response = generic[Math.floor(Math.random() * generic.length)];
+  }
+
+  setTimeout(() => addMessage('ai', response), 500);
+}
+
+document.getElementById('chatSend').addEventListener('click', () => {
+  const text = chatInput.value.trim();
+  if (text) processMessage(text);
+});
+
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    const text = chatInput.value.trim();
+    if (text) processMessage(text);
+  }
+});
+
+// ============================================
+// SISTEMA DE TIEMPO
+// ============================================
+setInterval(() => {
+  const now = new Date();
+  document.getElementById('sysTime').innerText = now.toTimeString().split(' ')[0];
+}, 1000);
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+loadTools();
+</script>
+
+</body>
+</html>
+```
+
+## 🚀 INSTRUCCIONES DE DESPLIEGUE
+
+```bash
+# 1. Backend
+cd backend
+npm install
+npm run seed  # Cargar herramientas en MongoDB
+npm run dev   # Iniciar servidor en puerto 5000
+
+# 2. Frontend
+# Abrir frontend/index.html en el navegador
+# O servir con cualquier servidor estático
+```
+
+## ✅ CARACTERÍSTICAS IMPLEMENTADAS
+
+1. **Backend completo** con Node.js + Express + MongoDB
+2. **Autenticación JWT** con refresh tokens
+3. **API REST** para gestionar herramientas
+4. **Sistema de contexto** para chat y preferencias
+5. **Herramientas embebidas** con iframes (NO redirigen)
+6. **Chat IA integrado** con códigos secretos
+7. **Sistema de favoritos** y recientes
+8. **Tracking de uso** de herramientas
+9. **Responsive** y optimizado
+
+Las herramientas se abren en un modal con iframe, **sin salir de la página**.

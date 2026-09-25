@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI STUDIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c12;
+  --bg2: #0d1320;
+  --bg3: #121a28;
+  --surface: #16202e;
+  --border: #1e2d40;
+  --border2: #263547;
+  --text: #dce8f5;
+  --muted: #6b8096;
+  --accent: #3d8aff;
+  --accent2: #8b5cf6;
+  --gold: #e8a838;
+  --green: #22c55e;
+  --red: #ef4444;
+  --font: 'Syne', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+/* Layout */
+.app { display: grid; grid-template-columns: 240px 1fr 280px; grid-template-rows: 48px 1fr; height: 100vh; }
+.topbar { grid-column: 1/-1; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 12px; }
+.sidebar { background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.main { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.panel { background: var(--bg2); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+
+/* Topbar */
+.logo { font-size: 16px; font-weight: 800; letter-spacing: 0.08em; color: var(--text); }
+.logo span { color: var(--gold); }
+.model-select { background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; outline: none; }
+.model-select:focus { border-color: var(--accent); }
+.key-input { background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 5px 12px; border-radius: 6px; outline: none; width: 220px; }
+.key-input::placeholder { color: var(--muted); }
+.key-input:focus { border-color: var(--accent); }
+.key-input.ok { border-color: var(--green); }
+.top-pill { font-size: 10px; font-family: var(--mono); padding: 3px 8px; border-radius: 4px; background: var(--bg3); border: 1px solid var(--border); color: var(--muted); }
+.top-pill.live { border-color: var(--green); color: var(--green); }
+.spacer { flex: 1; }
+.btn-icon { background: none; border: 1px solid var(--border); color: var(--muted); width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; }
+.btn-icon:hover { border-color: var(--border2); color: var(--text); }
+
+/* Sidebar */
+.sidebar-section { padding: 12px; }
+.sidebar-label { font-size: 9px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.new-chat-btn { width: 100%; padding: 8px 12px; background: var(--accent); border: none; color: #fff; border-radius: 7px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+.new-chat-btn:hover { opacity: 0.85; }
+.chat-list { flex: 1; overflow-y: auto; padding: 0 8px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.chat-item { padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 12px; color: var(--muted); border: 1px solid transparent; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; transition: all 0.12s; }
+.chat-item:hover { background: var(--bg3); color: var(--text); }
+.chat-item.active { background: var(--bg3); color: var(--text); border-color: var(--border); }
+.chat-item .chat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.chat-item.active .chat-dot { background: var(--accent); }
+.chat-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.chat-del { opacity: 0; font-size: 11px; cursor: pointer; padding: 2px 4px; }
+.chat-item:hover .chat-del { opacity: 0.5; }
+.chat-del:hover { opacity: 1 !important; color: var(--red); }
+.sys-prompt-area { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 10px; padding: 8px; border-radius: 6px; resize: none; height: 80px; outline: none; line-height: 1.5; }
+.sys-prompt-area:focus { border-color: var(--accent); }
+
+/* Main chat */
+.chat-area { flex: 1; overflow-y: auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 0; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.msg { max-width: 720px; margin-bottom: 20px; animation: fadeIn 0.2s ease; }
+.msg.user { align-self: flex-end; }
+.msg.assistant { align-self: flex-start; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.msg-header { font-size: 10px; font-family: var(--mono); color: var(--muted); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.msg-header .role { font-weight: 500; }
+.msg-header .model-tag { color: var(--accent); }
+.msg-body { padding: 12px 16px; border-radius: 10px; line-height: 1.65; font-size: 13.5px; }
+.msg.user .msg-body { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px 10px 3px 10px; color: var(--text); }
+.msg.assistant .msg-body { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px 10px 10px 3px; color: var(--text); }
+.msg.assistant .msg-body code { background: var(--bg3); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-family: var(--mono); font-size: 11.5px; color: var(--gold); }
+.msg.assistant .msg-body pre { background: var(--bg3); border: 1px solid var(--border); padding: 12px 14px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
+.msg.assistant .msg-body pre code { background: none; border: none; padding: 0; color: var(--text); font-size: 11px; line-height: 1.6; }
+.msg-actions { display: flex; gap: 4px; margin-top: 6px; }
+.msg-act-btn { background: none; border: 1px solid transparent; color: var(--muted); font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 4px; cursor: pointer; transition: all 0.12s; }
+.msg-act-btn:hover { border-color: var(--border); color: var(--text); }
+.thinking { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-family: var(--mono); margin-bottom: 20px; }
+.thinking-dots span { animation: blink 1.2s infinite; display: inline-block; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+/* Input area */
+.input-area { padding: 16px 24px 20px; border-top: 1px solid var(--border); background: var(--bg); }
+.input-row { display: flex; gap: 8px; align-items: flex-end; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; transition: border-color 0.15s; }
+.input-row:focus-within { border-color: var(--border2); }
+.chat-input { flex: 1; background: none; border: none; color: var(--text); font-family: var(--font); font-size: 13.5px; resize: none; outline: none; line-height: 1.55; max-height: 160px; min-height: 22px; }
+.chat-input::placeholder { color: var(--muted); }
+.send-btn { background: var(--accent); border: none; color: #fff; width: 32px; height: 32px; border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; transition: opacity 0.15s; align-self: flex-end; }
+.send-btn:hover { opacity: 0.85; }
+.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.send-btn.stop { background: var(--red); }
+.input-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.cost-badge { font-size: 10px; font-family: var(--mono); color: var(--muted); }
+.cost-badge .val { color: var(--gold); }
+
+/* Right panel */
+.panel-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.panel-tab { flex: 1; padding: 9px 4px; text-align: center; font-size: 10px; font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; }
+.panel-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.panel-content { flex: 1; overflow-y: auto; padding: 14px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.tool-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.tool-card h4 { font-size: 12px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.tool-card p { font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 8px; }
+.tool-tag { font-size: 9px; font-family: var(--mono); padding: 2px 6px; border-radius: 3px; }
+.tag-free { background: #052316; border: 1px solid #0d4a2c; color: #22c55e; }
+.tag-local { background: #05142e; border: 1px solid #0d2d5a; color: var(--accent); }
+.tag-gpu { background: #2a1205; border: 1px solid #5a2a0d; color: var(--gold); }
+.tool-btn { font-size: 10px; font-family: var(--mono); padding: 4px 10px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; cursor: pointer; transition: all 0.12s; }
+.tool-btn:hover { border-color: var(--accent); color: var(--accent); }
+.memory-item { font-size: 11px; font-family: var(--mono); padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; color: var(--muted); line-height: 1.5; position: relative; cursor: default; }
+.memory-item:hover { border-color: var(--border2); }
+.memory-del { position: absolute; top: 6px; right: 8px; font-size: 10px; cursor: pointer; opacity: 0; color: var(--red); }
+.memory-item:hover .memory-del { opacity: 0.7; }
+.add-memory-row { display: flex; gap: 6px; }
+.add-memory-input { flex: 1; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 6px 9px; border-radius: 6px; outline: none; }
+.add-memory-input:focus { border-color: var(--accent); }
+.add-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 6px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.add-btn:hover { border-color: var(--accent); color: var(--accent); }
+.workflow-item { padding: 8px 10px; border: 1px solid var(--border); background: var(--bg3); border-radius: 7px; margin-bottom: 6px; cursor: pointer; transition: all 0.12s; }
+.workflow-item:hover { border-color: var(--border2); }
+.workflow-item h5 { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+.workflow-item p { font-size: 10px; color: var(--muted); line-height: 1.4; }
+.section-lbl { font-size: 9px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
+.section-lbl:first-child { margin-top: 0; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border2); color: var(--text); font-size: 12px; font-family: var(--mono); padding: 8px 18px; border-radius: 8px; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 8px; color: var(--muted); padding: 40px; text-align: center; }
+.welcome h2 { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: 0.04em; }
+.welcome h2 span { color: var(--gold); }
+.welcome p { font-size: 12px; line-height: 1.7; max-width: 380px; }
+.starters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; max-width: 500px; }
+.starter { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; cursor: pointer; text-align: left; transition: all 0.15s; }
+.starter:hover { border-color: var(--border2); background: var(--surface); }
+.starter .s-icon { font-size: 18px; margin-bottom: 4px; }
+.starter .s-label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 3px; }
+.starter .s-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">BELEN<span>TANI</span> STUDIO</div>
+    <select class="model-select" id="modelSelect">
+      <option value="qwen/qwen3-coder:free">Qwen3 Coder 480B (free)</option>
+      <option value="deepseek/deepseek-v4-flash:free">DeepSeek V4 Flash (free)</option>
+      <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (free)</option>
+      <option value="google/gemma-4-31b-it:free">Gemma 4 31B (free)</option>
+      <option value="moonshotai/kimi-k2.6:free">Kimi K2.6 (free)</option>
+      <option value="openai/gpt-oss-120b:free">OpenAI OSS 120B (free)</option>
+      <option value="openrouter/free">Auto-Free Router</option>
+      <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (paid)</option>
+      <option value="gpt-4o">GPT-4o (paid)</option>
+    </select>
+    <input class="key-input" id="keyInput" type="password" placeholder="Paste OpenRouter key: sk-or-v1-..." autocomplete="off">
+    <span class="top-pill" id="statusPill">No key</span>
+    <div class="spacer"></div>
+    <span class="cost-badge">Session cost: <span class="val" id="sessionCost">€0.0000</span></span>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <button class="new-chat-btn" onclick="newChat()">+ New chat</button>
+    </div>
+    <div class="sidebar-section" style="padding-top:0">
+      <div class="sidebar-label">Conversations</div>
+      <div class="chat-list" id="chatList"></div>
+    </div>
+    <div class="sidebar-section" style="border-top:1px solid var(--border); padding-top:12px;">
+      <div class="sidebar-label">System prompt</div>
+      <textarea class="sys-prompt-area" id="sysPrompt" placeholder="You are BELENTANI's AI assistant. You know about music production, voice cloning, web development, and AI agents. Be direct and technical."></textarea>
+    </div>
+  </div>
+
+  <!-- Main chat area -->
+  <div class="main">
+    <div class="chat-area" id="chatArea">
+      <div class="welcome" id="welcome">
+        <h2>BELEN<span>TANI</span> STUDIO</h2>
+        <p>Your personal AI workspace. Paste your OpenRouter key above, pick a model, and start building.</p>
+        <div class="starters" id="starterGrid"></div>
+      </div>
+    </div>
+    <div class="input-area">
+      <div class="input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask anything… (Enter to send, Shift+Enter for newline)" rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">&#9658;</button>
+      </div>
+      <div class="input-meta">
+        <span class="cost-badge">Tokens: <span class="val" id="tokenCount">0</span></span>
+        <span class="cost-badge" style="margin-left:8px" id="streamStatus"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="panel">
+    <div class="panel-tabs">
+      <div class="panel-tab active" onclick="switchTab('tools')" id="tab-tools">Tools</div>
+      <div class="panel-tab" onclick="switchTab('memory')" id="tab-memory">Memory</div>
+      <div class="panel-tab" onclick="switchTab('flows')" id="tab-flows">Flows</div>
+    </div>
+    <div class="panel-content" id="panel-tools">
+      <div class="section-lbl">Audio & Voice</div>
+      <div class="tool-card">
+        <h4>🎤 F5-TTS <span class="tool-tag tag-local">Local</span></h4>
+        <p>Clone your voice with 10 seconds of reference audio. Sings in PT/ES/EN/CAT.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="tool-btn" onclick="injectPrompt('How do I install F5-TTS on Windows and clone my voice in Spanish?')">How to use</button>
+          <button class="tool-btn" onclick="injectPrompt('Write a Python script to clone voice with F5-TTS from a 10-second reference file pedro_voice.wav and generate audio for the lyrics: ')">Generate script</button>
+        </div>
+      </div>
+      <div class="tool-card">
+        <h4>🎵 Demucs <span class="tool-tag tag-local">Local</span></h4>
+        <p>Separate vocals, drums, bass and other stems from any track.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('Write a Python script using Demucs to separate vocals from input.mp3, save each stem to a separate file.')">Script</button>
+        </div>
+      </div>
+      <div class="tool-card">
+        <h4>🎛️ Matchering <span class="tool-tag tag-local">Local</span></h4>
+        <p>Master your track to sound like a professional reference.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('How do I use Matchering to master my track to sound like a professional reference song?')">How to use</button>
+        </div>
+      </div>
+      <div class="section-lbl">Video & Visuals</div>
+      <div class="tool-card">
+        <h4>🎬 SkyReels-V2 <span class="tool-tag tag-gpu">GPU</span></h4>
+        <p>Infinite-length video with consistent character. Use --offload for 12GB VRAM.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('How do I install and run SkyReels-V2 on Windows 11 with a 12GB GPU? I want to generate videos of my BELENTANI character consistently.')">Install guide</button>
+        </div>
+      </div>
+      <div class="tool-card">
+        <h4>🖼️ ComfyUI <span class="tool-tag tag-local">Local</span></h4>
+        <p>Modular image→video pipelines. Supports FLUX, SD3, AnimateDiff.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('What is the best ComfyUI workflow for generating consistent character images using a reference image?')">Workflow</button>
+        </div>
+      </div>
+      <div class="section-lbl">Agents & Code</div>
+      <div class="tool-card">
+        <h4>🤖 OpenCode <span class="tool-tag tag-free">Free</span></h4>
+        <p>Open-source Claude Code alternative. 167k GitHub stars. Run in any project folder.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('How do I configure OpenCode (anomalyco/opencode) with my OpenRouter API key to use free models?')">Configure</button>
+        </div>
+      </div>
+      <div class="tool-card">
+        <h4>🌐 Flowise <span class="tool-tag tag-free">Free</span></h4>
+        <p>Visual drag-drop agent builder. Run at localhost:3001 after npm install -g flowise.</p>
+        <div style="display:flex;gap:6px">
+          <button class="tool-btn" onclick="injectPrompt('How do I build a Telegram bot agent using Flowise connected to OpenRouter?')">Build agent</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel-content" id="panel-memory" style="display:none">
+      <div class="section-lbl">Persistent memory</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Facts injected into every conversation. Stored in your browser.</p>
+      <div id="memoryList"></div>
+      <div class="add-memory-row" style="margin-top:8px">
+        <input class="add-memory-input" id="memInput" placeholder="Add a memory fact…" onkeydown="if(event.key==='Enter')addMemory()">
+        <button class="add-btn" onclick="addMemory()">Add</button>
+      </div>
+      <div class="section-lbl" style="margin-top:20px">Presets for BELENTANI</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="tool-btn" style="text-align:left;width:100%" onclick="addPresetMemory('My name is Pedro. I am a multilingual artist (PT/ES/CAT/EN), musician, and AI developer based in Barcelona.')">Pedro's profile</button>
+        <button class="tool-btn" style="text-align:left;width:100%" onclick="addPresetMemory('My artist name is BELENTANI. I have a single called JUDAS and a cover called Mon Amour. My character is a cyberpunk snake 3D model.')">Artist identity</button>
+        <button class="tool-btn" style="text-align:left;width:100%" onclick="addPresetMemory('I use OpenRouter free tier for all AI tasks. My workflow: music production with F5-TTS and Demucs, web dev with Next.js, agents with Flowise and OpenCode.')">Tech stack</button>
+        <button class="tool-btn" style="text-align:left;width:100%" onclick="addPresetMemory('I am on Windows 11. I have VS Code, Node.js, Python 3.11, and Git installed. My workspace is C:\\Belentani.')">My system</button>
+      </div>
+    </div>
+    <div class="panel-content" id="panel-flows" style="display:none">
+      <div class="section-lbl">Quick workflows</div>
+      <div class="workflow-item" onclick="injectPrompt('I want to release my single JUDAS on streaming platforms. Give me the exact step-by-step for DistroKid, including cover art requirements, ISRC codes, and how to set up Spotify for Artists.')">
+        <h5>🎵 Release JUDAS</h5>
+        <p>DistroKid upload guide + Spotify setup</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('Give me 5 Instagram Reel ideas for BELENTANI the cyberpunk artist. Each idea should have: hook (first 3 seconds), script, trending audio suggestion, hashtags. Style: dark, mysterious, artistic.')">
+        <h5>📱 5 Reel ideas</h5>
+        <p>Dark cyberpunk artist content strategy</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('Write a complete single-file HTML landing page for BELENTANI. Requirements: dark cyberpunk aesthetic, gold and deep blue palette, hero section with glitch text animation, music player UI section, bio section, contact form. Use Google Fonts. Make it production-ready.')">
+        <h5>🌐 Build landing page</h5>
+        <p>Full HTML with glitch animations</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('Create a Python agent script that uses OpenRouter API (model: qwen/qwen3-coder:free) with tool use. Tools: web_search (returns top 3 results), write_file (saves content to disk), read_file. The agent should be able to research topics and save findings. Include proper error handling and a simple CLI interface.')">
+        <h5>🤖 Build Python agent</h5>
+        <p>OpenRouter tool-use agent with CLI</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('I want to clone my voice in Python using F5-TTS. Write a complete script that: 1) loads a 10-second reference WAV file, 2) takes lyrics as input, 3) generates speech/singing in my cloned voice, 4) saves output as MP3. Include install instructions.')">
+        <h5>🎤 Clone voice script</h5>
+        <p>F5-TTS Python script generator</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('Write a compelling Upwork profile for a multilingual content moderator with 8 years of enterprise experience at Telus Digital, now offering AI services. Titles: Content Moderation Expert + AI Integration Specialist. Rate: €45/hour. Highlight: PT/ES/CAT/EN, global platforms, harmful content expertise, now adding AI automation.')">
+        <h5>💼 Upwork profile</h5>
+        <p>Premium rate profile for AI services</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('What is the best free open-source stack in 2026 for: 1) creating consistent AI video of a specific character, 2) voice cloning in multiple languages, 3) deploying a music artist website? Give me GitHub links, system requirements, and setup order for Windows 11.')">
+        <h5>🛠️ Full stack setup</h5>
+        <p>Best 2026 open-source tools overview</p>
+      </div>
+      <div class="workflow-item" onclick="injectPrompt('I need a no-code Flowise workflow that: receives a message from Telegram, uses OpenRouter to generate a response, and sends it back. Give me the exact JSON config I can import into Flowise, and the bot setup steps.')">
+        <h5>📲 Telegram AI bot</h5>
+        <p>Flowise + OpenRouter no-code bot</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MODELS = {
+  'qwen/qwen3-coder:free': {name:'Qwen3 Coder', in:0, out:0},
+  'deepseek/deepseek-v4-flash:free': {name:'DeepSeek V4', in:0, out:0},
+  'meta-llama/llama-3.3-70b-instruct:free': {name:'Llama 3.3', in:0, out:0},
+  'google/gemma-4-31b-it:free': {name:'Gemma 4', in:0, out:0},
+  'moonshotai/kimi-k2.6:free': {name:'Kimi K2.6', in:0, out:0},
+  'openai/gpt-oss-120b:free': {name:'OpenAI OSS', in:0, out:0},
+  'openrouter/free': {name:'Auto-Free', in:0, out:0},
+  'claude-3-5-sonnet-20241022': {name:'Claude 3.5S', in:3, out:15},
+  'gpt-4o': {name:'GPT-4o', in:5, out:15},
+};
+
+let chats = JSON.parse(localStorage.getItem('bl_chats') || '{}');
+let memories = JSON.parse(localStorage.getItem('bl_memories') || '[]');
+let activeChatId = null;
+let totalCost = 0;
+let totalTokens = 0;
+let abortCtrl = null;
+let isStreaming = false;
+
+const STARTERS = [
+  {icon:'🎤', label:'Voice', desc:'Clone my voice with F5-TTS'},
+  {icon:'🎵', label:'Music', desc:'Release JUDAS on Spotify'},
+  {icon:'🌐', label:'Web', desc:'Build BELENTANI landing page'},
+  {icon:'🤖', label:'Agent', desc:'Create a Telegram AI bot'},
+  {icon:'🎬', label:'Video', desc:'Generate consistent character video'},
+  {icon:'💼', label:'Freelance', desc:'Write Upwork profile €45/hr'},
+];
+
+function init() {
+  renderStarters();
+  renderChatList();
+  renderMemory();
+  setupKey();
+  setupInput();
+  if (!activeChatId && Object.keys(chats).length > 0) {
+    loadChat(Object.keys(chats)[Object.keys(chats).length - 1]);
+  }
+}
+
+function renderStarters() {
+  const g = document.getElementById('starterGrid');
+  g.innerHTML = STARTERS.map(s =>
+    `<div class="starter" onclick="injectPrompt('${s.desc}')">
+      <div class="s-icon">${s.icon}</div>
+      <span class="s-label">${s.label}</span>
+      <span class="s-desc">${s.desc}</span>
+    </div>`
+  ).join('');
+}
+
+function setupKey() {
+  const k = localStorage.getItem('bl_key') || '';
+  const el = document.getElementById('keyInput');
+  if (k) { el.value = k; el.classList.add('ok'); updateStatus(true); }
+  el.addEventListener('input', () => {
+    const v = el.value.trim();
+    if (v.startsWith('sk-or-') || v.startsWith('sk-')) {
+      localStorage.setItem('bl_key', v);
+      el.classList.add('ok');
+      updateStatus(true);
+    } else {
+      el.classList.remove('ok');
+      updateStatus(false);
+    }
+  });
+}
+
+function updateStatus(ok) {
+  const p = document.getElementById('statusPill');
+  p.textContent = ok ? 'Ready' : 'No key';
+  p.className = ok ? 'top-pill live' : 'top-pill';
+}
+
+function getKey() { return document.getElementById('keyInput').value.trim(); }
+function getModel() { return document.getElementById('modelSelect').value; }
+function getSysPrompt() {
+  const base = document.getElementById('sysPrompt').value.trim();
+  const mems = memories.map(m => `- ${m}`).join('\n');
+  return (base || 'You are a helpful AI assistant.') + (mems ? `\n\nUser memory:\n${mems}` : '');
+}
+
+function setupInput() {
+  const inp = document.getElementById('chatInput');
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (isStreaming) return; sendMessage(); }
+  });
+  inp.addEventListener('input', () => {
+    inp.style.height = 'auto';
+    inp.style.height = Math.min(inp.scrollHeight, 160) + 'px';
+  });
+}
+
+function newChat() {
+  const id = Date.now().toString();
+  chats[id] = { title: 'New chat', messages: [], model: getModel() };
+  saveChats();
+  loadChat(id);
+}
+
+function loadChat(id) {
+  activeChatId = id;
+  renderChatList();
+  renderMessages();
+}
+
+function renderChatList() {
+  const list = document.getElementById('chatList');
+  const ids = Object.keys(chats).reverse();
+  list.innerHTML = ids.map(id => {
+    const c = chats[id];
+    return `<div class="chat-item ${id === activeChatId ? 'active' : ''}" onclick="loadChat('${id}')">
+      <div class="chat-dot"></div>
+      <span class="chat-title">${c.title}</span>
+      <span class="chat-del" onclick="event.stopPropagation();deleteChat('${id}')">✕</span>
+    </div>`;
+  }).join('');
+}
+
+function deleteChat(id) {
+  delete chats[id];
+  if (activeChatId === id) activeChatId = null;
+  saveChats();
+  renderChatList();
+  renderMessages();
+}
+
+function saveChats() { localStorage.setItem('bl_chats', JSON.stringify(chats)); }
+
+function renderMessages() {
+  const area = document.getElementById('chatArea');
+  if (!activeChatId || !chats[activeChatId]) {
+    area.innerHTML = '<div class="welcome" id="welcome"><h2>BELEN<span>TANI</span> STUDIO</h2><p>Paste your OpenRouter key above, pick a model, and start building.</p><div class="starters" id="starterGrid"></div></div>';
+    renderStarters();
+    return;
+  }
+  const msgs = chats[activeChatId].messages;
+  if (msgs.length === 0) {
+    area.innerHTML = '<div class="welcome" id="welcome"><h2>BELEN<span>TANI</span> STUDIO</h2><p>Start typing or use a quick workflow from the Flows panel →</p><div class="starters" id="starterGrid"></div></div>';
+    renderStarters();
+    return;
+  }
+  const model = chats[activeChatId].model || getModel();
+  const mname = MODELS[model]?.name || model.split('/').pop();
+  area.innerHTML = msgs.map((m, i) => buildMsgHTML(m, i, mname)).join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function buildMsgHTML(m, i, mname) {
+  const body = m.role === 'assistant' ? formatMarkdown(m.content) : escHtml(m.content);
+  const actions = m.role === 'assistant'
+    ? `<div class="msg-actions">
+        <button class="msg-act-btn" onclick="copyMsg(${i})">copy</button>
+        <button class="msg-act-btn" onclick="injectPrompt('Continue from: ${m.content.slice(0,60).replace(/'/g,"\\'")}...')">continue</button>
+       </div>` : '';
+  const header = m.role === 'user'
+    ? `<div class="msg-header"><span class="role">You</span></div>`
+    : `<div class="msg-header"><span class="role">BELENTANI AI</span> <span class="model-tag">${mname}</span></div>`;
+  return `<div class="msg ${m.role}">${header}<div class="msg-body">${body}</div>${actions}</div>`;
+}
+
+function formatMarkdown(text) {
+  let out = escHtml(text);
+  out = out.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code>${code.trim()}</code></pre>`);
+  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  out = out.replace(/^### (.+)$/gm, '<strong style="font-size:13px;display:block;margin:10px 0 4px">$1</strong>');
+  out = out.replace(/^## (.+)$/gm, '<strong style="font-size:14px;display:block;margin:12px 0 5px">$1</strong>');
+  out = out.replace(/^# (.+)$/gm, '<strong style="font-size:15px;display:block;margin:14px 0 6px">$1</strong>');
+  out = out.replace(/^[-*] (.+)$/gm, '<div style="display:flex;gap:8px;margin:2px 0"><span style="color:var(--accent);flex-shrink:0">›</span><span>$1</span></div>');
+  out = out.replace(/\n\n/g, '<br><br>');
+  out = out.replace(/\n/g, '<br>');
+  return out;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyMsg(i) {
+  if (!activeChatId) return;
+  const msg = chats[activeChatId].messages[i];
+  navigator.clipboard.writeText(msg.content);
+  showToast('Copied!');
+}
+
+async function sendMessage(override) {
+  const key = getKey();
+  if (!key) { showToast('Add your OpenRouter key first'); return; }
+  const inp = document.getElementById('chatInput');
+  const text = (override || inp.value).trim();
+  if (!text) return;
+
+  if (!activeChatId) { newChat(); }
+  inp.value = '';
+  inp.style.height = 'auto';
+
+  const chat = chats[activeChatId];
+  chat.messages.push({ role: 'user', content: text });
+  if (chat.messages.length === 1) {
+    chat.title = text.slice(0, 40) + (text.length > 40 ? '…' : '');
+  }
+  saveChats();
+  renderMessages();
+  renderChatList();
+
+  document.getElementById('welcome')?.remove();
+  const area = document.getElementById('chatArea');
+  const thinkEl = document.createElement('div');
+  thinkEl.className = 'thinking';
+  thinkEl.id = 'thinking';
+  thinkEl.innerHTML = `<span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${MODELS[getModel()]?.name || 'AI'} is thinking</span><span class="thinking-dots"><span>•</span><span>•</span><span>•</span></span>`;
+  area.appendChild(thinkEl);
+  area.scrollTop = area.scrollHeight;
+
+  const sendBtn = document.getElementById('sendBtn');
+  sendBtn.textContent = '■';
+  sendBtn.className = 'send-btn stop';
+  sendBtn.onclick = () => { if (abortCtrl) abortCtrl.abort(); };
+  isStreaming = true;
+
+  const model = getModel();
+  const apiMessages = chat.messages.map(m => ({ role: m.role, content: m.content }));
+  const sysPrompt = getSysPrompt();
+
+  abortCtrl = new AbortController();
+  let fullText = '';
+  let tempMsgId = null;
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      signal: abortCtrl.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`,
+        'HTTP-Referer': 'https://belentani.studio',
+        'X-Title': 'Belentani Studio'
+      },
+      body: JSON.stringify({
+        model,
+        stream: true,
+        messages: [
+          { role: 'system', content: sysPrompt },
+          ...apiMessages
+        ],
+        max_tokens: 4096
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+
+    document.getElementById('thinking')?.remove();
+    chat.messages.push({ role: 'assistant', content: '' });
+    const msgIdx = chat.messages.length - 1;
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop() || '';
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (raw === '[DONE]') continue;
+        try {
+          const ev = JSON.parse(raw);
+          const delta = ev.choices?.[0]?.delta?.content || '';
+          if (delta) {
+            fullText += delta;
+            chat.messages[msgIdx].content = fullText;
+            const mname = MODELS[model]?.name || model.split('/').pop();
+            const newHtml = buildMsgHTML(chat.messages[msgIdx], msgIdx, mname);
+            const existingMsgs = area.querySelectorAll('.msg');
+            const lastMsg = existingMsgs[existingMsgs.length - 1];
+            if (lastMsg && lastMsg.classList.contains('assistant')) {
+              lastMsg.outerHTML = newHtml;
+            } else {
+              area.insertAdjacentHTML('beforeend', newHtml);
+            }
+            area.scrollTop = area.scrollHeight;
+          }
+          if (ev.usage) {
+            const inT = ev.usage.prompt_tokens || 0;
+            const outT = ev.usage.completion_tokens || 0;
+            totalTokens += inT + outT;
+            const mCost = MODELS[model] || { in: 0, out: 0 };
+            totalCost += (inT / 1e6) * mCost.in + (outT / 1e6) * mCost.out;
+            document.getElementById('tokenCount').textContent = totalTokens.toLocaleString();
+            document.getElementById('sessionCost').textContent = `€${totalCost.toFixed(4)}`;
+          }
+        } catch(e) {}
+      }
+    }
+
+    saveChats();
+    document.getElementById('streamStatus').textContent = '';
+  } catch (err) {
+    document.getElementById('thinking')?.remove();
+    if (err.name === 'AbortError') {
+      if (fullText) { chat.messages[chat.messages.length - 1].content = fullText + '\n\n[Stopped]'; saveChats(); }
+    } else {
+      showToast('Error: ' + err.message);
+      chat.messages.push({ role: 'assistant', content: `Error: ${err.message}` });
+      saveChats();
+      renderMessages();
+    }
+  }
+
+  isStreaming = false;
+  sendBtn.innerHTML = '&#9658;';
+  sendBtn.className = 'send-btn';
+  sendBtn.onclick = sendMessage;
+}
+
+function injectPrompt(text) {
+  const inp = document.getElementById('chatInput');
+  inp.value = text;
+  inp.focus();
+  inp.style.height = 'auto';
+  inp.style.height = Math.min(inp.scrollHeight, 160) + 'px';
+}
+
+function switchTab(tab) {
+  ['tools','memory','flows'].forEach(t => {
+    document.getElementById(`panel-${t}`).style.display = t === tab ? 'block' : 'none';
+    document.getElementById(`tab-${t}`).className = `panel-tab ${t === tab ? 'active' : ''}`;
+  });
+}
+
+function renderMemory() {
+  const list = document.getElementById('memoryList');
+  if (!list) return;
+  list.innerHTML = memories.map((m, i) =>
+    `<div class="memory-item">${escHtml(m)}<span class="memory-del" onclick="deleteMemory(${i})">✕</span></div>`
+  ).join('') || '<div style="font-size:11px;color:var(--muted);font-family:var(--mono)">No memories yet. Add facts about yourself.</div>';
+}
+
+function addMemory() {
+  const inp = document.getElementById('memInput');
+  const v = inp.value.trim();
+  if (!v) return;
+  memories.push(v);
+  localStorage.setItem('bl_memories', JSON.stringify(memories));
+  inp.value = '';
+  renderMemory();
+  showToast('Memory saved');
+}
+
+function addPresetMemory(text) {
+  if (memories.includes(text)) { showToast('Already added'); return; }
+  memories.push(text);
+  localStorage.setItem('bl_memories', JSON.stringify(memories));
+  renderMemory();
+  showToast('Memory added');
+}
+
+function deleteMemory(i) {
+  memories.splice(i, 1);
+  localStorage.setItem('bl_memories', JSON.stringify(memories));
+  renderMemory();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+init();
+</script>
+</body>
+</html>

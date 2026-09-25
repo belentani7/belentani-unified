@@ -1,0 +1,25 @@
+
+<!-- AI LAB -->
+<section id="ailab" class="sec">
+<h1 class="sec-title rv">AI <span>LAB</span></h1>
+<div class="sec-sub rv">HERRAMIENTAS IA EN VIVO // MOTOR OPEN-SOURCE</div>
+<div class="g4 rv">
+<div class="tcard" style="grid-column:span 2">
+<div class="tc-head"><div class="tc-ico">&#129504;</div><div><div class="tc-name">NEURAL CHAT</div><div class="tc-id">JUDAS_CORE // LIVE</div></div></div>
+<div id="aiLog" style="height:180px;overflow-y:auto;background:rgba(0,0,0,.5);padding:12px;margin-bottom:12px;font-family:var(--fm);font-size:11px;border:1px solid var(--glass-border)"></div>
+<div style="display:flex;gap:10px"><input id="aiIn" placeholder="CMD..." style="flex:1;background:transparent;border:1px solid var(--blood);color:#fff;padding:12px;font-family:var(--fm);font-size:11px;outline:none"><button class="tc-btn" onclick="aiSend()" style="width:auto;padding:12px 22px">SEND</button></div>
+</div>
+<div class="tcard" style="grid-column:span 2">
+<div class="tc-head"><div class="tc-ico">&#127912;</div><div><div class="tc-name">VISION FORGE</div><div class="tc-id">IMAGE_GEN // FLUX</div></div></div>
+<div id="aiImg" style="height:180px;background:rgba(0,0,0,.5);margin-bottom:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border);overflow:hidden"></div>
+<div style="display:flex;gap:10px"><input id="aiImgIn" placeholder="PROMPT..." style="flex:1;background:transparent;border:1px solid var(--blood);color:#fff;padding:12px;font-family:var(--fm);font-size:11px;outline:none"><button class="tc-btn" onclick="aiImgGen()" style="width:auto;padding:12px 22px">FORGE</button></div>
+</div>
+<div class="tcard"><div class="tc-head"><div class="tc-ico">&#129345;</div><div><div class="tc-name">BEAT FORGE</div><div class="tc-id">TONE.JS LIVE</div></div></div><p class="tc-desc">Motor generativo de beats dark pop / R&amp;B en tu navegador.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="tc-btn" onclick="beatPlay()" style="width:auto;padding:10px 18px">&#9654; PLAY</button><button class="tc-btn" onclick="beatStop()" style="width:auto;padding:10px 18px">&#9632; STOP</button></div>
+<div id="beatInfo" style="font-family:var(--fm);font-size:9px;color:var(--blood);margin-top:10px"></div></div>
+<div class="tcard"><div class="tc-head"><div class="tc-ico">&#128302;</div><div><div class="tc-name">TAROT ORACLE</div><div class="tc-id">3 CARTAS</div></div></div><p class="tc-desc">Tirada de tres cartas interpretada por el nucleo.</p><button class="tc-btn" onclick="aiQuick('Tirame 3 cartas de tarot e interpretalas con el lore de Judas Era')">CONSULTAR</button></div>
+<div class="tcard"><div class="tc-head"><div class="tc-ico">&#127769;</div><div><div class="tc-name">DREAM DECODER</div><div class="tc-id">ONIRIC_SCAN</div></div></div><p class="tc-desc">Cuentale tu sueno y recibe su interpretacion simbolica.</p><button class="tc-btn" onclick="aiQuick('Interpreta este sueno con simbologia junguiana y el lore de Judas Era: ')">DECODIFICAR</button></div>
+<div class="tcard"><div class="tc-head"><div class="tc-ico">&#128737;</div><div><div class="tc-name">DARVO DETECTOR</div><div class="tc-id">MANIPULATION_SCAN</div></div></div><p class="tc-desc">Pega una conversacion y detecta manipulacion, DARVO y agresion pasiva.</p><button class="tc-btn" onclick="aiQuick('Analiza este texto buscando patrones DARVO, manipulacion y agresion pasiva: ')">ANALIZAR</button></div>
+<div class="tcard"><div class="tc-head"><div class="tc-ico">&#9997;</div><div><div class="tc-name">SONG WRITER</div><div class="tc-id">LYRIC_FORGE</div></div></div><p class="tc-desc">Escribe letras estilo Belentani: dark pop, R&amp;B visceral.</p><button class="tc-btn" onclick="aiQuick('Escribe una letra estilo Belentani, dark pop R&amp;B visceral, sobre: ')">COMPONER</button></div>
+</div>
+</section>

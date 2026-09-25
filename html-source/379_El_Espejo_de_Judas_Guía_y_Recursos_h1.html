@@ -1,0 +1,566 @@
+Entendido. Para cumplir con tu requisito de **cero coste y cero créditos**, no puedo generar la web *dentro* de BuildAI por ti (eso consumiría tus tokens/créditos).
+
+En su lugar, te entrego el **CÓDIGO COMPLETO (HTML + CSS + JS)** listo para usar. Esto es una "Single Page Application" (SPA) que puedes:
+1. Guardar como archivo `.html` en tu ordenador.
+2. Subir gratis a GitHub Pages, Netlify o Vercel (sin pagar nada).
+3. O pegar en un bloque de código si tienes una web básica.
+
+Este código incluye **todo**: Diseño moderno, Salida Rápida (ESC), Tests interactivos (sin base de datos, todo local), Diccionario, Recursos 016/112 y simulador de chat seguro.
+
+### 📂 ESTRUCTURA DEL ARCHIVO ÚNICO (`index.html`)
+
+Copia y pega este código en un editor de texto (Notepad, VS Code) y guárdalo como `index.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Espejo de Judas | Reconoce, Sana, Libérate</title>
+    <style>
+        :root {
+            --primary: #4A90E2; /* Azul Calma */
+            --secondary: #D4A373; /* Tierra Cálido */
+            --danger: #e53e3e; /* Rojo Alerta */
+            --bg: #F8F9FA;
+            --text: #2D3748;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding-bottom: 80px; }
+
+        /* --- BOTÓN SALIDA RÁPIDA (FIJO) --- */
+        #quick-exit {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+            background-color: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 62, 62, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        #quick-exit:hover { transform: scale(1.05); }
+        #quick-exit::before { content: "🚪"; }
+
+        /* --- HEADER & NAV --- */
+        header {
+            background: var(--white);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; }
+        .subtitle { color: #666; font-size: 0.9rem; }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        nav button {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        nav button.active, nav button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- CONTENEDORES --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { display: none; animation: fadeIn 0.5s; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CARDS & ELEMENTOS --- */
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        .card.danger { border-left-color: var(--danger); }
+        .card.safe { border-left-color: #48bb78; }
+
+        h2 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h3 { color: var(--secondary); margin: 15px 0 5px 0; }
+
+        /* --- TESTS INTERACTIVOS --- */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f0f4f8;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .quiz-option:hover { background: #e2e8f0; }
+        .result-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+        .res-green { background: #c6f6d5; color: #22543d; }
+        .res-yellow { background: #fefcbf; color: #744210; }
+        .res-red { background: #fed7d7; color: #822727; }
+
+        /* --- DICCIONARIO ACORDEÓN --- */
+        .term {
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .term-header {
+            padding: 15px;
+            background: #edf2f7;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .term-body {
+            padding: 15px;
+            display: none;
+            background: white;
+            color: #4a5568;
+        }
+        .term.open .term-body { display: block; }
+        .term.open .term-header { background: var(--primary); color: white; }
+
+        /* --- CHAT SIMULADO --- */
+        #chat-window {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg { padding: 8px 12px; border-radius: 15px; max-width: 80%; }
+        .msg.bot { background: #e2e8f0; align-self: flex-start; }
+        .msg.user { background: var(--primary); color: white; align-self: flex-end; }
+        .chat-input-area { display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; }
+        button.send-btn { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; }
+
+        /* --- FOOTER RECURSOS --- */
+        .emergency-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #2d3748;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 900;
+        }
+        .emergency-bar a { color: #63b3ed; text-decoration: none; font-weight: bold; margin: 0 10px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.4rem; }
+            nav button { font-size: 0.8rem; padding: 6px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SALIDA RÁPIDA -->
+    <button id="quick-exit" onclick="quickExit()">SALIDA RÁPIDA (ESC)</button>
+
+    <header>
+        <h1>El Espejo de Judas</h1>
+        <p class="subtitle">Reconoce. Sana. Libérate.</p>
+        <nav>
+            <button onclick="showSection('inicio')" class="active">Inicio</button>
+            <button onclick="showSection('diccionario')">Diccionario</button>
+            <button onclick="showSection('tests')">Tests</button>
+            <button onclick="showSection('sanacion')">Sanación</button>
+            <button onclick="showSection('recursos')">Recursos</button>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- SECCIÓN INICIO -->
+        <div id="inicio" class="section active">
+            <div class="card safe">
+                <h2>👋 Bienvenido/a al Espacio Seguro</h2>
+                <p>Aquí no hay juicios. Si sientes confusión, miedo o culpa, recuerda: <strong>La culpa nunca fue tuya.</strong></p>
+                <p>Esta plataforma es educativa. No guardamos tus datos. Puedes navegar anónimamente.</p>
+                <br>
+                <p><strong>¿Por dónde empezar?</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Si tienes dudas sobre una relación: Ve a <strong>Tests</strong>.</li>
+                    <li>Si no entiendes lo que te pasa: Ve al <strong>Diccionario</strong>.</li>
+                    <li>Si necesitas calma ahora: Ve a <strong>Sanación</strong>.</li>
+                </ul>
+            </div>
+            
+            <div class="card danger">
+                <h3>⚠️ ¿Estás en peligro inminente?</h3>
+                <p>Si tu vida corre riesgo ahora mismo:</p>
+                <p style="font-size: 1.2rem; font-weight: bold; text-align: center; margin: 10px 0;">
+                    Llama al 112 (Emergencias) o 016 (Violencia de Género)<br>
+                    <small>(El 016 no deja rastro en la factura)</small>
+                </p>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DICCIONARIO -->
+        <div id="diccionario" class="section">
+            <h2>📖 Glosario Sin Filtros</h2>
+            <p style="margin-bottom: 20px;">Ponle nombre a lo que vives. El abuso se esconde en la confusión.</p>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Gaslighting (Luz de Gas) <span>▼</span></div>
+                <div class="term-body">
+                    Manipulación psicológica donde el agresor te hace dudar de tu propia memoria, percepción o cordura. Frases típicas: "Eso nunca pasó", "Estás loca/o", "Exageras".
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Love Bombing (Bombardeo de Amor) <span>▼</span></div>
+                <div class="term-body">
+                    Exceso de atención, regalos y promesas al inicio de la relación para crear dependencia rápida. Una vez enganchado/a, retiran el afecto para controlarte.
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Coerción Sexual <span>▼</span></div>
+                <div class="term-body">
+                    Presión para tener relaciones sexuales sin consentimiento pleno. Incluye chantaje emocional ("Si me quisieras lo harías"), insistencia tras un "no" o uso de alcohol/drogas.
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Stalking Digital <span>▼</span></div>
+                <div class="term-body">
+                    Vigilancia constante a través de redes sociales, exigir contraseñas, revisar el móvil sin permiso o usar apps de ubicación para controlarte.
+                </div>
+            </div>
+            
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Triangulación <span>▼</span></div>
+                <div class="term-body">
+                    Meter a una tercera persona (ex, amigo, familiar) en la dinámica para generar celos, inseguridad o validar la postura del agresor.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN TESTS -->
+        <div id="tests" class="section">
+            <h2>🧭 Tests de Identificación</h2>
+            <p style="margin-bottom: 20px; font-size: 0.9rem;">Estos tests son orientativos. No sustituyen un diagnóstico profesional. Tus respuestas NO se guardan.</p>
+
+            <!-- TEST 1: RELACIÓN -->
+            <div class="card">
+                <h3>Test 1: ¿Amor Sano o Control?</h3>
+                <p>Responde sinceramente sobre tu pareja o alguien cercano.</p>
+                
+                <div id="quiz-container">
+                    <div class="question-block" id="q1">
+                        <p><strong>1. Cuando discuten, ¿cómo reacciona?</strong></p>
+                        <button class="quiz-option" onclick="nextQuestion(1, 0)">Acepta su parte y busca solución.</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, 1)">Me culpa de todo y grita.</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, 2)">Me ignora durante días (Ley del hielo).</button>
+                    </div>
+
+                    <div class="question-block" id="q2" style="display:none;">
+                        <p><strong>2. ¿Cómo se siente respecto a tus amigos/familia?</strong></p>
+                        <button class="quiz-option" onclick="nextQuestion(2, 0)">Le caen bien y me anima a verles.</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 1)">Dice que me quieren separar de él/ella.</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 2)">Me prohíbe ver a ciertas personas.</button>
+                    </div>
+
+                    <div class="question-block" id="q3" style="display:none;">
+                        <p><strong>3. ¿Revisa tu móvil o redes sociales?</strong></p>
+                        <button class="quiz-option" onclick="calculateResult(0)">No, respeta mi privacidad.</button>
+                        <button class="quiz-option" onclick="calculateResult(1)">A veces pregunta quién me escribe.</button>
+                        <button class="quiz-option" onclick="calculateResult(2)">Exige mis contraseñas o revisa sin permiso.</button>
+                    </div>
+                </div>
+
+                <div id="result-relacion" class="result-box"></div>
+                <button onclick="resetQuiz()" style="margin-top:10px; display:none;" id="reset-btn">Repetir Test</button>
+            </div>
+
+            <!-- TEST 2: CHECKLIST DIGITAL -->
+            <div class="card">
+                <h3>Test 2: Detector de Red Flags Digitales</h3>
+                <p>Marca las situaciones que hayas vivido:</p>
+                <form id="digital-checklist">
+                    <label><input type="checkbox" value="1"> Me pide ubicación en tiempo real "por seguridad".</label><br>
+                    <label><input type="checkbox" value="1"> Se enfada si no contesto en menos de 5 minutos.</label><br>
+                    <label><input type="checkbox" value="1"> Amenaza con difundir fotos/chats si le dejo.</label><br>
+                    <label><input type="checkbox" value="1"> Me critica cómo visto en las fotos que subo.</label><br>
+                    <label><input type="checkbox" value="1"> Crea perfiles falsos para vigilarme.</label><br>
+                </form>
+                <button onclick="checkDigitalFlags()" style="margin-top:10px; padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">Ver Resultado</button>
+                <div id="result-digital" class="result-box"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN SANACIÓN -->
+        <div id="sanacion" class="section">
+            <h2>🌱 Tu Rincón de Sanación</h2>
+            
+            <div class="card">
+                <h3>💬 Simulador de Límites (IA Segura)</h3>
+                <p>Practica cómo decir "NO" o poner límites. La IA responderá con empatía y validación.</p>
+                <div id="chat-window">
+                    <div class="msg bot">Hola. Soy tu asistente de práctica. ¿Qué situación te gustaría ensayar? Ej: "Quiero salir con mis amigos pero mi pareja se enfada".</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Escribe aquí..." onkeypress="handleChatEnter(event)">
+                    <button class="send-btn" onclick="sendMessage()">Enviar</button>
+                </div>
+                <p style="font-size:0.7rem; color:#999; margin-top:5px;">*Este chat es local, no se guarda en ningún servidor.</p>
+            </div>
+
+            <div class="card safe">
+                <h3>🧘 Ejercicio de Grounding (5-4-3-2-1)</h3>
+                <p>Si sientes ansiedad, usa tus sentidos para volver al presente:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>👀 Mira <strong>5</strong> cosas que puedas ver.</li>
+                    <li>✋ Toca <strong>4</strong> cosas que puedas sentir.</li>
+                    <li>👂 Escucha <strong>3</strong> sonidos.</li>
+                    <li>👃 Huele <strong>2</strong> aromas.</li>
+                    <li>👅 Siente <strong>1</strong> sabor (o di algo bueno de ti).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECCIÓN RECURSOS -->
+        <div id="recursos" class="section">
+            <h2>🎒 Kit de Emergencia</h2>
+            
+            <div class="card danger">
+                <h3>📞 Contactos Inmediatos (España)</h3>
+                <p><strong>016:</strong> Atención a víctimas de violencia de género. <br><em>No deja rastro en la factura telefónica. Borra la llamada del registro después de colgar.</em></p>
+                <hr style="margin: 10px 0;">
+                <p><strong>112:</strong> Emergencias generales (Policía, Ambulancia).</p>
+                <hr style="margin: 10px 0;">
+                <p><strong>ANAR (Menores y jóvenes):</strong> 600 50 51 52 (Chat y teléfono).</p>
+            </div>
+
+            <div class="card">
+                <h3>🛡️ Seguridad Digital Básica</h3>
+                <ul>
+                    <li>Cambia contraseñas desde un dispositivo seguro (biblioteca, amigo).</li>
+                    <li>Activa la verificación en dos pasos (2FA) en WhatsApp y Redes.</li>
+                    <li>Revisa si tienes apps de control parental o ubicación instaladas.</li>
+                    <li>Usa el modo incógnito para buscar ayuda.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BARRA EMERGENCIA FIJA -->
+    <div class="emergency-bar">
+        🆘 ¿Peligro? Llama al <a href="tel:112">112</a> | Ayuda Anónima: <a href="tel:016">016</a> | <a href="#" onclick="quickExit()">Salir Web</a>
+    </div>
+
+    <script>
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // --- SALIDA RÁPIDA ---
+        function quickExit() {
+            window.location.href = "https://www.google.com";
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                quickExit();
+            }
+        });
+
+        // --- DICCIONARIO ACORDEÓN ---
+        function toggleTerm(element) {
+            element.classList.toggle('open');
+        }
+
+        // --- TEST 1: RELACIÓN ---
+        let score = 0;
+        function nextQuestion(qNum, points) {
+            score += points;
+            document.getElementById('q' + qNum).style.display = 'none';
+            if (document.getElementById('q' + (qNum + 1))) {
+                document.getElementById('q' + (qNum + 1)).style.display = 'block';
+            } else {
+                calculateResult(score); // Finalizar si no hay más preguntas
+            }
+        }
+
+        function calculateResult(finalScore) {
+            const resultBox = document.getElementById('result-relacion');
+            const resetBtn = document.getElementById('reset-btn');
+            document.getElementById('q3').style.display = 'none'; // Ocultar última pregunta
+            
+            resultBox.style.display = 'block';
+            resetBtn.style.display = 'inline-block';
+
+            if (finalScore <= 1) {
+                resultBox.className = 'result-box res-green';
+                resultBox.innerHTML = "✅ Relación Saludable.<br>Parece haber respeto y comunicación. Sigue cuidando esos vínculos.";
+            } else if (finalScore <= 3) {
+                resultBox.className = 'result-box res-yellow';
+                resultBox.innerHTML = "⚠️ Señales de Alerta.<br>Hay comportamientos controladores o irrespetuosos. Pon límites claros y observa si cambian.";
+            } else {
+                resultBox.className = 'result-box res-red';
+                resultBox.innerHTML = "🚩 Riesgo Alto / Abuso.<br>Estas son señales claras de manipulación o control. No estás solo/a. Contacta con el 016 o habla con alguien de confianza.";
+            }
+        }
+
+        function resetQuiz() {
+            score = 0;
+            document.getElementById('result-relacion').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
+            document.getElementById('q1').style.display = 'block';
+            document.getElementById('q2').style.display = 'none';
+            document.getElementById('q3').style.display = 'none';
+        }
+
+        // --- TEST 2: DIGITAL ---
+        function checkDigitalFlags() {
+            const checkboxes = document.querySelectorAll('#digital-checklist input:checked');
+            const count = checkboxes.length;
+            const resultBox = document.getElementById('result-digital');
+            
+            resultBox.style.display = 'block';
+            
+            if (count === 0) {
+                resultBox.className = 'result-box res-green';
+                resultBox.innerHTML = "Tu entorno digital parece respetuoso.";
+            } else if (count <= 2) {
+                resultBox.className = 'result-box res-yellow';
+                resultBox.innerHTML = "Hay algunas invasiones de privacidad. Revisa tus ajustes de seguridad.";
+            } else {
+                resultBox.className = 'result-box res-red';
+                resultBox.innerHTML = "⚠️ Acoso Digital Detectado. Bloquea, guarda pruebas (capturas) y contacta ayuda especializada.";
+            }
+        }
+
+        // --- CHAT SIMULADO (Lógica Simple Local) ---
+        function handleChatEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            addMessage(txt, 'user');
+            input.value = '';
+
+            // Respuesta simulada segura (Sin IA costosa, lógica predefinida)
+            setTimeout(() => {
+                let reply = "";
+                const lowerTxt = txt.toLowerCase();
+
+                if (lowerTxt.includes("miedo") || lowerTxt.includes("pegar") || lowerTxt.includes("amenaza")) {
+                    reply = "Lo que describes es muy grave. Tu seguridad es lo primero. Por favor, contacta al 016 o 112 inmediatamente. No estás solo/a.";
+                } else if (lowerTxt.includes("culpa") || lowerTxt.includes("mi fault")) {
+                    reply = "Recuerda: La violencia nunca es culpa de la víctima. El agresor es el único responsable de sus actos.";
+                } else if (lowerTxt.includes("celos") || lowerTxt.includes("controla")) {
+                    reply = "Los celos excesivos y el control no son amor, son posesión. Tienes derecho a tu privacidad y autonomía.";
+                } else if (lowerTxt.includes("salir") || lowerTxt.includes("amigos")) {
+                    reply = "Tienes derecho a mantener tus amistades y espacios propios. Una pareja sana apoya tu independencia.";
+                } else {
+                    reply = "Te escucho. Es válido sentirse confundido/a. ¿Quieres que practiquemos alguna frase para poner un límite en esa situación?";
+                }
+                addMessage(reply, 'bot');
+            }, 1000);
+        }
+
+        function addMessage(text, sender) {
+            const win = document.getElementById('chat-window');
+            const div = document.createElement('div');
+            div.className = 'msg ' + sender;
+            div.innerText = text;
+            win.appendChild(div);
+            win.scrollTop = win.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+```
+
+### 📋 INSTRUCCIONES PARA USAR ESTO GRATIS
+
+1.  **Copia** todo el código de arriba.
+2.  Abre el **Bloc de Notas** (Windows) o **TextEdit** (Mac).
+3.  Pega el código.
+4.  Guarda el archivo como `index.html` (asegúrate de que no termine en `.txt`).
+5.  Haz doble clic en el archivo. Se abrirá en tu navegador como una web funcional.
+
+### ✅ QUÉ INCLUYE ESTA VERSIÓN (MEJORADA)
+
+1.  **Seguridad Máxima:** Botón rojo flotante siempre visible + Tecla ESC programada.
+2.  **Cero Coste:** No usa APIs de IA externas (el chat usa lógica condicional simple en JavaScript, gratis e ilimitado).
+3.  **Contenido Ampliado:**
+    *   **Diccionario:** Acordeones interactivos con definiciones claras (Gaslighting, Love Bombing, etc.).
+    *   **Tests:** Dos tests completos (Relación y Digital) con lógica de puntuación interna.
+    *   **Recursos:** Enlaces directos a 016 y 112.
+4.  **Diseño Joven:** Colores calmantes, tipografía limpia, totalmente adaptado a móviles (responsive).
+5.  **Privacidad:** Nada se envía a internet. Todo ocurre en el navegador del usuario. Si cierra la pestaña, los datos desaparecen.
+
+### 🚀 CÓMO PUBLICARLO EN INTERNET (GRATIS)
+
+Si quieres que otros accedan mediante un enlace:
+1.  Crea una cuenta gratuita en **Netlify.com**.
+2.  Arrastra el archivo `index.html` a su panel de "Drop folders here".
+3.  Te dará un enlace tipo `tu-nombre.netlify.app`. ¡Listo!
+
+Esta solución cumple con todos tus requisitos: máxima información, formato joven, interactivo, gratuito y sin consumir créditos de plataformas de pago.

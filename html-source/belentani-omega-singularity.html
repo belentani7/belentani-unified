@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // OMEGA SINGULARITY [1M]</title>
+<meta name="theme-color" content="#000000">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+  :root {
+    --void: #010002;
+    --neon: #ff073a;
+    --gold: #ffb347;
+    --dim: #5c5559;
+    --mono: 'JetBrains Mono', monospace;
+    --disp: 'Space Grotesk', sans-serif;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background-color: var(--void); 
+    color: #fff; 
+    font-family: var(--disp); 
+    overflow: hidden; 
+    cursor: none; 
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(circle at center, transparent 20%, rgba(1, 0, 2, 0.9) 100%);
+    pointer-events: none;
+  }
+
+  #ui {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2.5rem;
+  }
+
+  .hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    color: var(--neon);
+    text-shadow: 0 0 30px rgba(255,7,58,0.8);
+    animation: pulse 4s infinite alternate;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.8; filter: blur(0px); }
+    100% { opacity: 1; filter: blur(1px); text-shadow: 0 0 50px rgba(255,7,58,1); }
+  }
+
+  .stats {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    line-height: 1.8;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+  }
+  .stats b { color: var(--gold); }
+  .stats .red { color: var(--neon); }
+
+  .hud-bottom {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    text-transform: uppercase;
+  }
+
+  #cursor-core {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 100;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px #fff, 0 0 30px var(--neon);
+  }
+  
+  #cursor-field {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    border: 1px dashed rgba(255,7,58,0.3);
+    border-radius: 50%;
+    z-index: 99;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+    animation: rotateField 10s linear infinite;
+  }
+
+  @keyframes rotateField { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="overlay"></div>
+
+<div id="ui">
+  <div class="hud-top">
+    <div class="title">OMEGA</div>
+    <div class="stats">
+      SYSTEM // <b class="red">JUDAS-CORE-07</b><br>
+      ENTITIES // <b>1,000,000</b><br>
+      FREQ // <b>432 Hz</b><br>
+      GPU PHYSICS // <b class="red">VOLUMETRIC FLUID</b>
+    </div>
+  </div>
+  <div class="hud-bottom">
+    LA HERIDA SE CONVIERTE EN ARQUITECTURA VIVA
+  </div>
+</div>
+
+<div id="cursor-core"></div>
+<div id="cursor-field"></div>
+
+<script>
+/**
+ * OMEGA SINGULARITY [1M PARTICLES]
+ * Arquitetura de renderização maciça com física de fluidos na GPU.
+ */
+
+const canvas = document.getElementById('gl');
+const W = window.innerWidth;
+const H = window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
+renderer.setSize(W, H);
+// Otimização: Limita o pixel ratio para manter os 60fps com 1 milhão de pontos
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setClearColor(0x010002, 1);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x010002, 0.0005);
+
+const camera = new THREE.PerspectiveCamera(55, W / H, 1, 4000);
+camera.position.set(0, 0, 1200);
+
+// --- RAYCASTER E INTERAÇÃO ---
+const mouse = new THREE.Vector2(9999, 9999);
+const targetMouse = new THREE.Vector2(9999, 9999);
+const raycaster = new THREE.Raycaster();
+const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+const mouse3D = new THREE.Vector3(9999, 0, 9999);
+
+const curCore = document.getElementById('cursor-core');
+const curField = document.getElementById('cursor-field');
+
+window.addEventListener('mousemove', (e) => {
+  curCore.style.left = e.clientX + 'px';
+  curCore.style.top = e.clientY + 'px';
+  
+  targetMouse.x = (e.clientX / W) * 2 - 1;
+  targetMouse.y = -(e.clientY / H) * 2 + 1;
+});
+
+let ringX = W/2, ringY = H/2;
+function updateUI() {
+  const mx = (targetMouse.x * 0.5 + 0.5) * W;
+  const my = (-targetMouse.y * 0.5 + 0.5) * H;
+  ringX += (mx - ringX) * 0.08;
+  ringY += (my - ringY) * 0.08;
+  curField.style.left = ringX + 'px';
+  curField.style.top = ringY + 'px';
+  requestAnimationFrame(updateUI);
+}
+requestAnimationFrame(updateUI);
+
+// --- GEOMETRIA: 1 MILHÃO DE PARTÍCULAS ---
+const particleCount = 1000000;
+const geometry = new THREE.BufferGeometry();
+
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const randoms = new Float32Array(particleCount * 3); 
+
+const colorNeon = new THREE.Color('#ff073a');
+const colorGold = new THREE.Color('#ffb347');
+const colorVoid = new THREE.Color('#3a0008');
+
+// Distribuição volumétrica em um Torus 3D (Formato de Galáxia/Buraco Negro)
+for (let i = 0; i < particleCount; i++) {
+  // Coordenadas esféricas manipuladas
+  const u = Math.random();
+  const v = Math.random();
+  const theta = u * 2.0 * Math.PI;
+  const phi = Math.acos(2.0 * v - 1.0);
+  
+  // Raio com concentração no centro (núcleo denso)
+  const radius = Math.pow(Math.random(), 3) * 1500; 
+
+  const x = radius * Math.sin(phi) * Math.cos(theta);
+  // Esmagar o eixo Y para criar um disco galáctico volumétrico
+  const y = radius * Math.cos(phi) * 0.3 + (Math.random() - 0.5) * 100; 
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+
+  positions[i * 3] = x;
+  positions[i * 3 + 1] = y;
+  positions[i * 3 + 2] = z;
+
+  // Sementes aleatórias para o Shader criar turbulência
+  randoms[i * 3] = Math.random();
+  randoms[i * 3 + 1] = Math.random();
+  randoms[i * 3 + 2] = Math.random();
+
+  // Cores baseadas no núcleo
+  let mixedColor;
+  if (radius < 200) {
+    mixedColor = colorGold.clone().lerp(colorNeon, Math.random());
+  } else {
+    mixedColor = colorVoid.clone().lerp(colorNeon, Math.pow(Math.random(), 2));
+  }
+
+  colors[i * 3] = mixedColor.r;
+  colors[i * 3 + 1] = mixedColor.g;
+  colors[i * 3 + 2] = mixedColor.b;
+}
+
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 3));
+
+// --- GPU KERNEL: SHADER MATERIAL ---
+const material = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0.0 },
+    uMouse3D: { value: new THREE.Vector3(9999, 0, 9999) },
+    uPixelRatio: { value: renderer.getPixelRatio() }
+  },
+  vertexShader: `
+    uniform float uTime;
+    uniform vec3 uMouse3D;
+    uniform float uPixelRatio;
+    
+    attribute vec3 aColor;
+    attribute vec3 aRandom;
+    
+    varying vec3 vColor;
+    varying float vAlpha;
+
+    // Função de ruído rápido na GPU (Turbulência)
+    vec3 snoiseVec3(vec3 x) {
+      float s = uTime * 0.2;
+      vec3 p = vec3(
+        sin(x.y * 0.003 + s) * cos(x.z * 0.002 + s),
+        cos(x.x * 0.004 + s) * sin(x.z * 0.003 - s),
+        sin(x.x * 0.002 - s) * cos(x.y * 0.004 + s)
+      );
+      return p * 200.0; 
+    }
+
+    void main() {
+      vColor = aColor;
+      vec3 pos = position;
+
+      // 1. Rotação do Disco (Velocidade dependente do raio)
+      float radius = length(pos.xz);
+      float speed = 800.0 / (radius + 100.0);
+      float angle = uTime * speed;
+      
+      float c = cos(angle);
+      float s = sin(angle);
+      pos.xz = mat2(c, -s, s, c) * pos.xz;
+
+      // 2. Turbulência Volumétrica (Fluid Dynamics)
+      vec3 noise = snoiseVec3(pos + aRandom * 1000.0);
+      pos += noise * (1.0 - smoothstep(0.0, 1500.0, radius)); // Mais turbulência no núcleo
+
+      // 3. Interação do Cursor (Singularidade Secundária)
+      float distToMouse = distance(pos, uMouse3D);
+      float forceRadius = 400.0;
+      
+      if (distToMouse < forceRadius) {
+        float force = (forceRadius - distToMouse) / forceRadius;
+        force = smoothstep(0.0, 1.0, force);
+        
+        vec3 dir = normalize(pos - uMouse3D);
+        
+        // As partículas são torcidas e repelidas pelo cursor
+        pos += dir * force * 150.0;
+        
+        // Iluminação extra de impacto
+        vColor += vec3(1.0, 0.8, 0.4) * force;
+      }
+
+      // Atenuação nas bordas e no centro exato para criar o "olho"
+      vAlpha = smoothstep(1500.0, 300.0, radius) * smoothstep(0.0, 80.0, radius);
+
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      
+      // Partículas ultra finas
+      gl_PointSize = (300.0 / -mvPosition.z) * uPixelRatio * (aRandom.x * 1.5 + 0.5);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+    varying float vAlpha;
+
+    void main() {
+      // Shape de partícula circular macia
+      vec2 coord = gl_PointCoord - vec2(0.5);
+      float dist = length(coord);
+      
+      if (dist > 0.5) discard;
+      
+      // Efeito de brilho concentrado
+      float alpha = (0.5 - dist) * 2.0 * vAlpha;
+      
+      gl_FragColor = vec4(vColor, alpha * 0.8);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending 
+});
+
+const points = new THREE.Points(geometry, material);
+scene.add(points);
+
+// --- ANIMAÇÃO E CINEMÁTICA ---
+const clock = new THREE.Clock();
+
+function animate() {
+  const elapsedTime = clock.getElapsedTime();
+  
+  // Interpolação suave do mouse
+  mouse.x += (targetMouse.x - mouse.x) * 0.1;
+  mouse.y += (targetMouse.y - mouse.y) * 0.1;
+
+  // Converter Mouse 2D para 3D no plano Z=0
+  raycaster.setFromCamera(mouse, camera);
+  raycaster.ray.intersectPlane(plane, mouse3D);
+  
+  material.uniforms.uTime.value = elapsedTime;
+  material.uniforms.uMouse3D.value.copy(mouse3D);
+
+  // Movimento de câmera cinematográfico mergulhando no volume
+  camera.position.x = Math.sin(elapsedTime * 0.15) * 400;
+  camera.position.y = Math.sin(elapsedTime * 0.1) * 300 + 200;
+  // A câmera aproxima e afasta respirando
+  camera.position.z = 1000 + Math.cos(elapsedTime * 0.08) * 400; 
+  camera.lookAt(0, 0, 0);
+
+  // Leve rotação de toda a malha
+  points.rotation.y = elapsedTime * 0.02;
+  points.rotation.z = Math.sin(elapsedTime * 0.05) * 0.1;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+// Redimensionamento responsivo
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  material.uniforms.uPixelRatio.value = renderer.getPixelRatio();
+});
+
+animate();
+</script>
+
+</body>
+</html>

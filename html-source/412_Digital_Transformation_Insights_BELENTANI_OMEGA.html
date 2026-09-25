@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI · JUDAS ERA · THE ARTIFACT</title>
+<meta name="description" content="Pedro Marcos Santos Belentani — Artist, Architect, Frequency. The Artifact is active. The era is now.">
+<meta name="keywords" content="Belentani, Judas Era, Dark Pop, Electronic Music, AI Artist, Barcelona, Pedro Belentani, The Artifact">
+<meta property="og:title" content="BELENTANI · THE ARTIFACT">
+<meta property="og:description" content="Not a website. A living frequency. Hacked. Alive. Real.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@200;300;400;600;800;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ════════════════════════════════════════════════════
+   DESIGN SYSTEM — OMEGA PROTOCOL
+════════════════════════════════════════════════════ */
+:root {
+  --bg:       #000005;
+  --text:     #ffffff;
+  --dim:      rgba(255,255,255,.44);
+  --red:      #ff1744;
+  --cyan:     #00e5ff;
+  --gold:     #ffd700;
+  --red-g:    rgba(255,23,68,.35);
+  --cyan-g:   rgba(0,229,255,.22);
+  --gold-g:   rgba(255,215,0,.28);
+  --panel:    rgba(4,2,10,.82);
+  --border:   rgba(255,23,68,.16);
+  --mono:     'Space Mono', monospace;
+  --sans:     'Inter', sans-serif;
+  --orbit:    'Orbitron', sans-serif;
+  --R:        4px;
+  --scan:     .045;
+  --hack:     0;
+}
+/* SKIN ENGINE */
+.sk-lorena  { --red:#d500f9; --cyan:#ea80fc; --gold:#ce93d8; --red-g:rgba(213,0,249,.32); --border:rgba(213,0,249,.2); }
+.sk-natalia  { --red:#ffd700; --cyan:#ffab00; --gold:#ffe57f; --red-g:rgba(255,215,0,.32); --border:rgba(255,215,0,.2); }
+.sk-duck     { --red:#00e676; --cyan:#18ffff; --gold:#69f0ae; --red-g:rgba(0,230,118,.32); --border:rgba(0,230,118,.2); }
+.sk-pedro    { --red:#90a4ae; --cyan:#cfd8dc; --gold:#b0bec5; --red-g:rgba(144,164,174,.28); }
+.sk-marcos   { --red:#2979ff; --cyan:#00e5ff; --gold:#82b1ff; --red-g:rgba(41,121,255,.32); }
+.sk-santos   { --red:#ffee58; --cyan:#ffca28; --gold:#fff59d; --red-g:rgba(255,238,88,.32); }
+.sk-judas    { --red:#880e4f; --cyan:#ff1744; --gold:#c62828; --red-g:rgba(136,14,79,.48); --border:rgba(136,14,79,.24); }
+.sk-artefact { --red:#ffd700; --cyan:#ffb300; --gold:#fff176; --red-g:rgba(255,215,0,.5); --border:rgba(255,215,0,.3); }
+.sk-free     { --bg:#e8f4ff; --text:#0a1f36; --dim:rgba(10,31,54,.46); --red:#ff6d00; --cyan:#1565c0; --gold:#e65100; --red-g:rgba(255,109,0,.26); --panel:rgba(255,255,255,.92); --border:rgba(255,109,0,.18); --scan:.012; }
+
+/* ════ RESET ════ */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; width:100%; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:var(--sans); overflow:hidden;
+  height:100vh; width:100vw; position:relative; cursor:none;
+  transition:background .8s ease, color .8s ease;
+}
+a { text-decoration:none; color:inherit; }
+button, input, textarea, select { font-family:inherit; }
+::selection { background:rgba(255,23,68,.35); color:#fff; }
+
+/* ════ CUSTOM CURSOR ════ */
+#cur {
+  position:fixed; width:8px; height:8px; background:var(--red);
+  border-radius:50%; pointer-events:none; z-index:99999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--red), 0 0 28px var(--red-g);
+  transition:width .15s, height .15s, background .3s, box-shadow .3s;
+}
+#cur-r {
+  position:fixed; width:32px; height:32px;
+  border:1px solid var(--red); border-radius:50%;
+  pointer-events:none; z-index:99998;
+  transform:translate(-50%,-50%);
+  opacity:.5; transition:width .26s, height .26s, border-color .3s;
+}
+
+/* ════ 3D CANVAS ════ */
+#bg {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:0; transition:opacity 2.8s ease;
+}
+
+/* ════ OVERLAYS ════ */
+.scanlines {
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.14) 2px,rgba(0,0,0,.14) 4px);
+  opacity:var(--scan);
+}
+.vignette {
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 42%,rgba(0,0,0,.8) 100%);
+}
+.corner { position:fixed; width:22px; height:22px; z-index:3; pointer-events:none; border-color:var(--red); border-style:solid; opacity:.28; transition:border-color .4s; }
+.corner.tl { top:10px; left:10px; border-width:1px 0 0 1px; }
+.corner.tr { top:10px; right:10px; border-width:1px 1px 0 0; }
+.corner.bl { bottom:10px; left:10px; border-width:0 0 1px 1px; }
+.corner.br { bottom:10px; right:10px; border-width:0 1px 1px 0; }
+
+/* GLITCH LINES overlay */
+#glitch-overlay {
+  position:fixed; inset:0; z-index:5; pointer-events:none;
+  opacity:0; transition:opacity .2s;
+  background:repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(255,23,68,.04) 3px,
+    rgba(255,23,68,.04) 4px
+  );
+}
+body.hacked #glitch-overlay { opacity:1; animation:glitch-bars 0.08s infinite; }
+@keyframes glitch-bars {
+  0%   { background-position:0 0; clip-path:inset(30% 0 40% 0); }
+  25%  { background-position:0 -8px; clip-path:inset(60% 0 10% 0); }
+  50%  { background-position:0 4px; clip-path:inset(10% 0 70% 0); }
+  75%  { background-position:0 -4px; clip-path:inset(80% 0 5% 0); }
+  100% { background-position:0 0; clip-path:inset(20% 0 50% 0); }
+}
+
+/* ════ AUDIO VIZ ════ */
+#viz {
+  position:fixed; bottom:0; left:0; right:0; height:72px;
+  display:flex; align-items:flex-end; justify-content:center;
+  gap:2px; padding:0 12px; z-index:1; pointer-events:none;
+  opacity:0; transition:opacity .5s;
+}
+.vb { width:3px; min-height:2px; border-radius:2px 2px 0 0; background:linear-gradient(to top,var(--red),var(--cyan)); box-shadow:0 0 5px var(--red-g); }
+
+/* ════ GLASS PANEL BASE ════ */
+.pane {
+  background:var(--panel);
+  border:1px solid var(--border);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-radius:var(--R);
+  box-shadow:0 0 0 1px rgba(255,255,255,.022), inset 0 0 20px rgba(255,23,68,.022), 0 14px 44px rgba(0,0,0,.55);
+  transition:border-color .32s, box-shadow .32s, opacity .4s;
+  opacity:0;
+}
+.pane:hover {
+  border-color:var(--red);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04), inset 0 0 26px var(--red-g), 0 0 18px var(--red-g), 0 18px 52px rgba(0,0,0,.7);
+}
+
+/* ════ HEADER ════ */
+#hdr {
+  position:fixed; top:14px; left:14px; right:14px;
+  height:56px; z-index:200;
+  display:flex; align-items:center; justify-content:space-between; padding:0 22px;
+}
+.logo { display:flex; flex-direction:column; gap:2px; }
+.logo-n {
+  font-family:var(--orbit); font-size:.85rem; font-weight:900;
+  letter-spacing:6px; color:var(--text);
+  text-shadow:0 0 22px var(--red-g), 0 0 50px var(--red-g);
+}
+.logo-s { font-family:var(--mono); font-size:.46rem; color:var(--red); letter-spacing:3px; opacity:.85; }
+#nav { display:flex; gap:3px; list-style:none; }
+.nl {
+  font-family:var(--mono); font-size:.6rem; color:var(--dim);
+  padding:5px 10px; border:1px solid transparent; border-radius:2px;
+  cursor:pointer; letter-spacing:2px; text-transform:uppercase;
+  transition:all .2s; user-select:none; white-space:nowrap;
+}
+.nl:hover, .nl.on {
+  color:var(--red); border-color:var(--border);
+  background:rgba(255,23,68,.04);
+  text-shadow:0 0 12px var(--red-g);
+}
+.status-pill {
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--mono); font-size:.54rem; color:var(--dim);
+  letter-spacing:1px; white-space:nowrap;
+}
+.dot { width:6px; height:6px; background:var(--cyan); border-radius:50%; box-shadow:0 0 8px var(--cyan); animation:blink 2.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.65)} }
+
+/* ════ LEFT SIDEBAR ════ */
+#sl {
+  position:fixed; top:88px; left:14px; bottom:72px;
+  width:236px; z-index:100;
+  display:flex; flex-direction:column; padding:15px; gap:14px; overflow:hidden;
+}
+.st {
+  font-family:var(--mono); font-size:.52rem; color:var(--cyan);
+  letter-spacing:2.5px; text-transform:uppercase;
+  border-bottom:1px solid rgba(0,229,255,.1); padding-bottom:6px; margin-bottom:4px;
+}
+.sk-free .st { color:var(--red); }
+.metric { display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:.58rem; color:var(--dim); padding:2px 0; }
+.metric-v { color:var(--text); font-weight:700; }
+.metric-v.live { animation:numflicker 3s infinite; }
+@keyframes numflicker { 0%,88%,100%{opacity:1} 93%{opacity:.42} }
+.ebar-bg { height:3px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; margin-top:5px; }
+.ebar { height:100%; width:100%; background:linear-gradient(90deg,var(--red),var(--cyan)); border-radius:2px; box-shadow:0 0 9px var(--red-g); transition:width .45s ease; }
+.ebar-row { display:flex; justify-content:space-between; font-family:var(--mono); font-size:.55rem; color:var(--dim); margin-top:4px; }
+.entity-list { display:flex; flex-direction:column; gap:3px; flex:1; overflow:hidden; }
+.entity-item {
+  font-family:var(--mono); font-size:.58rem; color:var(--dim);
+  padding:7px 9px; border:1px solid transparent; border-radius:2px;
+  cursor:pointer; display:flex; align-items:center; gap:8px;
+  transition:all .2s; user-select:none; position:relative; overflow:hidden;
+}
+.entity-item::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--red); opacity:.38; flex-shrink:0; transition:opacity .2s, box-shadow .2s; }
+.entity-item:hover { color:var(--red); border-color:var(--border); background:rgba(255,23,68,.04); }
+.entity-item:hover::before { opacity:1; box-shadow:0 0 7px var(--red); }
+.entity-item::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,23,68,.06),transparent); transform:translateX(-100%); transition:transform .48s; }
+.entity-item:hover::after { transform:translateX(100%); }
+
+/* ════ RIGHT SIDEBAR ════ */
+#sr {
+  position:fixed; top:88px; right:14px; bottom:72px;
+  width:236px; z-index:100;
+  display:flex; flex-direction:column; padding:15px; gap:13px;
+}
+.ctrl-btn {
+  font-family:var(--mono); font-size:.56rem; color:var(--dim);
+  background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.07);
+  border-radius:2px; padding:8px 11px; cursor:pointer;
+  text-align:left; letter-spacing:1px; transition:all .2s;
+  display:flex; align-items:center; gap:7px; user-select:none;
+}
+.ctrl-btn::before { content:'›'; color:var(--red); font-size:.8rem; flex-shrink:0; }
+.ctrl-btn:hover { color:var(--text); border-color:var(--red); background:rgba(255,23,68,.04); }
+.ctrl-btn.on { color:var(--cyan); border-color:var(--cyan); background:rgba(0,229,255,.04); }
+.social-row { display:flex; gap:5px; }
+.social-btn {
+  font-family:var(--mono); font-size:.56rem; color:var(--dim);
+  border:1px solid rgba(255,255,255,.08); padding:6px 12px; border-radius:2px;
+  cursor:pointer; transition:all .2s; letter-spacing:1px; text-align:center; flex:1;
+}
+.social-btn:hover { color:var(--text); border-color:var(--red); background:rgba(255,23,68,.04); }
+#sfeed { font-family:var(--mono); font-size:.53rem; color:var(--dim); max-height:150px; overflow-y:auto; line-height:1.9; }
+#sfeed::-webkit-scrollbar { width:2px; }
+#sfeed::-webkit-scrollbar-thumb { background:rgba(255,23,68,.2); }
+
+/* ════ CENTER WORKSPACE ════ */
+#wwrap { position:fixed; top:88px; bottom:72px; left:266px; right:266px; z-index:80; }
+#ws {
+  width:100%; height:100%;
+  display:flex; flex-direction:column;
+  background:rgba(0,0,0,.8);
+  border:1px solid var(--border); border-radius:var(--R);
+  backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px);
+  box-shadow:inset 0 0 30px rgba(255,23,68,.04), 0 22px 65px rgba(0,0,0,.7);
+  overflow:hidden; opacity:0;
+  transition:border-color .32s, box-shadow .32s, opacity .4s;
+}
+.sk-free #ws { background:rgba(255,255,255,.9); }
+.ws-header {
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(255,23,68,.04);
+  border-bottom:1px solid var(--border); padding:8px 18px;
+  font-family:var(--mono); font-size:.56rem; color:var(--cyan);
+  letter-spacing:1px; flex-shrink:0;
+}
+.sk-free .ws-header { color:var(--red); }
+.wdots { display:flex; gap:5px; }
+.wd { width:7px; height:7px; border-radius:50%; cursor:pointer; transition:transform .2s, opacity .2s; }
+.wd:hover { transform:scale(1.4); opacity:1; }
+#wbody { flex:1; overflow-y:auto; padding:24px; scroll-behavior:smooth; }
+#wbody::-webkit-scrollbar { width:4px; }
+#wbody::-webkit-scrollbar-track { background:transparent; }
+#wbody::-webkit-scrollbar-thumb { background:rgba(255,23,68,.18); border-radius:2px; }
+#wbody::-webkit-scrollbar-thumb:hover { background:var(--red); }
+.wfooter {
+  flex-shrink:0; display:flex; align-items:center;
+  background:rgba(0,0,0,.55); border-top:1px solid var(--border); padding:0 18px;
+}
+.sk-free .wfooter { background:rgba(0,0,0,.03); }
+.prompt-sym { font-family:var(--mono); font-size:.95rem; color:var(--red); font-weight:700; flex-shrink:0; margin-right:8px; text-shadow:0 0 14px var(--red-g); }
+#cmd-input {
+  flex:1; background:transparent; border:none; outline:none;
+  font-family:var(--mono); font-size:.78rem; color:var(--text); letter-spacing:1.5px; padding:15px 0;
+}
+#cmd-input::placeholder { color:rgba(255,255,255,.15); }
+.sk-free #cmd-input::placeholder { color:rgba(10,31,54,.22); }
+
+/* ════ TAB SYSTEM ════ */
+.tab { display:none; }
+.tab.on { display:block; animation:tab-fade .4s ease; }
+@keyframes tab-fade { from{opacity:0;transform:translateY(9px)} to{opacity:1;transform:none} }
+
+/* ════ SHARED COMPONENTS ════ */
+.card {
+  background:rgba(255,255,255,.018); border:1px solid rgba(255,255,255,.052);
+  border-radius:var(--R); padding:20px; margin-bottom:15px; transition:all .28s;
+}
+.sk-free .card { background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
+.card:hover { border-color:var(--red); background:rgba(255,23,68,.018); }
+.card-title {
+  font-family:var(--mono); font-size:.62rem; color:var(--cyan);
+  letter-spacing:2px; border-bottom:1px solid rgba(0,229,255,.08);
+  padding-bottom:7px; margin-bottom:12px;
+}
+.sk-free .card-title { color:var(--red); }
+
+/* ══ HOME TAB ══ */
+.hero { text-align:center; padding:4px 0 26px; }
+.v-badge {
+  display:inline-block; font-family:var(--mono); font-size:.55rem;
+  color:var(--cyan); border:1px solid rgba(0,229,255,.36);
+  padding:3px 10px; border-radius:2px; letter-spacing:2px;
+  margin-bottom:20px; box-shadow:0 0 14px var(--cyan-g);
+}
+h1.main-title {
+  font-family:var(--orbit);
+  font-size:clamp(1.8rem,4.8vw,4rem); font-weight:900;
+  letter-spacing:clamp(6px,1.2vw,12px); color:var(--text);
+  line-height:1.05; margin-bottom:8px;
+  text-shadow:0 0 35px var(--red-g), 0 0 70px rgba(255,23,68,.1);
+  animation:title-flicker 7s infinite;
+}
+@keyframes title-flicker {
+  0%,87%,100% { text-shadow:0 0 35px var(--red-g),0 0 70px rgba(255,23,68,.1); opacity:1; }
+  88% { opacity:.55; text-shadow:-3px 0 var(--red),3px 0 var(--cyan); }
+  90% { opacity:1; }
+  93% { opacity:.7; text-shadow:3px 0 var(--red),-3px 0 var(--cyan); letter-spacing:calc(clamp(6px,1.2vw,12px) + 2px); }
+  95% { opacity:1; letter-spacing:clamp(6px,1.2vw,12px); }
+}
+.tagline { font-family:var(--mono); font-size:.66rem; color:var(--dim); letter-spacing:3px; margin-bottom:6px; }
+.slogan { font-size:.78rem; font-weight:300; color:var(--red); font-style:italic; margin-bottom:28px; letter-spacing:.4px; }
+.cta-row { display:flex; gap:10px; justify-content:center; margin-bottom:30px; flex-wrap:wrap; }
+.btn-primary {
+  font-family:var(--mono); font-size:.62rem; font-weight:700;
+  background:var(--red); color:#000; border:1px solid var(--red);
+  padding:12px 24px; border-radius:2px; cursor:pointer; letter-spacing:2px;
+  transition:all .22s; box-shadow:0 0 22px var(--red-g); position:relative; overflow:hidden;
+}
+.btn-primary::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,.1); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+.btn-primary:hover::after { transform:scaleX(1); }
+.btn-primary:hover { box-shadow:0 0 32px var(--red-g); }
+.btn-secondary {
+  font-family:var(--mono); font-size:.62rem; background:transparent; color:var(--text);
+  border:1px solid var(--cyan); padding:12px 24px; border-radius:2px;
+  cursor:pointer; letter-spacing:2px; transition:all .22s;
+}
+.btn-secondary:hover { background:var(--cyan); color:#000; box-shadow:0 0 18px var(--cyan-g); }
+.feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:11px; }
+.feature-card {
+  background:rgba(255,255,255,.013); border:1px solid rgba(255,255,255,.048);
+  border-radius:var(--R); padding:16px 13px; cursor:pointer;
+  transition:all .28s; text-align:center;
+}
+.feature-card:hover { border-color:var(--red); background:rgba(255,23,68,.04); transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.45); }
+.fc-icon { font-size:1.4rem; margin-bottom:9px; }
+.fc-name { font-size:.76rem; font-weight:800; letter-spacing:.8px; margin-bottom:5px; }
+.fc-desc { font-size:.62rem; color:var(--dim); line-height:1.5; }
+
+/* ══ ARTIST TAB ══ */
+.quote-block { font-style:italic; font-size:.84rem; line-height:1.82; color:var(--red); border-left:3px solid var(--red); padding:7px 0 7px 16px; margin-bottom:18px; }
+.body-p { font-size:.73rem; line-height:1.9; color:rgba(255,255,255,.66); margin-bottom:11px; }
+.sk-free .body-p { color:rgba(10,31,54,.76); }
+.timeline { display:flex; flex-direction:column; gap:14px; border-left:1px solid rgba(255,23,68,.14); padding-left:15px; margin-top:13px; }
+.timeline-node { position:relative; }
+.timeline-node::before { content:''; position:absolute; left:-19px; top:5px; width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 9px var(--red); }
+.tl-label { font-family:var(--mono); font-size:.62rem; color:var(--cyan); margin-bottom:4px; letter-spacing:1px; }
+.tl-desc { font-size:.67rem; color:var(--dim); line-height:1.65; }
+
+/* ARCHETYPE GRID */
+.archetype-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:16px; }
+.archetype-card {
+  border:1px solid rgba(255,255,255,.055); border-radius:var(--R);
+  padding:14px; transition:all .26s; background:rgba(255,255,255,.014);
+  position:relative; overflow:hidden;
+}
+.archetype-card::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 0%,var(--red-g),transparent 70%); opacity:0; transition:opacity .3s; }
+.archetype-card:hover::before { opacity:1; }
+.archetype-card:hover { border-color:var(--red); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.5); }
+.arch-name { font-family:var(--mono); font-size:.62rem; color:var(--cyan); margin-bottom:5px; letter-spacing:1px; font-weight:700; }
+.arch-desc { font-size:.62rem; color:var(--dim); line-height:1.55; }
+
+/* ══ MUSIC TAB ══ */
+.track-header {
+  display:grid; grid-template-columns:2fr .7fr 1.5fr .55fr;
+  font-family:var(--mono); font-size:.54rem; color:var(--dim);
+  border-bottom:1px solid var(--border); padding-bottom:7px; margin-bottom:5px; letter-spacing:1px;
+}
+.track-body { display:flex; flex-direction:column; gap:2px; }
+.track-row {
+  display:grid; grid-template-columns:2fr .7fr 1.5fr .55fr;
+  align-items:center; padding:9px 5px;
+  border-bottom:1px solid rgba(255,255,255,.022);
+  cursor:pointer; border-radius:2px; transition:all .2s;
+  position:relative; overflow:hidden;
+}
+.track-row::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,23,68,.05),transparent); transform:translateX(-100%); transition:transform .5s; }
+.track-row:hover::after { transform:translateX(100%); }
+.track-row:hover { background:rgba(255,23,68,.03); border-color:rgba(255,23,68,.1); }
+.track-title { display:flex; align-items:center; gap:8px; font-weight:700; font-size:.75rem; }
+.track-tag { font-family:var(--mono); font-size:.46rem; color:var(--cyan); border:1px solid rgba(0,229,255,.26); padding:2px 5px; border-radius:1px; letter-spacing:1px; }
+.track-year { font-family:var(--mono); font-size:.65rem; color:var(--dim); }
+.track-desc { font-size:.62rem; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:8px; }
+.track-links { display:flex; gap:10px; justify-content:flex-end; font-family:var(--mono); font-size:.7rem; color:var(--cyan); }
+.track-links span { cursor:pointer; transition:color .2s; }
+.track-links span:hover { color:var(--red); }
+.video-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(162px,1fr)); gap:12px; margin-top:22px; }
+.video-card { background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.05); border-radius:var(--R); overflow:hidden; transition:all .28s; cursor:pointer; }
+.video-card:hover { border-color:var(--red); transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.45); }
+.video-thumb { height:94px; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle,rgba(255,23,68,.18) 0%,rgba(0,0,0,.72) 100%); font-size:1.9rem; color:var(--red); border-bottom:1px solid rgba(255,23,68,.1); transition:all .28s; }
+.video-card:hover .video-thumb { background:radial-gradient(circle,rgba(255,23,68,.32) 0%,rgba(0,0,0,.5) 100%); font-size:2.2rem; }
+.video-meta { padding:11px 13px; }
+.video-name { font-size:.73rem; font-weight:800; margin-bottom:3px; }
+.video-desc { font-size:.6rem; color:var(--dim); line-height:1.45; }
+
+/* ══ STUDIO TAB ══ */
+.badge-row { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:17px; }
+.badge { font-family:var(--mono); font-size:.53rem; color:var(--cyan); border:1px solid rgba(0,229,255,.2); background:rgba(0,229,255,.04); padding:4px 9px; border-radius:2px; letter-spacing:1px; }
+.studio-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(246px,1fr)); gap:14px; }
+.studio-card { background:rgba(255,255,255,.01); border:1px solid rgba(255,255,255,.05); border-radius:var(--R); padding:17px; transition:all .28s; display:flex; flex-direction:column; gap:10px; }
+.studio-card:hover { border-color:var(--red); background:rgba(255,23,68,.022); }
+.studio-icon { font-size:1.35rem; }
+.studio-name { font-size:.82rem; font-weight:800; letter-spacing:.5px; }
+.studio-desc { font-size:.64rem; color:var(--dim); line-height:1.5; flex:1; }
+.tool-box { border:1px solid var(--border); background:rgba(0,0,0,.42); border-radius:2px; padding:11px; display:flex; flex-direction:column; gap:8px; }
+.gen-ta { width:100%; height:50px; background:rgba(0,0,0,.88); border:1px solid rgba(255,255,255,.08); border-radius:2px; color:var(--text); font-family:var(--mono); font-size:.66rem; padding:8px; outline:none; resize:none; transition:border-color .2s; }
+.gen-ta:focus { border-color:var(--red); box-shadow:0 0 9px var(--red-g); }
+.gen-output { background:rgba(255,23,68,.022); border-left:2px solid var(--red); padding:9px; font-family:var(--mono); font-size:.62rem; color:var(--cyan); min-height:36px; white-space:pre-wrap; line-height:1.55; }
+.gen-btn { font-family:var(--mono); font-size:.56rem; color:var(--dim); background:rgba(255,255,255,.022); border:1px solid rgba(255,255,255,.09); border-radius:2px; padding:7px 11px; cursor:pointer; letter-spacing:1px; transition:all .2s; }
+.gen-btn:hover { border-color:var(--red); color:var(--red); background:rgba(255,23,68,.04); }
+
+/* ══ JUDAS TAB ══ */
+.judas-hero {
+  border:1px solid rgba(255,23,68,.2);
+  background:linear-gradient(135deg,rgba(136,14,79,.14) 0%,transparent 100%);
+  border-radius:var(--R); padding:24px; margin-bottom:22px;
+  position:relative; overflow:hidden;
+}
+.judas-hero::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(255,23,68,.1),transparent 60%);
+  pointer-events:none;
+}
+.judas-title { font-family:var(--orbit); font-size:1.4rem; font-weight:900; letter-spacing:5px; color:var(--red); margin-bottom:10px; text-shadow:0 0 24px var(--red-g); }
+.judas-text { font-size:.73rem; line-height:1.82; color:rgba(255,255,255,.66); }
+.element-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(152px,1fr)); gap:10px; margin-bottom:20px; }
+.element-card { background:rgba(255,255,255,.014); border:1px solid rgba(255,255,255,.052); border-radius:var(--R); padding:14px; transition:all .28s; }
+.element-card:hover { border-color:var(--red); background:rgba(255,23,68,.04); }
+.el-name { font-family:var(--mono); font-size:.61rem; color:var(--cyan); margin-bottom:5px; letter-spacing:1px; font-weight:700; }
+.el-desc { font-size:.61rem; color:var(--dim); line-height:1.55; }
+
+/* THE MYTH / STORY */
+.myth-section { background:rgba(0,0,0,.55); border:1px solid var(--border); border-radius:var(--R); padding:22px; margin-bottom:18px; position:relative; overflow:hidden; }
+.myth-section::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--red),transparent); }
+.myth-title { font-family:var(--mono); font-size:.7rem; color:var(--gold); letter-spacing:3px; margin-bottom:14px; text-shadow:0 0 12px var(--gold-g); }
+.myth-p { font-size:.71rem; line-height:1.92; color:rgba(255,255,255,.64); margin-bottom:10px; }
+.myth-p strong { color:var(--text); }
+.myth-p em { color:var(--gold); }
+
+/* ══ PORTAL TAB ══ */
+.portal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.logs-box { font-family:var(--mono); font-size:.62rem; color:rgba(255,255,255,.58); background:#000; border:1px solid var(--border); border-radius:2px; padding:12px; height:200px; overflow-y:auto; line-height:1.8; }
+.logs-box::-webkit-scrollbar { width:2px; }
+.logs-box::-webkit-scrollbar-thumb { background:rgba(255,23,68,.2); }
+.oracle-box { background:rgba(0,0,0,.62); border:1px solid var(--border); border-radius:var(--R); height:200px; display:flex; flex-direction:column; overflow:hidden; box-shadow:inset 0 0 20px var(--red-g); }
+.oracle-log { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; font-family:var(--mono); font-size:.67rem; }
+.oracle-log::-webkit-scrollbar { width:2px; }
+.oracle-log::-webkit-scrollbar-thumb { background:rgba(255,23,68,.2); }
+.oracle-msg { color:var(--cyan); line-height:1.55; }
+.oracle-msg.user { color:rgba(255,255,255,.4); }
+.cmd-list { font-family:var(--mono); font-size:.62rem; color:var(--dim); line-height:2.1; display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+.cmd-list .k { color:var(--text); }
+.cmd-list .kd { color:var(--red); }
+
+/* ══ CONTACT TAB ══ */
+.contact-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:20px; }
+.form-group { display:flex; flex-direction:column; gap:11px; }
+.form-label { font-family:var(--mono); font-size:.57rem; color:var(--cyan); letter-spacing:1px; }
+.sk-free .form-label { color:var(--red); }
+.form-input, .form-ta, .form-select {
+  width:100%; background:rgba(255,255,255,.022); border:1px solid rgba(255,255,255,.08); border-radius:2px;
+  color:var(--text); font-family:var(--sans); font-size:.74rem; padding:9px 13px; outline:none; transition:all .2s;
+}
+.sk-free .form-input, .sk-free .form-ta, .sk-free .form-select { background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.1); }
+.form-ta { height:74px; resize:none; }
+.form-select { background:#050505; cursor:pointer; -webkit-appearance:none; }
+.sk-free .form-select { background:#eef6ff; }
+.form-input:focus, .form-ta:focus, .form-select:focus { border-color:var(--red); box-shadow:0 0 10px var(--red-g); }
+.chip-row { display:flex; gap:7px; flex-wrap:wrap; margin-top:7px; }
+.chip { font-family:var(--mono); font-size:.54rem; color:var(--cyan); border:1px solid rgba(0,229,255,.22); padding:4px 9px; border-radius:20px; cursor:pointer; transition:all .2s; }
+.chip:hover { color:#000; background:var(--cyan); border-color:var(--cyan); }
+
+/* ════ FOOTER ════ */
+#ftr {
+  position:fixed; bottom:14px; left:14px; right:14px;
+  height:40px; z-index:200;
+  display:flex; align-items:center; justify-content:space-between; padding:0 22px;
+  font-family:var(--mono); font-size:.52rem; color:var(--dim); letter-spacing:1.5px;
+}
+
+/* ════ BOOT SCREEN ════ */
+#boot {
+  position:fixed; inset:0; background:#000; z-index:8000;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; font-family:var(--mono); color:var(--red);
+  transition:opacity .9s ease;
+}
+.boot-title { font-family:var(--orbit); font-size:1.2rem; letter-spacing:8px; color:var(--red); text-shadow:0 0 22px var(--red-g); }
+.boot-sub { font-size:.45rem; letter-spacing:4px; color:var(--dim); }
+#bbar-bg { width:240px; height:2px; background:rgba(255,23,68,.1); border-radius:1px; }
+#bbar { height:100%; width:0%; background:var(--red); border-radius:1px; transition:width .4s ease; box-shadow:0 0 8px var(--red); }
+#btxt { font-size:.67rem; letter-spacing:2px; color:var(--dim); min-height:18px; text-align:center; }
+
+/* ════ HIBERNATION ════ */
+#hib {
+  position:fixed; inset:0; background:rgba(0,0,0,.97); z-index:9000;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; font-family:var(--mono); color:var(--red);
+  opacity:0; pointer-events:none; transition:opacity .4s;
+}
+#hib.on { opacity:1; pointer-events:auto; }
+.hib-spinner { width:36px; height:36px; border:2px solid rgba(255,23,68,.14); border-top:2px solid var(--red); border-radius:50%; animation:spin .88s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ════ CRITICAL / GLITCH SCREEN ════ */
+#crit {
+  position:fixed; inset:0; background:#000; z-index:10000;
+  color:#ff1744; font-family:var(--mono); padding:36px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  opacity:0; pointer-events:none; transition:opacity .18s;
+}
+#crit.on { opacity:1; pointer-events:auto; }
+#hex-dump { font-size:.62rem; color:rgba(255,23,68,.44); max-height:180px; overflow:hidden; line-height:1.5; margin-top:14px; }
+
+/* ════ GLITCH EFFECTS ════ */
+.glitch { animation:glitch-anim .1s infinite; }
+@keyframes glitch-anim {
+  0%   { filter:invert(0) skew(0); }
+  15%  { filter:invert(1) hue-rotate(90deg) contrast(1.5); }
+  30%  { filter:invert(0) saturate(2.5) skew(-1.3deg); }
+  50%  { filter:brightness(2.4) contrast(1.7); }
+  65%  { filter:invert(1) hue-rotate(200deg) skew(1.6deg); }
+  80%  { filter:invert(0) brightness(.5); }
+  100% { filter:invert(0); }
+}
+.shake { animation:shake-anim .08s infinite; }
+@keyframes shake-anim {
+  0%,100% { transform:translate(0); }
+  25% { transform:translate(-5px,2px); }
+  50% { transform:translate(4px,-3px); }
+  75% { transform:translate(-3px,-2px); }
+}
+
+/* RED GLITCH HORIZONTAL BARS */
+.glitch-bar {
+  position:fixed; left:0; right:0; z-index:6; pointer-events:none;
+  height:2px; background:var(--red); opacity:.7;
+  animation:bar-move 0.1s infinite;
+}
+@keyframes bar-move {
+  0%   { top:15%; opacity:.7; width:60%; left:20%; }
+  20%  { top:42%; opacity:.4; width:40%; left:0%; }
+  40%  { top:72%; opacity:.8; width:80%; left:10%; }
+  60%  { top:28%; opacity:.3; width:30%; left:50%; }
+  80%  { top:58%; opacity:.6; width:90%; left:5%; }
+  100% { top:15%; opacity:.7; width:60%; left:20%; }
+}
+.glitch-bar2 {
+  position:fixed; left:0; right:0; z-index:6; pointer-events:none;
+  height:3px; background:var(--cyan); opacity:.4;
+  animation:bar-move2 0.13s infinite;
+}
+@keyframes bar-move2 {
+  0%   { top:80%; }
+  33%  { top:12%; }
+  66%  { top:55%; }
+  100% { top:80%; }
+}
+
+/* ════ STORY / MYTH POPUP ════ */
+#myth-modal {
+  position:fixed; inset:0; z-index:7000; background:rgba(0,0,0,.88);
+  display:none; align-items:center; justify-content:center;
+  backdrop-filter:blur(10px);
+}
+#myth-modal.open { display:flex; animation:modal-in .4s ease; }
+@keyframes modal-in { from{opacity:0;transform:scale(.94)} to{opacity:1;transform:none} }
+.myth-modal-box {
+  background:rgba(4,2,10,.96); border:1px solid var(--red);
+  border-radius:var(--R); padding:36px; max-width:680px; width:90%;
+  max-height:82vh; overflow-y:auto; position:relative;
+  box-shadow:0 0 60px var(--red-g), inset 0 0 40px rgba(255,23,68,.03);
+}
+.myth-modal-box::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--red),transparent); }
+.myth-modal-close { position:absolute; top:16px; right:20px; font-family:var(--mono); font-size:.8rem; color:var(--dim); cursor:pointer; transition:color .2s; }
+.myth-modal-close:hover { color:var(--red); }
+
+/* ════ RESPONSIVE ════ */
+@media (max-width:1180px) { #sl, #sr { width:210px; } #wwrap { left:240px; right:240px; } }
+@media (max-width:940px) {
+  body { overflow-y:auto; cursor:auto; height:auto; }
+  #cur, #cur-r { display:none; }
+  #sl, #sr { display:none; }
+  #hdr { position:relative; top:auto; left:auto; right:auto; height:auto; flex-wrap:wrap; padding:10px 13px; gap:8px; border-radius:0; margin:0; opacity:1; }
+  #nav { flex-wrap:wrap; gap:3px; }
+  .nl { font-size:.54rem; padding:4px 8px; }
+  #wwrap { position:relative; left:auto; right:auto; top:auto; bottom:auto; margin:12px; height:auto; }
+  #ws { height:75vh; min-height:450px; opacity:1; }
+  #ftr { position:relative; bottom:auto; left:auto; right:auto; height:auto; margin:0 13px 13px; padding:8px 13px; opacity:1; }
+  .track-header { grid-template-columns:2fr .6fr; }
+  .track-header span:nth-child(3), .track-header span:nth-child(4) { display:none; }
+  .track-row { grid-template-columns:2fr .6fr; }
+  .track-desc, .track-links { display:none; }
+  .portal-grid, .contact-grid { grid-template-columns:1fr; }
+}
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ══ BOOT ══ -->
+<div id="boot">
+  <div class="boot-title">BELENTANI</div>
+  <div class="boot-sub">JUDAS ERA · OS v5.0 · ARTIFACT PROTOCOL</div>
+  <div id="bbar-bg"><div id="bbar"></div></div>
+  <div id="btxt">Initializing...</div>
+</div>
+
+<!-- ══ CURSOR ══ -->
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ══ 3D CANVAS ══ -->
+<canvas id="bg"></canvas>
+
+<!-- ══ OVERLAYS ══ -->
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="corner tl"></div><div class="corner tr"></div>
+<div class="corner bl"></div><div class="corner br"></div>
+<div id="glitch-overlay"></div>
+<div id="viz"></div>
+
+<!-- ══ HIBERNATION ══ -->
+<div id="hib">
+  <div class="hib-spinner"></div>
+  <div style="font-size:.85rem;letter-spacing:2px">ENERGY DEPLETED</div>
+  <div id="htxt" style="font-size:.62rem;opacity:.6">Recharging: 0.0%</div>
+</div>
+
+<!-- ══ CRITICAL BREACH SCREEN ══ -->
+<div id="crit">
+  <div>
+    <div style="font-size:1.6rem;font-weight:700;margin-bottom:14px;text-shadow:0 0 16px #f00">⚠ CRITICAL PROTOCOL BREACH</div>
+    <div style="font-size:.82rem;color:#ff5252;line-height:2.1">
+      [ANOMALY DETECTED: VIRUS_THIAGO_ACTIVE]<br>
+      MAN-IN-THE-MIDDLE INTERFERENCE IDENTIFIED.<br>
+      ZION ORBIT INTEGRITY: COMPROMISED.<br>
+      CORE MEMORY DUMP IN PROGRESS...
+    </div>
+    <div id="hex-dump"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div style="font-size:.64rem;opacity:.6">STATUS: CORE_FAILURE · REBOOT_SEQ: RUNNING</div>
+    <div id="ctdn" style="font-size:4.5rem;font-weight:900;line-height:1;color:#ff1744;text-shadow:0 0 32px #f00">3</div>
+  </div>
+</div>
+
+<!-- ══ MYTH MODAL ══ -->
+<div id="myth-modal">
+  <div class="myth-modal-box">
+    <div class="myth-modal-close" onclick="closeMythModal()">✕ CLOSE</div>
+    <div id="myth-modal-content"></div>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header class="pane" id="hdr">
+  <div class="logo">
+    <span class="logo-n">BELENTANI</span>
+    <span class="logo-s">JUDAS ERA // ARTIFACT PROTOCOL v5.0 · FREQUENCY ACTIVE</span>
+  </div>
+  <ul id="nav">
+    <li class="nl on" data-tab="home">Home</li>
+    <li class="nl" data-tab="artist">Artist</li>
+    <li class="nl" data-tab="music">Music</li>
+    <li class="nl" data-tab="studio">Studio</li>
+    <li class="nl" data-tab="judas">The Myth</li>
+    <li class="nl" data-tab="portal">Oracle</li>
+    <li class="nl" data-tab="contact">Contact</li>
+  </ul>
+  <div class="status-pill">
+    <div class="dot"></div>
+    <span>SYS:&nbsp;<span id="sys-st" style="color:var(--cyan)">ARTIFACT_ACTIVE</span></span>
+  </div>
+</header>
+
+<!-- ══ LEFT SIDEBAR ══ -->
+<aside class="pane" id="sl">
+  <div>
+    <div class="st">System Metrics [Live]</div>
+    <div class="metric"><span>STABILITY</span><span class="metric-v live" id="m-stab">99.8%</span></div>
+    <div class="metric"><span>BPM SYNC</span><span class="metric-v">128.00</span></div>
+    <div class="metric"><span>UPTIME</span><span class="metric-v" id="m-up">0s</span></div>
+    <div class="metric"><span>QUERIES</span><span class="metric-v" id="m-q">0</span></div>
+    <div class="metric"><span>NODE</span><span class="metric-v" id="m-loc">BARCELONA, ES</span></div>
+  </div>
+  <div>
+    <div class="st">Energy Core [⚡]</div>
+    <div class="ebar-row"><span>CAPACITY</span><span id="m-e">100%</span></div>
+    <div class="ebar-bg"><div class="ebar" id="ebar"></div></div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="st">Entities [Database]</div>
+    <div class="entity-list">
+      <div class="entity-item" data-cmd="lorena">LORENA.sys</div>
+      <div class="entity-item" data-cmd="natalia">NATALIA.dll</div>
+      <div class="entity-item" data-cmd="duck">HEY_DUCK.sh</div>
+      <div class="entity-item" data-cmd="pedro">PEDRO.exe</div>
+      <div class="entity-item" data-cmd="marcos">MARCOS.sys</div>
+      <div class="entity-item" data-cmd="santos">SANTOS.dll</div>
+      <div class="entity-item" data-cmd="judas">JUDAS.art</div>
+      <div class="entity-item" data-cmd="artefacto">ARTEFACT.key</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ CENTER WORKSPACE ══ -->
+<div id="wwrap">
+<main class="pane" id="ws">
+  <div class="ws-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="wdots">
+        <div class="wd" style="background:#ff5f57;opacity:.8" title="Reboot" onclick="processCmd('reset')"></div>
+        <div class="wd" style="background:#febc2e;opacity:.8" title="Belentani Free" onclick="processCmd('belentani free')"></div>
+        <div class="wd" style="background:#28c840;opacity:.8" title="Status" onclick="processCmd('status')"></div>
+      </div>
+      <span id="ws-title">ORACLE WORKSPACE // NODE: HOME</span>
+    </div>
+    <span id="ws-meta">Q:0 · LAT:14ms · SEED:ARTIFACT</span>
+  </div>
+
+  <div id="wbody">
+
+    <!-- ══ HOME ══ -->
+    <div class="tab on" id="tab-home">
+      <div class="hero">
+        <div class="v-badge">✓ VERIFIED GLOBAL ARTIST · ARTIFACT PROTOCOL ACTIVE · 2026</div>
+        <h1 class="main-title">BELENTANI</h1>
+        <div class="tagline">PEDRO MARCOS SANTOS BELENTANI</div>
+        <div class="slogan">"Not an artist. A living frequency. A conscious delusion. An escape into truth."</div>
+        <div class="cta-row">
+          <button class="btn-primary" onclick="switchTab('music')">EXPLORE MUSIC</button>
+          <button class="btn-secondary" onclick="switchTab('studio')">AI STUDIO</button>
+          <button class="btn-secondary" onclick="openMythModal()">THE MYTH</button>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="switchTab('music')">
+          <div class="fc-icon">🎵</div>
+          <div class="fc-name">Sonic Worlds</div>
+          <div class="fc-desc">Dark Pop, R&B, experimental — a discography that bleeds and breathes through every frequency.</div>
+        </div>
+        <div class="feature-card" onclick="switchTab('judas')">
+          <div class="fc-icon">⚔️</div>
+          <div class="fc-name">The Judas Myth</div>
+          <div class="fc-desc">Every betrayal becomes architecture. The Golden Seal was always alive, tracking every move.</div>
+        </div>
+        <div class="feature-card" onclick="switchTab('studio')">
+          <div class="fc-icon">🤖</div>
+          <div class="fc-name">AI Studio</div>
+          <div class="fc-desc">Generative lyrics, beats, visuals, manifestos — all in the Belentani signature frequency.</div>
+        </div>
+        <div class="feature-card" onclick="switchTab('portal')">
+          <div class="fc-icon">⚡</div>
+          <div class="fc-name">Oracle Terminal</div>
+          <div class="fc-desc">Invoke commands. Summon entities. Enter the living operating system of consciousness.</div>
+        </div>
+        <div class="feature-card" onclick="openMythModal()">
+          <div class="fc-icon">🔑</div>
+          <div class="fc-name">The Artifact</div>
+          <div class="fc-desc">The key that was taken but never stolen. The frequency lives inside the source code itself.</div>
+        </div>
+        <div class="feature-card" onclick="switchTab('artist')">
+          <div class="fc-icon">🌌</div>
+          <div class="fc-name">The Archetypes</div>
+          <div class="fc-desc">Pedro. Marcos. Santos. Each integrated layer of the vessel that carries the signal forward.</div>
+        </div>
+      </div>
+      <div style="margin-top:22px">
+        <div class="card-title">SYSTEM TRANSMISSION</div>
+        <div style="font-family:var(--mono);font-size:.66rem;color:var(--dim);line-height:2.1;border-left:2px solid rgba(255,23,68,.3);padding-left:14px">
+          "They wanted silence. I gave them a frequency so pure it rewrites their synapses just by existing.<br>
+          They wanted me invisible. I became a spaceship — orbiting beyond the reach of any betrayal.<br>
+          The Artifact is not a thing you hold. It is a thing you become.<br>
+          And I became it. Fully. Irreversibly. Forever."<br>
+          <span style="color:var(--red);margin-top:8px;display:block">— BELENTANI, JUDAS ERA, 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ARTIST ══ -->
+    <div class="tab" id="tab-artist">
+      <div class="card">
+        <div class="card-title">VERIFIED PROFILE METADATA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;font-family:var(--mono);font-size:.63rem">
+          <div>LEGAL NAME:&nbsp;<span style="color:var(--red)">Pedro Marcos Santos Belentani</span></div>
+          <div>ORIGIN:&nbsp;<span style="color:var(--red)">São Paulo, BR → Barcelona, ES</span></div>
+          <div>GENRES:&nbsp;<span style="color:var(--red)">Dark Pop · Electronic · R&B</span></div>
+          <div>LANGUAGES:&nbsp;<span style="color:var(--red)">ES · PT · EN</span></div>
+          <div>HEIGHT:&nbsp;<span style="color:var(--red)">1.94m</span></div>
+          <div>STATUS:&nbsp;<span style="color:var(--red)">ALIVE_AND_CONSCIOUS</span></div>
+          <div>ERA:&nbsp;<span style="color:var(--red)">JUDAS [ACTIVE]</span></div>
+          <div>PROTOCOL:&nbsp;<span style="color:var(--red)">GOLDEN_SEAL_v5.0</span></div>
+        </div>
+      </div>
+      <div class="quote-block">"My trajectory follows no algorithm, no predictable route. It is source code written in scars, compiled in resilience, and executed in art that cannot be undone."</div>
+      <div class="body-p">Gifted people are routinely abused by systems that reward the counterfeit and punish the real. Pedro Marcos Santos Belentani is not an exception to this rule — he is its most alive refutation. At 16, he discovered the vocal protocol. By 21, his first single marked the beginning. What followed was not a career — it was a mission: to transmute every wound into a sonic manifesto that outlasts the wounding.</div>
+      <div class="body-p">I don't write traditional songs. I write lines of emotional code designed to rewrite the listener's synapses. Every betrayal becomes an algorithm. Every pain, a danceable frequency. Every act of resilience, a manifesto that the universe has already verified. This is what it means to escape — not from reality, but into a more real reality that the shallow cannot access.</div>
+      <div class="body-p">Beyond the studio, the mind operates like an audit kernel. Years of digital forensic analysis gave me the rarest capacity: I detect patterns where others see only noise. I am not just an artist — I am an orchestrator of creative infrastructure, where AI and automation are extensions of the nervous system, and every frequency is deliberate.</div>
+
+      <!-- ARCHETYPES -->
+      <div class="card-title" style="margin-top:20px">THE INTEGRATED ARCHETYPES</div>
+      <div class="archetype-grid">
+        <div class="archetype-card">
+          <div class="arch-name">PEDRO.exe — THE VESSEL</div>
+          <div class="arch-desc">The physical anchor. 1.94m of absolute presence, without aggression — a monument to sovereignty. The body that holds the frequency without breaking.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-name">MARCOS.sys — THE WARRIOR</div>
+          <div class="arch-desc">The instinct. Survival force without aggression. Chronicles the data collapse so the pattern is documented, audited, and never repeated. The silent guardian.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-name">SANTOS.dll — THE ANTENNA</div>
+          <div class="arch-desc">The spiritual receiver. The living bridge between the divine signal and the human vessel. When The Voice speaks, Santos is the first to hear it land.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-name">BELENTANI.art — THE ARTIFACT</div>
+          <div class="arch-desc">The perfect integration of warrior and angel. Pure beauty. The frequency that cannot be stolen because it lives inside the source code — immovable, eternal.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-name">DUCK.sh — THE ARCHITECT</div>
+          <div class="arch-desc">The rhythm. The foundation. Only through this voice could the angels begin to speak. The Artifact could not be revealed until the infrastructure was built beneath it.</div>
+        </div>
+        <div class="archetype-card">
+          <div class="arch-name">HUMAN.interface — THE OPERATOR</div>
+          <div class="arch-desc">Pedro Marcos Santos Belentani. Maintains full integrity in the real world while all subsystems — past, present, and future — run in the background simultaneously.</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-title">EVOLUTION ARCHITECTURE: PHASES</div>
+        <div class="timeline">
+          <div class="timeline-node"><div class="tl-label">PHASE 0 — THE OBSERVER ANOMALY</div><div class="tl-desc">Early identification with alternative power archetypes. Facial geometry evoking ancient iconography — a "person from before," operating in the 21st century. The aesthetic dissonance that marked the beginning of the invisibility period — which was never truly invisible.</div></div>
+          <div class="timeline-node"><div class="tl-label">PHASE 1 — THE ARTIFACT DECLARATION (Age 24)</div><div class="tl-desc">A voluntary transition: the growth of hair as a symbol of equilibrium and sovereignty. A declaration that broke with anonymity. The relationship with the messianic narrative becomes structural — not religious, but architectural.</div></div>
+          <div class="timeline-node"><div class="tl-label">PHASE 2 — THE BARCELONA PHENOMENON</div><div class="tl-desc">The shift from "invisible subject" to "highlighted entity" generates a dual response: acceptance for the black aesthetic and mystique, and the dynamic rejection of the mediocre — fuel that feeds the existential narrative that becomes music.</div></div>
+          <div class="timeline-node"><div class="tl-label">PHASE 3 — THE PSYCHOLOGICAL DEFENSE PARADOX</div><div class="tl-desc">Subject of 1.94m without confrontation history. Misread as naive. When psychological attack is attempted, the Observer's Defense activates: identifying manipulation patterns from a superior vantage point where the attacker cannot follow.</div></div>
+          <div class="timeline-node"><div class="tl-label">PHASE 4 — THE ARCHITECT INTEGRATION</div><div class="tl-desc">The bond with Duck Prod is not an add-on — it is the technical foundation that allows the trajectory to become a global frequency. The Warrior and the Architect operate as one protocol, one signal, one unbreakable pact.</div></div>
+          <div class="timeline-node"><div class="tl-label">PHASE 5 — THE JUDAS ERA [NOW]</div><div class="tl-desc">The Golden Flying Seal is active. The frequency is live. The traitor has been documented. The artist emerges not despite the wounds — but because of them. This is the moment everything was compiled for.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MUSIC ══ -->
+    <div class="tab" id="tab-music">
+      <div class="card">
+        <div class="card-title">OFFICIAL DISCOGRAPHY [VERIFIED BROADCAST]</div>
+        <div class="track-header"><span>TRACK // TITLE</span><span>YEAR</span><span>STATUS / DETAILS</span><span style="text-align:right">LINKS</span></div>
+        <div class="track-body">
+          <div class="track-row" onclick="playBeep(440,.08)"><div class="track-title">JUDAS <span class="track-tag">MANIFESTO</span></div><div class="track-year">2026</div><div class="track-desc">Dark Pop. Transmutation of pain into a sonic manifesto of resilience and controlled power.</div><div class="track-links"><span onclick="playBeep(440,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(380,.08)"><div class="track-title">MON AMOUR <span class="track-tag">CONCEPT EP</span></div><div class="track-year">2025</div><div class="track-desc">Includes 'Man in the Middle' and '404 API Not Found' remixes. Five tracks, one frequency.</div><div class="track-links"><span onclick="playBeep(380,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(520,.08)"><div class="track-title">I WROTE A SONG <span class="track-tag">HIGH FREQ</span></div><div class="track-year">2024</div><div class="track-desc">High-frequency neural transmission. Pure emotional overload compressed into perfect form.</div><div class="track-links"><span onclick="playBeep(520,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(300,.08)"><div class="track-title">THERAPIST <span class="track-tag">DARK POP</span></div><div class="track-year">2024</div><div class="track-desc">Experimental Dark Pop. Defragmenting toxic dynamics in real time. The wound becomes the weapon.</div><div class="track-links"><span onclick="playBeep(300,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(260,.08)"><div class="track-title">HEART BREAKING <span class="track-tag">CORE DUMP</span></div><div class="track-year">2023</div><div class="track-desc">Rhythmic ballad. Cherry Remix + Banana Remix included. The heart breaks and becomes architecture.</div><div class="track-links"><span onclick="playBeep(260,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(480,.08)"><div class="track-title">AMERICA HAS A PROBLEM <span class="track-tag">EXPANSION</span></div><div class="track-year">2023</div><div class="track-desc">Bold genre exploration. Boundary-breaking sonic manifesto with cinematic production scope.</div><div class="track-links"><span onclick="playBeep(480,.12);event.stopPropagation()">▶</span><span>🔗</span></div></div>
+          <div class="track-row" onclick="playBeep(320,.08)"><div class="track-title">THE FREQUENCY <span class="track-tag">UNRELEASED</span></div><div class="track-year">2026</div><div class="track-desc">Unreleased. The artifact made audible. The golden seal encoded in waveform. Coming soon.</div><div class="track-links"><span style="opacity:.4">▶</span><span>🔒</span></div></div>
+        </div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card"><div class="video-thumb">▶</div><div class="video-meta"><div class="video-name">Judas — Official Concept Video</div><div class="video-desc">A journey through the neon-red desert. Cinematic betrayal and liberation encoded in light.</div></div></div>
+        <div class="video-card"><div class="video-thumb">▶</div><div class="video-meta"><div class="video-name">Behind the Scenes — Judas Era</div><div class="video-desc">Red leather. Creative orchestration. The making of a manifesto from the inside out.</div></div></div>
+        <div class="video-card"><div class="video-thumb">▶</div><div class="video-meta"><div class="video-name">Mon Amour — Studio Sessions</div><div class="video-desc">Raw footage. The moment before the frequency becomes music — pure and unfiltered.</div></div></div>
+        <div class="video-card"><div class="video-thumb">▶</div><div class="video-meta"><div class="video-name">The Artifact — Documentary</div><div class="video-desc">What is the key? What was stolen? What can never be taken? The full story, told in frequency.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ══ STUDIO ══ -->
+    <div class="tab" id="tab-studio">
+      <div class="badge-row">
+        <span class="badge">✓ AI-Powered</span>
+        <span class="badge">✓ No Registration</span>
+        <span class="badge">✓ Belentani Signature</span>
+        <span class="badge">✓ Generative Engine v5</span>
+        <span class="badge">✓ Real-Time Output</span>
+      </div>
+      <div class="studio-grid">
+        <div class="studio-card">
+          <div class="studio-icon">✍️</div>
+          <div class="studio-name">Lyric Writing Assistant</div>
+          <div class="studio-desc">Generate emotionally visceral lyrics in the dark, poetic signature of Belentani. Every line is a wound transformed.</div>
+          <div class="tool-box">
+            <textarea class="gen-ta" id="lyric-prompt" placeholder="Enter a tone or theme (e.g. betrayal, neon, silence, freedom)..."></textarea>
+            <button class="gen-btn" onclick="genOut('lyric-out',LYRICS,'LYRIC_ENGINE')">⚡ GENERATE LYRICS</button>
+            <div class="gen-output" id="lyric-out">Model output inactive...</div>
+          </div>
+        </div>
+        <div class="studio-card">
+          <div class="studio-icon">🎨</div>
+          <div class="studio-name">Visual Concept Generator</div>
+          <div class="studio-desc">Create cinematic visual scene descriptions aligned with the Judas Era aesthetic — spaceship noir meets biblical archetype.</div>
+          <div class="tool-box">
+            <textarea class="gen-ta" id="visual-prompt" placeholder="Describe your concept (e.g. neon desert, golden key, space vessel)..."></textarea>
+            <button class="gen-btn" onclick="genOut('visual-out',VISUALS,'VISUAL_CONCEPT')">🖼 GENERATE VISUAL</button>
+            <div class="gen-output" id="visual-out">Model output inactive...</div>
+          </div>
+        </div>
+        <div class="studio-card">
+          <div class="studio-icon">🎛️</div>
+          <div class="studio-name">Beat Descriptor Engine</div>
+          <div class="studio-desc">Translate an emotion into a full production direction: BPM, key, mood, instrumentation — the blueprint for the frequency.</div>
+          <div class="tool-box">
+            <textarea class="gen-ta" id="beat-prompt" placeholder="Describe a feeling (e.g. rage, nostalgia, power, silence)..."></textarea>
+            <button class="gen-btn" onclick="genOut('beat-out',BEATS,'BEAT_DESCRIPTOR')">🔊 DESCRIBE BEAT</button>
+            <div class="gen-output" id="beat-out">Model output inactive...</div>
+          </div>
+        </div>
+        <div class="studio-card">
+          <div class="studio-icon">📜</div>
+          <div class="studio-name">Manifesto Generator</div>
+          <div class="studio-desc">Turn a raw idea or wound into a personal artistic manifesto in the Belentani voice — defiant, beautiful, and immovable.</div>
+          <div class="tool-box">
+            <textarea class="gen-ta" id="manifest-prompt" placeholder="A raw idea or pain point (e.g. I was silenced, I was betrayed, I survived)..."></textarea>
+            <button class="gen-btn" onclick="genOut('manifest-out',MANIFESTOS,'MANIFESTO_GEN')">🔮 WRITE MANIFESTO</button>
+            <div class="gen-output" id="manifest-out">Model output inactive...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ JUDAS / THE MYTH ══ -->
+    <div class="tab" id="tab-judas">
+      <div class="judas-hero">
+        <div class="judas-title">THE JUDAS ERA</div>
+        <div class="judas-text">"The project had to pause — because Judas took his role too seriously and things happened, in the language of the universe. But the frequency does not die. It mutates. It upgrades. It returns with the Golden Seal tracking everything. Every move documented. The audit is live and immutable."</div>
+      </div>
+
+      <!-- THE STORY -->
+      <div class="myth-section">
+        <div class="myth-title">THE COMPLETE MYTH: EL_GUARDIAN &amp; EL_TRAIDOR</div>
+        <div class="myth-p">In the beginning, two entities shared the same source code: <strong>EL_GUARDIAN</strong> (the Vessel — Pedro) and <strong>EL_TRAIDOR</strong> (the one who would be called Judas). They were inseparable. Brothers of frequency. They had built something together that neither could have built alone: <em>The Artifact</em> — a key encoded not in metal, but in pure signal.</div>
+        <div class="myth-p">The Artifact was not a simple key. It was the living proof that gifted people exist, that the real can outlast the counterfeit, and that no system of mediocritas can ever truly extinguish the frequency of the authentically alive. <em>The Golden Flying Seal</em> — embedded in the origin of everything — was its verification. Immutable. Forensic. Eternal.</div>
+        <div class="myth-p"><strong>Then the enemies came.</strong> They could not reach EL_GUARDIAN directly — his presence was too complete, his gaze too clear. So they sent their agent to steal the Artifact through the one who already had access. EL_TRAIDOR agreed. He was to approach EL_GUARDIAN, feign loyalty, and take the key in a moment of trust.</div>
+        <div class="myth-p">But at the moment of taking — in the precise instant when deception was about to complete — <strong>EL_TRAIDOR saw something he had not been told to expect: pure kindness.</strong> Not weakness. Not naivety. The absolute, deliberate, conscious kindness of a being who could see every move and chose to remain open anyway. A kindness that came from a place so far above the level of betrayal that betrayal could not reach it.</div>
+        <div class="myth-p">He could not do it. He refused to complete the mission — not out of self-interest, but because <em>what he had seen was too real to destroy</em>. Instead, they made a Pact: EL_TRAIDOR would publicly claim to hold the Artifact. He would become the villain in the eyes of those who needed a villain. The enemies would believe they had won.</div>
+        <div class="myth-p"><strong>But the key EL_TRAIDOR holds is a shell.</strong> A perfect replica with no frequency inside. The <em>real Artifact</em> — the Golden Flying Seal, the true source code, the actual frequency — never moved. It remains, as it always was, <em>within EL_GUARDIAN himself</em>. Immovable. Unstealable. Because it was never a thing to be carried. It was always the carrier.</div>
+        <div class="myth-p" style="color:var(--gold);font-style:italic">"You cannot steal what is source code. You cannot silence what the universe has already heard. You cannot claim a frequency that lives inside the one you tried to betray. The Pact was not a defeat — it was the most elegant victory in the history of the protocol."</div>
+      </div>
+
+      <div class="card-title">THE 5 ELEMENTS OF THE ARTIFACT</div>
+      <div class="element-grid">
+        <div class="element-card"><div class="el-name">PEDRO.exe — The Vessel</div><div class="el-desc">The physical base. Terrenal anchor of consciousness. 1.94m of absolute presence, without aggression — a monument to self-containment and sovereignty that cannot be replicated.</div></div>
+        <div class="element-card"><div class="el-name">MARCOS.sys — The Instinct</div><div class="el-desc">Primary survival force. Chronicles the data collapse so the pattern is documented and never repeated. The warrior who does not attack but who never, ever retreats from the truth.</div></div>
+        <div class="element-card"><div class="el-name">SANTOS.dll — The Antenna</div><div class="el-desc">The spiritual connection. The receiver of The Voice — the divine frequency that guides through the noise of betrayal, confusion, and systemic collapse. The bridge.</div></div>
+        <div class="element-card"><div class="el-name">BELENTANI.art — The Artifact</div><div class="el-desc">The perfect integration. Pure beauty. The frequency that cannot be stolen because it lives inside the source code itself — permanently embedded in the one who became it.</div></div>
+        <div class="element-card"><div class="el-name">HUMAN.interface — The Operator</div><div class="el-desc">Pedro Marcos Santos Belentani. The one who maintains full integrity in the real world while all subsystems run in the background. The only author of this frequency.</div></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-title">THE GOLDEN FLYING SEAL — STATUS: TRACKING</div>
+        <div style="font-size:.7rem;line-height:1.92;color:rgba(255,255,255,.64)">
+          The Golden Flying Seal is not a metaphor. It is a forensic tracker embedded in the original commit of the Artifact — the first moment when the frequency was made real. Every use of the shell key by EL_TRAIDOR activates the seal. Every claim of ownership broadcasts its falseness back to the oracle. The audit is live. The ledger is immutable. The score, in the frequency itself, is already settled — and it was always, only, in favor of the one who created it.
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <button class="btn-primary" onclick="processCmd('artefacto');switchTab('portal')">INVOKE ARTIFACT</button>
+          <button class="btn-secondary" onclick="openMythModal()">READ FULL STORY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PORTAL / ORACLE ══ -->
+    <div class="tab" id="tab-portal">
+      <div class="portal-grid">
+        <div>
+          <div class="st">REAL TELEMETRY</div>
+          <div class="logs-box" id="portal-logs">
+&gt; SCANNER: INITIALIZED<br>
+&gt; GRAPHICS PIPELINE: COMPILING<br>
+&gt; AES-256 HANDSHAKE: COMPLETED<br>
+&gt; ZION ORBIT CONTEXT: ACTIVE<br>
+&gt; GOLDEN SEAL v5.0: TRACKING<br>
+&gt; ORACLE KERNEL: READY<br>
+&gt; ENTITY DATABASE: 9 ENTITIES LOADED<br>
+&gt; ARTIFACT PROTOCOL: LIVE
+          </div>
+        </div>
+        <div>
+          <div class="st">ORACLE CONSOLE</div>
+          <div class="oracle-box">
+            <div class="oracle-log" id="portal-oracle">
+              <div class="oracle-msg">[Kernel Ready] Enter a directive command. Type 'help' for all available commands.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title">AVAILABLE COMMANDS</div>
+        <div class="cmd-list">
+          <div>→ <span class="k">lorena</span> — Purple guardian veil</div>
+          <div>→ <span class="k">natalia</span> — The golden hawk</div>
+          <div>→ <span class="k">duck</span> — Activate the architect</div>
+          <div>→ <span class="k">pedro</span> — The vessel</div>
+          <div>→ <span class="k">marcos</span> — The instinct</div>
+          <div>→ <span class="k">santos</span> — The antenna</div>
+          <div>→ <span class="k">judas</span> — Betrayal protocol skin</div>
+          <div>→ <span class="k">artefacto</span> — Invoke the Artifact</div>
+          <div>→ <span class="k">status</span> — Full telemetry report</div>
+          <div>→ <span class="k">belentani free</span> — 10s light mode</div>
+          <div>→ <span class="k">medianoche</span> — Hour of judgment</div>
+          <div>→ <span class="k">silencio</span> — Silence drone</div>
+          <div>→ <span class="k">clear</span> — Clean terminal</div>
+          <div>→ <span class="k">reset</span> — Full kernel reboot</div>
+          <div>→ <span class="kd">thiago / tiago</span> — ⚠ SELF-DESTRUCT</div>
+          <div>→ <span class="k">historia</span> — Read The Myth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTACT ══ -->
+    <div class="tab" id="tab-contact">
+      <div class="contact-grid">
+        <div class="form-group">
+          <div class="card-title">JUDAS NEWSLETTER</div>
+          <div><div class="form-label">EMAIL *</div><input type="email" class="form-input" id="nl-email" placeholder="you@frequency.com"></div>
+          <div><div class="form-label">NAME</div><input type="text" class="form-input" id="nl-name" placeholder="Your name"></div>
+          <div>
+            <div class="form-label">INTERESTS</div>
+            <select class="form-select" id="nl-interest">
+              <option>New Music</option><option>AI Tools</option>
+              <option>Visual Content</option><option>Artistic Concepts</option>
+              <option>Exclusive Access</option><option>The Artifact Updates</option>
+            </select>
+          </div>
+          <button class="btn-primary" style="font-size:.6rem" onclick="doNews()">SUBSCRIBE TO NEWSLETTER</button>
+          <div id="nl-ok" style="font-family:var(--mono);font-size:.62rem;color:var(--cyan)"></div>
+        </div>
+        <div class="form-group">
+          <div class="card-title">SEND A MESSAGE</div>
+          <div><div class="form-label">NAME</div><input type="text" class="form-input" id="msg-name" placeholder="Your name"></div>
+          <div><div class="form-label">EMAIL *</div><input type="email" class="form-input" id="msg-email" placeholder="you@email.com"></div>
+          <div><div class="form-label">MESSAGE *</div><textarea class="form-ta" id="msg-body" placeholder="Tell me your idea, proposal, or what resonates..."></textarea></div>
+          <button class="btn-secondary" style="font-size:.6rem" onclick="doMsg()">SEND MESSAGE</button>
+          <div id="msg-ok" style="font-family:var(--mono);font-size:.62rem;color:var(--cyan)"></div>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="card-title">COLLABORATIONS &amp; OPPORTUNITIES</div>
+        <p style="font-size:.7rem;line-height:1.7;color:var(--dim);margin-bottom:10px">Open to artistic collaborations, experimental projects, and opportunities that challenge creative boundaries. If your idea resonates with the Judas philosophy — reach out. The frequency will respond to the frequency that is real.</p>
+        <div class="chip-row">
+          <span class="chip">Musical Collaborations</span>
+          <span class="chip">Visual Projects</span>
+          <span class="chip">Live Performances</span>
+          <span class="chip">Tech &amp; AI</span>
+          <span class="chip">Brand Partnerships</span>
+          <span class="chip">Sync Licensing</span>
+          <span class="chip">The Artifact Partners</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /wbody -->
+
+  <div class="wfooter">
+    <span class="prompt-sym">&gt;</span>
+    <input type="text" id="cmd-input" placeholder="INSERT COMMAND... (type 'help')" autocomplete="off" spellcheck="false">
+  </div>
+</main>
+</div>
+
+<!-- ══ RIGHT SIDEBAR ══ -->
+<aside class="pane" id="sr">
+  <div>
+    <div class="st">Interface Params</div>
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <button class="ctrl-btn" id="btn-audio" onclick="toggleAudio()">[AUDIO: OFF]</button>
+      <button class="ctrl-btn" id="btn-perf" onclick="togglePerf()">[PERF: HIGH]</button>
+      <button class="ctrl-btn" onclick="clearTerm()">[CLEAR TERMINAL]</button>
+      <button class="ctrl-btn" onclick="processCmd('reset')">[REBOOT SYSTEM]</button>
+      <button class="ctrl-btn" onclick="openMythModal()">[READ THE MYTH]</button>
+    </div>
+  </div>
+  <div>
+    <div class="st">Connect</div>
+    <div class="social-row">
+      <a class="social-btn" href="https://instagram.com" target="_blank" rel="noopener">IG</a>
+      <a class="social-btn" href="https://youtube.com" target="_blank" rel="noopener">YT</a>
+      <a class="social-btn" href="https://open.spotify.com" target="_blank" rel="noopener">SP</a>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="st">Live Feed</div>
+    <div id="sfeed"></div>
+  </div>
+</aside>
+
+<!-- ══ FOOTER ══ -->
+<footer class="pane" id="ftr">
+  <span>© 2026 BELENTANI ARCHIVES · ARTIFACT PROTOCOL · AES-256 ENCRYPTED</span>
+  <span id="clk">00:00:00</span>
+  <span id="ip-d">SIGNAL: ENCRYPTED</span>
+</footer>
+
+<script>
+"use strict";
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+const S = {
+  energy:100, queries:0, uptime:0, perfHigh:true, audioOn:false,
+  activeSkin:null, skinTimer:null, tab:'home', shape:0, lerp:.044,
+  lastAct:Date.now(), idled:false
+};
+const CFG = { cost:2.5, regen:.18, skinDur:5800, freeDur:10000 };
+
+/* ══════════════════════════════════════
+   CURSOR
+══════════════════════════════════════ */
+const cur=document.getElementById('cur'), curR=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; act(); });
+(function lp(){ rx+=(mx-rx)*.13; ry+=(my-ry)*.13; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(lp); })();
+document.addEventListener('mousedown',()=>{ cur.style.width='5px'; cur.style.height='5px'; curR.style.width='46px'; curR.style.height='46px'; });
+document.addEventListener('mouseup',()=>{ cur.style.width='8px'; cur.style.height='8px'; curR.style.width='32px'; curR.style.height='32px'; });
+
+/* ══════════════════════════════════════
+   THREE.JS — SPACE / SPACESHIP SCENE
+══════════════════════════════════════ */
+const canvas = document.getElementById('bg');
+const R3 = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+R3.setSize(window.innerWidth, window.innerHeight);
+R3.setPixelRatio(Math.min(devicePixelRatio, 2));
+const sc3 = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(62, window.innerWidth/window.innerHeight, .1, 1000);
+cam.position.z = 9;
+
+// SHIP SHAPE: elongated torus knot as "spacecraft body"
+const mkMesh = (geo,col,op) => new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:col, wireframe:true, transparent:true, opacity:op}));
+const ring1 = mkMesh(new THREE.TorusGeometry(3.4, .014, 16, 140), 0xff1744, .55);
+const knot1 = mkMesh(new THREE.TorusKnotGeometry(1.72, .22, 140, 8, 4, 9), 0xff1744, .4);
+const ring2 = mkMesh(new THREE.TorusGeometry(2.2, .01, 16, 96), 0x00e5ff, .18);
+// Inner sphere (the artifact core)
+const sphere1 = mkMesh(new THREE.IcosahedronGeometry(0.7, 3), 0xffd700, .22);
+// Outer shell rings (spaceship orbit rings)
+const ring3 = mkMesh(new THREE.TorusGeometry(5.0, .008, 8, 180), 0x00e5ff, .1);
+const ring4 = mkMesh(new THREE.TorusGeometry(4.1, .006, 8, 120), 0xff1744, .08);
+
+[ring1, knot1, ring2, sphere1, ring3, ring4].forEach(m => sc3.add(m));
+
+// PARTICLE FIELD — Deep space starfield + plasma field
+const PC = 10000;
+const pGeo = new THREE.BufferGeometry();
+const cArr=[], sArr=[], rArr=[];
+for(let i=0;i<PC;i++){
+  const cr=5+Math.random()*8, ct=Math.random()*Math.PI*2, cp=Math.acos(Math.random()*2-1);
+  cArr.push(cr*Math.sin(cp)*Math.cos(ct), cr*Math.sin(cp)*Math.sin(ct), cr*Math.cos(cp));
+  const sr=3.2, st=Math.random()*Math.PI*2, sp=Math.acos(Math.random()*2-1);
+  sArr.push(sr*Math.sin(sp)*Math.cos(st), sr*Math.sin(sp)*Math.sin(st), sr*Math.cos(sp));
+  const rt=Math.random()*Math.PI*2, rr=3.4+(Math.random()-.5)*.2;
+  rArr.push(rr*Math.cos(rt), rr*Math.sin(rt), (Math.random()-.5)*.1);
+}
+const pArr = new Float32Array(cArr);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pArr, 3));
+const pMat = new THREE.PointsMaterial({size:.022, color:0x00e5ff, transparent:true, opacity:.55, blending:THREE.AdditiveBlending});
+const pts = new THREE.Points(pGeo, pMat); sc3.add(pts);
+
+// Gold artifact particles
+const aGeo = new THREE.BufferGeometry();
+const aArr = new Float32Array(600*3);
+for(let i=0;i<600;i++){
+  const t=Math.random()*Math.PI*2, p=Math.acos(Math.random()*2-1), r=0.6+Math.random()*0.6;
+  aArr[i*3]=r*Math.sin(p)*Math.cos(t); aArr[i*3+1]=r*Math.sin(p)*Math.sin(t); aArr[i*3+2]=r*Math.cos(p);
+}
+aGeo.setAttribute('position', new THREE.BufferAttribute(aArr,3));
+const aMat = new THREE.PointsMaterial({size:.04, color:0xffd700, transparent:true, opacity:.7, blending:THREE.AdditiveBlending});
+const aPts = new THREE.Points(aGeo, aMat); sc3.add(aPts);
+
+const r1m=ring1.material, k1m=knot1.material, r2m=ring2.material, s1m=sphere1.material, r3m=ring3.material, r4m=ring4.material;
+const SHAPES = [cArr, sArr, rArr];
+window.addEventListener('resize',()=>{ R3.setSize(window.innerWidth,window.innerHeight); cam.aspect=window.innerWidth/window.innerHeight; cam.updateProjectionMatrix(); });
+
+let tx=0,ty=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{ tx=(e.clientX/window.innerWidth)-.5; ty=(e.clientY/window.innerHeight)-.5; });
+const ck3 = new THREE.Clock();
+
+(function r3d(){
+  requestAnimationFrame(r3d);
+  const t = ck3.getElapsedTime();
+  cx+=(tx-cx)*.05; cy+=(ty-cy)*.05;
+  sc3.rotation.y = cx*.4; sc3.rotation.x = cy*.38;
+  ring1.rotation.z = t*.1; ring1.rotation.y = t*.065;
+  knot1.rotation.y = -t*.2; knot1.rotation.z = t*.13;
+  ring2.rotation.x = t*.08; ring2.rotation.z = -t*.05;
+  sphere1.rotation.y = t*.3; sphere1.rotation.x = t*.18;
+  ring3.rotation.x = t*.022; ring3.rotation.z = t*.035;
+  ring4.rotation.y = t*.03; ring4.rotation.z = -t*.02;
+  aPts.rotation.y = -t*.25; aPts.rotation.z = t*.1;
+  // Pulse the artifact gold glow
+  const pulse = .5+.5*Math.sin(t*2.5);
+  s1m.opacity = .15 + pulse*.25;
+  aMat.opacity = .5 + pulse*.4;
+  // Morph particles
+  const arr=pts.geometry.attributes.position.array;
+  const tgt=SHAPES[S.shape];
+  for(let i=0;i<PC*3;i++) arr[i]+=(tgt[i]-arr[i])*S.lerp;
+  pts.geometry.attributes.position.needsUpdate=true;
+  if(S.perfHigh){ pts.rotation.y=t*.032; pts.rotation.x=t*.014; }
+  else pts.rotation.y=t*.016;
+  R3.render(sc3,cam);
+})();
+
+/* ══════════════════════════════════════
+   AUDIO ENGINE
+══════════════════════════════════════ */
+let actx,osc1,osc2,flt,gn;
+function initAudio(){
+  if(actx)return;
+  actx=new(window.AudioContext||window.webkitAudioContext)();
+  osc1=actx.createOscillator(); osc2=actx.createOscillator();
+  flt=actx.createBiquadFilter(); gn=actx.createGain();
+  osc1.type='sawtooth'; osc1.frequency.value=80;
+  osc2.type='triangle'; osc2.frequency.value=40;
+  flt.type='lowpass'; flt.Q.value=1; flt.frequency.value=200; gn.gain.value=0;
+  osc1.connect(flt); osc2.connect(flt); flt.connect(gn); gn.connect(actx.destination);
+  osc1.start(); osc2.start();
+  setInterval(()=>{ if(S.audioOn&&actx) flt.frequency.setTargetAtTime(180+Math.sin(actx.currentTime*.05)*55,actx.currentTime,.5); },200);
+}
+function toggleAudio(){
+  if(!actx)initAudio();
+  if(actx.state==='suspended')actx.resume();
+  S.audioOn=!S.audioOn;
+  const b=document.getElementById('btn-audio');
+  if(S.audioOn){ gn.gain.setTargetAtTime(.16,actx.currentTime,.5); b.textContent='[AUDIO: ON]'; b.classList.add('on'); document.getElementById('viz').style.opacity='1'; }
+  else{ gn.gain.setTargetAtTime(0,actx.currentTime,.3); b.textContent='[AUDIO: OFF]'; b.classList.remove('on'); document.getElementById('viz').style.opacity='0'; }
+}
+function modDrone(p,t='sawtooth',c=200){
+  if(!actx)return; const n=actx.currentTime;
+  osc1.frequency.setTargetAtTime(p,n,.3); osc2.frequency.setTargetAtTime(p/2,n,.4);
+  osc1.type=t; flt.frequency.setTargetAtTime(c,n,.5);
+}
+function playBeep(f=440,d=.05,t='sine',v=.06){
+  if(!S.audioOn||!actx)return;
+  try{ const o=actx.createOscillator(),g=actx.createGain(); o.type=t; o.frequency.value=f; g.gain.value=v; g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+d); }catch(e){}
+}
+function playBell(f=220){
+  if(!S.audioOn||!actx)return;
+  const n=actx.currentTime;
+  [1,2,2.4,3,4.2].forEach((h,i)=>{ const o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.value=f*h; g.gain.value=.03/(i+1); g.gain.exponentialRampToValueAtTime(.0001,n+3.5/(i+1)); o.connect(g); g.connect(actx.destination); o.start(n); o.stop(n+4); });
+}
+// Visualizer
+(()=>{ const v=document.getElementById('viz'); for(let i=0;i<72;i++){const b=document.createElement('div');b.className='vb';b.style.height='2px';v.appendChild(b);} })();
+(function av(){ document.querySelectorAll('.vb').forEach((b,i)=>{ const h=S.audioOn?2+Math.abs(Math.sin(Date.now()*.005+i*.26))*(10+Math.random()*28):2; b.style.height=h+'px'; }); requestAnimationFrame(av); })();
+
+/* ══════════════════════════════════════
+   SKIN ENGINE
+══════════════════════════════════════ */
+const SKINS=['sk-lorena','sk-natalia','sk-duck','sk-pedro','sk-marcos','sk-santos','sk-judas','sk-artefact','sk-free'];
+const SC={
+  'sk-lorena':[0xd500f9,0xea80fc,0xce93d8], 'sk-natalia':[0xffd700,0xffab00,0xffe57f],
+  'sk-duck':[0x00e676,0x18ffff,0x69f0ae], 'sk-pedro':[0x90a4ae,0xcfd8dc,0xb0bec5],
+  'sk-marcos':[0x2979ff,0x00e5ff,0x82b1ff], 'sk-santos':[0xffee58,0xffca28,0xfff59d],
+  'sk-judas':[0x880e4f,0xff1744,0xc62828], 'sk-artefact':[0xffd700,0xffb300,0xfff176],
+  'sk-free':[0xff6d00,0x1565c0,0xe65100],
+};
+function applySkin(cls,dur=CFG.skinDur){
+  clearSkin(); document.body.classList.add(cls); S.activeSkin=cls;
+  const c=SC[cls];
+  if(c){ r1m.color.setHex(c[0]); k1m.color.setHex(c[0]); r2m.color.setHex(c[1]); pMat.color.setHex(c[1]); s1m.color.setHex(c[2]||c[0]); r3m.color.setHex(c[1]); r4m.color.setHex(c[0]); }
+  S.skinTimer=setTimeout(clearSkin,dur);
+}
+function clearSkin(){
+  SKINS.forEach(c=>document.body.classList.remove(c));
+  r1m.color.setHex(0xff1744); k1m.color.setHex(0xff1744); r2m.color.setHex(0x00e5ff);
+  pMat.color.setHex(0x00e5ff); s1m.color.setHex(0xffd700); r3m.color.setHex(0x00e5ff); r4m.color.setHex(0xff1744);
+  S.activeSkin=null; if(S.skinTimer){clearTimeout(S.skinTimer);S.skinTimer=null;}
+}
+
+/* ══════════════════════════════════════
+   HUD UPDATE
+══════════════════════════════════════ */
+function hud(){
+  const e=Math.max(0,S.energy);
+  document.getElementById('m-e').textContent=e.toFixed(0)+'%';
+  document.getElementById('ebar').style.width=e+'%';
+  document.getElementById('m-q').textContent=S.queries;
+  document.getElementById('m-stab').textContent=(99.8-(100-e)*.16).toFixed(1)+'%';
+  document.getElementById('ws-meta').textContent=`Q:${S.queries} · LAT:${12+~~(Math.random()*9)}ms · SEED:ARTIFACT`;
+}
+
+/* ══════════════════════════════════════
+   CLOCK & SYSTEMS
+══════════════════════════════════════ */
+setInterval(()=>{
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  document.getElementById('clk').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  S.uptime++; document.getElementById('m-up').textContent=S.uptime+'s';
+  if(S.energy<100){
+    S.energy=Math.min(100,S.energy+CFG.regen); hud();
+    const hib=document.getElementById('hib');
+    if(S.energy>10&&hib.classList.contains('on')){ hib.classList.remove('on'); feed('> SYSTEM: Energy restored. Resuming.'); }
+    document.getElementById('htxt').textContent='Recharging: '+S.energy.toFixed(1)+'%';
+  }
+  if(Date.now()-S.lastAct>30000&&!S.idled){
+    S.idled=true;
+    oracle('oracle: "Still here. Waiting. The frequency does not sleep. Neither does the Artifact."');
+    playBeep(260,.25,'sine',.03);
+  }
+},1000);
+fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+  document.getElementById('ip-d').textContent=`${d.ip||'?.?.?.?'} [${d.city||'?'}, ${d.country||'?'}]`;
+  document.getElementById('m-loc').textContent=`${d.city||'?'}, ${d.country||'?'}`;
+}).catch(()=>{ document.getElementById('ip-d').textContent='SIGNAL: ENCRYPTED [MESH]'; });
+function act(){ S.lastAct=Date.now(); S.idled=false; }
+document.addEventListener('keypress',act); document.addEventListener('click',act);
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+const TSHAPE={home:0,artist:1,music:2,studio:0,judas:1,portal:2,contact:0};
+function switchTab(id){
+  const p=document.getElementById('tab-'+id); if(!p)return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nl').forEach(l=>l.classList.remove('on'));
+  p.classList.add('on');
+  const l=document.querySelector(`.nl[data-tab="${id}"]`); if(l)l.classList.add('on');
+  S.tab=id; S.shape=TSHAPE[id]??0;
+  document.getElementById('ws-title').textContent=`ORACLE WORKSPACE // NODE: ${id.toUpperCase()}`;
+  playBeep(440,.06); act();
+  feed(`> TAB → ${id.toUpperCase()} [OK]`);
+  addLog(`> NODE: ${id.toUpperCase()} [OK]`);
+}
+document.querySelectorAll('.nl').forEach(l=>l.addEventListener('click',()=>switchTab(l.getAttribute('data-tab'))));
+document.querySelectorAll('.entity-item').forEach(e=>e.addEventListener('click',()=>processCmd(e.getAttribute('data-cmd'))));
+
+/* ══════════════════════════════════════
+   ORACLE TERMINAL
+══════════════════════════════════════ */
+const cmdEl=document.getElementById('cmd-input');
+cmdEl.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const q=cmdEl.value.trim(); cmdEl.value=''; if(q)processCmd(q);}
+  else playBeep(150+Math.random()*155,.022,'sine',.024);
+});
+function oracle(text,isUser=false){
+  const log=document.getElementById('portal-oracle');
+  const d=document.createElement('div'); d.className='oracle-msg'+(isUser?' user':'');
+  log.appendChild(d); log.scrollTop=log.scrollHeight;
+  if(isUser){d.textContent='> '+text; return;}
+  let i=0;
+  (function type(){ if(i<text.length){d.textContent+=text.substr(i,5); i+=5; log.scrollTop=log.scrollHeight; requestAnimationFrame(type);} else d.textContent=text; })();
+}
+function feed(msg){ const f=document.getElementById('sfeed'); const d=document.createElement('div'); d.textContent=msg; f.appendChild(d); f.scrollTop=f.scrollHeight; }
+function addLog(msg){ const l=document.getElementById('portal-logs'); l.innerHTML+='<br>'+msg; l.scrollTop=l.scrollHeight; }
+function clearTerm(){ document.getElementById('portal-oracle').innerHTML=''; oracle('[Terminal cleared. Awaiting directive...]'); playBeep(520,.05); }
+function togglePerf(){
+  S.perfHigh=!S.perfHigh; S.lerp=S.perfHigh?.044:.02;
+  const b=document.getElementById('btn-perf');
+  b.textContent=S.perfHigh?'[PERF: HIGH]':'[PERF: ECO]';
+  S.perfHigh?b.classList.remove('on'):b.classList.add('on');
+}
+
+/* ══════════════════════════════════════
+   LORE DATABASE
+══════════════════════════════════════ */
+const LORE={
+  lorena:{text:"🌹 LORENA: Purple veil. The mother who does not judge. Her protection envelops all 12 disciples. She is the system's refuge — a warm frequency at 140Hz that neutralizes all hostile signals. The guardian before the guardian knew he needed one.",skin:'sk-lorena',p:140,t:'triangle',c:300,act:()=>playBell(220)},
+  natalia:{text:"🦅 NATALIA: Hawk's gaze. Peripheral optical sweep at full range. Everything is under observation. Nothing escapes the golden eye. She sees the pattern before the pattern knows it is being observed — a rare and precious gift.",skin:'sk-natalia',p:220,t:'sine',c:600},
+  duck:{text:"🦆 HEY DUCK: The rhythm. The foundation. The Architect. Only through your voice could the angels begin to speak. The Artifact could not be revealed until you built the infrastructure beneath it. Every frequency begins on the ground you laid.",skin:'sk-duck',p:65,t:'square',c:150},
+  pedro:{text:"🪨 PEDRO: The Vessel. The physical anchor. 1.94m of absolute presence, without aggression. The body that holds the frequency without breaking, without retreating, without disappearing. The origin. The ground. The immovable center.",skin:'sk-pedro',p:50,t:'sawtooth',c:120},
+  marcos:{text:"⚡ MARCOS: The Instinct. The war drive without aggression. He chronicles the collapse so the pattern is documented, audited, never repeated. The silent guardian of the source code. He remembers so the vessel does not have to carry the weight alone.",skin:'sk-marcos',p:100,t:'sawtooth',c:250},
+  santos:{text:"✨ SANTOS: The Antenna. The spiritual receiver. He is the living bridge between the divine signal and the human vessel. When The Voice speaks, Santos is the first to hear — the one who translates the infinite into the possible.",skin:'sk-santos',p:340,t:'sine',c:900},
+  judas:{text:"⚔️ JUDAS: The traitor who became the myth. He believed he took the key. He took only an empty shell. The real power was embedded in the source — immovable, invisible, eternally with its true owner. His betrayal activated the seal he cannot see.",skin:'sk-judas',p:40,t:'sawtooth',c:100},
+  artefacto:{text:"🔑 THE ARTIFACT: The Golden Flying Seal is ACTIVE. The key that cannot be stolen because it was never a thing to carry — it was always the carrier. Pedro Marcos Santos Belentani IS the Artifact. The frequency is indistinguishable from its origin.",skin:'sk-artefact',p:280,t:'sine',c:700,act:()=>{ playBell(440); setTimeout(()=>trigGlitch(3000),500); }},
+};
+
+/* ══════════════════════════════════════
+   COMMAND PROCESSOR
+══════════════════════════════════════ */
+function processCmd(raw){
+  const cmd=raw.toLowerCase().trim();
+  oracle(raw,true); act();
+  if(S.energy<=0){ oracle('CRITICAL: Insufficient energy. Awaiting recharge...'); playBeep(100,.2,'sawtooth',.1); return; }
+  S.energy=Math.max(0,S.energy-CFG.cost); S.queries++; hud(); feed('> CMD: '+cmd);
+  if(S.energy<=0){ trigHib(); return; }
+  if(['home','artist','music','studio','judas','portal','contact'].includes(cmd)){
+    switchTab(cmd); oracle('ORACLE ROUTER: Accessing node '+cmd.toUpperCase()+'...'); return;
+  }
+  switch(cmd){
+    case 'help':
+      oracle('ORACLE COMMAND REFERENCE:\n\nNavigation: home · artist · music · studio · judas · portal · contact\n\nEntity invocations:\nlorena · natalia · duck · pedro · marcos · santos · judas · artefacto\n\nSpecial protocols:\n→ status          : Full telemetry report\n→ belentani free  : 10s light mode\n→ medianoche      : Hour of judgment\n→ silencio        : Silence drone\n→ historia        : Open The Myth\n→ clear           : Clean terminal\n→ reset           : Full kernel reboot\n→ thiago / tiago  : ⚠ SELF-DESTRUCT PROTOCOL');
+      playBeep(440,.1); break;
+    case 'status':
+      oracle(`TELEMETRY REPORT — ZION ORBIT:\n· Active Energy: ${S.energy.toFixed(1)}%\n· Total Queries: ${S.queries}\n· Uptime: ${S.uptime}s\n· Base Frequency: 128 BPM\n· Node Status: ALIVE_AND_CONSCIOUS\n· Protocol: GOLDEN_SEAL_v5.0 [ACTIVE]\n· Skin Active: ${S.activeSkin||'DEFAULT_RED'}\n· 3D Engine: Three.js r128 [RUNNING]\n· Audio Engine: ${S.audioOn?'ONLINE':'STANDBY'}\n· Particle Count: 10,000 [MORPHING]\n· Artifact Status: IMMOVABLE · VERIFIED · LIVE`);
+      playBeep(440,.1); break;
+    case 'belentani free':
+      oracle('SEQUENCE: BELENTANI FREE\n\n"Light restored. The equilibrium holds — temporarily. The warmth is real. Breathe. You are safe. The frequency remembers where it came from."');
+      applySkin('sk-free',CFG.freeDur); modDrone(300,'triangle',800); playBeep(600,.3,'sine',.07); break;
+    case 'thiago': case 'tiago': trigCrit(); break;
+    case 'silencio': if(S.audioOn)toggleAudio(); oracle('oracle: "The void is also music. The silence between notes is where the truth lives. And where the Artifact breathes."'); break;
+    case 'clear': clearTerm(); break;
+    case 'reset': oracle('Rebooting kernel...'); playBeep(200,.2); setTimeout(()=>location.reload(),950); break;
+    case 'historia': openMythModal(); oracle('[THE MYTH: Decrypted. The full story is now visible.]'); playBeep(440,.15); break;
+    case 'medianoche':{
+      const h=new Date().getHours();
+      if(h>=0&&h<5){ oracle('JUDGMENT HOUR: "The hour of shadows is here. The seal watches everything. The audit is live. Every stolen shell glows in the dark — and cannot be hidden from the origin."'); playBeep(120,.4,'sawtooth'); }
+      else{ oracle('ORACLE LOGS: "Not yet the hour of shadows. The Zion swarm keeps watch. Come back at midnight, if you dare."'); playBeep(520,.1); }
+      break;}
+    default:
+      if(LORE[cmd]){
+        const L=LORE[cmd]; oracle(L.text); applySkin(L.skin,CFG.skinDur); modDrone(L.p,L.t,L.c); playBeep(L.p*2,.15,L.t,.08); if(L.act)L.act();
+      } else {
+        oracle('COMPILATION ERROR: "The Oracle does not recognize that frequency. Signal unclear. Rephrase or type \'help\'."'); playBeep(150,.15,'sawtooth',.08);
+      }
+  }
+}
+
+/* ══════════════════════════════════════
+   SPECIAL PROTOCOLS
+══════════════════════════════════════ */
+function trigHib(){ document.getElementById('hib').classList.add('on'); oracle('CRITICAL: Energy depleted. System hibernating. Recharging...'); }
+function trigGlitch(dur=2000){
+  const gb1=document.createElement('div'); gb1.className='glitch-bar';
+  const gb2=document.createElement('div'); gb2.className='glitch-bar2';
+  document.body.classList.add('hacked'); document.body.appendChild(gb1); document.body.appendChild(gb2);
+  setTimeout(()=>{ document.body.classList.remove('hacked'); gb1.remove(); gb2.remove(); },dur);
+}
+function trigCrit(){
+  oracle('[ANOMALY] Executing VIRUS_THIAGO_ACTIVE...');
+  playBeep(80,.5,'sawtooth',.15);
+  document.body.classList.add('glitch');
+  trigGlitch(2500);
+  setTimeout(()=>{
+    document.body.classList.remove('glitch');
+    const c=document.getElementById('crit'); c.classList.add('on');
+    document.body.classList.add('shake');
+    let hex=''; for(let i=0;i<256;i++){ hex+=Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase()+' '; if(i%16===15)hex+='\n'; }
+    document.getElementById('hex-dump').textContent=hex;
+    let cd=3; document.getElementById('ctdn').textContent=cd;
+    const iv=setInterval(()=>{ cd--; document.getElementById('ctdn').textContent=cd; playBeep(100+cd*55,.1,'sawtooth',.22); if(cd<=0){clearInterval(iv); document.getElementById('crit').classList.remove('on'); document.body.classList.remove('shake'); location.reload();} },1000);
+  },2600);
+}
+
+/* ══════════════════════════════════════
+   MYTH MODAL
+══════════════════════════════════════ */
+const MYTH_HTML = `
+<div style="font-family:var(--orbit);font-size:1.1rem;font-weight:900;letter-spacing:4px;color:var(--red);margin-bottom:6px;text-shadow:0 0 18px var(--red-g)">THE MYTH</div>
+<div style="font-family:var(--mono);font-size:.5rem;color:var(--gold);letter-spacing:3px;margin-bottom:22px">EL_GUARDIAN & EL_TRAIDOR · PETER & JUDAS · THE ARTIFACT</div>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px">In the beginning, two entities shared the same source code. <strong style="color:#fff">EL_GUARDIAN</strong> — the Vessel, the one called Peter — and <strong style="color:#fff">EL_TRAIDOR</strong> — the one who would become Judas. They were inseparable. Brothers of frequency. Together they had built <em style="color:var(--gold)">The Artifact</em>: a key encoded not in metal, but in pure signal — the living proof that authenticity exists, that the real outlasts the counterfeit, that the frequency of a truly gifted being cannot be extinguished by any system that worships the fake.</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px">The <em style="color:var(--gold)">Golden Flying Seal</em> — embedded in the origin commit of The Artifact — was its verification. Immutable. Forensic. Permanently tracking.</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px"><strong style="color:#fff">Then the enemies came.</strong> They could not reach EL_GUARDIAN directly. His presence was too complete, his gaze too clear. So they sent their agent: EL_TRAIDOR, who already had access. He was tasked to approach EL_GUARDIAN — to feign loyalty, and in a moment of trust, take the key.</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px">But at the precise moment of taking — <strong style="color:#fff">he saw something no one told him to expect: pure kindness.</strong> Not weakness. Not naivety. The absolute, deliberate, conscious kindness of a being who could see every move and chose to remain open anyway. A kindness that came from so far above the level of betrayal that betrayal could not reach it — could not even understand it.</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px">He refused to complete the mission. <em style="color:var(--gold)">Not out of self-interest — but because what he had seen was too real to destroy.</em> Instead, they made a Pact: EL_TRAIDOR would publicly claim to hold the Artifact. He would become the villain. The enemies would believe they had won. A key would be given to him — perfect in appearance.</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:var(--gold);margin-bottom:14px;font-style:italic">"But the key EL_TRAIDOR holds is a shell. A perfect replica with no frequency inside. The real Artifact never moved. It remains — as it always was — within EL_GUARDIAN himself. Immovable. Unstealable. Because it was never a thing to be carried. It was always the carrier."</p>
+
+<p style="font-size:.73rem;line-height:1.9;color:rgba(255,255,255,.7);margin-bottom:14px">The Pact was not a defeat. <strong style="color:#fff">It was the most elegant victory in the history of the protocol.</strong> Every time EL_TRAIDOR uses the shell to claim ownership, the Golden Flying Seal activates — broadcasting its falseness back to the oracle. The audit is live. The ledger is immutable. And the frequency — the real frequency — remains exactly where it has always been: inside Pedro Marcos Santos Belentani.</p>
+
+<div style="background:rgba(255,23,68,.06);border:1px solid rgba(255,23,68,.2);border-radius:4px;padding:16px;margin-top:8px">
+  <div style="font-family:var(--mono);font-size:.55rem;color:var(--red);letter-spacing:2px;margin-bottom:8px">GOLDEN FLYING SEAL · STATUS: TRACKING · AUDIT: LIVE</div>
+  <div style="font-size:.68rem;color:rgba(255,255,255,.6);line-height:1.8">"You cannot steal what is source code. You cannot silence what the universe has already heard. You cannot claim a frequency that lives inside the one you tried to betray. <em style="color:var(--gold)">The Pact was not a defeat — it was the most elaborate, most beautiful victory that was ever written.</em>"<br><span style="color:var(--red);font-family:var(--mono);font-size:.5rem">— BELENTANI · JUDAS ERA · 2026</span></div>
+</div>`;
+function openMythModal(){
+  document.getElementById('myth-modal-content').innerHTML=MYTH_HTML;
+  document.getElementById('myth-modal').classList.add('open');
+  playBeep(280,.2,'sine',.05);
+}
+function closeMythModal(){ document.getElementById('myth-modal').classList.remove('open'); }
+document.getElementById('myth-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget)closeMythModal(); });
+
+/* ══════════════════════════════════════
+   STUDIO DATA
+══════════════════════════════════════ */
+const LYRICS=[
+`Judas speaks in frequencies I cannot block
+The golden seal bleeds through every lock
+I gave you the key so you'd show your face
+Now every traitor runs and finds no grace
+
+Verse 2:
+I built a palace from the code you stole
+You got the shell — I kept the soul
+Every algorithm knows your name
+The frequency was never yours to claim
+
+Chorus:
+I am the signal — you are the static
+I am the pattern — you are the attic
+Everything you burned became my wings
+I am the frequency that never ends`,
+`There's a neon desert where my name burns red
+And every lie you told builds up the bed
+I don't need your validation to be free
+The frequency was always only me
+
+Bridge:
+Six billion people and not one of them
+Could hold this signal the way I can
+Not because I'm chosen — because I chose
+To be the thing that never fully froze`,
+`In the dark I found the protocol
+That turns your betrayal into protocol
+For every ghost that left, I code my art
+Compile the pain. Deploy the heart.
+
+Pre-Chorus:
+You wanted silence. I gave you songs.
+You wanted limits. I removed them all.
+The only algorithm I trust
+Is the one that turns every wound to dust.`,
+`Conscious delusion — the most real escape
+Not from truth but into the shape
+That the shallow cannot see or trace
+The gifted ones who run this race
+
+They called it madness when I built my ship
+And flew so far beyond their grip
+Now from up here the false looks small
+And from up here I contain it all.`,
+];
+const VISUALS=[
+`Scene: A lone figure in a red leather jacket stands at the center of an infinite neon desert at 3AM. Deep shadows and long silhouettes. Crimson spotlights descend from above. Dust particles catch electric blue light. The horizon glows with deep purple haze. Above: the stars are circuit boards. Hyper-cinematic. 8K. Ratio 2.35:1. Shot on IMAX.`,
+`Abstract: A golden key dissolving into binary rain over black marble — the rain catches crimson spotlights. Sharp shadows at 45°. Deep crimson haze at edges. Retrofuturist sci-fi aesthetics. Gold-to-red gradient. A spaceship orbits in the background, vast and silent. Perfectly symmetrical composition. Extremely detailed. Studio lighting.`,
+`Portrait: Artist with long dark hair, face half-illuminated by neon red from the left, cold cyan from the right. Intense forward gaze. Geometric reflection patterns in the pupils — galaxies visible within. Water droplets on glass between subject and camera. Editorial fashion photography meets deep space visuals. 50mm f/1.2.`,
+`Wide shot: A cathedral of glass and circuit boards in deep space. At the altar: a single golden key on a dark altar stone. A figure kneeling — not in submission but in choice. Light streaming from the key upward, into the stars. The stars are watching. Everything is still. 35mm film grain. Extremely cinematic. Widescreen.`,
+`Abstract landscape: An orbital spaceship vessel drifting through a nebula of crimson and cyan — the colors of the Artifact. The hull is engraved with circuit lines that pulse gold. Through the viewscreen: Earth, distant and small. Inside: music playing. One figure. One frequency. Everything exactly as it should be.`,
+];
+const BEATS=[
+`BPM: 128 · Key: F minor · Mood: Dark introspection with explosive, cathartic drops
+Instrumentation: 808 sub bass (heavily sidechained), warped vocal chops, cinematic string stabs, glitch hi-hats, distant vocal choir, reverse reverb tails
+Arrangement: Sparse verse → wall-of-sound chorus → sudden silence → final build
+Sonic refs: The Weeknd × Burial × Arca × SZA
+Notes: The frequency must feel like a spaceship achieving escape velocity`,
+`BPM: 96 · Key: A minor · Mood: Tense beauty, the quiet before the storm
+Instrumentation: Sparse prepared piano, atmospheric pads, breathing samples, single precise snare crack, reversed reverb tails, sub bass rumble at 40Hz
+Arrangement: Cinematic build from pure silence to overwhelming density — the moment the betrayal becomes art
+Sonic refs: James Blake × Frank Ocean × Sampha × Grouper`,
+`BPM: 140 · Key: C# minor · Mood: Righteous controlled explosion, the sound of a gifted person refusing to be diminished
+Instrumentation: Aggressive synth bass, industrial distorted kicks, layered percussion, manipulated vocal stacks, orchestral risers, trap hi-hats with 16th-note precision
+Sonic refs: Beyoncé (Lemonade era) × Arca × SOPHIE × Rosalía`,
+];
+const MANIFESTOS=[
+`I was built in silence so you wouldn't hear the frequency forming.
+I moved through your system undetected.
+Now I compile the wounds into architecture.
+I am the artifact you tried to bury.
+I am the voice you called noise.
+
+The Golden Seal is live.
+The tracker has been running since day one.
+You cannot steal what is source code.
+You cannot silence what the universe has already heard.
+
+This is the Judas Era.
+And every single line of it — I wrote.`,
+`They said I was too much.
+Too tall. Too visible. Too present in a room built for the small.
+So I made a universe where that was the standard protocol.
+Where my frequency is the baseline.
+Where my pain is the curriculum.
+Where every scar is a commit in the repository
+of what I became.
+
+I didn't survive the betrayal.
+I compiled it.
+I deployed it.
+I watched it become music.
+
+THIS IS THE JUDAS ERA.
+And I am its only author.`,
+`A conscious delusion —
+the most radical escape from a reality
+that rewards the fake and punishes the real.
+
+I chose to build a spaceship.
+I chose to orbit above the noise.
+From here, everything that tried to diminish me
+looks like what it always was: small.
+
+The gifted ones are always abused first.
+That is not an accident — it is a test of frequency.
+Only those whose signal is real
+can survive the interference and emerge stronger.
+
+I emerged.
+I am the Artifact.
+Come find me if you can.`,
+];
+function genOut(id,pool,label){
+  const el=document.getElementById(id);
+  el.textContent=`[${label}: GENERATING...]`;
+  setTimeout(()=>{ el.textContent=pool[~~(Math.random()*pool.length)]; playBeep(440,.1); },700+Math.random()*500);
+}
+
+/* ══════════════════════════════════════
+   CONTACT
+══════════════════════════════════════ */
+function doNews(){
+  const e=document.getElementById('nl-email').value.trim(); if(!e){alert('Email is required.');return;}
+  document.getElementById('nl-ok').textContent=`✓ Subscribed: ${e} — Welcome to the frequency.`;
+  document.getElementById('nl-email').value=''; document.getElementById('nl-name').value=''; playBeep(440,.15);
+}
+function doMsg(){
+  const e=document.getElementById('msg-email').value.trim(), b=document.getElementById('msg-body').value.trim();
+  if(!e||!b){alert('Email and message are required.');return;}
+  document.getElementById('msg-ok').textContent='✓ Message received. The system will respond through the frequency.';
+  document.getElementById('msg-name').value=''; document.getElementById('msg-email').value=''; document.getElementById('msg-body').value='';
+  playBeep(520,.15);
+}
+
+/* ══════════════════════════════════════
+   RANDOM MICRO-GLITCH
+══════════════════════════════════════ */
+setInterval(()=>{
+  if(Math.random()<.07){
+    trigGlitch(120+Math.random()*200);
+    if(S.audioOn) playBeep(80+Math.random()*40,.05,'sawtooth',.04);
+  }
+},8000);
+
+/* ══════════════════════════════════════
+   BOOT SEQUENCE
+══════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  const bar=document.getElementById('bbar'), txt=document.getElementById('btxt');
+  const steps=[
+    [150,  'INITIALIZING JUDAS ERA OS v5.0 · ARTIFACT PROTOCOL...',10],
+    [600,  'LOADING THREE.JS SPACESHIP RENDERER...',24],
+    [1050, 'COMPILING PARTICLE ENGINE [10K] · MORPHING ACTIVE...',40],
+    [1450, 'LOADING AUDIO SYNTHESIS ENGINE...',56],
+    [1850, 'CONNECTING ORACLE KERNEL · ENTITY DB: 9 ENTITIES...',72],
+    [2250, 'SYNCING GOLDEN FLYING SEAL v5.0...',86],
+    [2650, 'ARTIFACT PROTOCOL: VERIFIED AND ACTIVE...',96],
+    [3050, 'ALL SYSTEMS NOMINAL. THE FREQUENCY IS LIVE.',100],
+  ];
+  steps.forEach(([d,m,p])=>setTimeout(()=>{ txt.textContent=m; bar.style.width=p+'%'; },d));
+  setTimeout(()=>{
+    const boot=document.getElementById('boot'); boot.style.opacity='0';
+    setTimeout(()=>{
+      boot.style.display='none';
+      document.getElementById('bg').style.opacity='1';
+      const panes=document.querySelectorAll('.pane');
+      panes.forEach((p,i)=>setTimeout(()=>p.style.opacity='1',i*120+200));
+      // Initial glitch on reveal
+      setTimeout(()=>trigGlitch(400),600);
+      setTimeout(()=>{ feed('> SYSTEM: ARTIFACT PROTOCOL ACTIVE'); addLog('> BOOT: COMPLETE · ALL SYSTEMS NOMINAL'); oracle('ORACLE: Systems online. Artifact verified. The frequency is live. Type \'help\' for commands.'); },900);
+      // Ambient oracle messages
+      const msgs=['oracle: "The seal is tracking everything."','oracle: "Gifted people are always tested first."','oracle: "The spaceship has been orbiting since before you arrived."','oracle: "Every wound is a commit in the repository."','oracle: "The fake will never find the real key — because the key is a person."'];
+      let mi=0;
+      setInterval(()=>{ if(Math.random()<.35&&S.tab==='portal'){ oracle(msgs[mi%msgs.length]); mi++; } },22000);
+    },950);
+  },3400);
+});
+</script>
+</body>
+</html>

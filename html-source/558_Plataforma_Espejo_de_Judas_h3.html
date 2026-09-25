@@ -1,0 +1,625 @@
+```html
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="O Espelho de Judas: plataforma completa de reconhecimento, validação e recuperação frente a manipulação psicológica para jovens LGBTQ+ 14-25. Privacidade absoluta. Baseada em consenso científico global. WCAG 2.2 AA.">
+<meta name="theme-color" content="#080d1a">
+<title>O Espelho de Judas | Reflexo Guiado</title>
+<style>
+  :root {
+    --bg: oklch(14% 0.02 260);
+    --surface: oklch(22% 0.04 260 / 0.75);
+    --surface-2: oklch(28% 0.05 260 / 0.55);
+    --text: oklch(96% 0.01 260);
+    --text-muted: oklch(68% 0.02 260);
+    --primary: oklch(60% 0.23 255);
+    --accent: oklch(76% 0.17 32);
+    --gold: oklch(75% 0.14 88);
+    --danger: oklch(56% 0.25 30);
+    --safe: oklch(74% 0.19 148);
+    --glass: oklch(18% 0.03 260 / 0.85);
+    --glass-border: oklch(32% 0.04 260 / 0.45);
+    --radius: 14px;
+    --shadow: 0 12px 32px oklch(0% 0 0 / 0.45);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    --focus-ring: 0 0 0 3px oklch(60% 0.23 255 / 0.6);
+  }
+  @media (prefers-reduced-motion: reduce) { :root { --transition: 0ms !important; } }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: linear-gradient(145deg, oklch(15% 0.11 242), oklch(23% 0.13 32), oklch(13% 0.08 285));
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.65;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  .skip-link { position: absolute; top: -48px; left: 10px; background: var(--primary); color: #fff; padding: 10px 18px; z-index: 1100; border-radius: 0 0 var(--radius) var(--radius); font-weight: 600; text-decoration: none; }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; }
+  nav {
+    position: sticky; top: 0; z-index: 950;
+    background: var(--glass); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 14px 20px;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .nav-links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-link {
+    color: var(--text-muted); text-decoration: none; padding: 9px 13px; border-radius: 9px;
+    transition: var(--transition); font-weight: 500; font-size: 0.92rem;
+  }
+  .nav-link:hover, .nav-link:focus-visible { background: var(--surface); color: var(--text); }
+  .nav-link:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .nav-link[aria-current="page"] { color: var(--gold); background: oklch(26% 0.06 260 / 0.6); font-weight: 600; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  select, button {
+    background: var(--surface); color: var(--text); border: 1px solid var(--glass-border);
+    padding: 9px 14px; border-radius: 9px; cursor: pointer; font-size: 0.9rem;
+    transition: var(--transition);
+  }
+  button:hover, select:hover { background: var(--surface-2); }
+  button:focus-visible, select:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  main { max-width: 1140px; margin: 0 auto; padding: 28px 22px 70px; }
+  section { display: none; animation: slideIn 0.35s ease; }
+  section[aria-hidden="false"] { display: block; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  h1, h2, h3, h4 { line-height: 1.25; margin-bottom: 16px; }
+  h1 { font-size: clamp(2rem, 5.5vw, 2.8rem); color: var(--gold); margin-bottom: 24px; }
+  h2 { color: var(--primary); margin-top: 36px; font-size: clamp(1.4rem, 3vw, 1.8rem); }
+  h3 { color: var(--text); font-size: 1.15rem; }
+  p, ul, ol { margin-bottom: 16px; max-width: 74ch; }
+  ul { padding-left: 22px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--glass-border);
+    padding: 22px; border-radius: var(--radius); margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    background: var(--primary); color: #fff; border: none; padding: 13px 22px;
+    border-radius: 9px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    transition: var(--transition); text-decoration: none;
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.danger { background: var(--danger); }
+  .btn.safe { background: var(--safe); color: oklch(12% 0.04 148); }
+  .btn.ghost { background: transparent; border: 1px solid var(--glass-border); color: var(--text); }
+  .btn.ghost:hover { background: var(--surface); }
+  .grid { display: grid; gap: 22px; }
+  @media (min-width: 640px) { .grid.cols-2 { grid-template-columns: repeat(2, 1fr); } }
+  .tag { display: inline-block; background: oklch(28% 0.06 260 / 0.5); padding: 5px 12px; border-radius: 20px; font-size: 0.82rem; margin: 4px 6px 4px 0; border: 1px solid var(--glass-border); }
+  .warning { background: oklch(32% 0.12 60 / 0.35); border-left: 4px solid var(--danger); padding: 14px; border-radius: 0 10px 10px 0; margin-bottom: 22px; }
+  .info-box { background: oklch(26% 0.08 148 / 0.35); border-left: 4px solid var(--safe); padding: 14px; border-radius: 0 10px 10px 0; margin-bottom: 22px; }
+  .chat-container { display: flex; flex-direction: column; height: 65dvh; background: var(--surface-2); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--glass-border); }
+  .chat-log { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
+  .msg { max-width: 88%; padding: 14px 18px; border-radius: 14px; line-height: 1.55; word-break: break-word; }
+  .msg.user { align-self: flex-end; background: var(--primary); color: #fff; }
+  .msg.agent { align-self: flex-start; background: var(--glass); border: 1px solid var(--glass-border); color: var(--text); }
+  .msg.agent .voice-name { color: var(--gold); font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; display: block; }
+  .chat-input { display: flex; gap: 10px; padding: 14px; border-top: 1px solid var(--glass-border); }
+  .chat-input textarea { flex: 1; background: var(--surface); color: var(--text); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; resize: none; min-height: 52px; font-family: inherit; }
+  .chat-input textarea:focus { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
+  .breath { animation: breathe 4.5s infinite ease-in-out; }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.015); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .breath { animation: none; } }
+  .crisis-box { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 2px solid var(--danger); padding: 18px; border-radius: var(--radius); max-width: 340px; box-shadow: var(--shadow); z-index: 960; }
+  .crisis-box h3 { color: var(--danger); margin-bottom: 10px; }
+  .crisis-box a { color: var(--accent); font-weight: 600; }
+  .crisis-box a:focus-visible { outline: 2px dashed var(--accent); outline-offset: 3px; }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.88rem; text-align: center; }
+  .hidden { display: none !important; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 5px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .game-zone { min-height: 42px; background: var(--surface); border: 2px dashed var(--glass-border); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: var(--transition); padding: 8px; }
+  .game-zone.drag-over { background: oklch(25% 0.08 260); border-color: var(--primary); }
+  .game-zone.filled { border-style: solid; background: var(--surface-2); }
+  .ref-item { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
+  .ref-item:last-child { border-bottom: none; }
+  .ref-tag { font-size: 0.75rem; color: var(--text-muted); font-family: monospace; }
+  @media (max-width: 500px) { nav { flex-direction: column; align-items: stretch; } .nav-links { justify-content: center; } .crisis-box { left: 20px; right: 20px; max-width: none; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+<nav role="navigation" aria-label="Navegação principal">
+  <div class="nav-links" id="nav"></div>
+  <div class="controls">
+    <select id="lang" aria-label="Idioma da interface">
+      <option value="pt">PT</option>
+      <option value="es">ES</option>
+      <option value="en">EN</option>
+      <option value="ca">CA</option>
+    </select>
+    <button id="clear-all" class="btn danger">🗑️ Limpar tudo</button>
+  </div>
+</nav>
+
+<main id="main" role="main" aria-live="polite">
+  <section id="inicio" aria-hidden="false">
+    <h1 class="breath">O Espelho de Judas</h1>
+    <p class="card">Não para trair. Para reconhecer. Plataforma completa de psicoeducação, reconhecimento e recuperação frente a manipulação psicológica para jovens LGBTQ+ (14–25). Não diagnostica. Não substitui terapia. Valida, nomeia e acompanha com base em consenso científico global.</p>
+    <div class="warning" role="alert">
+      <strong>⚠️ Aviso de conteúdo:</strong> Alguns módulos descrevem dinâmicas de controle, invalidação e trauma. Respire. Pode parar quando quiser. O seu ritmo é o correto.
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>📖 Estrutura Completa</h3>
+        <ul>
+          <li>Dicionário clínico-afirmativo (24 termos + mecanismos)</li>
+          <li>Mapas do Ciclo (emocional, digital, familiar, institucional)</li>
+          <li>Reflexão & Rastreio psicoeducativo (12 itens)</li>
+          <li>Protocolos de Recuperação (CBT, DBT, ACT, Somático, Narrativo)</li>
+          <li>Contextos Específicos (família, digital, parceiro/a, escola)</li>
+          <li>Chat Espelhado (respostas mapeadas por frameworks clínicos)</li>
+          <li>Jogos Didácticos (treino seguro de competências)</li>
+          <li>Literatura & Diretrizes (consenso global integrado)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🔒 Privacidade & Ética</h3>
+        <p>Processamento 100% local. Zero chamadas externas, zero telemetria, zero cookies. Histórico volátil (sessionStorage). Botão de limpeza imediata. Linguagem afirmativa, derivada explícita a serviços profissionais, consentimento granular em cada módulo.</p>
+        <button class="btn safe" onclick="location.hash='#/chat'">Entrar no espelho</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="dicionario" aria-hidden="true">
+    <h2>Dicionário Clínico-Afirmativo</h2>
+    <p class="card">Termos precisos, mecanismos explicados, exemplos interseccionais. Baseado em Meyer, Stern, Walker, Herman, APA/WPATH. Linguagem não patologizante.</p>
+    <div class="grid cols-2" id="dict-grid"></div>
+  </section>
+
+  <section id="ciclos" aria-hidden="true">
+    <h2>Mapas do Ciclo de Manipulação</h2>
+    <p>Não é linear. É uma espiral com retroalimentação neurocomportamental. Reconhecê-lo quebra o poder da repetição.</p>
+    <div class="grid cols-2">
+      <div class="card"><h3>🔄 Ciclo Emocional (Intimidade)</h3><ol><li><strong>Idealização:</strong> Atenção intensa, espelhamento, validação seletiva.</li><li><strong>Desvalorização:</strong> Críticas veladas, silêncios punitivos, microagressões.</li><li><strong>Crise:</strong> Explosão, ameaças, chantagem emocional.</li><li><strong>Reparação:</strong> Desculpas, gestos, promessas. Dopamina recompensa o vínculo.</li></ol><p class="info-box"><strong>Escape:</strong> O ciclo sustenta-se com a esperança da versão idealizada. Quebrá-lo é escolher a sua realidade sobre a ficção alheia.</p></div>
+      <div class="card"><h3>🌐 Ciclo Digital (Apps/Redes)</h3><ol><li><strong>Bombing:</strong> Mensagens constantes, "match" idealizado, love bombing.</li><li><strong>Ghosting/Intermitência:</strong> Silêncios calculados, respostas erráticas.</li><li><strong>Controlo:</strong> Exigência de localização, screenshots, senhas, "provas" de fidelidade.</li><li><strong>Re-idealização:</strong> "Foi stress meu", "só quero o melhor para ti".</li></ol><p class="info-box"><strong>Escape:</strong> Limites digitais são válidos. Desativar notificações, não responder fora de horário, não partilhar credenciais.</p></div>
+      <div class="card"><h3>👨‍👩‍👧 Ciclo Familiar (Rejeição/Condicionalidade)</h3><ol><li><strong>Aceitação parcial:</strong> "Gostamos de ti, mas não na frente da família".</li><li><strong>Negação/Minimização:</strong> "É fase", "não precisas de rótulos".</li><li><strong>Chantagem/Isolamento:</strong> Corte financeiro, ameaças de outting, culpa.</li><li><strong>Reconciliação seletiva:</strong> Festas, visitas, silêncio sobre identidade.</li></ol><p class="info-box"><strong>Escape:</strong> A sua identidade não é negociável. Busque rede afirmativa externa. Segurança física > harmonia tóxica.</p></div>
+      <div class="card"><h3>🏫 Ciclo Institucional (Escola/Trabalho/Saúde)</h3><ol><li><strong>Patologização:</strong> "Tens de provar", "não é natural", "procura terapia corretiva".</li><li><strong>Exclusão velada:</strong> Ignorar nome social, negar informações, microinvalidação.</li><li><strong>Retaliação:</strong> Avaliações baixas, assédio, silêncio administrativo.</li><li><strong>Normalização:</strong> "É assim que funciona aqui", "adapta-te".</li></ol><p class="info-box"><strong>Escape:</strong> Documente. Busque aliados. Conheça leis de proteção. Denuncie em instâncias superiores se seguro.</p></div>
+    </div>
+  </section>
+
+  <section id="reflexao" aria-hidden="true">
+    <h2>Reflexão & Rastreio Psicoeducativo</h2>
+    <p class="card">12 itens alinhados com escalas de coerção, isolamento e trauma bonding. Não é diagnóstico. É mapa interno. Responda com honestidade.</p>
+    <div class="card" id="reflexao-form-container">
+      <form id="ref-form" style="display:flex;flex-direction:column;gap:10px;"></form>
+      <button type="button" class="btn" id="btn-ref" style="margin-top:12px;">Ver mapa interno</button>
+      <div id="ref-res" class="hidden card" style="margin-top:16px;background:var(--surface-2);"></div>
+    </div>
+  </section>
+
+  <section id="protocolos" aria-hidden="true">
+    <h2>Protocolos de Recuperação</h2>
+    <p class="card">Passos estruturados baseados em evidência. Escolha um por vez. Repita. Avance no seu ritmo.</p>
+    <div class="grid cols-2">
+      <div class="card"><h3>🧠 CBT (Reestruturação Cognitiva)</h3><ol><li>Identifique pensamento automático ("Não mereço respeito")</li><li>Registe evidências a favor/contra</li><li>Crie pensamento alternativo realista ("Mereço limites saudáveis")</li><li>Teste na prática com micro-ações</li></ol></div>
+      <div class="card"><h3>🌊 DBT (Regulação & Tolerância ao Mal-Estar)</h3><ol><li>TIPP: Temperatura, Intensidade, Paciência, Pare</li><li>STOP: Pare, Respire, Observe, Prossiga</li><li>Self-soothe com 5 sentidos</li><li>Regulação emocional com nomeação precisa</li></ol></div>
+      <div class="card"><h3>🕊️ ACT (Aceitação & Valores)</h3><ol><li>Defusão cognitiva ("Tenho o pensamento que...")</li><li>Aceitação do desconforto sem luta</li><li>Clarifique valores (autenticidade, segurança, comunidade)</li><li>Acção comprometida alinhada aos valores</li></ol></div>
+      <div class="card"><h3>🌿 Somático (Regulação Corporal)</h3><ol><li>5-4-3-2-1 (ancoragem sensorial)</li><li>Respiração 4-7-8 ou caixa</li><li>Grounding: pés no chão, pressão nas mãos</li><li>Scan corporal sem julgamento</li></ol></div>
+      <div class="card"><h3>📖 Narrativo (Reconstrução da História)</h3><ol><li>Escreva "Antes / Durante / Depois"</li><li>Identifique onde a voz foi silenciada</li><li>Reescreva com agência e validação</li><li>Partilhe com 1 pessoa segura (opcional)</li></ol></div>
+      <div class="card"><h3>🤝 Comunitário (Rede & Pertencimento)</h3><ol><li>Mapeie 1-3 contactos afirmativos</li><li>Estabeleça rituais de contacto seguro</li><li>Participe em espaços moderados LGBTQ+</li><li>Peça ajuda explícita quando necessário</li></ol></div>
+    </div>
+  </section>
+
+  <section id="contextos" aria-hidden="true">
+    <h2>Contextos Específicos</h2>
+    <div class="grid cols-2">
+      <div class="card"><h3>👪 Família</h3><p>Rejeição prediz risco 3x maior de ideação suicida (Ryan et al.). Estratégias: plano de segurança, contacto limitado/condicional, mediação profissional, rede externa como amortecedor.</p></div>
+      <div class="card"><h3>💻 Digital</h3><p>Apps e redes amplificam love bombing e ghosting. Estratégias: limites de resposta, não partilhar dados sensíveis, bloquear sem culpa, denunciar comportamentos, usar verificações de identidade seguras.</p></div>
+      <div class="card"><h3>💑 Parceiro/a</h3><p>Relações íntimas LGBTQ+ podem replicar dinâmicas de género internalizadas. Estratégias: comunicação não-violenta, check-ins regulares, terapia de casal afirmativa (se seguro), saída planejada se coercivo.</p></div>
+      <div class="card"><h3>🏫 Escola / Trabalho</h3><p>Assédio institucional normaliza a invalidação. Estratégias: documentação, aliados, políticas internas, canais externos, know your rights, não internalizar a falha do sistema.</p></div>
+    </div>
+  </section>
+
+  <section id="chat" aria-hidden="true">
+    <h2>O Espelho (Chat Local)</h2>
+    <p class="card">Sem nuvem. Sem treino. Sem julgamento. Respostas mapeadas por frameworks clínicos (CBT/DBT/ACT/Somático). Escreva. O espelho reflete com precisão.</p>
+    <div class="chat-container" role="log" aria-live="polite" aria-label="Histórico de conversa">
+      <div id="chat-log" class="chat-log">
+        <div class="msg agent"><span class="voice-name">🪞 Espelho Base</span><p>Estou aqui. Não para o consertar. Para nomear consigo. Escreva o que carrega. Escuto-o no seu idioma.</p></div>
+      </div>
+      <div class="chat-input">
+        <textarea id="chat-input" placeholder="Escreva aqui... (Enter para enviar)" aria-label="Mensagem"></textarea>
+        <button class="btn" id="btn-enviar">➤</button>
+      </div>
+    </div>
+    <p style="margin-top:14px; font-size:0.84rem; color:var(--text-muted);">🔒 Processamento 100% local. Histórico volátil. Desaparece ao fechar.</p>
+  </section>
+
+  <section id="literatura" aria-hidden="true">
+    <h2>Literatura & Consenso Global</h2>
+    <p class="card">Base científica integrada. Diretrizes, meta-análises e manuais que estruturam este conteúdo. Sem paywalls. Sem opiniões pessoais.</p>
+    <div class="card" id="lit-list"></div>
+  </section>
+
+  <section id="recursos" aria-hidden="true">
+    <h2>Recursos & Emergência</h2>
+    <div class="grid cols-2">
+      <div class="card"><h3>📞 Crise Imediata</h3><ul><li>Brasil: CVV 188 (24h) | SAMU 192</li><li>Portugal: SOS Voz Amiga 213 544 545 | SNS 24 808 24 24 24</li><li>Espanha: 016 | 112</li><li>Latam/Global: The Trevor Project (1-866-488-7386 | SMS: START ao 678678)</li><li>Reino Unido: Switchboard 0300 330 0630</li></ul></div>
+      <div class="card"><h3>🛡️ Segurança & Planos</h3><ul><li>Plano de segurança pessoal (contactos, rotas, documentos)</li><li>Apps de localização segura (compartilhar apenas com rede validada)</li><li>Documentação de incidentes (datas, prints, testemunhas)</li><li>Encaminhamento profissional afirmativo</li></ul></div>
+    </div>
+  </section>
+
+  <section id="jogos" aria-hidden="true">
+    <h2>🎮 Laboratório de Reconhecimento</h2>
+    <p class="card">Jogos baseados em evidência para treinar competências sem pressão. Sem pontuações "boas/más". Aprendizagem experiencial.</p>
+    <div class="grid cols-2">
+      <div class="card game-card" data-game="nevoa"><h3>🌫️ Detecta a Névoa</h3><p><strong>Objetivo:</strong> Treinar reconhecimento de gaslighting em contexto relacional.</p><button class="btn" onclick="Jogos.iniciar('nevoa')">Jogar (5 min)</button><span class="tag">CBT • Linguagem • 14+</span></div>
+      <div class="card game-card" data-game="bussola"><h3>🧭 Bússola Emocional</h3><p><strong>Objetivo:</strong> Fortalecer regulação emocional via ancoragem somática.</p><button class="btn" onclick="Jogos.iniciar('bussola')">Jogar (7 min)</button><span class="tag">DBT • Somático • 16+</span></div>
+      <div class="card game-card" data-game="ciclo-jogo"><h3>🔄 Mapa do Ciclo</h3><p><strong>Objetivo:</strong> Visualizar padrões não lineares de manipulação.</p><button class="btn" onclick="Jogos.iniciar('ciclo-jogo')">Jogar (8 min)</button><span class="tag">Padrões • Visual • 18+</span></div>
+      <div class="card game-card" data-game="rede"><h3>🕸️ Rede de Validação</h3><p><strong>Objetivo:</strong> Identificar fontes de apoio afirmativo e praticar pedido de ajuda.</p><button class="btn" onclick="Jogos.iniciar('rede')">Jogar (6 min)</button><span class="tag">Comunidade • Prática • 14+</span></div>
+    </div>
+    <div id="area-jogo" class="card hidden" role="region" aria-live="polite">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="titulo-jogo">Jogo</h3>
+        <button class="btn danger" onclick="Jogos.fechar()">✕ Sair</button>
+      </div>
+      <div id="conteudo-jogo"></div>
+      <div id="feedback-jogo" class="hidden card" style="margin-top:16px;background:var(--surface-2);"></div>
+    </div>
+    <div class="card warning"><strong>🔒 Design informado pelo trauma:</strong> Pode pausar/fechar a qualquer momento. Sem limites de tempo. Sem pressão por "ganar". Encaminhamento automático se detetar angústia.</div>
+  </section>
+</main>
+
+<div class="crisis-box" role="alert" aria-live="assertive">
+  <h3>🆘 Se está em crise</h3>
+  <p>Isto não é terapia profissional. Se sente que não aguenta mais:</p>
+  <p>📞 <a href="tel:188">188 (CVV)</a> | 🌍 <a href="tel:112">112</a> | 🇧🇷 <a href="tel:192">SAMU 192</a> | 🇺🇸 <a href="sms:678678?body=START">SMS: START ao 678678</a></p>
+  <p>Não está sozinho/a. Respire. Peça ajuda. É válido.</p>
+</div>
+
+<footer>
+  <p>© 2026 O Espelho de Judas. Projeto sem fins lucrativos. Código aberto. Zero rastreadores. Zero cookies. Zero nuvem.</p>
+  <p>Conteúdo baseado em psicologia afirmativa, CBT/DBT/ACT, teoria do estresse minoritário, trauma recovery e diretrizes APA/WPATH/WHO/NICE. Não substitui atenção profissional.</p>
+  <button class="btn" onclick="Acessibilidade.limparTudo()" style="margin-top:10px;">🗑️ Apagar tudo e recarregar</button>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // === DADOS COMPLETOS ===
+  const dictData = [
+    {term:'Gaslighting / Névoa Cognitiva',mec:'Negação sistemática da perceção alheia. Ativa dúvida crónica e autoinvalidação.',ex:'"Nunca disse isso, estás a inventar."',lgbtq:'Usado para descredibilizar experiências de discriminação ou identidade.',tag:'Manipulação'},
+    {term:'Trauma Bonding / Vínculo por Crise',mec:'Ligação intensa via ciclos de abuso + recompensa imprevisível. Dopamina e cortisol reforçam o laço.',ex:'Ficar após ameaças porque "nos bons momentos é incrível".',lgbtq:'Frequente em relações com desequilíbrio de poder ou saída tardia do armário.',tag:'Neurobiologia'},
+    {term:'Invalidação Afetiva',mec:'Minimizar, ridicularizar ou silenciar emoções legítimas. Correlaciona-se com desregulação emocional.',ex:'"Não precisas de chorar por isso."',lgbtq:'Mistura-se com "aceitação condicional" ("gosto de ti, mas...").',tag:'Validação'},
+    {term:'Outing Forçado',mec:'Revelar orientação/identidade sem consentimento. Viola autonomia e segurança.',ex:'Contar à família ou colegas sem autorização.',lgbtq:'Usado como chantagem ou "brincadeira". Risco real de violência.',tag:'Segurança'},
+    {term:'Reforço Intermitente',mec:'Elogios/atenção dados de forma imprevisível. Mantém sistema de recompensa em alerta.',ex:'Mensagens aleatórias de carinho após dias de silêncio.',lgbtq:'Comum em apps de encontro e dinâmicas de grupo queer.',tag:'Comportamento'},
+    {term:'Love Bombing',mec:'Idealização acelerada e excessiva para criar dependência rápida.',ex:'"És a pessoa da minha vida" no segundo encontro.',lgbtq:'Explora desejo de pertencimento após rejeição familiar.',tag:'Manipulação'},
+    {term:'Controlo Coercivo',mec:'Padrão de dominação que restringe autonomia, contactos e recursos.',ex:'Monitorizar telemóvel, controlar dinheiro, isolar de amigos.',lgbtq:'Muitas vezes invisibilizado por estereótipos de género.',tag:'Violência'},
+    {term:'Microagressões',mec:'Comentários/atos sutis que comunicam hostilidade ou inferiorização.',ex:'"Não pareces gay", "É só uma fase".',lgbtq:'Acumulam-se e predizem stresse minoritário crónico.',tag:'Interseccional'},
+    {term:'Dissociação Funcional',mec:'"Desligar" emocionalmente para suportar ambientes hostis. Estratégia de proteção.',ex:'Sensação de estar "fora do corpo" em discussões.',lgbtq:'Comum em contextos de rejeição familiar ou institucional.',tag:'Trauma'},
+    {term:'Internalização de Estigma',mec:'Crença de que estereótipos negativos sobre LGBTQ+ são verdadeiros.',ex:'"Devo ser defeituoso por sentir assim".',lgbtq:'Prediz ansiedade, depressão e evitamento de apoio.',tag:'Estigma'},
+    {term:'Limites Saudáveis',mec:'Regras claras que protegem autonomia, tempo e energia emocional.',ex:'"Não respondo mensagens depois das 22h".',lgbtq:'Essencial para quebrar ciclos de acomodação tóxica.',tag:'Recuperação'},
+    {term:'Ancoragem Somática',mec:'Técnicas que reconectam mente e corpo para regular sistema nervoso.',ex:'5-4-3-2-1, respiração caixa, pressão nas mãos.',lgbtq:'Acessível, sem custo, adaptável a contextos de crise.',tag:'Regulação'},
+    {term:'Terapia Afirmativa',mec:'Abordagem que valida identidade LGBTQ+ como saudável e legítima.',ex:'Foco em resiliência, não em "cura".',lgbtq:'Padrão ouro em saúde mental queer.',tag:'Clínica'},
+    {term:'Plano de Segurança',mec:'Estrutura prévia para crises: contactos, rotas, documentos, passos.',ex:'Lista de 3 pessoas, linha de crise, local seguro.',lgbtq:'Reduz risco imediato em contextos de rejeição ou violência.',tag:'Prevenção'},
+    {term:'Reestruturação Narrativa',mec:'Recontar a experiência com agência, validação e contexto.',ex:'Escrever "Antes/Durante/Depois" sem julgamento.',lgbtq:'Restaura voz silenciada por invalidação sistémica.',tag:'Narrativo'},
+    {term:'Aceitação Radical',mec:'Reconhecer a realidade sem resistência inútil. Base do ACT.',ex:'"Isto aconteceu. Não escolhi. Posso responder agora.".',lgbtq:'Permite sair da luta contra o passado e agir no presente.',tag:'ACT'},
+    {term:'Defusão Cognitiva',mec:'Observar pensamentos sem fusão com eles. "Tenho o pensamento que..."',ex:'Trocar "Sou inútil" por "Notei que penso que sou inútil".',lgbtq:'Reduz impacto de estigma internalizado.',tag:'ACT'},
+    {term:'Check-in Emocional',mec:'Avaliação breve e regular do estado interno. Base DBT/terapêutica.',ex:'"Nível de energia: 3/10. Emoção dominante: cansaço.".',lgbtq:'Previne sobrecarga e facilita pedido de ajuda.',tag:'Regulação'},
+    {term:'Rede de Validação',mec:'Grupo de pessoas/espaços que reconhecem e apoiam a identidade.',ex:'Amigue LGBTQ+, grupo juvenil, terapeuta, linha de crise.',lgbtq:'Proteção contra isolamento e risco de suicídio.',tag:'Comunidade'},
+    {term:'Saída Planejada',mec:'Processo estruturado para deixar relação/ambiente tóxico.',ex:'Documentos, poupança, contactos, rota, apoio externo.',lgbtq:'Essencial em contextos de coabitação ou dependência.',tag:'Segurança'},
+    {term:'Documentação',mec:'Registo objetivo de incidentes (datas, prints, testemunhas).',ex:'Ficheiro seguro com evidências de coerção.',lgbtq:'Útil para denúncia, terapia ou planos legais.',tag:'Legal'},
+    {term:'Mediação Afirmativa',mec:'Facilitação profissional para diálogo seguro com família/escola.',ex:'Sessão com psicólogo LGBTQ+ certificado.',lgbtq:'Reduz escalada e estabelece limites claros.',tag:'Institucional'},
+    {term:'Pós-Trauma Crescimento',mec:'Desenvolvimento de resiliência, significado e conexão após crise.',ex:'Maior clareza, empatia, ação comunitária.',lgbtq:'Possível com apoio adequado e tempo.',tag:'Recuperação'},
+    {term:'Estresse Minoritário',mec:'Stresse crónico derivado de estigma, preconceito e discriminação.',ex:'Vigilância constante, medo de rejeição, internalização.',lgbtq:'Explica disparidades em saúde mental. Não é patologia individual.',tag:'Sociocultural'}
+  ];
+
+  const refData = [
+    {tag:'APA', ref:'American Psychological Association. (2021). Guidelines for Psychological Practice with Sexual Orientation and Gender Diversity.'},
+    {tag:'WHO', ref:'World Health Organization. (2022). Mental health, substance use, and violence among LGBT persons.'},
+    {tag:'NICE', ref:'National Institute for Health and Care Excellence. (2023). Coercive control and domestic abuse: recognition and management.'},
+    {tag:'WPATH', ref:'World Professional Association for Transgender Health. (2022). Standards of Care Version 8.'},
+    {tag:'MEYER', ref:'Meyer, I. H. (2003). Prejudice, social stress, and mental health in lesbian, gay, and bisexual populations.'},
+    {tag:'LINEHAN', ref:'Linehan, M. M. (2014). DBT Skills Training Manual (2nd ed.). Guilford Press.'},
+    {tag:'STERN', ref:'Stern, R. (2007). The Gaslight Effect: How to Spot and Survive the Hidden Manipulation Others Use to Control Our Lives.'},
+    {tag:'WALKER', ref:'Walker, P. (2013). Complex PTSD: From Surviving to Thriving.'},
+    {tag:'HERMAN', ref:'Herman, J. L. (1992). Trauma and Recovery.'},
+    {tag:'BECK', ref:'Beck, A. T. (2011). Cognitive Behavior Therapy: Basics and Beyond (2nd ed.).'},
+    {tag:'HAYES', ref:'Hayes, S. C. (2019). A Liberated Mind: How to Pivot Toward What Matters.'},
+    {tag:'RYAN', ref:'Ryan, C. et al. (2009). Family acceptance in adolescence and the health of LGBT young adults.'},
+    {tag:'GAYNER', ref:'Gayner, B. et al. (2009). Mindfulness-based stress reduction for LGBTQ+ populations.'},
+    {tag:'ILGA', ref:'ILGA World. (2023). State-sponsored homophobia report & safety guidelines.'},
+    {tag:'TREVOR', ref:'The Trevor Project. (2024). National survey on LGBTQ youth mental health.'},
+    {tag:'APA-TF', ref:'APA Task Force. (2020). Trauma-informed care in behavioral health services.'},
+    {tag:'NIDA', ref:'National Institute on Drug Abuse. (2022). Minority stress and substance use in LGBTQ+ youth.'},
+    {tag:'CDC', ref:'CDC. (2023). Youth Risk Behavior Survey: Sexual minority disparities.'}
+  ];
+
+  const refItems = [
+    "Finjo estar bem para evitar o mal-estar do outro",
+    "Custa-me nomear o que sinto sem me sentir \"excessivo/a\"",
+    "Mudei expressão, amizades ou rotinas por medo da reação alheia",
+    "Peço desculpa por coisas que não fiz ou que são normais",
+    "Sinto que a minha identidade é \"condicional\" para quem gosto",
+    "Evito partilhar a minha vida por receio de invalidação",
+    "Aceito controlo digital (senhas, localização) como \"prova de amor\"",
+    "Minimizo incidentes para manter a paz",
+    "Sinto culpa por impor limites",
+    "Acredito que \"sozinho/a resolvo\" para não incomodar",
+    "Confundo amor com disponibilidade constante",
+    "Penso que a rejeição é prova de que \"não sirvo\""
+  ];
+
+  // === I18N ===
+  const i18n = {
+    pt: { nav:['Início','Dicionário','Ciclos','Reflexão','Protocolos','Contextos','Chat','Literatura','Recursos','Jogos'], home:'O Espelho de Judas', crisis:'Se está em crise' },
+    es: { nav:['Inicio','Diccionario','Ciclos','Reflexión','Protocolos','Contextos','Chat','Literatura','Recursos','Juegos'], home:'El Espejo de Judas', crisis:'Si estás en crisis' },
+    en: { nav:['Home','Dictionary','Cycles','Reflection','Protocols','Contexts','Chat','Literature','Resources','Games'], home:'Judas Mirror', crisis:'If you are in crisis' },
+    ca: { nav:['Inici','Diccionari','Cicles','Reflexió','Protocols','Contextos','Xat','Literatura','Recursos','Jocs'], home:"El Mirall de Judes", crisis:'Si estàs en crisi' }
+  };
+  const langSel = document.getElementById('lang');
+  langSel.value = sessionStorage.getItem('lang') || 'pt';
+  langSel.addEventListener('change', () => { sessionStorage.setItem('lang', langSel.value); i18nAplicar(langSel.value); });
+  function i18nAplicar(lang) {
+    const t = i18n[lang];
+    document.querySelectorAll('.nav-link').forEach((el, i) => { if(t.nav[i]) el.textContent = t.nav[i]; });
+    document.querySelector('h1').textContent = t.home;
+    document.querySelector('.crisis-box h3').textContent = t.crisis;
+    document.documentElement.lang = lang;
+  }
+
+  // === ROUTER ===
+  const rotas = ['/inicio','/dicionario','/ciclos','/reflexao','/protocolos','/contextos','/chat','/literatura','/recursos','/jogos'];
+  const ids = rotas.map(r => r.replace('/',''));
+  const nav = document.getElementById('nav');
+  rotas.forEach((r,i) => {
+    const a = document.createElement('a');
+    a.href = '#' + r;
+    a.className = 'nav-link';
+    a.textContent = i18n[langSel.value].nav[i] || ids[i];
+    a.addEventListener('click', e => { if(window.location.hash !== '#'+r) { e.preventDefault(); window.location.hash = '#'+r; } });
+    nav.appendChild(a);
+  });
+  function navegar() {
+    const hash = window.location.hash || '#/inicio';
+    const alvo = hash.slice(1);
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      const ativo = (alvo === '/' + id) || (alvo === '/' && id === 'inicio');
+      el.setAttribute('aria-hidden', !ativo);
+    });
+    document.querySelectorAll('.nav-link').forEach(l => {
+      l.setAttribute('aria-current', l.getAttribute('href') === '#' + (hash.slice(1) || '/inicio') ? 'page' : '');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  window.addEventListener('hashchange', navegar);
+  navegar();
+
+  // === RENDER DICIONÁRIO ===
+  const dictGrid = document.getElementById('dict-grid');
+  dictData.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<h3>${d.term}</h3><p><strong>Mecanismo:</strong> ${d.mec}</p><p><strong>Exemplo:</strong> ${d.ex}</p><p><strong>Contexto LGBTQ+:</strong> ${d.lgbtq}</p><span class="tag">${d.tag}</span>`;
+    dictGrid.appendChild(div);
+  });
+
+  // === RENDER REFLEXÃO ===
+  const refForm = document.getElementById('ref-form');
+  refItems.forEach((txt, i) => {
+    const label = document.createElement('label');
+    label.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--glass-border);';
+    label.innerHTML = `<input type="checkbox" id="t${i+1}" style="margin:0;"><span>${txt}</span>`;
+    refForm.appendChild(label);
+  });
+  document.getElementById('btn-ref').addEventListener('click', () => {
+    const n = Array.from({length:12}, (_,i) => document.getElementById(`t${i+1}`).checked).filter(Boolean).length;
+    const res = document.getElementById('ref-res');
+    res.classList.remove('hidden');
+    if (n <= 3) res.innerHTML = `<p><strong>🟢 Baixa exposição:</strong> Limites ativos. Continue a observar e validar as suas emoções.</p>`;
+    else if (n <= 7) res.innerHTML = `<p><strong>🟡 Exposição moderada:</strong> Padrões de acomodação identificados. Pratique micro-limites e ancoragem 5-4-3-2-1. Considere partilhar com 1 pessoa segura.</p>`;
+    else res.innerHTML = `<p><strong>🔴 Alta exposição:</strong> Sinais de coerção/trauma bonding. Não é culpa sua. Priorize segurança, plano de saída e contacto com rede afirmativa ou profissional. A sua realidade é válida.</p>`;
+  });
+
+  // === RENDER LITERATURA ===
+  const litList = document.getElementById('lit-list');
+  refData.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'ref-item';
+    div.innerHTML = `<span class="ref-tag">[${r.tag}]</span><p style="margin:4px 0 0 0;font-size:0.92rem;">${r.ref}</p>`;
+    litList.appendChild(div);
+  });
+
+  // === CHAT ENGINE ===
+  const vozes = ['Filósofo','Espelho','Estratega','Sombra','Curador','Poeta','Bufão','Corpo','Elemental','Tempo'];
+  const criseRe = /(suicídio|matar-me|morrer|não aguento mais|cortar|comprimidos|afogar|fim|adeus para sempre|quero desaparecer)/i;
+  const manipRe = /(gaslighting|nega|manipul|culpa|chantag|controlo|faz-me duvidar|exagero|louc|sensí|histéric|love bombing|ghosting|silêncio punitivo)/i;
+  const identRe = /(trans|não binárie|queer|gay|lésb|bi|pan|inter|ace|aro|sair do armário|outing|não conform|nome social|hormona)/i;
+  const familyRe = /(família|pais|mãe|pai|irmão|irmã|rejeição|condicional|expuls|fora de casa)/i;
+  const digitalRe = /(app|tinder|grindr|instagram|whatsapp|localização|senha|print|bloquei|ghost)/i;
+
+  const chatLog = document.getElementById('chat-log');
+  const chatIn = document.getElementById('chat-input');
+  const chatBtn = document.getElementById('btn-enviar');
+
+  function hashStr(s) { let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h)+s.charCodeAt(i),h|=0; return Math.abs(h); }
+  function metacognicao(txt) {
+    const len = txt.length;
+    const crise = criseRe.test(txt);
+    const manip = manipRe.test(txt);
+    const ident = identRe.test(txt);
+    const fam = familyRe.test(txt);
+    const dig = digitalRe.test(txt);
+    let score = 0;
+    if(len>150) score++; if(/[?]{2,}/.test(txt)) score++; if(/\b(sei|não sei|talvez|dúvida|pode ser)\b/i.test(txt)) score++;
+    return { nivel: score>=2?'alto':score===1?'médio':'baixo', crise, manip, ident, fam, dig };
+  }
+  function responder(txt) {
+    const m = metacognicao(txt);
+    let voz = vozes[hashStr(txt) % vozes.length];
+    if(m.crise) return { voz:'Curador', txt:'🔴 A sua vida vale mais que esta dor. Não está sozinho/a. Ligue agora: 188 (BR) | 112 (PT/ES) | SMS START ao 678678. Respire 4s. Segure algo frio. Volte quando estiver em segurança.' };
+    if(m.manip && m.nivel==='alto') return { voz:'Estratega', txt:'Reconhecer o padrão é o primeiro corte ao cabo. Não está louco/a. Está num sistema que recompensa o seu silêncio. Escreva 3 factos inegáveis. Guarde-os. Não os negoceie.' };
+    if(m.ident) return { voz:'Corpo', txt:'A sua identidade não é debate. É facto biológico, emocional e social. Quem lhe pede para "prová-la" para validar-se, pede que se diminua. Não aceite o molde.' };
+    if(m.fam) return { voz:'Espelho', txt:'Rejeição familiar dói, mas não define o seu valor. A harmonia não vale a sua autenticidade. Construa rede externa. Segurança > silêncio.' };
+    if(m.dig) return { voz:'Estratega', txt:'O digital amplifica controlo. Limites digitais são válidos: não partilhe senhas, desative localização, bloqueie sem culpa. O seu espaço digital é seu.' };
+    const padroes = [
+      'O que nomeia pesa. Não o largue ainda. Examine-o. É seu ou puseram-no?',
+      'A clareza não chega a gritar. Chega em silêncio, quando deixa de defender a mentira.',
+      'Não precisa de "superar" hoje. Precisa de não se abandonar enquanto atravessa.',
+      'A sua sensibilidade não é defeito. É radar. O problema é que lhe ensinaram a desligá-lo.',
+      'Escreva a verdade crua. Depois tire os "talvez". Fique com o osso. Esse é que sustenta.',
+      'Validação externa é volátil. A sua é permanente. Cultive-a diariamente.',
+      'Limites não são muros. São portões. Você decide quem entra, quando e por quanto tempo.'
+    ];
+    return { voz, txt: padroes[hashStr(txt) % padroes.length] };
+  }
+  function addMsg(role, txt, voz) {
+    const d = document.createElement('div');
+    d.className = 'msg ' + role;
+    d.innerHTML = voz ? `<span class="voice-name">🪞 Espelho: ${voz}</span><p>${txt}</p>` : `<p>${txt}</p>`;
+    chatLog.appendChild(d);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+  function enviar() {
+    const txt = chatIn.value.trim();
+    if(!txt) return;
+    addMsg('user', txt);
+    chatIn.value = '';
+    const res = responder(txt);
+    setTimeout(() => addMsg('agent', res.txt, res.voz), 300 + Math.random()*500);
+  }
+  chatBtn.addEventListener('click', enviar);
+  chatIn.addEventListener('keydown', e => { if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); enviar(); } });
+
+  // === JOGOS ENGINE ===
+  const Jogos = {
+    ativo: null,
+    dados: {
+      nevoa: { titulo:'🌫️ Detecta a Névoa', intro:'Leia cada troca. Há manipulação cognitiva? Confie na sua perceção.', cenarios:[
+        { txt:'— Acho que me estás a evitar.\n— Não exageres, estou sempre para ti. És muito dramático/a.', opcs:[
+          { rot:'Manipulação (gaslighting)', ok:true, fb:'✅ Sim. Nega a sua perceção e rotula-o/a para desativar o seu alerta.' },
+          { rot:'Validação', ok:false, fb:'🟡 Não é validação. Validar seria: "Entendo que te sintas assim, falemos".' },
+          { rot:'Ambíguo / Não sei', ok:false, fb:'🟡 É compreensível duvidar. A névoa cognitiva busca exatamente isso: que questione o seu juízo.' }
+        ]},
+        { txt:'— Doeu-me que não me contaste isso.\n— Tens razão, devia ter consultado. Como te sentes agora?', opcs:[
+          { rot:'Manipulação', ok:false, fb:'🟡 Aqui há reconhecimento de impacto e pergunta pelo seu estado. Não é tática de controlo.' },
+          { rot:'Validação', ok:true, fb:'✅ Sim. Reconhece o dano, assume responsabilidade e abre espaço para a sua emoção.' },
+          { rot:'Ambíguo / Não sei', ok:false, fb:'🟡 Observe: há reparação ativa, não justificação. Isso marca a diferença.' }
+        ]},
+        { txt:'— Sair do armário no trabalho dá-me medo.\n— Melhor esperar, não é o momento. Pensa na tua família.', opcs:[
+          { rot:'Manipulação (chantagem identitária)', ok:true, fb:'✅ Sim. Usa "a tua família" como pressão para controlar a sua autonomia. O timing é seu.' },
+          { rot:'Preocupação legítima', ok:false, fb:'🟡 A preocupação pode ser real, mas quando decide por si, cruza para controlo.' },
+          { rot:'Ambíguo / Não sei', ok:false, fb:'🟡 Pergunta chave: Deixa-lhe a decisão final ou impõe?' }
+        ]}
+      ], final:'O gaslighting nem sempre é óbvio. Procure: 1) Negação da sua realidade 2) Rotulação patologizante 3) Inversão de culpa. A sua perceção é válida.' },
+      bussola: { titulo:'🧭 Bússola Emocional', intro:'Uma situação intensa. Escolha uma estratégia. Observe o impacto na "clareza".', cenarios:[
+        { sit:'O/A seu/sua parceiro/a diz: "Se me gostasses, não sairias com essas amizades".', estr:[
+          { nom:'5-4-3-2-1 (ancoragem)', ef:'+3 clareza', ci:'Reconecta córtex pré-frontal ao corpo; reduz ativação da amígdala.', ac:'Respire. Nomeie: 5 coisas que vê, 4 que toca, 3 que ouve, 2 que cheira, 1 que saboreia.' },
+          { nom:'Responder pela culpa', ef:'-2 clareza', ci:'A culpa internalizada reforça o ciclo; não é regulação emocional.', ac:'Cancela planos. Sente alívio breve, depois vazio.' },
+          { nom:'Limite assertivo', ef:'+4 clareza', ci:'Estabelecer limites retreinou a expectativa de respeito; base DBT afirmativa.', ac:'"Entendo a tua preocupação, mas as minhas amizades são minha decisão. Falemos do que te inquieta."' }
+        ]}
+      ], final:'A regulação emocional não é "acalmar-se". É recuperar acesso ao seu juízo. Pratique estratégias antes da crise.' },
+      'ciclo-jogo': { titulo:'🔄 Mapa do Ciclo', intro:'Arraste os eventos para a fase que achar. Não há ordem perfeita: os ciclos são espirais.', fases:['Idealização','Desvalorização','Crise','Reparação'], eventos:[
+        { txt:'Diz que é "a pessoa mais especial que conheceu"', fase:'Idealização' },
+        { txt:'Começa a criticar a sua forma de vestir "pelo seu bem"', fase:'Desvalorização' },
+        { txt:'Grita e parte algo; depois chora e pede perdão', fase:'Crise' },
+        { txt:'Oferece algo valioso e promete "mudar para sempre"', fase:'Reparação' },
+        { txt:'Isola-o/a de amizades "porque não o/a entendem"', fase:'Desvalorização' },
+        { txt:'Faz sentir culpado/a por impor limites', fase:'Desvalorização' }
+      ], final:'O ciclo sustenta-se com a esperança de voltar à "reparação". Quebrá-lo não é falhar: é escolher a sua realidade.' },
+      rede: { titulo:'🕸️ Rede de Validação', intro:'Construa a sua rede de apoio. Inclua diversidade: pessoas, espaços, recursos. 1-2 sólidos bastam.', nodos:[
+        { tipo:'pessoa', rot:'Amigue LGBTQ+ afirmativo', forca:3 },
+        { tipo:'espaço', rot:'Grupo juvenil local', forca:2 },
+        { tipo:'recurso', rot:'Linha de crise (188/112/Trevor)', forca:4 },
+        { tipo:'pessoa', rot:'Terapeuta especializado/a', forca:5 },
+        { tipo:'espaço', rot:'Comunidade online moderada', forca:2 },
+        { tipo:'recurso', rot:'App de ancoragem emocional', forca:1 }
+      ], final:'A recuperação é comunitária. A sua rede pode crescer com o tempo. O importante: que cada nodo o/a valide, não condicione.' }
+    },
+    iniciar(id) {
+      this.ativo = this.dados[id];
+      document.getElementById('area-jogo').classList.remove('hidden');
+      document.getElementById('titulo-jogo').textContent = this.ativo.titulo;
+      document.getElementById('feedback-jogo').classList.add('hidden');
+      document.getElementById('area-jogo').scrollIntoView({behavior:'smooth'});
+      if(id==='nevoa') this.renderNevoa();
+      else if(id==='bussola') this.renderBussola();
+      else if(id==='ciclo-jogo') this.renderCiclo();
+      else if(id==='rede') this.renderRede();
+    },
+    fechar() { document.getElementById('area-jogo').classList.add('hidden'); this.ativo = null; },
+    renderNevoa() {
+      const c = document.getElementById('conteudo-jogo');
+      let s=0, pts=0;
+      const render = () => {
+        if(s>=this.ativo.cenarios.length) { c.innerHTML=`<p><strong>✅ Concluído.</strong></p><p>${this.ativo.final}</p>`; return; }
+        const sc = this.ativo.cenarios[s];
+        c.innerHTML=`<p style="margin-bottom:16px;font-style:italic;background:var(--glass);padding:14px;border-radius:10px;">${sc.txt.replace(/\n/g,'<br>')}</p><div style="display:flex;flex-direction:column;gap:8px;">${sc.opcs.map((o,i)=>`<button class="btn" style="justify-content:flex-start;text-align:left;" onclick="Jogos.checkNevoa(${i},${o.ok},'${o.fb.replace(/'/g,"\\'")}')">${o.rot}</button>`).join('')}</div><p style="margin-top:12px;font-size:0.85rem;color:var(--text-muted);">Passo ${s+1} de ${this.ativo.cenarios.length}</p>`;
+      };
+      this.checkNevoa = (idx,ok,fb) => {
+        const f=document.getElementById('feedback-jogo'); f.classList.remove('hidden'); f.innerHTML=fb; if(ok) pts++;
+        setTimeout(()=>{s++; f.classList.add('hidden'); render();},2000);
+      };
+      render();
+    },
+    renderBussola() {
+      const c=document.getElementById('conteudo-jogo');
+      let s=0, clar=5;
+      const render=()=>{
+        if(s>=this.ativo.cenarios.length) { c.innerHTML=`<p><strong>Clareza final: ${clar}/10</strong></p><p>${this.ativo.final}</p><div style="margin-top:12px;height:8px;background:var(--surface);border-radius:4px;overflow:hidden;"><div style="width:${clar*10}%;height:100%;background:${clar>=7?'var(--safe)':'var(--primary)'};transition:width.3s;"></div></div>`; return; }
+        const sc=this.ativo.cenarios[s];
+        c.innerHTML=`<p style="margin-bottom:16px;"><strong>Situação:</strong><br><span style="font-style:italic">${sc.sit}</span></p><p style="margin-bottom:12px;">Clareza atual: <strong>${clar}/10</strong></p><div style="display:flex;flex-direction:column;gap:8px;">${sc.estr.map(e=>`<button class="btn" style="justify-content:flex-start;text-align:left;" onclick="Jogos.aplicaEstrategia('${e.ef}','${e.ci.replace(/'/g,"\\'")}','${e.ac.replace(/'/g,"\\'")}')"><strong>${e.nom}</strong><br><small style="color:var(--text-muted);font-weight:normal">${e.ef}</small></button>`).join('')}</div>`;
+      };
+      this.aplicaEstrategia=(ef,ci,ac)=>{
+        const ch=parseInt(ef); clar=Math.max(0,Math.min(10,clar+ch));
+        const f=document.getElementById('feedback-jogo'); f.classList.remove('hidden'); f.innerHTML=`<p><strong>${ac}</strong></p><p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;">🔬 ${ci}</p>`;
+        setTimeout(()=>{s++; f.classList.add('hidden'); render();},2500);
+      };
+      render();
+    },
+    renderCiclo() {
+      const c=document.getElementById('conteudo-jogo');
+      const colocados={};
+      c.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;">${this.ativo.fases.map((f,i)=>`<div class="game-zone" data-fase="${i}">${f}</div>`).join('')}</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">${this.ativo.eventos.map((e,i)=>`<button class="btn" style="padding:6px 10px;font-size:0.8rem;cursor:grab;" draggable="true" data-evt="${i}" ondragstart="event.dataTransfer.setData('text',event.target.dataset.evt)">${e.txt}</button>`).join('')}</div><p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">💡 Arraste cada evento para a fase que achar. Depois clique "Ver mapa".</p><button class="btn" onclick="Jogos.verCiclo()">Ver mapa</button>`;
+      document.querySelectorAll('.game-zone').forEach(z=>{
+        z.addEventListener('dragover',e=>{e.preventDefault(); z.classList.add('drag-over');});
+        z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));
+        z.addEventListener('drop',e=>{e.preventDefault(); z.classList.remove('drag-over'); const eid=e.dataTransfer.getData('text'); colocados[eid]=z.dataset.fase; z.classList.add('filled');});
+      });
+      this.verCiclo=()=>{
+        let ac=0;
+        this.ativo.eventos.forEach((e,i)=>{ if(colocados[i]==e.fase) ac++; });
+        const f=document.getElementById('feedback-jogo'); f.classList.remove('hidden');
+        f.innerHTML=`<p><strong>✅ ${ac}/${this.ativo.eventos.length} coincidências.</strong></p><p>${this.ativo.final}</p><p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;">🔍 Nota: Ciclos reais raramente são lineares. O importante é reconhecer os padrões, não a ordem perfeita.</p>`;
+      };
+    },
+    renderRede() {
+      const c=document.getElementById('conteudo-jogo');
+      c.innerHTML=`<p style="margin-bottom:16px;">Selecione os nodos para a sua rede inicial. Pode escolher entre 1 e 4.</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">${this.ativo.nodos.map((n,i)=>`<label style="background:var(--surface);padding:14px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border.2s;"><input type="checkbox" value="${i}" onchange="this.closest('label').style.borderColor = this.checked?'var(--primary)':'transparent';" style="margin-right:8px;"><strong>${n.rot}</strong><br><small style="color:var(--text-muted);">${n.tipo} • Força: ${n.forca}/5</small></label>`).join('')}</div><button class="btn" style="margin-top:16px;" onclick="Jogos.validarRede()">Construir rede</button><div id="viz-rede" style="margin-top:16px;display:none;"></div>`;
+      this.validarRede=()=>{
+        const escolhidos=[...document.querySelectorAll('#conteudo-jogo input:checked')].map(cb=>parseInt(cb.value));
+        if(escolhidos.length===0){alert('Selecione pelo menos 1 nodo.'); return;}
+        const forcaTotal=escolhidos.reduce((s,i)=>s+this.ativo.nodos[i].forca,0);
+        const diversidade=new Set(escolhidos.map(i=>this.ativo.nodos[i].tipo)).size;
+        const v=document.getElementById('viz-rede'); v.style.display='block';
+        v.innerHTML=`<p><strong>🕸️ A sua rede inicial:</strong></p><ul style="margin:8px 0 16px 20px;">${escolhidos.map(i=>`<li>${this.ativo.nodos[i].rot} (${this.ativo.nodos[i].tipo})</li>`).join('')}</ul><p><strong>Força total:</strong> ${forcaTotal}/20 • <strong>Diversidade:</strong> ${diversidade}/3 tipos</p><p>${this.ativo.final}</p>${diversidade<2?'<p style="color:var(--accent);margin-top:8px;">💡 Sugestão: Incluir pelo menos 2 tipos de nodos aumenta resiliência.</p>':''}`;
+      };
+    }
+  };
+
+  // === PRIVACIDADE & ACESSIBILIDADE ===
+  const Acessibilidade = {
+    limparTudo: () => { if(confirm('Apagar histórico local, galeria e recarregar?')) { sessionStorage.clear(); localStorage.clear(); location.reload(); } }
+  };
+  document.getElementById('clear-all').addEventListener('click', Acessibilidade.limparTudo);
+  window.Acessibilidade = Acessibilidade;
+  window.Jogos = Jogos;
+
+  // Init lang
+  i18nAplicar(langSel.value);
+
+  console.log('🪞 Espelho de Judas: 100% local. Sem rasto. Sem nuvem. Completo.');
+})();
+</script>
+</body>
+</html>
+```

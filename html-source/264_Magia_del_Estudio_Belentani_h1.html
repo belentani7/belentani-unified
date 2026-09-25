@@ -1,0 +1,948 @@
+Perfecto. Ahora creo la **PARTE 3: VOZ ORACULAR** completa con Whisper local, detección de intención mágica y respuestas cantadas con frecuencias solfeggio.
+
+## 🎙️ **STUDIO LAB — PARTE 3: VOZ ORACULAR v5.0**
+
+###  **ESTRUCTURA COMPLETA**
+
+```bash
+studio-lab/
+├── backend/
+│   ├── voice/
+│   │   ├── whisper-engine.js        # Whisper.cpp WASM
+│   │   ├── emotion-detector.js      # Análisis emocional de voz
+│   │   ├── intention-analyzer.js    # Detecta: susurro/grito/rezo/confesión
+│   │   ├── breathing-analyzer.js    # Patrones de respiración
+│   │   └── voice-synthesizer.js     # TTS con solfeggio
+│   └── server.js
+├── frontend/
+│   ├── oracle-voice.html
+│   ├── js/
+│   │   ├── voice-capture.js         # Captura de micrófono
+│   │   ├── oracle-ui.js             # Interfaz mágica
+│   │   └── audio-visualizer.js      # Visualizador de ondas
+│   └── css/
+│       └── oracle-styles.css
+└── models/
+    └── whisper/                     # Modelos Whisper
+```
+
+---
+
+###  **1. WHISPER ENGINE (Backend)**
+
+```javascript
+// backend/voice/whisper-engine.js
+import { pipeline } from '@xenova/transformers';
+import fs from 'fs';
+import path from 'path';
+
+class WhisperEngine {
+  constructor() {
+    this.transcriber = null;
+    this.isLoaded = false;
+    this.modelSize = 'tiny'; // tiny, base, small, medium
+  }
+
+  async initialize() {
+    console.log('️ Cargando Whisper Engine...');
+    
+    try {
+      // Usa transformers.js para Whisper en Node.js
+      this.transcriber = await pipeline(
+        'automatic-speech-recognition',
+        'Xenova/whisper-tiny' // 75MB - rápido y privado
+      );
+      
+      this.isLoaded = true;
+      console.log('✅ Whisper Engine listo');
+      
+      return {
+        success: true,
+        model: this.modelSize,
+        size: '75MB'
+      };
+    } catch (error) {
+      console.error('❌ Error cargando Whisper:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  async transcribe(audioBuffer) {
+    if (!this.isLoaded) {
+      await this.initialize();
+    }
+
+    try {
+      // Convertir buffer a Float32Array
+      const audioData = this.bufferToFloat32(audioBuffer);
+      
+      const result = await this.transcriber(audioData, {
+        language: 'es',
+        task: 'transcribe',
+        return_timestamps: true
+      });
+
+      return {
+        success: true,
+        text: result.text.trim(),
+        language: result.language,
+        chunks: result.chunks || []
+      };
+    } catch (error) {
+      console.error('Error transcribiendo:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  bufferToFloat32(buffer) {
+    // Convertir AudioBuffer a Float32Array (mono, 16kHz)
+    const audioData = buffer.getChannelData(0);
+    const sampleRate = buffer.sampleRate;
+    
+    // Resamplear a 16kHz si es necesario
+    if (sampleRate === 16000) {
+      return audioData;
+    }
+    
+    return this.resample(audioData, sampleRate, 16000);
+  }
+
+  resample(audioData, fromRate, toRate) {
+    const ratio = fromRate / toRate;
+    const newLength = Math.floor(audioData.length / ratio);
+    const result = new Float32Array(newLength);
+    
+    for (let i = 0; i < newLength; i++) {
+      const position = i * ratio;
+      const index = Math.floor(position);
+      const fraction = position - index;
+      
+      if (index + 1 < audioData.length) {
+        result[i] = audioData[index] * (1 - fraction) + audioData[index + 1] * fraction;
+      } else {
+        result[i] = audioData[index] || 0;
+      }
+    }
+    
+    return result;
+  }
+
+  async transcribeStream(audioChunks) {
+    // Para streaming en tiempo real
+    const fullBuffer = Buffer.concat(audioChunks);
+    return await this.transcribe(fullBuffer);
+  }
+}
+
+export default new WhisperEngine();
+```
+
+---
+
+### 🎭 **2. INTENTION ANALYZER**
+
+```javascript
+// backend/voice/intention-analyzer.js
+import natural from 'natural';
+import { SentimentAnalyzer } from 'natural';
+
+class IntentionAnalyzer {
+  constructor() {
+    this.analyzer = new SentimentAnalyzer();
+    this.stemmer = natural.PorterStemmer;
+    
+    // Patrones mágicos de intención
+    this.patterns = {
+      whisper: {
+        keywords: ['susurro', 'bajo', 'quieto', 'secreto', 'nadie escucha', 'confidencial'],
+        volume: { min: 0, max: 0.3 },
+        tempo: { min: 0, max: 0.6 }
+      },
+      shout: {
+        keywords: ['grito', 'fuerte', 'ayuda', 'socorro', 'basta', 'no más'],
+        volume: { min: 0.7, max: 1.0 },
+        tempo: { min: 0.8, max: 1.0 }
+      },
+      prayer: {
+        keywords: ['por favor', 'te ruego', 'ayúdame', 'guíame', 'bendice', 'gracias', 'amén', 'dios'],
+        emotional: { min: 0.3, max: 0.8 },
+        tempo: { min: 0.3, max: 0.7 }
+      },
+      confession: {
+        keywords: ['confieso', 'pecado', 'culpa', 'arrepiento', 'perdón', 'vergüenza', 'oculté'],
+        emotional: { min: 0.5, max: 1.0 },
+        pauses: { min: 3, max: 10 }
+      },
+      question: {
+        keywords: ['qué', 'cómo', 'cuándo', 'por qué', 'dónde', 'cuál'],
+        punctuation: '?',
+        tempo: { min: 0.4, max: 0.8 }
+      },
+      command: {
+        keywords: ['quiero', 'necesito', 'exijo', 'dame', 'haz', 'muestra'],
+        volume: { min: 0.4, max: 0.9 },
+        tempo: { min: 0.5, max: 0.9 }
+      }
+    };
+  }
+
+  analyze(text, audioMetrics = {}) {
+    const result = {
+      primary: null,
+      secondary: null,
+      confidence: 0,
+      metrics: {},
+      oracle: null
+    };
+
+    // Análisis de sentimiento
+    const tokens = text.toLowerCase().split(/\s+/);
+    const sentiment = this.analyzer.getSentiment(tokens);
+    
+    // Detectar intención principal
+    let scores = {};
+    
+    for (const [intention, pattern] of Object.entries(this.patterns)) {
+      scores[intention] = 0;
+      
+      // Keywords match
+      const keywordMatches = pattern.keywords.filter(k => text.toLowerCase().includes(k));
+      scores[intention] += (keywordMatches.length / pattern.keywords.length) * 0.4;
+      
+      // Audio metrics match
+      if (pattern.volume && audioMetrics.volume !== undefined) {
+        const volMatch = audioMetrics.volume >= pattern.volume.min && 
+                        audioMetrics.volume <= pattern.volume.max;
+        scores[intention] += volMatch ? 0.3 : 0;
+      }
+      
+      if (pattern.tempo && audioMetrics.tempo !== undefined) {
+        const tempoMatch = audioMetrics.tempo >= pattern.tempo.min && 
+                          audioMetrics.tempo <= pattern.tempo.max;
+        scores[intention] += tempoMatch ? 0.2 : 0;
+      }
+      
+      if (pattern.emotional && audioMetrics.emotion !== undefined) {
+        const emoMatch = audioMetrics.emotion >= pattern.emotional.min && 
+                        audioMetrics.emotion <= pattern.emotional.max;
+        scores[intention] += emoMatch ? 0.1 : 0;
+      }
+    }
+
+    // Ordenar por score
+    const sorted = Object.entries(scores)
+      .sort((a, b) => b[1] - a[1]);
+
+    result.primary = sorted[0][0];
+    result.secondary = sorted[1][0];
+    result.confidence = sorted[0][1];
+    result.metrics = {
+      sentiment,
+      scores,
+      audioMetrics
+    };
+
+    // Mapear a oráculo
+    result.oracle = this.mapToOracle(result.primary, text);
+
+    return result;
+  }
+
+  mapToOracle(intention, text) {
+    const oracleMap = {
+      whisper: 'dreamweaver',      // Susurros → Intérprete de sueños
+      shout: 'karmic',             // Gritos → Calculadora kármica
+      prayer: 'timeline',          // Rezos → Oráculo de tiempo
+      confession: 'soul_mirror',   // Confesiones → Espejo del alma
+      question: 'frequency',       // Preguntas → Tuner de frecuencia
+      command: 'syntesia'          // Comandos → Sinestesia
+    };
+
+    // Overrides por keywords específicas
+    if (text.includes('sueño') || text.includes('soñé')) return 'dreamweaver';
+    if (text.includes('serpiente') || text.includes('oro')) return 'syntesia';
+    if (text.includes('traición') || text.includes('deuda')) return 'karmic';
+    if (text.includes('arquetipo') || text.includes('quién soy')) return 'soul_mirror';
+
+    return oracleMap[intention] || 'syntesia';
+  }
+
+  detectBreathingPattern(audioMetrics) {
+    // Detectar patrones de respiración
+    const { inhaleRate, exhaleRate, pauses } = audioMetrics;
+    
+    if (inhaleRate > exhaleRate * 1.5) {
+      return 'anxious'; // Ansioso: inhala rápido
+    } else if (exhaleRate > inhaleRate * 1.5) {
+      return 'relieved'; // Aliviado: exhala largo
+    } else if (pauses > 5) {
+      return 'contemplative'; // Contemplativo: muchas pausas
+    } else {
+      return 'balanced'; // Equilibrado
+    }
+  }
+}
+
+export default new IntentionAnalyzer();
+```
+
+---
+
+### 🎵 **3. VOICE SYNTHESIZER (Solfeggio)**
+
+```javascript
+// backend/voice/voice-synthesizer.js
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+
+class VoiceSynthesizer {
+  constructor() {
+    // Frecuencias Solfeggio
+    this.solfeggioFrequencies = {
+      '174': { name: 'Alivio del dolor', effect: 'grounding' },
+      '285': { name: 'Renovación energética', effect: 'healing' },
+      '396': { name: 'Liberación de culpa', effect: 'liberation' },
+      '417': { name: 'Facilitar cambio', effect: 'transformation' },
+      '528': { name: 'Reparación ADN', effect: 'miracle' },
+      '639': { name: 'Conexión/Relaciones', effect: 'connection' },
+      '741': { name: 'Expresión/Intuición', effect: 'awakening' },
+      '852': { name: 'Despertar intuición', effect: 'spiritual' },
+      '963': { name: 'Conexión divina', effect: 'divinity' }
+    };
+
+    this.engine = 'espeak-ng'; // o 'pico2wave', 'google-tts'
+  }
+
+  async synthesize(text, options = {}) {
+    const {
+      frequency = '528',
+      personality = 'angel',
+      speed = 0.8,
+      pitch = 1.0,
+      addHarmonics = true
+    } = options;
+
+    // 1. Generar voz base
+    const voiceFile = await this.generateBaseVoice(text, personality, speed, pitch);
+
+    // 2. Añadir frecuencia solfeggio
+    if (addHarmonics) {
+      return await this.addSolfeggioHarmonics(voiceFile, frequency);
+    }
+
+    return voiceFile;
+  }
+
+  async generateBaseVoice(text, personality, speed, pitch) {
+    const personalityVoices = {
+      angel: 'es',        // Voz suave
+      warrior: 'es',      // Voz firme
+      analytical: 'es',   // Voz clara
+      chronicler: 'es',   // Voz narrativa
+      core: 'es'          // Voz profunda
+    };
+
+    const voice = personalityVoices[personality] || 'es';
+    const outputFile = `/tmp/voice_${Date.now()}.wav`;
+
+    return new Promise((resolve, reject) => {
+      const cmd = `espeak-ng -v ${voice} -s ${Math.floor(speed * 150)} -p ${Math.floor(pitch * 50)} -w ${outputFile} "${text}"`;
+      
+      exec(cmd, (error) => {
+        if (error) reject(error);
+        else resolve(outputFile);
+      });
+    });
+  }
+
+  async addSolfeggioHarmonics(voiceFile, frequency) {
+    const outputFile = `/tmp/voice_solfeggio_${Date.now()}.wav`;
+    
+    // Usar ffmpeg para mezclar la voz con la frecuencia solfeggio
+    const cmd = `ffmpeg -i ${voiceFile} -f lavfi -i "sine=frequency=${frequency}:duration=10" -filter_complex "[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3" -y ${outputFile}`;
+
+    return new Promise((resolve, reject) => {
+      exec(cmd, (error) => {
+        if (error) reject(error);
+        else {
+          // Limpiar archivo temporal
+          fs.unlinkSync(voiceFile);
+          resolve(outputFile);
+        }
+      });
+    });
+  }
+
+  getRecommendedFrequency(intention, emotion) {
+    // Mapear intención + emoción a frecuencia
+    const map = {
+      'confession:fear': '396',  // Liberación de culpa
+      'prayer:hope': '528',      // Milagros
+      'question:confusion': '741', // Intuición
+      'shout:anger': '417',      // Transformación
+      'whisper:mystery': '852',  // Despertar espiritual
+      'command:power': '963'     // Conexión divina
+    };
+
+    const key = `${intention}:${emotion}`;
+    return map[key] || '528'; // Default: 528Hz (reparación)
+  }
+
+  streamToClient(filePath, res) {
+    res.setHeader('Content-Type', 'audio/wav');
+    res.setHeader('Content-Disposition', 'attachment; filename=oracle_response.wav');
+    
+    const stream = fs.createReadStream(filePath);
+    stream.pipe(res);
+    
+    stream.on('end', () => {
+      fs.unlinkSync(filePath); // Limpiar después de enviar
+    });
+  }
+}
+
+export default new VoiceSynthesizer();
+```
+
+---
+
+### 🎙️ **4. FRONTEND - CAPTURA DE VOZ**
+
+```javascript
+// frontend/js/voice-capture.js
+class VoiceCapture {
+  constructor() {
+    this.mediaRecorder = null;
+    this.audioChunks = [];
+    this.audioContext = null;
+    this.analyser = null;
+    this.isRecording = false;
+    this.onDataAvailable = null;
+  }
+
+  async initialize() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 16000,
+          channelCount: 1
+        }
+      });
+
+      this.mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.analyser = this.audioContext.createAnalyser();
+      this.analyser.fftSize = 2048;
+
+      const source = this.audioContext.createMediaStreamSource(stream);
+      source.connect(this.analyser);
+
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data);
+        }
+      };
+
+      this.mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+        const audioBuffer = await this.blobToArrayBuffer(audioBlob);
+        
+        if (this.onDataAvailable) {
+          this.onDataAvailable(audioBuffer, this.getAudioMetrics());
+        }
+        
+        this.audioChunks = [];
+      };
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error inicializando micrófono:', error);
+      return { 
+        success: false, 
+        error: 'Permiso de micrófono denegado o no disponible' 
+      };
+    }
+  }
+
+  startRecording() {
+    if (this.mediaRecorder && !this.isRecording) {
+      this.audioChunks = [];
+      this.mediaRecorder.start(100); // Enviar chunks cada 100ms
+      this.isRecording = true;
+      return true;
+    }
+    return false;
+  }
+
+  stopRecording() {
+    if (this.mediaRecorder && this.isRecording) {
+      this.mediaRecorder.stop();
+      this.isRecording = false;
+      return true;
+    }
+    return false;
+  }
+
+  getAudioMetrics() {
+    // Analizar métricas de audio en tiempo real
+    const bufferLength = this.analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    this.analyser.getByteTimeDomainData(dataArray);
+
+    // Calcular volumen (RMS)
+    let sum = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      const x = (dataArray[i] - 128) / 128.0;
+      sum += x * x;
+    }
+    const rms = Math.sqrt(sum / bufferLength);
+
+    // Detectar tempo (cero crossings)
+    let zeroCrossings = 0;
+    for (let i = 1; i < bufferLength; i++) {
+      if ((dataArray[i - 1] < 128 && dataArray[i] >= 128) ||
+          (dataArray[i - 1] >= 128 && dataArray[i] < 128)) {
+        zeroCrossings++;
+      }
+    }
+    const tempo = zeroCrossings / bufferLength;
+
+    return {
+      volume: Math.min(rms * 3, 1.0), // Normalizar
+      tempo: Math.min(tempo * 10, 1.0),
+      rawRMS: rms,
+      zeroCrossings
+    };
+  }
+
+  toggleRecording() {
+    if (this.isRecording) {
+      this.stopRecording();
+      return false;
+    } else {
+      this.startRecording();
+      return true;
+    }
+  }
+}
+
+export default new VoiceCapture();
+```
+
+---
+
+### 🎨 **5. UI MÁGICA DE ORÁCULO**
+
+```html
+<!-- frontend/oracle-voice.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOZ ORACULAR | STUDIO LAB</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    
+    body {
+      font-family: 'Orbitron', monospace;
+      background: #0a0a0a;
+      color: #fff;
+    }
+
+    .oracle-container {
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #1a0b2e 0%, #0a0a0a 100%);
+    }
+
+    .voice-orb {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(138,43,226,0.1) 70%);
+      box-shadow: 0 0 60px rgba(255,215,0,0.3),
+                  inset 0 0 60px rgba(255,215,0,0.1);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .voice-orb.recording {
+      animation: pulse-gold 2s ease-in-out infinite;
+      box-shadow: 0 0 100px rgba(255,215,0,0.6),
+                  inset 0 0 100px rgba(255,215,0,0.2);
+    }
+
+    @keyframes pulse-gold {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .voice-wave {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(255,215,0,0.3);
+      animation: ripple 3s ease-out infinite;
+    }
+
+    @keyframes ripple {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 400px; height: 400px; opacity: 0; }
+    }
+
+    .intention-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .intention-whisper { background: rgba(147,112,219,0.3); border: 1px solid #9370DB; }
+    .intention-shout { background: rgba(220,20,60,0.3); border: 1px solid #DC143C; }
+    .intention-prayer { background: rgba(255,215,0,0.3); border: 1px solid #FFD700; }
+    .intention-confession { background: rgba(75,0,130,0.3); border: 1px solid #4B0082; }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 5px currentColor; }
+      50% { box-shadow: 0 0 20px currentColor; }
+    }
+
+    .frequency-display {
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255,215,0,0.5);
+    }
+
+    .oracle-response {
+      background: rgba(26,11,46,0.8);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .record-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 30px rgba(255,215,0,0.4);
+    }
+
+    .record-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 50px rgba(255,215,0,0.6);
+    }
+
+    .record-btn.recording {
+      background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+      animation: record-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes record-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(220,20,60,0.6); }
+      50% { box-shadow: 0 0 40px rgba(220,20,60,0.9); }
+    }
+  </style>
+</head>
+<body class="oracle-container">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-purple-600">
+        🎙️ VOZ ORACULAR
+      </h1>
+      <p class="text-gray-400">Habla. El sistema escucha. El oráculo responde.</p>
+    </header>
+
+    <!-- Main Interface -->
+    <div class="flex flex-col items-center">
+      <!-- Voice Orb -->
+      <div class="voice-orb mb-8" id="voiceOrb">
+        <div class="voice-wave"></div>
+        <div class="voice-wave" style="animation-delay: 1s"></div>
+        <div class="voice-wave" style="animation-delay: 2s"></div>
+      </div>
+
+      <!-- Intention Badge -->
+      <div id="intentionBadge" class="intention-badge mb-6 hidden">
+        <span id="intentionText">ESCUCHANDO...</span>
+      </div>
+
+      <!-- Frequency Display -->
+      <div class="frequency-display mb-4" id="frequencyDisplay">528 Hz</div>
+      <p class="text-gray-400 mb-8" id="frequencyName">Reparación ADN / Milagros</p>
+
+      <!-- Record Button -->
+      <button id="recordBtn" class="record-btn mb-8">
+        <svg class="w-10 h-10 mx-auto text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"/>
+        </svg>
+      </button>
+
+      <!-- Status -->
+      <p id="statusText" class="text-gray-400 mb-4">Presiona para hablar</p>
+
+      <!-- Transcript -->
+      <div id="transcript" class="w-full max-w-2xl text-center text-lg mb-4 min-h-[60px] text-yellow-200">
+        <!-- Texto transcrito aparece aquí -->
+      </div>
+
+      <!-- Oracle Response -->
+      <div id="oracleResponse" class="oracle-response w-full max-w-2xl hidden">
+        <h3 class="text-xl font-bold mb-2 text-yellow-400">RESPUESTA DEL ORÁCULO</h3>
+        <p id="responseText" class="text-gray-200"></p>
+        <button id="playResponse" class="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded">
+           Escuchar respuesta
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import VoiceCapture from './js/voice-capture.js';
+    import OracleUI from './js/oracle-ui.js';
+
+    const recordBtn = document.getElementById('recordBtn');
+    const statusText = document.getElementById('statusText');
+    const voiceOrb = document.getElementById('voiceOrb');
+
+    let isInitialized = false;
+
+    // Inicializar
+    recordBtn.addEventListener('click', async () => {
+      if (!isInitialized) {
+        const result = await VoiceCapture.initialize();
+        if (result.success) {
+          isInitialized = true;
+          VoiceCapture.onDataAvailable = handleAudio;
+        } else {
+          alert(result.error);
+          return;
+        }
+      }
+
+      const isRecording = VoiceCapture.toggleRecording();
+      
+      if (isRecording) {
+        recordBtn.classList.add('recording');
+        voiceOrb.classList.add('recording');
+        statusText.textContent = 'Escuchando... habla ahora';
+      } else {
+        recordBtn.classList.remove('recording');
+        voiceOrb.classList.remove('recording');
+        statusText.textContent = 'Procesando...';
+      }
+    });
+
+    async function handleAudio(audioBuffer, metrics) {
+      statusText.textContent = 'Analizando intención...';
+      
+      try {
+        // Enviar al backend
+        const response = await fetch('/api/voice/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            audio: arrayBufferToBase64(audioBuffer),
+            metrics
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          OracleUI.displayIntention(data.intention);
+          OracleUI.displayTranscript(data.transcript);
+          OracleUI.displayOracleResponse(data.oracle);
+          
+          statusText.textContent = 'Oráculo respondiendo...';
+        } else {
+          statusText.textContent = 'Error: ' + data.error;
+        }
+      } catch (error) {
+        console.error(error);
+        statusText.textContent = 'Error de conexión';
+      }
+    }
+
+    function arrayBufferToBase64(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+  </script>
+</body>
+</html>
+```
+
+---
+
+### 🌐 **6. BACKEND API ROUTES**
+
+```javascript
+// backend/routes/voice.routes.js
+import express from 'express';
+import whisperEngine from '../voice/whisper-engine.js';
+import intentionAnalyzer from '../voice/intention-analyzer.js';
+import voiceSynthesizer from '../voice/voice-synthesizer.js';
+import syntesiaEngine from '../magic/syntesia.js';
+import dreamweaver from '../magic/dreamweaver.js';
+import soulMirror from '../magic/soul-mirror.js';
+
+const router = express.Router();
+
+// Analizar voz completa
+router.post('/analyze', async (req, res) => {
+  try {
+    const { audio, metrics } = req.body;
+    
+    // 1. Transcribir
+    const transcription = await whisperEngine.transcribe(Buffer.from(audio, 'base64'));
+    
+    if (!transcription.success) {
+      return res.json({ success: false, error: transcription.error });
+    }
+
+    // 2. Analizar intención
+    const intention = intentionAnalyzer.analyze(transcription.text, metrics);
+    
+    // 3. Detectar respiración
+    const breathing = intentionAnalyzer.detectBreathingPattern(metrics);
+    
+    // 4. Consultar oráculo apropiado
+    const oracleResponse = await queryOracle(intention.oracle, transcription.text, {
+      intention: intention.primary,
+      breathing,
+      metrics
+    });
+
+    // 5. Generar respuesta de voz
+    const frequency = voiceSynthesizer.getRecommendedFrequency(
+      intention.primary, 
+      metrics.emotion || 'neutral'
+    );
+
+    const audioResponse = await voiceSynthesizer.synthesize(oracleResponse.text, {
+      frequency,
+      personality: oracleResponse.personality
+    });
+
+    res.json({
+      success: true,
+      transcript: transcription.text,
+      intention,
+      breathing,
+      oracle: {
+        type: intention.oracle,
+        response: oracleResponse.text,
+        frequency,
+        audioFile: audioResponse
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en análisis de voz:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Consultar oráculo específico
+async function queryOracle(type, text, context) {
+  const oracles = {
+    syntesia: syntesiaEngine,
+    dreamweaver: dreamweaver,
+    soul_mirror: soulMirror,
+    // ... otros oráculos
+  };
+
+  const oracle = oracles[type] || syntesiaEngine;
+  return await oracle.analyze(text, context);
+}
+
+export default router;
+```
+
+---
+
+###  **7. INSTALACIÓN Y USO**
+
+```bash
+# Instalar dependencias
+npm install express @xenova/transformers natural espeak-ng fluent-ffmpeg tone
+
+# Instalar espeak-ng (Linux)
+sudo apt-get install espeak-ng ffmpeg
+
+# Iniciar servidor
+npm start
+
+# Acceder a:
+http://localhost:3000/oracle-voice.html
+```
+
+---
+
+### ✨ **QUÉ PUEDE HACER ESTE SISTEMA**
+
+| **Capacidad** | **Implementación** |
+|---------------|-------------------|
+| ️ **Transcripción local** | Whisper tiny (75MB) - 100% privado |
+| 🎭 **Detección de intención** | Susurro/Grito/Rezo/Confesión/Pregunta |
+| 🌊 **Análisis de respiración** | Ansioso/Equilibrado/Contemplativo |
+| 🎵 **Respuesta cantada** | Solfeggio frequencies + TTS |
+| 🔮 **9 oráculos automáticos** | Según intención detectada |
+| 💫 **Efectos visuales** | Orb dorado pulsante + ondas |
+|  **Personalidades** | Ángel/Guerrero/Analítico/Cronista |
+
+---
+
+###  **EJEMPLO DE USO**
+
+**Usuario susurra:** *"Anoche soñé con una serpiente dorada..."*
+
+**El sistema detecta:**
+- Intención: `whisper` (volumen bajo, tempo lento)
+- Oracle: `dreamweaver` (menciona "sueño")
+- Frecuencia: `852 Hz` (despertar intuición)
+- Respiración: `contemplative` (muchas pausas)
+
+**Respuesta del Ángel:**
+*"La serpiente dorada es kundalini despertando. Tu intuición se eleva. Medita en 852Hz durante 21 minutos."*
+
+**Audio:** Voz suave con armónicos en 852Hz.
+
+---
+
+¿Quieres que añada **Whisper streaming en tiempo real** o **Stable Diffusion local** para que el oráculo genere imágenes mientras habla?

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omega Core // Judas Experience - Belentani</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #020203;
+            --core-white: #ffffff;
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff0055;
+            --neon-purple: #b500ff;
+            --text-muted: #444444;
+            --border-alpha: rgba(255, 255, 255, 0.04);
+            --scanline-color: rgba(0, 243, 255, 0.015);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+            background-color: var(--bg-color);
+            font-family: 'Chakra Petch', sans-serif;
+            color: var(--core-white);
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+        /* EFECTO 1: LENTE DE TUBOS CATÓDICOS (CRT) Y TEXTURA DE PANTALLA REALISTA */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(var(--scanline-color) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 9999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Distorsión de viñeta analógica pesada */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 100%);
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        /* Rejilla de Fondo Estructurada */
+        .exo-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                linear-gradient(to right, var(--border-alpha) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-alpha) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        header {
+            grid-column: span 12;
+            height: 70px;
+            border-bottom: 1px solid var(--border-alpha);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            font-family: 'Share Tech Mono', monospace;
+            background: rgba(2, 2, 3, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .system-clock {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+
+        /* EFECTO 2: ILUMINACIÓN ULTRA-SATURADA CRUZADA (Escenario Cyberpunk) */
+        .hero-tower {
+            grid-column: span 12;
+            height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-beam-left {
+            position: absolute;
+            left: -10%; top: -10%; width: 50vw; height: 120vh;
+            background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.12) 0%, transparent 60%);
+            transform: rotate(-15deg);
+            filter: blur(60px);
+            pointer-events: none;
+            animation: pulseGlowLeft 8s infinite alternate ease-in-out;
+        }
+
+        .neon-beam-right {
+            position: absolute;
+            right: -10%; bottom: -10%; width: 50vw; height: 120vh;
+            background: radial-gradient(ellipse at center, rgba(255, 0, 85, 0.12) 0%, transparent 60%);
+            transform: rotate(15deg);
+            filter: blur(60px);
+            pointer-events: none;
+            animation: pulseGlowRight 8s infinite alternate ease-in-out;
+        }
+
+        /* EFECTO 3: GLITCH EXAGERADO PERO ARMÓNICO Y ABERRACIÓN CROMÁTICA */
+        .glitch-wrapper {
+            position: relative;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .omega-title {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            line-height: 0.9;
+            position: relative;
+            color: var(--core-white);
+            animation: textGlitch 5s infinite;
+        }
+
+        /* Copias ocultas para la aberración cromática (Rojo / Azul) */
+        .omega-title::before, .omega-title::after {
+            content: "BELENTANI";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            overflow: hidden;
+            white-space: pre;
+        }
+
+        .omega-title::before {
+            left: 3px;
+            text-shadow: -3px 0 var(--neon-magenta);
+            clip-path: inset(24px 0 90px 0);
+            animation: glitchLines 3s infinite linear alternate-reverse;
+        }
+
+        .omega-title::after {
+            left: -3px;
+            text-shadow: -3px 0 var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            clip-path: inset(85px 0 140px 0);
+            animation: glitchLines 2s infinite linear alternate;
+        }
+
+        .omega-title .line-2 {
+            display: block;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        .omega-subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-purple);
+            margin-top: 25px;
+            font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--neon-purple);
+            opacity: 0.8;
+        }
+
+        /* EFECTO 4: EL ESPEJO EN EL SUELO CON REFLEJO INVERTIDO REALISTA */
+        .mirror-container {
+            margin-top: 80px;
+            position: relative;
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mirror-laser {
+            width: clamp(280px, 60vw, 450px);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-magenta), transparent);
+            box-shadow: 0 0 25px #00f3ff, 0 0 10px #ff0055;
+            animation: laserPulse 2s infinite alternate;
+        }
+
+        .mirror-reflection {
+            position: absolute;
+            top: 20px; left: 0; width: 100%;
+            transform: scaleY(-1) rotateX(20deg);
+            opacity: 0.15;
+            filter: blur(3px) grayscale(30%);
+            text-align: center;
+            pointer-events: none;
+            transition: all 0.5s ease;
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .mirror-container:hover .mirror-reflection {
+            opacity: 0.4;
+            filter: blur(1px) drop-shadow(0 0 15px var(--neon-cyan));
+            transform: scaleY(-1) rotateX(10deg) translateY(-5px);
+        }
+
+        .mirror-reflection .r-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .mirror-reflection .r-sub {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            margin-top: 10px;
+        }
+
+        /* Bloques de Datos Fragmentados */
+        .data-panel {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border-alpha);
+            background: rgba(2, 2, 3, 0.5);
+        }
+
+        .data-fragment {
+            padding: 50px;
+            border-right: 1px solid var(--border-alpha);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            user-select: text;
+        }
+
+        .data-fragment:last-child { border-right: none; }
+
+        .data-fragment::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .data-fragment:hover::before { transform: scaleX(1); }
+
+        .data-fragment:hover {
+            background: rgba(255, 255, 255, 0.01);
+            color: var(--core-white);
+        }
+
+        .fragment-number {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .data-fragment:hover .fragment-number {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .fragment-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--core-white);
+        }
+
+        .fragment-body {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        .fragment-body .value {
+            color: var(--neon-cyan);
+        }
+
+        /* Sistema de terminal inferior */
+        .terminal {
+            grid-column: span 12;
+            padding: 30px 40px;
+            border-top: 1px solid var(--border-alpha);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .terminal .t-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal .t-item .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 8px var(--neon-cyan);
+            animation: blink 1.5s infinite;
+        }
+
+        .terminal .t-item .dot.magenta {
+            background: var(--neon-magenta);
+            box-shadow: 0 0 8px var(--neon-magenta);
+        }
+
+        footer {
+            grid-column: span 12;
+            padding: 40px;
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-alpha);
+            text-transform: uppercase;
+        }
+
+        /* ANIMACIONES MATEMÁTICAS */
+        @keyframes pulseGlowLeft {
+            0% { transform: rotate(-15deg) scale(0.9); opacity: 0.7; }
+            100% { transform: rotate(-10deg) scale(1.1); opacity: 1; }
+        }
+
+        @keyframes pulseGlowRight {
+            0% { transform: rotate(15deg) scale(0.9); opacity: 0.7; }
+            100% { transform: rotate(10deg) scale(1.1); opacity: 1; }
+        }
+
+        @keyframes laserPulse {
+            0% { transform: scaleX(0.95); opacity: 0.8; }
+            100% { transform: scaleX(1.05); opacity: 1; }
+        }
+
+        @keyframes textGlitch {
+            0%, 95%, 100% { transform: skew(0deg); }
+            96% { transform: skew(-4deg) scaleY(1.05); }
+            97% { transform: skew(6deg); }
+            98% { transform: translateX(4px) skew(-2deg); }
+            99% { transform: translateX(-2px) skew(0deg); }
+        }
+
+        @keyframes glitchLines {
+            0% { clip-path: inset(40% 0 61% 0); }
+            20% { clip-path: inset(92% 0 1% 0); }
+            40% { clip-path: inset(5% 0 85% 0); }
+            60% { clip-path: inset(72% 0 18% 0); }
+            80% { clip-path: inset(10% 0 60% 0); }
+            100% { clip-path: inset(45% 0 40% 0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .data-fragment { padding: 36px; }
+            .omega-subtitle { letter-spacing: 8px; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+            .system-clock { display: none; }
+            .data-panel { grid-template-columns: 1fr; }
+            .data-fragment { border-right: none; border-bottom: 1px solid var(--border-alpha); }
+            .data-fragment:last-child { border-bottom: none; }
+            .hero-tower { height: calc(100vh - 70px); }
+            .terminal { flex-direction: column; padding: 20px; }
+            .omega-title { letter-spacing: -2px; }
+            footer { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exo-grid"></div>
+
+    <div class="grid-container">
+
+        <header>
+            <div class="system-status">
+                <span>◉ OMEGA CORE</span>
+            </div>
+            <div class="system-clock" id="clock">00:00:00</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero-tower">
+            <div class="neon-beam-left"></div>
+            <div class="neon-beam-right"></div>
+
+            <div class="glitch-wrapper">
+                <h1 class="omega-title">
+                    BELENTANI
+                    <span class="line-2">OMEGA</span>
+                </h1>
+                <p class="omega-subtitle">Judas Experience</p>
+            </div>
+
+            <div class="mirror-container">
+                <div class="mirror-laser"></div>
+                <div class="mirror-reflection">
+                    <div class="r-title">BELENTANI</div>
+                    <div class="r-sub">OMEGA // REFLECT</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATOS -->
+        <section class="data-panel">
+            <div class="data-fragment">
+                <span class="fragment-number">// 001</span>
+                <h2 class="fragment-title">Sistema</h2>
+                <p class="fragment-body">
+                    Estado: <span class="value">ONLINE</span><br>
+                    Núcleo: <span class="value">OMEGA v2.1</span><br>
+                    Latencia: <span class="value">0.004 ms</span><br>
+                    Seguridad: <span class="value">ACTIVA</span>
+                </p>
+            </div>
+            <div class="data-fragment">
+                <span class="fragment-number">// 002</span>
+                <h2 class="fragment-title">Proyecto</h2>
+                <p class="fragment-body">
+                    Nombre: <span class="value">JUDAS</span><br>
+                    Rama: <span class="value">EXPERIENCE</span><br>
+                    Versión: <span class="value">0.9.7</span><br>
+                    Compilación: <span class="value">STABLE</span>
+                </p>
+            </div>
+            <div class="data-fragment">
+                <span class="fragment-number">// 003</span>
+                <h2 class="fragment-title">Acceso</h2>
+                <p class="fragment-body">
+                    Autor: <span class="value">P. BELENTANI</span><br>
+                    Nivel: <span class="value">RAÍZ</span><br>
+                    Sesión: <span class="value">INICIADA</span><br>
+                    Enlace: <span class="value">SEGURO</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- TERMINAL -->
+        <section class="terminal">
+            <span class="t-item"><span class="dot"></span> NÚCLEO ACTIVO</span>
+            <span class="t-item"><span class="dot magenta"></span> RED SEGURA</span>
+            <span class="t-item"><span class="dot"></span> SYNC COMPLETO</span>
+            <span class="t-item"><span class="dot"></span> BACHATA / Cm / 130 BPM</span>
+        </section>
+
+        <footer>
+            OMEGA CORE // BELENTANI // JUDAS EXPERIENCE
+        </footer>
+
+    </div>
+
+    <script>
+        // Reloj del sistema en tiempo real
+        function tickClock() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, "0");
+            var m = String(now.getMinutes()).padStart(2, "0");
+            var s = String(now.getSeconds()).padStart(2, "0");
+            document.getElementById("clock").textContent = h + ":" + m + ":" + s;
+        }
+        tickClock();
+        setInterval(tickClock, 1000);
+    </script>
+
+</body>
+</html>

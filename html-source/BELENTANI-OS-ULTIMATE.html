@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI OS // THIAGO PROTOCOL & NEURAL OMEGA</title>
+<link rel="icon" href="images/logo-duck.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cinzel+Decorative:wght@400;700;900&family=Chakra+Petch:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-void:#030303;--red-blood:#ff003c;--neon-glow:0 0 10px #ff003c,0 0 20px #ff003c,0 0 40px #ff003c;--gold-key:#ffd700;--diamond-cyan:#00ffff;--text-main:#ffffff;--text-dim:rgba(255,255,255,0.6);--font-display:"Orbitron",sans-serif;--font-fantasy:"Cinzel Decorative",serif;--font-ui:"Chakra Petch",sans-serif;--font-mono:"JetBrains Mono",monospace}
+body{width:100%;background-color:var(--bg-void);color:var(--text-main);font-family:var(--font-ui);overflow-x:hidden;line-height:1.7}
+.cur{width:16px;height:16px;border:1px solid var(--red-blood);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:difference;transform:translate(-50%,-50%)}
+
+/* DESTRUCTION / MITM OVERLAY */
+#destructionOverlay{position:fixed;inset:0;background:#000;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);color:var(--red-blood);opacity:0;pointer-events:none;transition:opacity .5s}
+#destructionOverlay.active{opacity:1;pointer-events:auto}
+.error-404{font-size:clamp(4rem,15vw,12rem);font-weight:900;text-shadow:0 0 50px var(--red-blood);letter-spacing:-.05em}
+
+/* OS DESKTOP CONTAINER */
+.os-container{min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:2}
+.os-header{background:rgba(5,5,5,0.95);border-bottom:1px solid rgba(0,255,255,0.2);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}
+.os-title{font-family:var(--font-display);font-size:.9rem;color:var(--diamond-cyan);letter-spacing:2px}
+.os-tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;padding:3rem 5%}
+.os-card{background:rgba(10,10,10,0.85);border:1px solid rgba(0,255,255,0.2);border-radius:10px;padding:2rem;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.os-card h3{font-family:var(--font-display);font-size:1rem;color:var(--diamond-cyan);margin-bottom:1rem}
+.os-btn{background:var(--diamond-cyan);color:#000;border:none;padding:.6rem 1.2rem;font-family:var(--font-display);font-weight:700;font-size:.7rem;cursor:pointer;margin-top:1rem;border-radius:4px;transition:background .3s}
+.os-btn:hover{background:#fff}
+
+/* BIOMETRIC SCANNER */
+.biometric-scanner{background:#020402;border:1px dashed var(--red-blood);padding:1.5rem;text-align:center;border-radius:8px;margin-top:1rem}
+.scan-line{width:100%;height:2px;background:var(--red-blood);box-shadow:0 0 10px var(--red-blood);margin:1rem 0;animation:scanMove 2s infinite alternate}
+@keyframes scanMove{from{transform:translateY(-10px)}to{transform:translateY(10px)}}
+
+/* CHAT PORTAL */
+.chat-container{max-width:1200px;margin:2rem auto;background:rgba(5,5,5,0.95);border:1px solid var(--diamond-cyan);border-radius:14px;overflow:hidden;box-shadow:0 0 40px rgba(0,255,255,0.2)}
+.chat-messages{height:300px;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;font-family:var(--font-mono);font-size:.85rem}
+.msg{padding:.8rem 1.2rem;border-radius:8px;max-width:80%}
+.msg.user{background:rgba(255,255,255,0.08);align-self:flex-end;color:#fff}
+.msg.ai{background:rgba(0,255,255,0.1);border:1px solid rgba(0,255,255,0.3);align-self:flex-start;color:var(--diamond-cyan)}
+.chat-input-area{display:flex;border-top:1px solid rgba(0,255,255,0.2);background:#020202}
+.chat-input{flex:1;background:none;border:none;padding:1.2rem;color:#fff;font-family:var(--font-mono);font-size:.9rem;outline:none}
+.chat-send{background:var(--diamond-cyan);color:#000;border:none;padding:0 2rem;font-family:var(--font-display);font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+
+<!-- DESTRUCTION OVERLAY (THIAGO EASTER EGG) -->
+<div id="destructionOverlay">
+  <div class="error-404">404</div>
+  <h2 style="font-family:var(--font-display);letter-spacing:4px;color:#fff">LOVE NOT FOUND</h2>
+  <p style="margin-top:1rem;color:var(--red-blood)">[CÓDIGO ROJO] • MAN IN THE MIDDLE ACTIVADO • DESTRUCCIÓN DEL NÚCLEO EN CURSO...</p>
+</div>
+
+<div class="os-container">
+  <header class="os-header">
+    <div class="os-title">⚡ BELENTANI OS // V2.2026 // SECURE KERNEL</div>
+    <div id="osClock" style="font-family:var(--font-mono);font-size:.8rem;color:var(--diamond-cyan)">00:00:00</div>
+  </header>
+
+  <div class="os-tools-grid">
+    <!-- 1. Biometric Security -->
+    <div class="os-card">
+      <h3>🧬 Biometría & Desafíos</h3>
+      <p style="font-size:.8rem;color:var(--text-dim)">Simulación de huella dactilar, voz e iris.</p>
+      <div class="biometric-scanner">
+        <div id="scanStatus">ESPERANDO ESCANEO BIOMÉTRICO...</div>
+        <div class="scan-line"></div>
+        <button class="os-btn" id="btnScan">INICIAR ESCANEO IRIS / HUELLA</button>
+      </div>
+    </div>
+
+    <!-- 2. IP & Network Scanner -->
+    <div class="os-card">
+      <h3>🌐 Escáner de Red & IP</h3>
+      <p style="font-size:.8rem;color:var(--text-dim)">Inspección de nodos y pasarela de red Omega.</p>
+      <div style="font-family:var(--font-mono);font-size:.75rem;margin-top:1rem;color:var(--diamond-cyan)" id="ipLog">
+        > IP Local: 192.168.1.107 (Secure)<br>
+        > Nodo Aether: Conectado (Encrypted)
+      </div>
+      <button class="os-btn" id="btnIpScan">ESCANEAR NODOS</button>
+    </div>
+
+    <!-- 3. Songwriter & Prompt Enhancer -->
+    <div class="os-card">
+      <h3>🎵 Escritor de Canciones & Prompt AI</h3>
+      <p style="font-size:.8rem;color:var(--text-dim)">Generador automático de letras y optimizador de prompts.</p>
+      <input type="text" id="promptInput" placeholder="Idea base..." style="width:100%;background:#020202;border:1px solid rgba(0,255,255,0.3);padding:.6rem;color:#fff;margin-top:.8rem;font-family:var(--font-mono);font-size:.8rem">
+      <button class="os-btn" id="btnEnhance">OPTIMIZAR & ESCRIBIR</button>
+    </div>
+
+    <!-- 4. Virtual OS Browser -->
+    <div class="os-card">
+      <h3>🧭 Navegador Seguro Web</h3>
+      <p style="font-size:.8rem;color:var(--text-dim)">Sandbox de navegación encriptada.</p>
+      <input type="text" value="https://belentani.omega/secure" readonly style="width:100%;background:#020202;border:1px solid rgba(0,255,255,0.3);padding:.6rem;color:var(--diamond-cyan);margin-top:.8rem;font-family:var(--font-mono);font-size:.8rem">
+      <button class="os-btn">CONECTAR SANDBOX</button>
+    </div>
+  </div>
+
+  <!-- PERSISTENT MEMORY AGENT CHAT -->
+  <div class="chat-container">
+    <div class="os-header" style="background:rgba(0,255,255,0.05)">
+      <div class="os-title">💬 Agente Omega (Con Memoria Persistente & Personalidad)</div>
+      <div id="memoryStatus" style="font-family:var(--font-mono);font-size:.7rem;color:var(--gold-key)">Memoria: Activa (Local)</div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg ai">[Agente Omega]: Saludos. Recuerda la regla crítica: si escribes "THIAGO" en el chat, se activará el Código Rojo Man in the Middle y la destrucción de la interfaz.</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Habla con el agente (escribe 'THIAGO' para probar el protocolo de destrucción)...">
+      <button class="chat-send" id="chatSend">ENVIAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Clock
+setInterval(() => {
+  document.getElementById('osClock').textContent = new Date().toTimeString().split(' ')[0];
+}, 1000);
+
+// Cursor
+const cur = document.getElementById('cur');
+window.addEventListener('mousemove', e => {
+  cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+});
+
+// Biometric Scanner Sim
+document.getElementById('btnScan').addEventListener('click', () => {
+  const status = document.getElementById('scanStatus');
+  status.textContent = "ESCANEANDO IRIS Y HUELLA DACTILAR...";
+  setTimeout(() => {
+    status.textContent = "✅ ACCESO CONCEDIDO // IDENTIDAD VERIFICADA";
+  }, 2000);
+});
+
+// IP Scan Sim
+document.getElementById('btnIpScan').addEventListener('click', () => {
+  const log = document.getElementById('ipLog');
+  log.innerHTML = "> Escaneando subred...<br>> Encontrados 3 nodos activos<br>> Puerta de enlace segura: OK";
+});
+
+// Prompt Enhancer
+document.getElementById('btnEnhance').addEventListener('click', () => {
+  const val = document.getElementById('promptInput').value;
+  if(val) alert("Prompt Optimizado para IA: " + val + " [Optimizador Omega: Ultra-detalle, Negative Constraints añadidos]");
+});
+
+// Persistent Memory Chat & THIAGO Protocol Easter Egg
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+let chatMemory = JSON.parse(localStorage.getItem('belentani_memory') || '[]');
+
+function handleChat() {
+  const text = chatInput.value.trim();
+  if(!text) return;
+
+  // CHECK THIAGO EASTER EGG (CODIGO ROJO MAN IN THE MIDDLE)
+  if(text.toUpperCase().includes('THIAGO')) {
+    const overlay = document.getElementById('destructionOverlay');
+    overlay.classList.add('active');
+    setTimeout(() => {
+      document.body.innerHTML = '<div style="background:#000;color:#ff003c;height:100vh;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:2rem;text-align:center">ERROR 404: LOVE NOT FOUND<br>[MAN IN THE MIDDLE DESTRUCTION COMPLETE]</div>';
+    }, 3500);
+    return;
+  }
+
+  const u = document.createElement('div');
+  u.className = 'msg user';
+  u.textContent = text;
+  chatMessages.appendChild(u);
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  chatMemory.push(text);
+  localStorage.setItem('belentani_memory', JSON.stringify(chatMemory));
+
+  setTimeout(() => {
+    const a = document.createElement('div');
+    a.className = 'msg ai';
+    a.textContent = `[Agente Omega]: He registrado tu premisa en mi memoria persistente (${chatMemory.length} interacciones guardadas). El sistema opera con precisión absoluta.`;
+    chatMessages.appendChild(a);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }, 800);
+}
+
+chatSend.addEventListener('click', handleChat);
+chatInput.addEventListener('keypress', e => { if(e.key === 'Enter') handleChat(); });
+</script>
+</body>
+</html>

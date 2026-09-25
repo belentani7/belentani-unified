@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // JUDAS ERA - OMEGA CORE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-log" id="bootLog"></div>
+  <div class="boot-bar"></div>
+  <div class="boot-tag">JUDAS_OS // INITIALIZING OMEGA CORE</div>
+</div>
+
+<!-- CURSOR -->
+<div class="cur-dot"></div>
+<div class="cur-ring"></div>
+<div class="cur-box"></div>
+
+<!-- CANVAS -->
+<canvas id="webgl"></canvas>
+<canvas id="matrix"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-top">
+    <a href="#home" class="hud-logo">BEL<em>ENT</em>ANI</a>
+    <div class="hud-el glass-panel">SYS: <span>OMEGA</span><br>NODE: <span>JUDAS-CORE</span><br>TIME: <span id="sysTime">00:00:00</span></div>
+  </div>
+  <div class="hud-bottom">
+    <div class="hud-el">SEC: <span id="secName">GENESIS</span></div>
+    <div class="nav-dots" id="navDots"></div>
+    <div class="hud-el glass-panel live"><div class="live-dot"></div> TRANSMITTING</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="topnav" id="topnav">
+  <a href="#home" class="nav-link active">HOME</a>
+  <a href="#artist" class="nav-link">ARTIST</a>
+  <a href="#music" class="nav-link">MUSIC</a>
+  <a href="#judas" class="nav-link">JUDAS</a>
+  <a href="#portal" class="nav-link">PORTAL</a>
+  <a href="#gallery" class="nav-link">GALLERY</a>
+  <a href="#ailab" class="nav-link">AI LAB</a>
+  <a href="#contact" class="nav-link">CONTACT</a>
+  <a href="#studio" class="nav-link">STUDIO</a>
+</nav>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-title">OMEGA CORE // VAULT</div>
+  <div class="mbox" id="mbox">
+    <div class="face f1">⬡</div><div class="face f2">◉</div><div class="face f3">⌬</div>
+    <div class="face f4">▣</div><div class="face f5">⏣</div><div class="face f6">⚙</div>
+  </div>
+  <div class="gate-gems" id="gateGems">
+    <div class="gg" data-i="0"></div><div class="gg" data-i="1"></div><div class="gg" data-i="2"></div>
+    <div class="gg" data-i="3"></div><div class="gg" data-i="4"></div>
+  </div>
+  <div class="gate-txt" id="gateText">> NÚCLEO SELLADO — PULSA EL CORE PARA INYECTAR LAS 5 FIRMAS</div>
+</div>
+
+<!-- HOME -->
+<section id="home">
+  <div class="hero-pre">◉ JUDAS ERA ◉ V.7.0 OMEGA ◉</div>
+  <h1 class="hero-title">BELENTANI</h1>
+  <p class="hero-sub">La traición no es el final. Es el <em>input</em>.<br>Bienvenido al núcleo galáctico de la frecuencia hiperreal.</p>
+  <button class="cta" onclick="gsap.to(window,{scrollTo:'#artist',duration:1.5})">[ ENTER CORE ]</button>
+</section>
+
+<!-- ARTIST -->
+<section id="artist" class="sec">
+  <h2 class="sec-title">THE <span>ARTIST</span></h2>
+  <div class="sec-sub">ARCHIVE // VENOM // RECORD_01</div>
+  <div class="narrative-block">
+    <p class="narrative-text"><strong>I. EL ORIGEN: PEDRO</strong><br>Pedro Belentani es un artista discográfico, compositor y productor nacido en São Paulo, Brasil, y forjado en Barcelona, España. Construye un sonido arraigado en el R&B alternativo, el dark pop y la electrónica industrial.</p>
+    <p class="narrative-text">"Trata la música como un espacio de vulnerabilidad radical... utilizando su proceso creativo como un mecanismo de supervivencia."</p>
+  </div>
+  <div class="g4">
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">🗿</div><div><div class="tc-name">PEDRO</div><div class="tc-id">THE ROCK</div></div></div><p class="tc-desc">El ancla fundacional. La raíz que atraviesa dimensiones sin moverse.</p></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">📖</div><div><div class="tc-name">MARCOS</div><div class="tc-id">THE CHRONICLER</div></div></div><p class="tc-desc">El observador. El que registra la historia mientras los otros la viven.</p></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">📡</div><div><div class="tc-name">SANTOS</div><div class="tc-id">THE ANTENNA</div></div></div><p class="tc-desc">El canal. Recibe la señal de lo trascendente y la traduce al cuerpo.</p></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">💎</div><div><div class="tc-name">BELENTANI</div><div class="tc-id">THE ARTIFACT</div></div></div><p class="tc-desc">La integración del guerrero y el ángel. La belleza anómala.</p></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">🧬</div><div><div class="tc-name">THE HUMAN</div><div class="tc-id">THE INTERFACE</div></div></div><p class="tc-desc">El que mantiene la integridad en el mundo real. El que canta.</p></div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music" class="sec">
+  <h2 class="sec-title">SONIC <span>ARCHIVE</span></h2>
+  <div class="sec-sub">AUDIO_SYNTHESIS_MODULE</div>
+  <div class="g4">
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">🎵</div><div><div class="tc-name">MON AMOUR</div><div class="tc-id">SPOTIFY</div></div></div><button class="tc-btn" onclick="window.open('https://open.spotify.com','_blank')">PLAY ↗</button></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">🛋️</div><div><div class="tc-name">THERAPIST</div><div class="tc-id">APPLE MUSIC</div></div></div><button class="tc-btn" onclick="window.open('https://music.apple.com','_blank')">PLAY ↗</button></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">💡</div><div><div class="tc-name">APAGA A LUZ</div><div class="tc-id">YOUTUBE</div></div></div><button class="tc-btn" onclick="window.open('https://youtube.com','_blank')">PLAY ↗</button></div>
+    <div class="tcard"><div class="tc-head"><div class="tc-ico">🐢</div><div><div class="tc-name">LENTO</div><div class="tc-id">SOUNDCLOUD</div></div></div><button class="tc-btn" onclick="window.open('https://soundcloud.com','_blank')">PLAY ↗</button></div>
+  </div>
+</section>
+
+<!-- JUDAS -->
+<section id="judas" class="sec">
+  <h2 class="sec-title">JUDAS <span>ERA</span></h2>
+  <div class="sec-sub">SYSTEM HALT // PROTOCOL SUSPENDED</div>
+  <div class="narrative-block">
+    <div class="glass-card">
+      <h3>FASE 01 // EL HOMBRE INTEGRADO</h3>
+      <p>Caminaba un hombre que llevaba muchos nombres. Le llamaban Pedro. Le llamaban Marcos. Le llamaban Santos. Le llamaban Belentani. No era un santo. Era un sistema operativo humano corriendo cuatro procesos en paralelo.</p>
+    </div>
+    <div class="glass-card">
+      <h3>FASE 02 // LA DEUDA IMPAGABLE</h3>
+      <p>Pedro le besó los pies. No por sumisión. Por devoción. "Porque estás aquí. Porque me acompañas." Judas sintió que el mundo se le caía. La deuda se volvió impagable.</p>
+    </div>
+    <div class="glass-card">
+      <h3>FASE 03 // EL ROBO Y EL CANTO</h3>
+      <p>Judas esperó la noche. Agarró la Llave Dorada. Pero Pedro se puso a cantarle. "Quédatela. Lo que yo tengo es mi voz."</p>
+    </div>
+    <div class="glass-card">
+      <h3>FASE 04 // LA VICTORIA AMARGA</h3>
+      <p>Judas volvió con la llave dorada. Pero era amarga. Porque nunca logró olvidar a Pedro cantándole después de haberle robado.</p>
+    </div>
+    <div class="glass-card">
+      <h3>FASE 05 // LA MENTIRA COMPARTIDA</h3>
+      <p>La llave nunca fue lo valioso. Belentani te canta esta historia para que no cometas el error de Judas. Sin condiciones. Sin juicio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PORTAL -->
+<section id="portal" class="sec">
+  <h2 class="sec-title">RECONSTRUIR EL <span>NÚCLEO</span></h2>
+  <div class="sec-sub">5 FRAGMENTOS CRISTALINOS</div>
+  <div class="portal-scene"><canvas id="diamonds"></canvas></div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="sec">
+  <h2 class="sec-title">ART <span>GALLERY</span></h2>
+  <div class="sec-sub">VISUAL ARCHIVE</div>
+  <div class="g4">
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">🐍</div><div><div class="tc-name">VENOM</div><div class="tc-id">RECORD_01</div></div></div><p class="tc-desc">Archive // Venom</p></div>
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">👁️</div><div><div class="tc-name">GAZE</div><div class="tc-id">RECORD_02</div></div></div><p class="tc-desc">Archive // Gaze</p></div>
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">⚔️</div><div><div class="tc-name">WARRIOR & ANGEL</div><div class="tc-id">RECORD_03</div></div></div><p class="tc-desc">Zion Dimension</p></div>
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">🌧️</div><div><div class="tc-name">JUDAS RAIN</div><div class="tc-id">RECORD_04</div></div></div><p class="tc-desc">System Halt</p></div>
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">🧥</div><div><div class="tc-name">ST. PETER JACKET</div><div class="tc-id">RECORD_05</div></div></div><p class="tc-desc">The Guardian</p></div>
+    <div class="tcard gal"><div class="tc-head"><div class="tc-ico">🔱</div><div><div class="tc-name">JUDAS TRINITY</div><div class="tc-id">RECORD_06</div></div></div><p class="tc-desc">Trinity Protocol</p></div>
+  </div>
+</section>
+
+<!-- AI LAB -->
+<section id="ailab" class="sec">
+  <h2 class="sec-title">AI <span>LAB</span></h2>
+  <div class="sec-sub">NEURAL_INTELLIGENCE_MODULE</div>
+  <div class="g4">
+    <div class="tcard" style="grid-column:span 2">
+      <div class="tc-name">NEURAL CHAT</div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatIn" placeholder="CMD..." class="chat-input">
+        <button class="tc-btn" onclick="aiChat()">SEND</button>
+      </div>
+    </div>
+    <div class="tcard" style="grid-column:span 2">
+      <div class="tc-name">VISION FORGE</div>
+      <div id="imgBox" class="img-box"></div>
+      <div class="chat-input-row">
+        <input type="text" id="imgIn" placeholder="PROMPT..." class="chat-input">
+        <button class="tc-btn" onclick="aiImg()">GEN</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="sec">
+  <h2 class="sec-title">CONTACT <span>PROTOCOL</span></h2>
+  <div class="sec-sub">DIRECT TRANSMISSION</div>
+  <form class="glass-panel contact-form" onsubmit="event.preventDefault();alert('Transmisión enviada.')">
+    <input type="text" placeholder="IDENTIDAD" required>
+    <input type="email" placeholder="EMAIL" required>
+    <textarea placeholder="PAYLOAD" rows="4" required></textarea>
+    <button type="submit" class="cta">[ TRANSMIT ]</button>
+  </form>
+</section>
+
+<!-- STUDIO -->
+<section id="studio" class="sec">
+  <h2 class="sec-title">STUDIO <span>LAB</span></h2>
+  <div class="sec-sub">CENTRO DE AUTOMATIZACIÓN JUDAS v7.0</div>
+  <div class="stabs" id="stabs">
+    <button class="stab on" data-cat="all">ALL</button>
+    <button class="stab" data-cat="image">IMAGE</button>
+    <button class="stab" data-cat="video">VIDEO</button>
+    <button class="stab" data-cat="audio">AUDIO</button>
+    <button class="stab" data-cat="code">CODE</button>
+    <button class="stab" data-cat="ai">AI AGENTS</button>
+  </div>
+  <div class="g4" id="studioGrid"></div>
+</section>
+
+<!-- AI CHAT PANEL -->
+<div class="aichat" id="aiChat">
+  <div class="ch-head" onclick="document.getElementById('aiChat').classList.toggle('min')">
+    <div class="ch-title"><div class="live-dot"></div> CORE_AI</div>
+    <div style="font-family:var(--font-m);font-size:11px;color:var(--dim)">[ — ]</div>
+  </div>
+  <div class="ch-msgs" id="chatMsgs">
+    <div class="msg sys">> NÚCLEO AI ACTIVADO. INTEGRACIÓN: 0/5.</div>
+    <div class="msg ai"><div class="meta">◉ CORE_AI</div>Bienvenido, agente. El núcleo está fragmentado. <em>Habla.</em></div>
+  </div>
+  <div class="ch-input">
+    <input type="text" class="ch-in" id="chatInput" placeholder="Escribe un comando o frecuencia...">
+    <button class="ch-send" onclick="aiChatSend()">SEND</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/app.js"></script>
+<script src="js/alive-max.js"></script>
+</body>
+</html>

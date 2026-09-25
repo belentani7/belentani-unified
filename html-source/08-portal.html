@@ -1,0 +1,47 @@
+
+<!-- PORTAL — CABINA DE MANDO + 5 DIAMANTES 3D -->
+<section id="portal" class="sec">
+<h1 class="sec-title rv">THE <span>PORTAL</span></h1>
+<div class="sec-sub rv">CONDUCE LA NAVE // ACTIVA LAS 5 GEMAS ARQUETIPAS</div>
+<div class="g4 rv" style="max-width:1200px;grid-template-columns:1fr 1.2fr">
+<div style="position:relative;min-height:500px;border:1px solid var(--glass-border);background:rgba(0,0,0,.6);clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)">
+<div id="portalHUD" style="position:absolute;top:16px;left:16px;font-family:var(--fm);font-size:9px;color:var(--green);letter-spacing:2px;line-height:2;z-index:2">
+&gt; SISTEMA: OMEGA_v12<br>&gt; NAVE: HYPERION<br>
+&gt; PILOTO: <span id="pilotName" style="color:var(--blood)">-</span><br>
+&gt; FRAGMENTOS: <span id="portalFrags">0/5</span><br>
+&gt; ENJAMBRE: <span id="swarmStatus" style="color:var(--txt-dim)">ESPERANDO</span>
+</div>
+<div style="position:absolute;bottom:16px;left:16px;right:16px;font-family:var(--fm);font-size:8px;color:var(--txt-ghost);letter-spacing:1px;line-height:1.6;z-index:2" id="portalHint">
+[ ACTIVA LAS GEMAS ARQUETIPAS PARA SINCRONIZAR EL ENJAMBRE ]
+</div>
+<canvas id="diamC" style="width:100%;height:100%;cursor:pointer;position:absolute;inset:0"></canvas>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="tcard dc0" style="border-left:3px solid var(--gold);padding:18px;cursor:pointer" data-gem="0" onclick="window.__diamondPortal&&window.__diamondPortal.activateDiamond(0)">
+<div style="font-family:var(--fm);font-size:8px;color:var(--gold);letter-spacing:3px">GEMA_01 // ARQUETIPO</div>
+<div style="font-family:var(--fd);font-size:15px;color:#fff;letter-spacing:3px;margin:4px 0">PEDRO</div>
+<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--txt-dim)"><span>LA ROCA</span><span style="color:var(--gold)" id="gemStatus0">&#9675; INACTIVA</span></div>
+</div>
+<div class="tcard dc1" style="border-left:3px solid var(--cyan);padding:18px;cursor:pointer" data-gem="1" onclick="window.__diamondPortal&&window.__diamondPortal.activateDiamond(1)">
+<div style="font-family:var(--fm);font-size:8px;color:var(--cyan);letter-spacing:3px">GEMA_02 // ARQUETIPO</div>
+<div style="font-family:var(--fd);font-size:15px;color:#fff;letter-spacing:3px;margin:4px 0">MARCOS</div>
+<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--txt-dim)"><span>EL CRONISTA</span><span style="color:var(--cyan)" id="gemStatus1">&#9675; INACTIVA</span></div>
+</div>
+<div class="tcard dc2" style="border-left:3px solid var(--purple);padding:18px;cursor:pointer" data-gem="2" onclick="window.__diamondPortal&&window.__diamondPortal.activateDiamond(2)">
+<div style="font-family:var(--fm);font-size:8px;color:var(--purple);letter-spacing:3px">GEMA_03 // ARQUETIPO</div>
+<div style="font-family:var(--fd);font-size:15px;color:#fff;letter-spacing:3px;margin:4px 0">SANTOS</div>
+<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--txt-dim)"><span>LA ANTENA</span><span style="color:var(--purple)" id="gemStatus2">&#9675; INACTIVA</span></div>
+</div>
+<div class="tcard dc3" style="border-left:3px solid var(--blood);padding:18px;cursor:pointer" data-gem="3" onclick="window.__diamondPortal&&window.__diamondPortal.activateDiamond(3)">
+<div style="font-family:var(--fm);font-size:8px;color:var(--blood);letter-spacing:3px">GEMA_04 // ARQUETIPO</div>
+<div style="font-family:var(--fd);font-size:15px;color:#fff;letter-spacing:3px;margin:4px 0">BELENTANI</div>
+<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--txt-dim)"><span>EL ARTEFACTO</span><span style="color:var(--blood)" id="gemStatus3">&#9675; INACTIVA</span></div>
+</div>
+<div class="tcard dc4" style="border-left:3px solid var(--human);padding:18px;cursor:pointer" data-gem="4" onclick="window.__diamondPortal&&window.__diamondPortal.activateDiamond(4)">
+<div style="font-family:var(--fm);font-size:8px;color:var(--txt);letter-spacing:3px">GEMA_05 // ARQUETIPO</div>
+<div style="font-family:var(--fd);font-size:15px;color:#fff;letter-spacing:3px;margin:4px 0">THE HUMAN</div>
+<div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--txt-dim)"><span>LA INTERFAZ</span><span style="color:var(--txt)" id="gemStatus4">&#9675; INACTIVA</span></div>
+</div>
+</div>
+</div>
+</section>

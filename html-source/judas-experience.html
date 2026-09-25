@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Judas Experience - Premium Effects Portfolio</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    :root {
+      --bg-primary: #050508;
+      --bg-secondary: #0d0d14;
+      --bg-tertiary: #1a0f1a;
+      --fg-primary: #ff0040;
+      --fg-muted: #aa0030;
+      --accent-neon: #ff005e;
+      --accent-neon-glow: rgba(255, 0, 94, 0.5);
+      --card-bg: #150a15;
+      --border: #3a0f3a;
+      --gold: #ffd700;
+      --gold-glow: rgba(255, 215, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg-primary);
+      color: var(--fg-primary);
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* Animated neon background */
+    .neon-bg {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 100% 60% at 30% 20%, var(--accent-neon-glow), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 70% 80%, #ff6b6b, transparent 50%),
+        radial-gradient(ellipse 80% 40% at 50% 50%, var(--gold-glow), transparent 50%),
+        var(--bg-primary);
+      z-index: -1;
+      animation: backgroundShift 20s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { background-position: 0% 50%, 100% 50%, 50% 50%; }
+      33% { background-position: 30% 20%, 70% 80%, 50% 50%; }
+      66% { background-position: 70% 80%, 30% 20%, 50% 50%; }
+    }
+
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'><filter id='noise'><funcName>noise</funcName><param name='type' value='luminous'/></filter><rect width='256' height='256' fill='url(#noise)'/></svg>");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Purple-to-neon gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+    }
+
+    .header {
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .tagline {
+      font-size: 1.125rem;
+      color: var(--fg-muted);
+      margin-top: 0.5rem;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--fg-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Cards with neon border */
+    .neon-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-neon);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .neon-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent-neon), transparent);
+      opacity: 0.8;
+    }
+
+    .neon-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Gallery grid */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .gallery-item {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .gallery-item .caption {
+      padding: 1rem;
+      background: var(--bg-secondary);
+    }
+
+    .gallery-item .caption h4 {
+      font-size: 1rem;
+      margin: 0 0 0.25rem 0;
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gallery-item .caption p {
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      margin: 0;
+    }
+
+    /* Stat boxes */
+    .stat-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-neon);
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, var(--accent-neon), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Button styles */
+    .neon-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: 2px solid var(--accent-neon);
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--accent-neon);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0.25rem;
+    }
+
+    .neon-btn:hover {
+      background: var(--accent-neon);
+      color: var(--bg-primary);
+      box-shadow: 0 0 20px var(--accent-neon-glow);
+    }
+
+    .neon-btn.gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .neon-btn.gold:hover {
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .neon-bg {
+        animation: none;
+      }
+      .gallery-item img {
+        transition: none;
+      }
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px var(--accent-neon) solid;
+      outline-offset: 2px;
+    }
+
+    /* Social links */
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--fg-muted);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-muted);
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      border-color: var(--accent-neon);
+      color: var(--accent-neon);
+      background: var(--accent-neon);
+      color: var(--bg-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="neon-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <header class="header">
+    <div class="logo">The Judas Experience</div>
+    <div class="tagline">Premium Audio-Visual Effects Portfolio</div>
+  </header>
+
+  <main class="main">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Belentani Creative Studio</h1>
+      <p>Premium effects and media production studio. Free-first philosophy. No commercial rights claimed without explicit authorization.</p>
+    </section>
+
+    <!-- Stats Overview -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <div class="stat-box">
+        <div class="stat-number">7,092</div>
+        <div class="stat-label">Media Files</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">116</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">460</div>
+        <div class="stat-label">GitHub Repos</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">$0</div>
+        <div class="stat-label">Monthly Cost</div>
+      </div>
+    </div>
+
+    <!-- Featured Projects -->
+    <section style="margin-bottom: 2rem;">
+      <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 1.5rem;">Featured Projects</h2>
+      <div class="gallery">
+        <div class="gallery-item">
+          <img src="https://via.placeholder.com/400x300/0d0d14/ff005e?text=Album+Cover" alt="Album Cover">
+          <div class="caption">
+            <h4>Genesis Album</h4>
+            <p>Free-first distribution • 2026</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://via.placeholder.com/400x300/1a0a1a/ff005e?text=Video+Clip" alt="Video Clip">
+          <div class="caption">
+            <h4>Video Clip Series</h4>
+            <p>IA-generated • 2026</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://via.placeholder.com/400x300/150a15/ff005e?text=Master+Stems" alt="Master Stems">
+          <div class="caption">
+            <h4>Master Stems</h4>
+            <p>Stem separation • 2026</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing/CTA -->
+    <section style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 2rem;">
+      <h3 style="font-family: 'Playfair Display', serif; margin: 0 0 1rem 0;">Free-First Services</h3>
+      <p style="color: var(--fg-muted); margin: 0 0 1.5rem 0;">We believe in free accessibility. All tools and resources are available at no cost. Commercial licensing available upon request.</p>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <button class="neon-btn">Get Access</button>
+        <button class="neon-btn gold">Commercial License</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="padding: 2rem; margin-top: 2rem; border-top: 1px solid var(--border); color: var(--fg-muted);">
+      <div class="social-links">
+        <a href="#" class="social-link">Twitter</a>
+        <a href="#" class="social-link">GitHub</a>
+        <a href="#" class="social-link">Discord</a>
+      </div>
+      <p style="margin: 1rem 0 0 0; font-size: 0.875rem;">© 2026 Belentani Creative Studio. Free-first philosophy.</p>
+    </footer>
+  </main>
+
+  <script>
+    // Parallax effect for hero section
+    document.addEventListener('DOMContentLoaded', function() {
+      const hero = document.querySelector('.hero');
+      
+      if (hero) {
+        let ticking = false;
+        
+        function updateParallax(e) {
+          if (!ticking) {
+            window.requestAnimationFrame(function() {
+              const scrollY = window.scrollY;
+              hero.style.backgroundPosition = `center ${scrollY * 0.5}px`;
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }
+        
+        window.addEventListener('scroll', updateParallax, { passive: true });
+      }
+    });
+  </script>
+</body>
+</html>

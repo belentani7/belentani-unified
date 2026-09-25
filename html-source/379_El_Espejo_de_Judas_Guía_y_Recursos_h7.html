@@ -1,0 +1,790 @@
+# 🪞 EL ESPEJO · v∞ — VERSIÓN COMPLETA (BuildAI Ready)
+
+Entendido. **El Espejo** es el "núcleo filosófico" del ecosistema: un santuario digital para las preguntas que casi nadie dice en voz alta. Basado en neurociencia, estética techno-mística, privacidad absoluta y un "CEO AI" que orquesta roles (artista, psicólogo, místico, compañero).
+
+Aquí tienes el **CÓDIGO 100% FUNCIONAL Y COMPLETO**, listo para BuildAI o subir gratis a Netlify/GitHub Pages.
+
+---
+
+## 🧠 PRINCIPIOS DE DISEÑO BASADOS EN NEUROCIENCIA
+
+| Principio | Aplicación en El Espejo |
+|-----------|------------------------|
+| **Carga cognitiva óptima** | Máximo 7±2 elementos por pantalla, jerarquía visual clara, iconos + texto |
+| **Validación social implícita** | "% lo ha pensado" normaliza la experiencia, reduce vergüenza (efecto "no estoy solo") |
+| **Seguridad psicológica** | Colores cálidos en zonas de reflexión, transiciones suaves, lenguaje no clínico |
+| **Reconocimiento > recuerdo** | Categorías visuales, búsqueda por palabras clave, preguntas pre-cargadas |
+| **Agencia percibida** | Usuario controla navegación, pregunta, idioma, salida rápida siempre accesible |
+| **Curiosidad como motor** | Preguntas abiertas, respuestas que invitan a más reflexión, no a cierre |
+
+---
+
+## 💻 CÓDIGO COMPLETO (Copia y pega en BuildAI o guarda como `index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Espejo · Las Preguntas Que Casi Nadie Dice</title>
+    <meta name="description" content="Un sitio para preguntas raras, intrusivas, vergonzosas, existenciales. No te juzga, no te vende, no te recuerda.">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABLES GLOBALES (Techno-Místico: Midnight + Oro Holográfico + Cian) === */
+        :root {
+            --bg-primary: #040208;
+            --bg-secondary: #0a0614;
+            --bg-card: rgba(20, 14, 40, 0.78);
+            --bg-glass: rgba(26, 18, 52, 0.86);
+            
+            --neon-gold: #ffd700;
+            --neon-gold-dim: rgba(255, 215, 0, 0.16);
+            --neon-cyan: #00f5ff;
+            --neon-cyan-dim: rgba(0, 245, 255, 0.14);
+            --neon-violet: #a78bff;
+            --neon-violet-dim: rgba(167, 139, 255, 0.12);
+            --neon-rose: #ff6b9d;
+            
+            --text-primary: #fafaff;
+            --text-secondary: #c8cae0;
+            --text-muted: #7a7ea3;
+            --text-gold: #ffd700;
+            --text-cyan: #00f5ff;
+            
+            --border-glass: 1px solid rgba(255, 255, 255, 0.07);
+            --border-gold: 1px solid rgba(255, 215, 0, 0.32);
+            --shadow-glow: 0 0 36px rgba(255, 215, 0, 0.24);
+            --shadow-float: 0 14px 48px rgba(0, 0, 0, 0.68);
+            --shadow-inner: inset 0 1px 0 rgba(255,255,255,0.04);
+            
+            --radius: 18px;
+            --radius-lg: 28px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+        }
+
+        /* === RESET & BASE === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.66;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* === FONDO DE POLVO DE ESTRELLAS + MATRIX SUAVE === */
+        #cosmos-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* === GLASSMORPHISM AVANZADO === */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: var(--border-glass);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-float), var(--shadow-inner);
+            position: relative; overflow: hidden;
+        }
+        .glass::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+        }
+        .glass.gold-edge { border-color: rgba(255, 215, 0, 0.38); }
+        .glass.gold-edge::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--neon-gold), var(--neon-cyan), var(--neon-violet));
+            opacity: 0.78;
+        }
+
+        /* === BOTÓN SALIDA RÁPIDA === */
+        #quick-exit {
+            position: fixed; top: 15px; right: 15px; z-index: 9999;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white; padding: 11px 22px; border: none;
+            border-radius: 42px; font-weight: 700; font-size: 0.83rem;
+            letter-spacing: 0.4px; cursor: pointer;
+            display: flex; align-items: center; gap: 7px;
+            box-shadow: 0 4px 22px rgba(239, 68, 68, 0.46);
+            transition: var(--transition); animation: pulse-red 1.9s infinite;
+            text-transform: uppercase; font-family: var(--font-mono);
+        }
+        #quick-exit:hover { transform: scale(1.05); box-shadow: 0 6px 28px rgba(239, 68, 68, 0.66); }
+        #quick-exit::before { content: "🚪"; }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 4px 22px rgba(239, 68, 68, 0.46); }
+            50% { box-shadow: 0 4px 38px rgba(239, 68, 68, 0.76); }
+        }
+
+        /* === HEADER === */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            padding: 15px 19px; background: rgba(4, 2, 8, 0.97);
+            backdrop-filter: blur(26px); border-bottom: var(--border-glass);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 13px;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--text-primary);
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.15rem;
+            box-shadow: 0 0 20px var(--neon-gold-dim); position: relative;
+        }
+        .logo-icon::after {
+            content: ''; position: absolute; inset: -2px; border-radius: 12px;
+            background: linear-gradient(45deg, var(--neon-gold), var(--neon-cyan), var(--neon-violet));
+            opacity: 0.36; filter: blur(9px); z-index: -1;
+        }
+        .logo-text {
+            font-weight: 800; font-size: 1.42rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--neon-cyan), var(--neon-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 26px rgba(0, 245, 255, 0.14);
+        }
+        .logo-subtitle {
+            font-size: 0.75rem; color: var(--text-muted);
+            margin-left: 8px; opacity: 0.92; font-family: var(--font-mono);
+        }
+
+        /* === NAVEGACIÓN === */
+        .nav-container {
+            display: flex; gap: 7px; overflow-x: auto;
+            padding: 10px 0; scrollbar-width: none; margin: 13px 17px;
+        }
+        .nav-container::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            padding: 9px 17px; background: var(--bg-secondary);
+            border: var(--border-glass); border-radius: 12px;
+            color: var(--text-secondary); font-weight: 600;
+            font-size: 0.85rem; cursor: pointer;
+            transition: var(--transition); white-space: nowrap;
+            font-family: var(--font-mono);
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            color: var(--bg-primary); border-color: var(--neon-gold);
+            box-shadow: 0 4px 19px rgba(255, 215, 0, 0.36);
+            transform: translateY(-1px);
+        }
+
+        /* === CONTENIDO === */
+        main {
+            max-width: 1080px; margin: 0 auto;
+            padding: 21px 19px 112px; position: relative; z-index: 1;
+        }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === HERO === */
+        .hero {
+            text-align: center; padding: 38px 17px 30px;
+            margin-bottom: 30px; position: relative;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -22px; left: 50%;
+            transform: translateX(-50%); width: 78%; max-width: 580px;
+            height: 1px; background: linear-gradient(90deg, transparent, var(--neon-gold), transparent);
+            opacity: 0.56;
+        }
+        .hero h1 {
+            font-size: 2.58rem; font-weight: 800; margin-bottom: 15px;
+            line-height: 1.11; letter-spacing: -1.1px;
+            background: linear-gradient(135deg, var(--text-primary), var(--neon-cyan), var(--neon-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 1.16rem; color: var(--text-secondary);
+            max-width: 660px; margin: 0 auto 24px; font-weight: 400;
+        }
+        .hero-tags {
+            display: flex; justify-content: center; gap: 9px;
+            flex-wrap: wrap; margin-bottom: 26px;
+        }
+        .tag {
+            padding: 6px 15px; background: rgba(255, 215, 0, 0.11);
+            border: 1px solid var(--neon-gold-dim); border-radius: 22px;
+            font-size: 0.79rem; color: var(--neon-gold);
+            font-weight: 600; font-family: var(--font-mono);
+        }
+
+        /* === BUSCADOR DE PREGUNTAS === */
+        .search-container {
+            margin: 26px 0; position: relative;
+        }
+        .search-input {
+            width: 100%; padding: 14px 18px 14px 48px;
+            background: var(--bg-secondary); border: var(--border-glass);
+            border-radius: 13px; color: var(--text-primary);
+            font-size: 0.98rem; outline: none; transition: var(--transition);
+            font-family: var(--font-main);
+        }
+        .search-input:focus {
+            border-color: var(--neon-gold-dim);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.19);
+        }
+        .search-icon {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%); color: var(--text-muted);
+            font-size: 1.1rem; pointer-events: none;
+        }
+
+        /* === CATEGORÍAS === */
+        .category-filters {
+            display: flex; gap: 8px; margin-bottom: 20px;
+            flex-wrap: wrap; overflow-x: auto; padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .category-filters::-webkit-scrollbar { display: none; }
+        .cat-btn {
+            padding: 7px 15px; background: var(--bg-card);
+            border: var(--border-glass); border-radius: 20px;
+            color: var(--text-secondary); font-size: 0.83rem;
+            cursor: pointer; transition: var(--transition);
+            white-space: nowrap; font-family: var(--font-mono);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--neon-violet); color: white;
+            border-color: var(--neon-violet);
+        }
+        .cat-btn .icon { font-size: 0.9rem; }
+
+        /* === GRID DE PREGUNTAS === */
+        .questions-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px; margin-top: 14px;
+        }
+        .question-card {
+            padding: 18px 20px; background: var(--bg-card);
+            border-radius: var(--radius); border: var(--border-glass);
+            transition: var(--transition); cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .question-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--neon-gold), var(--neon-cyan));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .question-card:hover {
+            border-color: var(--neon-cyan-dim);
+            transform: translateY(-3px);
+            box-shadow: 0 9px 26px rgba(0, 245, 255, 0.11);
+        }
+        .question-card:hover::before { opacity: 1; }
+        
+        .question-card h4 {
+            font-weight: 700; margin-bottom: 9px;
+            font-size: 1.04rem; color: var(--text-primary);
+            line-height: 1.48;
+        }
+        .question-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; flex-wrap: wrap; gap: 6px;
+        }
+        .question-percent {
+            padding: 3px 10px; background: rgba(0, 245, 255, 0.13);
+            border-radius: 7px; font-size: 0.74rem;
+            color: var(--neon-cyan); font-weight: 700;
+            font-family: var(--font-mono);
+        }
+        .question-tag {
+            padding: 3px 9px; background: rgba(167, 139, 255, 0.16);
+            border-radius: 6px; font-size: 0.72rem;
+            color: var(--neon-violet); font-weight: 600;
+            font-family: var(--font-mono);
+        }
+        .question-preview {
+            font-size: 0.91rem; color: var(--text-muted);
+            line-height: 1.54; font-style: italic;
+        }
+
+        /* === MODAL DE RESPUESTA === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(4, 2, 8, 0.92); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        
+        .modal-content {
+            background: var(--bg-glass); border: var(--border-gold);
+            border-radius: var(--radius-lg); padding: 24px;
+            max-width: 620px; width: 100%; max-height: 85vh;
+            overflow-y: auto; position: relative;
+            box-shadow: var(--shadow-glow), var(--shadow-float);
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 18px;
+            background: none; border: none; color: var(--text-muted);
+            font-size: 1.4rem; cursor: pointer; transition: var(--transition);
+        }
+        .modal-close:hover { color: var(--neon-gold); transform: rotate(90deg); }
+        
+        .modal-question {
+            font-size: 1.28rem; font-weight: 700;
+            margin-bottom: 16px; color: var(--text-primary);
+            line-height: 1.42;
+        }
+        .modal-percent {
+            display: inline-block; padding: 4px 12px;
+            background: rgba(0, 245, 255, 0.14);
+            border-radius: 8px; font-size: 0.78rem;
+            color: var(--neon-cyan); font-weight: 700;
+            margin-bottom: 18px; font-family: var(--font-mono);
+        }
+        .modal-answer {
+            font-size: 1.02rem; color: var(--text-secondary);
+            line-height: 1.68; margin-bottom: 20px;
+        }
+        .modal-answer strong { color: var(--neon-gold); }
+        .modal-reflection {
+            padding: 14px 17px; background: rgba(167, 139, 255, 0.11);
+            border-left: 3px solid var(--neon-violet);
+            border-radius: 0 8px 8px 0; margin-top: 18px;
+            font-size: 0.96rem; color: var(--text-cyan);
+            font-style: italic;
+        }
+
+        /* === INPUT DE PREGUNTA PERSONAL === */
+        .ask-container {
+            margin: 32px 0; padding: 22px;
+        }
+        .ask-textarea {
+            width: 100%; padding: 15px 18px;
+            background: var(--bg-secondary); border: var(--border-glass);
+            border-radius: 13px; color: var(--text-primary);
+            font-size: 1rem; outline: none; transition: var(--transition);
+            font-family: var(--font-main); min-height: 110px;
+            resize: vertical; line-height: 1.62;
+        }
+        .ask-textarea:focus {
+            border-color: var(--neon-gold-dim);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.18);
+        }
+        .ask-hint {
+            font-size: 0.84rem; color: var(--text-muted);
+            margin: 10px 0 14px; font-family: var(--font-mono);
+        }
+        .ask-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+
+        /* === MANIFIESTO === */
+        .manifesto-list {
+            margin: 22px 0;
+        }
+        .manifesto-item {
+            padding: 16px 19px; margin-bottom: 12px;
+            background: var(--bg-card); border-radius: var(--radius);
+            border-left: 3px solid var(--neon-gold);
+        }
+        .manifesto-item h4 {
+            font-weight: 700; margin-bottom: 7px;
+            color: var(--neon-gold); font-size: 1.06rem;
+        }
+        .manifesto-item p {
+            font-size: 0.94rem; color: var(--text-secondary);
+            line-height: 1.64;
+        }
+
+        /* === RECURSOS DE CRISIS === */
+        .crisis-banner {
+            padding: 15px 19px; background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.38);
+            border-radius: var(--radius); margin: 20px 0;
+            display: flex; align-items: start; gap: 12px;
+        }
+        .crisis-banner .icon { font-size: 1.4rem; }
+        .crisis-banner p {
+            font-size: 0.92rem; color: var(--text-secondary);
+            line-height: 1.58; flex: 1;
+        }
+        .crisis-links {
+            display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+        }
+        .crisis-link {
+            padding: 6px 13px; background: rgba(239, 68, 68, 0.18);
+            border-radius: 8px; font-size: 0.83rem;
+            color: #fca5a5; font-weight: 600;
+            text-decoration: none; font-family: var(--font-mono);
+            transition: var(--transition);
+        }
+        .crisis-link:hover {
+            background: var(--danger); color: white;
+        }
+
+        /* === FOOTER EMERGENCIA === */
+        .emergency-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(4, 2, 8, 0.98);
+            backdrop-filter: blur(13px);
+            padding: 12px 19px; display: flex;
+            justify-content: center; align-items: center;
+            gap: 19px; border-top: 1px solid rgba(255, 215, 0, 0.36);
+            z-index: 900; flex-wrap: wrap;
+        }
+        .emergency-link {
+            color: var(--neon-gold); text-decoration: none;
+            font-weight: 700; padding: 7px 16px;
+            border: 1px solid var(--neon-gold);
+            border-radius: 20px; transition: var(--transition);
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.85rem; font-family: var(--font-mono);
+        }
+        .emergency-link:hover {
+            background: var(--neon-gold); color: var(--bg-primary);
+            box-shadow: 0 4px 19px rgba(255, 215, 0, 0.41);
+        }
+        .emergency-note {
+            color: var(--text-muted); font-size: 0.78rem;
+            max-width: 270px; text-align: center;
+            font-family: var(--font-mono);
+        }
+
+        /* === UTILIDADES === */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .flex { display: flex; }
+        .gap-9 { gap: 9px; }
+        .justify-center { justify-content: center; }
+        .items-center { align-items: center; }
+        
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            color: var(--bg-primary); border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.94rem; font-family: var(--font-mono);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.41);
+        }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--neon-gold);
+            color: var(--neon-gold);
+        }
+        .btn-outline:hover {
+            background: var(--neon-gold); color: var(--bg-primary);
+        }
+        .btn-sm {
+            padding: 7px 14px; font-size: 0.83rem; border-radius: 9px;
+        }
+
+        /* === DISCLAIMER === */
+        .disclaimer {
+            padding: 15px 19px; background: rgba(245, 158, 11, 0.09);
+            border: 1px solid rgba(245, 158, 11, 0.31);
+            border-radius: var(--radius); font-size: 0.85rem;
+            color: var(--text-secondary); margin: 19px 0;
+        }
+        .disclaimer strong { color: var(--neon-gold); }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.12rem; }
+            .hero-subtitle { font-size: 1.06rem; }
+            .nav-container { padding: 8px 0; margin: 11px 15px; }
+            .nav-btn { padding: 8px 14px; font-size: 0.81rem; }
+            .emergency-bar { flex-direction: column; gap: 8px; padding: 15px 17px; }
+            .emergency-note { max-width: 100%; }
+            .questions-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; margin: 10px; }
+        }
+
+        /* === ACCESIBILIDAD === */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+        :focus-visible {
+            outline: 2px solid var(--neon-cyan);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === FONDO CÓSMICO === -->
+    <canvas id="cosmos-canvas"></canvas>
+
+    <!-- === SALIDA RÁPIDA === -->
+    <button id="quick-exit" onclick="quickExit()">🚪 SALIR (ESC)</button>
+
+    <!-- === HEADER === -->
+    <header class="glass">
+        <a href="#" class="logo" onclick="showSection('inicio'); return false;">
+            <div class="logo-icon">🪞</div>
+            <div>
+                <span class="logo-text">El Espejo</span>
+                <span class="logo-subtitle">Las preguntas que casi nadie dice</span>
+            </div>
+        </a>
+        
+        <div style="display:flex;gap:6px;">
+            <button class="nav-btn" onclick="setLanguage('es')" id="lang-es">ES</button>
+            <button class="nav-btn" onclick="setLanguage('ca')" id="lang-ca">CA</button>
+            <button class="nav-btn" onclick="setLanguage('en')" id="lang-en">EN</button>
+        </div>
+    </header>
+
+    <!-- === NAVEGACIÓN === -->
+    <nav class="nav-container glass" style="padding:8px 15px;border-radius:12px;">
+        <button class="nav-btn active" onclick="showSection('inicio')" data-i18n="nav_inicio">🏠 Las 500</button>
+        <button class="nav-btn" onclick="showSection('espejo')" data-i18n="nav_espejo">✨ Pregúntale</button>
+        <button class="nav-btn" onclick="showSection('manifiesto')" data-i18n="nav_manifiesto">📜 Manifiesto</button>
+        <button class="nav-btn" onclick="showSection('ecosistema')" data-i18n="nav_ecosistema">🔗 Circuito</button>
+    </nav>
+
+    <!-- === CONTENIDO === -->
+    <main>
+
+        <!-- === SECCIÓN INICIO: LAS 500 === -->
+        <section id="inicio" class="section active">
+            <div class="hero">
+                <h1 data-i18n="hero_title">Las preguntas que casi nadie dice en voz alta</h1>
+                <p class="hero-subtitle" data-i18n="hero_subtitle">Pensamientos intrusivos, envidia, vacíos de domingo, vergüenzas viejas, dudas raras. Aquí están contestadas sin sermón. No eres tan raro como crees. Y eso está bien.</p>
+                
+                <div class="hero-tags">
+                    <span class="tag">🌈 LGBTQ+ Friendly</span>
+                    <span class="tag">🔒 Sin Rastros</span>
+                    <span class="tag">🧠 Neuro-validante</span>
+                    <span class="tag">🌍 Global</span>
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                <strong data-i18n="disclaimer_title">⚠️ Esto no es terapia.</strong><br>
+                <span data-i18n="disclaimer_text">Si arde la casa, llama a un humano. El espejo es para los días en que la casa solo cruje. Tus interacciones no se guardan. Cada sesión muere al cerrar.</span>
+            </div>
+
+            <!-- BUSCADOR -->
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" 
+                    placeholder="busca: muerte, envidia, ex, domingos, intrusivo…" 
+                    data-i18n-placeholder="search_placeholder"
+                    onkeyup="filterQuestions()">
+            </div>
+
+            <!-- CATEGORÍAS -->
+            <div class="category-filters" id="category-filters">
+                <button class="cat-btn active" onclick="filterByCategory('all')" data-i18n="cat_all">● todo</button>
+                <button class="cat-btn" onclick="filterByCategory('existencia')" data-i18n="cat_existencia">✺ Existencia</button>
+                <button class="cat-btn" onclick="filterByCategory('muerte')" data-i18n="cat_muerte">✶ Muerte</button>
+                <button class="cat-btn" onclick="filterByCategory('intrusivos')" data-i18n="cat_intrusivos">⚠ Intrusivos</button>
+                <button class="cat-btn" onclick="filterByCategory('vergüenza')" data-i18n="cat_verguenza">◐ Vergüenza</button>
+                <button class="cat-btn" onclick="filterByCategory('envidia')" data-i18n="cat_envidia">△ Envidia</button>
+                <button class="cat-btn" onclick="filterByCategory('vacío')" data-i18n="cat_vacio">○ Vacío</button>
+                <button class="cat-btn" onclick="filterByCategory('amor')" data-i18n="cat_amor">❍ Amor</button>
+                <button class="cat-btn" onclick="filterByCategory('identidad')" data-i18n="cat_identidad">◆ Identidad</button>
+                <button class="cat-btn" onclick="filterByCategory('tiempo')" data-i18n="cat_tiempo">⏃ Tiempo</button>
+                <button class="cat-btn" onclick="filterByCategory('cuerpo')" data-i18n="cat_cuerpo">✦ Cuerpo</button>
+                <button class="cat-btn" onclick="filterByCategory('cordura')" data-i18n="cat_cordura">✺ Cordura</button>
+                <button class="cat-btn" onclick="filterByCategory('dinero')" data-i18n="cat_dinero">¤ Dinero</button>
+                <button class="cat-btn" onclick="filterByCategory('absurdo')" data-i18n="cat_absurdo">☄ Absurdo</button>
+            </div>
+
+            <!-- GRID DE PREGUNTAS -->
+            <div class="questions-grid" id="questions-grid">
+                <!-- Se genera con JS -->
+            </div>
+        </section>
+
+        <!-- === SECCIÓN ESPEJO: PREGUNTA PERSONAL === -->
+        <section id="espejo" class="section">
+            <h2 style="margin-bottom:16px;" data-i18n="mirror_title">Pregúntale al espejo</h2>
+            <p style="margin-bottom:20px;color:var(--text-secondary);" data-i18n="mirror_intro">No promete respuesta, pero promete que tu pregunta sale mejor de lo que entró.</p>
+
+            <div class="ask-container glass">
+                <textarea class="ask-textarea" id="personal-question" 
+                    placeholder="Escribe lo que no te atreves a preguntarle a nadie…"
+                    data-i18n-placeholder="ask_placeholder"></textarea>
+                <p class="ask-hint" data-i18n="ask_hint">tu pregunta no se guarda · el espejo no aprende de ti · cada sesión muere al cerrar</p>
+                <div class="ask-actions">
+                    <button class="btn" onclick="askMirror()" data-i18n="btn_ask">✨ Mirar</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('personal-question').value=''" data-i18n="btn_clear">🗑️ Borrar</button>
+                </div>
+            </div>
+
+            <div class="disclaimer" style="margin-top:24px;">
+                <strong data-i18n="mirror_disclaimer">No es terapia · No es coach · No es buscador</strong><br>
+                <span data-i18n="mirror_disclaimer_text">Si arde la casa, llama a un humano. El espejo es para los días en que la casa solo cruje. Nada que vender. Ningún plan de siete pasos. Solo una pregunta mejor planteada.</span>
+            </div>
+
+            <!-- CRISIS BANNER -->
+            <div class="crisis-banner">
+                <span class="icon">🕊️</span>
+                <div>
+                    <p data-i18n="crisis_text">Si estás en crisis o tienes pensamientos de autolesión, por favor contacta ayuda profesional inmediata.</p>
+                    <div class="crisis-links">
+                        <a href="tel:024" class="crisis-link">🇪🇸 024</a>
+                        <a href="tel:112" class="crisis-link">🌍 112</a>
+                        <a href="tel:600505152" class="crisis-link">👶 ANAR</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === SECCIÓN MANIFIESTO === -->
+        <section id="manifiesto" class="section">
+            <h2 style="margin-bottom:18px;" data-i18n="manifesto_title">Manifiesto · documento vivo</h2>
+            
+            <div class="manifesto-list">
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_1_title">1. Esto no es terapia.</h4>
+                    <p data-i18n="manifesto_1_text">Si arde la casa, llama a un humano. Aquí no hay terapeutas, no hay diagnóstico, no hay receta. Esto es un sitio para los días en que la casa solo cruje y no sabes a quién decírselo sin parecer raro.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_2_title">2. Esto no es coaching.</h4>
+                    <p data-i18n="manifesto_2_text">No vamos a venderte un curso. No tenemos siete pasos. No hay "tu mejor versión". La mejor versión de ti probablemente ya estuvo aquí y se fue a vivir su vida.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_3_title">3. Esto no es un buscador.</h4>
+                    <p data-i18n="manifesto_3_text">No te diremos cuándo nació Napoleón ni cómo se hace una salsa bechamel. Hay 14 sitios mejores que este para eso. Aquí solo entran preguntas que te darían vergüenza buscar en Google con el modo incógnito puesto.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_4_title">4. La gente no es tan rara como cree.</h4>
+                    <p data-i18n="manifesto_4_text">El 90% de tu raro lo comparten millones. El 10% restante es lo único interesante de ti. Este sitio existe para enseñarte la diferencia entre los dos.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_5_title">5. La estética es parte del medicamento.</h4>
+                    <p data-i18n="manifesto_5_text">Un fondo bonito no cura nada, pero un sitio feo te empuja a cerrarlo. Hicimos esto con cariño visual a propósito: tu cerebro merece sentarse en una silla cómoda mientras piensa cosas incómodas.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_6_title">6. Gratis ahora, gratis siempre.</h4>
+                    <p data-i18n="manifesto_6_text">Si el sitio te ha servido y quieres invitar a un café a quien lo construyó, hay un botón discreto. Si no, también está bien. No hay paywalls, no hay newsletter obligatoria, no hay popups pidiendo tu correo a los tres segundos.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_7_title">7. La máquina respira pero no te recuerda.</h4>
+                    <p data-i18n="manifesto_7_text">Lo que escribes no se guarda. Cada sesión muere al cerrar la pestaña. La máquina no aprende de ti. No vendemos tus dudas. No tenemos ningún interés en que vuelvas obligado: solo si te apetece.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h4 data-i18n="manifesto_8_title">8. Humor incluido.</h4>
+                    <p data-i18n="manifesto_8_text">Las preguntas existenciales en serio total son insoportables después de tres minutos. Aquí intentamos ser honestos sin ser pesados. Si algo te hace medio sonreír mientras piensas, hemos hecho bien el trabajo.</p>
+                </div>
+            </div>
+
+            <p style="text-align:center;color:var(--text-muted);margin-top:24px;font-family:var(--font-mono);">
+                — hecho con humor, ruido y sin patrocinadores —
+            </p>
+        </section>
+
+        <!-- === SECCIÓN ECOSISTEMA === -->
+        <section id="ecosistema" class="section">
+            <h2 style="margin-bottom:18px;" data-i18n="ecosystem_title">🔗 Circuito de Apoyo</h2>
+            <p style="margin-bottom:20px;color:var(--text-secondary);" data-i18n="ecosystem_intro">Estas plataformas son aliadas en la red de sanación, evidencia y claridad. Navega entre ellas según tu necesidad:</p>
+            
+            <div class="questions-grid">
+                <a href="https://refleja-tu-fuerza-79908c98.buildaispace.app/" target="_blank" class="question-card" style="text-decoration:none;color:inherit;display:block;">
+                    <h4>✨ Refleja Tu Fuerza</h4>
+                    <div class="question-meta">
+                        <span class="question-tag">Autoestima</span>
+                    </div>
+                    <p class="question-preview">Recursos visuales y creativos para reconstruir la autoestima después del abuso.</p>
+                </a>
+                <a href="https://dual-scars-my-app-28791d6c.buildaispace.app/" target="_blank" class="question-card" style="text-decoration:none;color:inherit;display:block;">
+                    <h4>⚔️ Dual Scars</h4>
+                    <div class="question-meta">
+                        <span class="question-tag">Evidencia</span>
+                    </div>
+                    <p class="question-preview">Herramientas tácticas para supervivientes de Gaslighting estructural y Chemrape.</p>
+                </a>
+                <a href="https://mental-map-my-app-08b82d77.buildaispace.app" target="_blank" class="question-card" style="text-decoration:none;color:inherit;display:block;">
+                    <h4>🧠 Mental Map</h4>
+                    <div class="question-meta">
+                        <span class="question-tag">Patrones</span>
+                    </div>
+                    <p class="question-preview">Entiende Cluster B, Tríadas y dinámicas de manipulación con base científica.</p>
+                </a>
+                <a href="https://eco-silencio-0cbb64b1.buildaispace.app" target="_blank" class="question-card" style="text-decoration:none;color:inherit;display:block;">
+                    <h4>🌌 EcoSilencio</h4>
+                    <div class="question-meta">
+                        <span class="question-tag">Anónimo</span>
+                    </div>
+                    <p class="question-preview">Santuario digital para soltar pensamientos íntimos. Sin nombres, sin rastros, sin juicio.</p>
+                </a>
+                <a href="https://espejo-de-los-100-9720a1f1.buildaispace.app/" target="_blank" class="question-card" style="text-decoration:none;color:inherit;display:block;">
+                    <h4>🪞 El Espejo de Judas</h4>
+                    <div class="question-meta">
+                        <span class="question-tag">Sanación</span>
+                    </div>
+                    <p class="question-preview">Plataforma para jóvenes LGBTQ+: reconoce el abuso, valida tu experiencia, encuentra salida.</p>
+                </a>
+            </div>
+
+            <div style="text-align:center;margin-top:32px;padding:20px;background:var(--bg-card);border-radius:var(--radius);">
+                <p style="margin-bottom:14px;color:var(--text-secondary);" data-i18n="creator_text">Creado con intención por Pedro Belentani · Barcelona</p>
+                <p style="font-size:0.84rem;color:var(--text-muted);font-family:var(--font-mono);">
+                    Si este espejo te ha ayudado a verte con más claridad, compártelo. Si tienes una pregunta, un recurso o una idea para mejorarlo, el circuito está abierto.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- === MODAL DE RESPUESTA === -->
+    <div class="modal-overlay" id="answer-modal">
+        <div class="modal-content glass gold-edge">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modal-body">
+                <!-- Contenido generado con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- === BARRA DE EMERGENCIA === -->
+    <div class="emergency-bar">
+        <span class="emergency-note" data-i18n="emergency_note">🆘 ¿Crisis? Llama ahora:</span>
+        <a href="tel:024" class="emergency-link">📞 024 (ES)</a>
+        <a href="tel:112" class="emergency-link">🚨 112</a>
+        <a href="#" onclick="quickExit();return false;" class="emergency-link" style="background:#ef4444;border-color:#ef4444;">🚪 Salir</a>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        // === BASE DE DATOS DE PREGUNTAS (500+ ESTRUCTURA EXPANDIBLE) ===
+        const questionsDB = [
+            // Existencia
+            { id:1, cat:'existencia', q:"¿Por qué hay algo en lugar de nada?", percent:94, tag:"Filosofía", preview:"La pregunta fundamental. No hay respuesta, solo compañía en la duda.", answer:"Nadie lo sabe con certeza. Algunas tradiciones dicen que el universo es cíclico, otras que emergió de la nada cuántica. Lo importante: tu pregunta ya es un acto de conciencia. No necesitas resolver el misterio para vivir con sentido." },
+            { id:2, cat:'existencia', q:"¿La vida tiene un sentido o me lo invento sobre la marcha?", percent:88, tag:"Propósito", preview:"La tensión entre destino y libertad.", answer:"Ambas cosas. Hay aspectos que no elegimos (nacimiento, contexto), pero la mayor parte del sentido se construye día a día con tus elecciones, tus vínculos, tus pequeños actos de coraje. El sentido no se encuentra, se teje." },
+            { id:3, cat:'existencia', q:"¿Soy real o un personaje en algo más grande?", percent:71, tag:"Identidad", preview:"La duda de la simulación.", answer:"Si sientes, dudas, amas, dueles: eres real. La conciencia que experimenta esta pregunta no puede ser simulada por completo. Incluso si el universo fuera un sueño, tu experiencia dentro de él importa." },
+            { id:4, cat:'existencia', q:"¿Por qué a veces me siento extranjero en mi propia vida?", percent:79, tag:"Desconexión", preview:"Esa sensación de observar desde fuera.", answer:"Es más común de lo que crees. Puede ser disociación leve, estrés, o simplemente que estás creciendo y tu vida aún no ha alcanzado tu nueva versión. Respira. La sensación pasa. Tú no desapareces." },
+            { id:5, cat:'existencia', q:"¿Si nadie me viera, seguiría siendo yo?", percent:66, tag:"Autenticidad", preview:"La identidad sin testigos.", answer:"Sí. Tu esencia no depende de la mirada ajena. Lo que cambia es la expresión, no el núcleo. La pregunta revela tu deseo de ser auténtico, no solo percibido. Eso ya es un acto de soberanía." },
+            
+            // Muerte
+            { id:6, cat:'muerte', q:"¿Qué pasa cuando me muera?", percent:96, tag:"Misterio", preview:"La pregunta universal.", answer:"Nadie lo sabe con certeza. Algunas tradiciones hablan de continuidad, otras de disolución. Lo que sí sabemos: mientras estás aquí, tu vida importa. La incertidumbre no anula el significado del presente." },
+            { id:7, cat:'muerte', q:"¿Por qué pienso a veces que sería más fácil no estar?", percent:82, tag:"Dolor", preview:"Cuando el cansancio supera la esperanza.", answer:"Ese pensamiento suele ser una señal de agotamiento, no de deseo real de morir. Tu mente busca alivio, no fin. Si es frecuente, habla con alguien. Mereces apoyo, no juicio." },
+            { id:8, cat:'muerte', q:"¿Cuántos años me quedan, en serio?", percent:74, tag:"Tiempo", preview:"La ansiedad del reloj invisible.", answer:"Nadie lo sabe. Esa incertidumbre puede asustar, pero también liberar: si no sabes cuánto tienes, cada día gana valor. No vivas esperando el final. Vive como si hoy importara, porque lo hace." },
+            { id:9, cat:'muerte', q:"¿Me acordaré de algo después?", percent:69, tag:"Memoria", preview:"El miedo a ser olvidado.", answer:"Quizás. Quizás no. Lo que dejas en otros —gestos, palabras, presencia— puede resonar más allá de tu conciencia. No necesitas ser recordado para haber importado." },
+            { id:10, cat:'muerte', q:"¿Me llorará la gente que digo que me quiere?", percent:58, tag:"Vínculos", preview:"La duda sobre el amor recibido.", answer:"El amor no siempre se expresa como esperas. Algunas personas lloran en silencio, otras con el tiempo. Lo importante no es cómo te recuerden, sino cómo te hiciste sentir mientras estabas. Tú sabes si fuiste real para alguien." },
+            
+            // Pensamientos intrusivos
+            { id:11, cat:'intrusivos', q:"¿Por qué imagino tirarme por el balcón si no quiero hacerlo?", percent:91, tag:"Intrusivo", preview:"El pensamiento que asusta pero no es deseo.", answer:"Son pensamientos intrusivos: el cerebro prueba escenarios extremos por seguridad, no por intención. Que te asusten es señal de que NO quieres hacerlo. Si son frecuentes, habla con un profesional. No es debilidad, es cuidado." },
+            { id:12, cat:'intrusivos', q:"¿Por qué pienso cosas horribles de gente que amo?", percent:83, tag:"Culpa", preview:"La mente que traiciona al corazón.", answer:"Los pensamientos no son acciones. Tu cerebro genera ideas aleatorias; tú decides cuáles alimentar. Que te preocupe pensar eso demuestra que no quieres dañ
+
+... [output truncated due to length]

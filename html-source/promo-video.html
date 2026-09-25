@@ -1,0 +1,113 @@
+<body>
+
+<div class="video-container">
+<div class="bg"></div>
+<canvas id="particles"></canvas>
+<div class="overlay-scan"></div>
+<div class="vignette"></div>
+
+<!-- SCENE 1: INTRO -->
+<div class="scene scene-1 active">
+<div class="logo-text">BELENTANI</div>
+<div class="sub">JUDAS ERA</div>
+<div class="line"></div>
+</div>
+
+<!-- SCENE 2: PHOTO -->
+<div class="scene scene-2">
+<img src="../fotos/pedro-belentani.jpg" alt="Belentani">
+<div class="caption">THE ARTIST</div>
+</div>
+
+<!-- SCENE 3: TRACKS -->
+<div class="scene scene-3">
+<div class="track" data-delay="0">01 — JUDAS</div>
+<div class="track" data-delay="200">02 — MON AMOUR</div>
+<div class="track" data-delay="400">03 — THERAPIST</div>
+<div class="track" data-delay="600">04 — HEART BREAKING</div>
+</div>
+
+<!-- SCENE 4: ELEMENTS -->
+<div class="scene scene-4">
+<div class="element" data-delay="0"><div class="orb" style="--c:#708090"></div><div class="el-name">PEDRO</div></div>
+<div class="element" data-delay="150"><div class="orb" style="--c:#4682b4"></div><div class="el-name">MARCOS</div></div>
+<div class="element" data-delay="300"><div class="orb" style="--c:#ffd700"></div><div class="el-name">SANTOS</div></div>
+<div class="element" data-delay="450"><div class="orb" style="--c:#ff1744"></div><div class="el-name">BELENTANI</div></div>
+<div class="element" data-delay="600"><div class="orb" style="--c:#e0e0e0"></div><div class="el-name">THE HUMAN</div></div>
+</div>
+
+<!-- SCENE 5: CTA -->
+<div class="scene scene-5">
+<div class="cta-text">STREAM NOW</div>
+<div class="cta-sub">AVAILABLE ON ALL PLATFORMS</div>
+<div class="cta-btn">🎵 LISTEN</div>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="timer" id="timer">00:00</div>
+</div>
+
+<script>
+// PARTICLES
+const cv=document.getElementById('particles');
+const ctx=cv.getContext('2d');
+cv.width=innerWidth;cv.height=innerHeight;
+const pts=[];
+for(let i=0;i<200;i++){pts.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.5+0.5,vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5,o:Math.random()*0.5+0.1})}
+(function draw(){ctx.fillStyle='rgba(5,5,8,0.1)';ctx.fillRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,23,68,${p.o})`;ctx.fill()});requestAnimationFrame(draw)})();
+addEventListener('resize',()=>{cv.width=innerWidth;cv.height=innerHeight});
+
+// VIDEO TIMELINE
+const scenes=document.querySelectorAll('.scene');
+let currentScene=0;
+const sceneDuration=[3000,3000,4000,4000,3000];
+const totalDuration=sceneDuration.reduce((a,b)=>a+b,0);
+let startTime=Date.now();
+
+function updateScene(){
+const elapsed=Date.now()-startTime;
+const pct=Math.min(elapsed/totalDuration,1);
+document.getElementById('progress').style.transform=`scaleX(${pct})`;
+const mins=Math.floor(elapsed/60000);
+const secs=Math.floor((elapsed%60000)/1000);
+document.getElementById('timer').textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+let acc=0;
+for(let i=0;i<sceneDuration.length;i++){
+acc+=sceneDuration[i];
+if(elapsed<acc){
+if(i!==currentScene){
+scenes[currentScene].classList.remove('active');
+scenes[i].classList.add('active');
+currentScene=i;
+animateScene(i);
+}
+break;
+}
+}
+
+if(elapsed>=totalDuration){
+setTimeout(()=>{startTime=Date.now();currentScene=0;scenes.forEach(s=>s.classList.remove('active'));scenes[0].classList.add('active')},1000);
+}
+
+requestAnimationFrame(updateScene);
+}
+
+function animateScene(n){
+if(n===2){
+document.querySelectorAll('.scene-3 .track').forEach((t,i)=>{
+setTimeout(()=>t.classList.add('show'),parseInt(t.dataset.delay));
+});
+}
+if(n===3){
+document.querySelectorAll('.scene-4 .element').forEach((e,i)=>{
+setTimeout(()=>e.classList.add('show'),parseInt(e.dataset.delay));
+});
+}
+}
+
+updateScene();
+animateScene(0);
+</script>
+</body>
+</html>

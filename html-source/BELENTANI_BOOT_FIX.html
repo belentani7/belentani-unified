@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // BOOT FIX</title>
+<style>
+:root{--void:#050505;--blood:#ff003c;--blood-glow:rgba(255,0,60,.8);--txt:#fff;--green:#00ff41;--gold:#ffd700;--fm:'Courier New',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:var(--green);font-family:var(--fm);overflow:hidden}
+#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:13px;text-align:center;transition:opacity 1.5s ease}
+#boot.hide{opacity:0;pointer-events:none}
+#boot .blog{width:420px;max-width:90vw;height:200px;overflow:hidden;text-align:left;margin-bottom:24px;opacity:.85;line-height:1.5;letter-spacing:1px}
+#boot .bbar{width:320px;max-width:80vw;height:2px;background:rgba(0,255,65,.08);position:relative;overflow:hidden;border-radius:1px}
+#boot .bbar::after{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:var(--green);box-shadow:0 0 12px var(--green);animation:bload 3s linear forwards}
+@keyframes bload{to{width:100%}}
+#boot .btag{margin-top:18px;font-size:10px;letter-spacing:5px;color:rgba(0,255,65,.5)}
+#main{display:none;padding:40px;font-family:sans-serif;color:#fff}
+h1{color:var(--blood);font-size:48px;margin-bottom:20px}
+p{color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:16px}
+.success{color:var(--green);font-size:18px;margin-top:30px}
+</style>
+</head>
+<body>
+<div id="boot">
+  <div class="blog" id="bootLog"></div>
+  <div class="bbar"></div>
+  <div class="btag">JUDAS_OS v12.0 // BOOT TEST</div>
+</div>
+<div id="main">
+  <h1>BELENTANI</h1>
+  <p>Boot sequence completado correctamente.</p>
+  <p>El problema original era que GSAP no cargaba a tiempo.</p>
+  <p>Esta versión usa CSS transitions en lugar de GSAP para el boot.</p>
+  <div class="success">SYSTEM READY ✓</div>
+</div>
+<script>
+var BL=["> INITIALIZING JUDAS_OS v12.0...","> LOADING OMEGA KERNEL...","> MAPPING NEURAL PATHWAYS...","> CALIBRATING 432Hz RESONANCE...","> OMEGA_CORE ONLINE.","> BIOMETRIC VAULT: SEALED.","> ACCESS GRANTED."];
+var bli=0;
+var blog=document.getElementById('bootLog');
+function bwrite(){
+  if(bli<BL.length){
+    blog.innerHTML+=BL[bli]+"<br>";
+    bli++;
+    setTimeout(bwrite,380);
+  }else{
+    setTimeout(function(){
+      document.getElementById('boot').classList.add('hide');
+      setTimeout(function(){
+        document.getElementById('boot').style.display='none';
+        document.getElementById('main').style.display='block';
+      },1500);
+    },600);
+  }
+}
+bwrite();
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI OMEGA OS - V3 INFINITE EXPANSION</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Cinzel:wght@700&display=swap');
+
+        :root {
+            --blood-red: #ff0033;
+            --plasma-light: #ff4d4d;
+            --deep-void: #030000;
+            --glass-bg: rgba(10, 0, 0, 0.65);
+            --glass-border: rgba(255, 0, 51, 0.5);
+            --glow-intense: 0 0 40px rgba(255, 0, 51, 0.8);
+            --glow-soft: 0 0 15px rgba(255, 0, 51, 0.4);
+            --font-sys: 'Share Tech Mono', monospace;
+            --font-head: 'Orbitron', sans-serif;
+            --font-epic: 'Cinzel', serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background-color: var(--deep-void);
+            color: var(--blood-red);
+            font-family: var(--font-sys);
+            overflow: hidden;
+            width: 100vw; height: 100vh;
+        }
+
+        /* --- BACKGROUND LAYERS --- */
+        #webgl-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        canvas#matrix-rain { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.15; pointer-events: none; }
+        
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.3));
+            background-size: 100% 4px; z-index: 9999; pointer-events: none; opacity: 0.5;
+        }
+
+        /* --- OS WORKSPACE --- */
+        #os-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; perspective: 1500px; }
+
+        /* --- DOCK / TASKBAR --- */
+        #dock {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; padding: 10px 25px;
+            background: rgba(5,0,0,0.8); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-radius: 30px;
+            box-shadow: var(--glow-soft); z-index: 10000;
+        }
+        .dock-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            background: rgba(255,0,51,0.1); border: 1px solid var(--glass-border);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 20px; cursor: pointer; transition: all 0.3s;
+            position: relative;
+        }
+        .dock-icon:hover {
+            background: var(--blood-red); color: #fff; transform: translateY(-10px) scale(1.1);
+            box-shadow: var(--glow-intense);
+        }
+        .dock-icon::after {
+            content: attr(data-name); position: absolute; top: -35px;
+            background: var(--deep-void); border: 1px solid var(--blood-red);
+            padding: 4px 8px; font-size: 10px; opacity: 0; pointer-events: none; transition: 0.2s;
+            white-space: nowrap;
+        }
+        .dock-icon:hover::after { opacity: 1; top: -45px; }
+
+        /* --- WINDOW SYSTEM --- */
+        .glass-panel {
+            position: absolute; background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border: 1px solid var(--glass-border); border-top: 2px solid rgba(255, 100, 100, 0.4);
+            border-radius: 12px; box-shadow: inset 0 0 30px rgba(255, 0, 51, 0.15), 0 20px 50px rgba(0,0,0,0.9);
+            display: flex; flex-direction: column; overflow: hidden;
+            transition: transform 0.2s, opacity 0.2s; opacity: 0; transform: scale(0.9); pointer-events: none;
+        }
+        .glass-panel.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .panel-header {
+            height: 40px; background: linear-gradient(90deg, rgba(255,0,51,0.3) 0%, transparent 100%);
+            border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; font-family: var(--font-head); font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--blood-red); cursor: crosshair;
+        }
+        .win-controls button {
+            width: 12px; height: 12px; border-radius: 50%; border: none; margin-left: 8px; cursor: pointer;
+        }
+        .btn-close { background: #ff0033; } .btn-min { background: #ffaa00; } .btn-max { background: #00ffaa; }
+        .panel-content { flex: 1; padding: 20px; overflow-y: auto; position: relative; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: rgba(0,0,0,0.8); } ::-webkit-scrollbar-thumb { background: var(--blood-red); }
+
+        /* --- SCAPE ROOM MODULE --- */
+        .puzzle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; height: 200px; margin-top: 20px; }
+        .puzzle-node { border: 1px solid var(--plasma-light); display: flex; align-items: center; justify-content: center; font-family: var(--font-epic); font-size: 24px; cursor: pointer; transition: 0.3s; background: rgba(255,0,51,0.05); }
+        .puzzle-node:hover { background: var(--blood-red); color: #fff; box-shadow: var(--glow-intense); }
+
+        /* --- THE STOLEN KEY MODULE --- */
+        .key-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
+        .crypt-ring { width: 150px; height: 150px; border: 2px dashed var(--plasma-light); border-radius: 50%; animation: spin 10s linear infinite; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .crypt-core { width: 80px; height: 80px; background: var(--blood-red); border-radius: 50%; box-shadow: var(--glow-intense); animation: pulse 2s infinite alternate; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- MUSIC PORTAL MODULE --- */
+        .album-cover { width: 100%; height: 200px; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop') center/cover; border: 1px solid var(--blood-red); border-radius: 8px; position: relative; }
+        .album-cover::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,0,51,0.4); mix-blend-mode: color; }
+        .track-list { margin-top: 15px; list-style: none; }
+        .track-list li { padding: 8px; border-bottom: 1px solid rgba(255,0,51,0.2); cursor: pointer; transition: 0.2s; }
+        .track-list li:hover { background: rgba(255,0,51,0.2); padding-left: 15px; }
+
+        /* --- PHOTO GALLERY (ALIVE CODE) --- */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .photo-item { height: 150px; border: 1px solid var(--glass-border); position: relative; overflow: hidden; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(150%) tint(var(--blood-red)); transition: 0.5s; opacity: 0.7; }
+        .photo-item:hover img { filter: grayscale(0%) contrast(120%); opacity: 1; transform: scale(1.1); }
+        .photo-overlay { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 5px; font-size: 10px; text-align: center; }
+
+        /* --- SYSTEM LOCKDOWN OVERLAY (EASTER EGG) --- */
+        #lockdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 0, 0, 0.2); z-index: 100000;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: inset 0 0 150px rgba(255, 0, 0, 1); pointer-events: none;
+        }
+        .lockdown-text { font-family: var(--font-epic); font-size: 80px; color: #fff; text-shadow: 0 0 30px #f00; animation: flash 0.1s infinite; }
+        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div id="webgl-container"></div>
+    <canvas id="matrix-rain"></canvas>
+
+    <!-- LOCKDOWN OVERLAY -->
+    <div id="lockdown-overlay">
+        <div class="lockdown-text">SECURITY BREACH</div>
+        <div style="font-size: 24px; color: #fff; margin-top: 20px;">MAN-IN-THE-MIDDLE PROTOCOL INTERCEPTED</div>
+    </div>
+
+    <!-- MAIN OS WORKSPACE -->
+    <div id="os-layer">
+
+        <!-- MODULE 1: THE PILLARS (Updated) -->
+        <div class="glass-panel active" id="win-pillars" style="width: 450px; height: 350px; top: 10%; left: 5%; z-index: 10;">
+            <div class="panel-header">
+                <div>ARCHETYPE CORES</div>
+                <div class="win-controls"><button class="btn-close" onclick="closeWin('win-pillars')"></button></div>
+            </div>
+            <div class="panel-content">
+                <div style="display: flex; height: 100%; align-items: flex-end; gap: 10px;" id="pillar-container"></div>
+            </div>
+        </div>
+
+        <!-- MODULE 2: SCAPE ROOM -->
+        <div class="glass-panel" id="win-scape" style="width: 500px; height: 400px; top: 15%; left: 35%; z-index: 11;">
+            <div class="panel-header">
+                <div>SCAPE ROOM: THE BETRAYAL</div>
+                <div class="win-controls"><button class="btn-close" onclick="closeWin('win-scape')"></button></div>
+            </div>
+            <div class="panel-content">
+                <p>Unlock the sequence to retrieve the Stolen Key.</p>
+                <div class="puzzle-grid">
+                    <div class="puzzle-node" onclick="checkPuzzle('I')">I</div>
+                    <div class="puzzle-node" onclick="checkPuzzle('II')">II</div>
+                    <div class="puzzle-node" onclick="checkPuzzle('III')">III</div>
+                    <div class="puzzle-node" onclick="checkPuzzle('IV')">IV</div>
+                    <div class="puzzle-node" onclick="checkPuzzle('V')">V</div>
+                    <div class="puzzle-node" onclick="checkPuzzle('VI')">VI</div>
+                </div>
+                <div id="puzzle-status" style="margin-top: 15px; color: #fff; text-align: center;">Sequence: _ _ _</div>
+            </div>
+        </div>
+
+        <!-- MODULE 3: THE STOLEN KEY -->
+        <div class="glass-panel" id="win-key" style="width: 350px; height: 450px; top: 20%; right: 10%; z-index: 12;">
+            <div class="panel-header">
+                <div>CRYPTOGRAPHY: STOLEN KEY</div>
+                <div class="win-controls"><button class="btn-close" onclick="closeWin('win-key')"></button></div>
+            </div>
+            <div class="panel-content key-container">
+                <div class="crypt-ring">
+                    <div class="crypt-core"></div>
+                </div>
+                <h2 style="font-family: var(--font-epic); margin-bottom: 10px;">KEY ENCRYPTED</h2>
+                <p style="font-size: 12px; color: #888;">Hash: 0x9F4A...B72C</p>
+                <p style="font-size: 12px; margin-top: 20px;">Awaiting Scape Room override.</p>
+            </div>
+        </div>
+
+        <!-- MODULE 4: MUSIC PORTAL -->
+        <div class="glass-panel active" id="win-music" style="width: 400px; height: 500px; bottom: 120px; left: 10%; z-index: 13;">
+            <div class="panel-header">
+                <div>JUDAS MUSIC PORTAL</div>
+                <div class="win-controls"><button class="btn-close" onclick="closeWin('win-music')"></button></div>
+            </div>
+            <div class="panel-content">
+                <div class="album-cover"></div>
+                <ul class="track-list">
+                    <li>▶ 01. The Betrayal (n.aup3 stem)</li>
+                    <li>▶ 02. Thirty Pieces of Silver</li>
+                    <li>▶ 03. Garden of Shadows</li>
+                    <li>▶ 04. The Kiss (Vocals Isolated)</li>
+                    <li>▶ 05. Omega Resurrection</li>
+                </ul>
+                <div style="margin-top: 20px; height: 40px; background: rgba(255,0,51,0.2); display: flex; align-items: center; padding: 0 10px;">
+                    <span style="flex: 1; height: 2px; background: var(--plasma-light); position: relative;">
+                        <span style="position: absolute; left: 45%; top: -4px; width: 10px; height: 10px; background: #fff; border-radius: 50%;"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 5: ALIVE CODE / ARCHIVE -->
+        <div class="glass-panel" id="win-photos" style="width: 600px; height: 450px; bottom: 120px; right: 20%; z-index: 14;">
+            <div class="panel-header">
+                <div>ARCHIVE: ALIVE MEMORIES</div>
+                <div class="win-controls"><button class="btn-close" onclick="closeWin('win-photos')"></button></div>
+            </div>
+            <div class="panel-content">
+                <div class="photo-grid">
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=800&auto=format&fit=crop" alt="Money">
+                        <div class="photo-overlay">ASSET: DEUDA CREATIVA</div>
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" alt="Tech">
+                        <div class="photo-overlay">ASSET: AION SERVER</div>
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=800&auto=format&fit=crop" alt="Space">
+                        <div class="photo-overlay">ASSET: PLANETA.M</div>
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop" alt="Abstract">
+                        <div class="photo-overlay">ASSET: CHROMATIC STUDIO</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCK -->
+        <div id="dock">
+            <div class="dock-icon" data-name="Archetypes" onclick="openWin('win-pillars')">🏛️</div>
+            <div class="dock-icon" data-name="Judas Music" onclick="openWin('win-music')">🎵</div>
+            <div class="dock-icon" data-name="Scape Room" onclick="openWin('win-scape')">🧩</div>
+            <div class="dock-icon" data-name="Stolen Key" onclick="openWin('win-key')">🗝️</div>
+            <div class="dock-icon" data-name="Memories" onclick="openWin('win-photos')">👁️</div>
+            <div class="dock-icon" data-name="Lockdown" onclick="triggerEasterEgg()" style="border-color: #fff;">⚠️</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* --- 1. THREE.JS DESERT & SPACE (Enhanced) --- */
+        function initWebGL() {
+            const container = document.getElementById('webgl-container');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050000, 0.003);
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 30, 150);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            const terrainGeo = new THREE.PlaneGeometry(3000, 3000, 60, 60);
+            const pos = terrainGeo.attributes.position;
+            for(let i=0; i<pos.count; i++) {
+                const x = pos.getX(i);
+                const y = pos.getY(i);
+                const z = Math.sin(x * 0.02) * Math.cos(y * 0.02) * 40 + Math.sin(x * 0.1) * 5;
+                pos.setZ(i, z);
+            }
+            terrainGeo.computeVertexNormals();
+            const terrainMat = new THREE.MeshBasicMaterial({ color: 0xff0033, wireframe: true, transparent: true, opacity: 0.2 });
+            const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+            terrain.rotation.x = -Math.PI / 2;
+            terrain.position.y = -30;
+            scene.add(terrain);
+
+            const partGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(5000 * 3);
+            for(let i=0; i<15000; i++) pPos[i] = (Math.random() - 0.5) * 1500;
+            partGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const partMat = new THREE.PointsMaterial({ color: 0xff4d4d, size: 2, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+            const particles = new THREE.Points(partGeo, partMat);
+            scene.add(particles);
+
+            let time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.002;
+                terrain.position.z = (time * 150) % 50;
+                particles.rotation.y = time * 0.05;
+                particles.rotation.x = time * 0.02;
+                renderer.render(scene, camera);
+            }
+            animate();
+            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+        }
+
+        /* --- 2. MATRIX RAIN (Red Plasma) --- */
+        function initMatrix() {
+            const canvas = document.getElementById('matrix-rain');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(3, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff0033';
+                ctx.font = fontSize + 'px Share Tech Mono';
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }
+            setInterval(draw, 33);
+            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        }
+
+        /* --- 3. WINDOW MANAGER --- */
+        let zIndex = 100;
+        function openWin(id) {
+            const win = document.getElementById(id);
+            win.classList.add('active');
+            win.style.zIndex = ++zIndex;
+        }
+        function closeWin(id) { document.getElementById(id).classList.remove('active'); }
+        
+        document.querySelectorAll('.glass-panel').forEach(win => {
+            const header = win.querySelector('.panel-header');
+            let isDragging = false, startX, startY, initialLeft, initialTop;
+            header.addEventListener('mousedown', (e) => {
+                if(e.target.tagName === 'BUTTON') return;
+                isDragging = true; startX = e.clientX; startY = e.clientY;
+                initialLeft = win.offsetLeft; initialTop = win.offsetTop;
+                win.style.zIndex = ++zIndex;
+            });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                win.style.left = `${initialLeft + (e.clientX - startX)}px`;
+                win.style.top = `${initialTop + (e.clientY - startY)}px`;
+            });
+            document.addEventListener('mouseup', () => isDragging = false);
+            win.addEventListener('mousedown', () => win.style.zIndex = ++zIndex);
+        });
+
+        /* --- 4. MODULE LOGIC --- */
+        const names = ['PEDRO', 'MARCOS', 'SANTOS', 'BELENTANI', 'JUDAS'];
+        const pContainer = document.getElementById('pillar-container');
+        names.forEach(name => {
+            const p = document.createElement('div');
+            p.style.flex = '1'; p.style.background = 'linear-gradient(to top, rgba(255,0,51,0.8), transparent)';
+            p.style.border = '1px solid #ff0033'; p.style.position = 'relative'; p.style.transition = 'height 0.5s';
+            p.style.height = (Math.random() * 60 + 20) + '%';
+            const label = document.createElement('div');
+            label.textContent = name; label.style.position = 'absolute'; label.style.bottom = '-25px'; label.style.left = '50%'; label.style.transform = 'translateX(-50%)'; label.style.fontSize = '10px'; label.style.color = '#fff';
+            p.appendChild(label); pContainer.appendChild(p);
+        });
+        setInterval(() => {
+            Array.from(pContainer.children).forEach(p => p.style.height = (Math.random() * 80 + 20) + '%');
+        }, 1500);
+
+        let sequence = [];
+        function checkPuzzle(val) {
+            sequence.push(val);
+            if(sequence.length > 3) sequence.shift();
+            document.getElementById('puzzle-status').textContent = `Sequence: ${sequence.join(' - ')}`;
+            if(sequence.join('-') === 'I-VI-III') {
+                document.getElementById('puzzle-status').textContent = "OVERRIDE SUCCESS. KEY RELEASED.";
+                document.getElementById('puzzle-status').style.color = "#00ffaa";
+                document.querySelector('.crypt-core').style.background = "#00ffaa";
+                document.querySelector('.crypt-core').style.boxShadow = "0 0 40px #00ffaa";
+                openWin('win-key');
+            }
+        }
+
+        /* --- 5. EASTER EGG (LOCKDOWN) --- */
+        let lockdownActive = false;
+        function triggerEasterEgg() {
+            const overlay = document.getElementById('lockdown-overlay');
+            if(!lockdownActive) {
+                overlay.style.display = 'flex';
+                document.body.style.animation = 'flash 0.5s infinite';
+                lockdownActive = true;
+                setTimeout(() => triggerEasterEgg(), 4000); // Auto recover after 4s
+            } else {
+                overlay.style.display = 'none';
+                document.body.style.animation = 'none';
+                lockdownActive = false;
+            }
+        }
+
+        // Global key listener for hidden triggers
+        let typed = "";
+        document.addEventListener('keydown', (e) => {
+            typed += e.key.toUpperCase();
+            if(typed.length > 10) typed = typed.substring(1);
+            if(typed.includes("ALERT") || typed.includes("THIAGO")) { // Safe aesthetic visual implementation of their request
+                triggerEasterEgg();
+                typed = "";
+            }
+        });
+
+        window.onload = () => { initWebGL(); initMatrix(); };
+    </script>
+</body>
+</html>

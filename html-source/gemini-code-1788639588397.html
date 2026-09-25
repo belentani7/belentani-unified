@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>secure T — Universidad Digital · Liquid Gold & Blue</title>
+
+<!-- Tipografías Premium -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/unbounded@latest/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/unbounded@latest/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/great-vibes@latest/latin.css">
+
+<style>
+/* ================= VARIABLES ================= */
+:root {
+  /* 60% dominante: azul abismal */
+  --azul-950: #020610; --azul-900: #050d1f; --azul-800: #0a1a38; --azul-real: #14418f;
+  /* 30% secundario: cian cristalino */
+  --cian: #33d6ff; --cian-hi: #e0faff; 
+  /* 10% acento: oro líquido */
+  --oro: #e8b64c; --oro-hi: #ffedbb; --oro-med: #c9962e; 
+  /* Bioluminiscencia */
+  --verde-luz: #3dffb4; 
+  
+  --txt: #f0f7ff; --txt-suave: #a5c3e8;
+  
+  /* Sistema Glassmorphism Avanzado */
+  --vid-fondo: linear-gradient(135deg, rgba(20,40,80,0.4), rgba(5,15,35,0.6));
+  --vid-borde: rgba(255,255,255,0.08);
+  --vid-blur: 32px;
+  --vid-sombra: 
+    0 30px 60px -20px rgba(0,0,0,0.8), 
+    inset 0 1px 0 rgba(255,255,255,0.15), 
+    inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--f-cuerpo, 'Manrope', sans-serif);
+  color: var(--txt);
+  background-color: var(--azul-950);
+  overflow-x: hidden;
+}
+
+/* Efecto de ruido cinemático */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Luces de ambiente */
+.luz-bg {
+  position: fixed; inset: 0; z-index: -2;
+  background: 
+    radial-gradient(circle at 10% 0%, rgba(30,125,255,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(232,182,76,0.1) 0%, transparent 40%);
+}
+
+#lienzoFondo, #lienzoGotas { position: fixed; inset: 0; pointer-events: none; }
+#lienzoFondo { z-index: -1; }
+#lienzoGotas { z-index: 50; mix-blend-mode: color-dodge; }
+
+/* El cursor de luz */
+#cursorGlow {
+  position: fixed; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(51,214,255,0.15) 0%, transparent 60%);
+  border-radius: 50%; pointer-events: none; z-index: 0;
+  transform: translate(-50%, -50%); transition: opacity 0.3s; opacity: 0;
+}
+
+/* ================= VIDRIO LÍQUIDO ================= */
+.vidrio {
+  position: relative; overflow: hidden;
+  border-radius: 24px;
+  background: var(--vid-fondo);
+  backdrop-filter: blur(var(--vid-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--vid-blur)) saturate(180%);
+  border: 1px solid var(--vid-borde);
+  box-shadow: var(--vid-sombra);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+}
+
+.vidrio::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.1) 0%, transparent 40%, rgba(255,255,255,0.05) 100%);
+  pointer-events: none;
+}
+
+.vidrio:hover { transform: translateY(-5px); border-color: rgba(232,182,76,0.3); }
+
+/* ================= NAV ================= */
+header {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 60; width: min(1200px, 92%);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 1.5rem; border-radius: 99px;
+  background: rgba(5,13,31,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.2em; }
+.logo b { color: var(--cian); text-shadow: 0 0 15px var(--cian); }
+
+nav { display: flex; gap: 1rem; }
+nav a {
+  color: var(--txt-suave); text-decoration: none; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.15em; text-transform: uppercase; padding: 0.5rem 1rem;
+  border-radius: 99px; transition: 0.3s;
+}
+nav a:hover { color: var(--cian-hi); background: rgba(51,214,255,0.15); }
+
+.btn {
+  border: none; cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: 800;
+  font-size: 0.85rem; padding: 0.8rem 1.8rem; border-radius: 99px; transition: 0.3s;
+}
+.btn-oro {
+  background: linear-gradient(135deg, var(--oro-hi), var(--oro)); color: var(--azul-950);
+  box-shadow: 0 10px 30px -10px var(--oro);
+}
+.btn-oro:hover { box-shadow: 0 15px 40px -5px var(--oro); transform: scale(1.05); }
+
+/* ================= HERO ================= */
+main { width: min(1240px, 90%); margin: 0 auto; padding-top: 140px; position: relative; z-index: 10; }
+
+.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.kicker { color: var(--cian); font-weight: 800; letter-spacing: 0.3em; font-size: 0.75rem; margin-bottom: 1rem; display: block; }
+h1 { font-family: 'Unbounded', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1; margin-bottom: 1.5rem; }
+h1 .t { color: var(--cian); text-shadow: 0 0 30px rgba(51,214,255,0.8); }
+
+.lede { font-size: 1.1rem; color: var(--txt-suave); line-height: 1.6; max-width: 500px; margin-bottom: 2rem; }
+.chips { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.chip { padding: 0.4rem 1rem; border-radius: 99px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; }
+
+.hero-img { position: relative; padding: 1rem; border-radius: 32px; background: rgba(255,255,255,0.02); }
+.hero-img img { width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+.firma { position: absolute; bottom: 30px; right: 30px; font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--oro-hi); text-shadow: 0 0 20px var(--oro); transform: rotate(-10deg); }
+
+/* ================= PLATAFORMA SCROLL HORIZONTAL ================= */
+.seccion { margin-top: 8rem; margin-bottom: 8rem; }
+h2 { font-family: 'Unbounded', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem; }
+h2 span { color: var(--oro); }
+h2::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent); }
+.sub { font-size: 0.8rem; color: var(--txt-suave); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 3rem; }
+
+.mod-viewport { overflow: hidden; margin: 0 calc(-50vw + 50%); padding: 0 calc(50vw - 50%); }
+.mod-pista { display: flex; gap: 2rem; width: max-content; padding: 2rem 0; }
+.mod-card { width: 320px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.mod-card .ic { font-size: 2.5rem; }
+.mod-card h3 { font-family: 'Unbounded', sans-serif; font-size: 1.1rem; color: var(--cian); }
+.mod-card p { font-size: 0.9rem; color: var(--txt-suave); line-height: 1.6; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; text-align: center; }
+  .lede { margin: 0 auto 2rem; }
+  .chips, .cta { justify-content: center; }
+  header { flex-wrap: wrap; border-radius: 16px; top: 10px; }
+  nav { display: none; /* Ocultar en móvil por simplicidad en demo */ }
+}
+</style>
+</head>
+<body>
+
+<div class="luz-bg"></div>
+<div id="cursorGlow"></div>
+<canvas id="lienzoFondo"></canvas>
+
+<header class="vidrio" id="nav">
+  <span class="logo">SECURE <b>T</b></span>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#plataforma">Campus</a>
+    <a href="#balance">Métricas</a>
+  </nav>
+  <button class="btn btn-oro magnet">Entrar al Campus</button>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-text">
+      <span class="kicker">INFRAESTRUCTURA INTELIGENTE</span>
+      <h1 class="scramble">SECURE <span class="t">T</span></h1>
+      <p class="lede">Universidad digital de <b>ciberseguridad</b> e <b>IA</b>: campus abierto, laboratorios aislados, tutoría IA gobernada y credenciales verificables.</p>
+      <div class="chips">
+        <div class="chip">IA GOBERNADA</div><div class="chip">ZERO-TRUST</div><div class="chip">ACCESO GLOBAL</div>
+      </div>
+      <div class="cta">
+        <button class="btn btn-oro magnet">Unirse a la misión</button>
+      </div>
+    </div>
+    <figure class="hero-img vidrio tilt">
+      <img src="https://image.qwenlm.ai/public_source/5453ef1e-15a1-4618-a3c6-989f40b3f154/16d521427-744b-47da-a38a-9ffc4a5c6455.png" alt="Armadura Blanca con Oro y Cian">
+      <figcaption class="firma">Secure T</figcaption>
+    </figure>
+  </section>
+
+  <!-- PLATAFORMA HORIZONTAL -->
+  <section class="seccion" id="plataforma">
+    <h2 class="scramble">MÓDULOS DEL <span>CAMPUS</span></h2>
+    <p class="sub">Infraestructura desplegada · Scroll para explorar</p>
+    
+    <div class="mod-viewport">
+      <div class="mod-pista" id="modPista">
+        <!-- Renderizado por JS -->
+      </div>
+    </div>
+  </section>
+  
+  <!-- BALANCE METRICS -->
+  <section class="seccion" id="balance">
+    <h2>BALANCE <span>EN VIVO</span></h2>
+    <p class="sub">Auditoría del ecosistema en tiempo real</p>
+    <div class="vidrio" style="padding: 3rem; text-align: center; border-color: var(--oro);">
+      <h3 style="font-family: 'Unbounded'; font-size: 4rem; color: var(--cian); text-shadow: 0 0 30px rgba(51,214,255,0.5);" id="contadorEquilibrio">0%</h3>
+      <p style="color: var(--txt-suave); letter-spacing: 0.3em; margin-top: 1rem;">INTEGRIDAD DEL SISTEMA CIFRADO</p>
+    </div>
+  </section>
+</main>
+
+<canvas id="lienzoGotas"></canvas>
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+'use strict';
+
+// 1. Data Inject
+const MODULOS = [
+  ['🎓','Campus Digital','Arquitectura React 19 + Vite con progress tracking.'],
+  ['🧪','Cyber Labs','Entornos de sandboxing seguros para penetration testing.'],
+  ['🤖','Tutor IA','Routing de modelos inteligentes con permisos granulares.'],
+  ['🏅','Credenciales','Verificación criptográfica de habilidades adquiridas.'],
+  ['🛡️','Zero-Trust','Validación RBAC en absolutamente cada capa de red.']
+];
+
+document.getElementById('modPista').innerHTML = MODULOS.map(m => `
+  <article class="vidrio mod-card tilt">
+    <span class="ic">${m[0]}</span>
+    <h3>${m[1]}</h3>
+    <p>${m[2]}</p>
+  </article>
+`).join('');
+
+// 2. Custom Cursor Glow
+const cursor = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', (e) => {
+  cursor.style.opacity = 1;
+  // Usamos GSAP QuickTo para un seguimiento ultra suave
+  gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.5, ease: "power3.out" });
+});
+
+// 3. Sistema de Canvas (Lluvia Cibernética)
+const cvsFondo = document.getElementById('lienzoFondo');
+const ctxF = cvsFondo.getContext('2d');
+let w, h;
+function resize() {
+  w = cvsFondo.width = window.innerWidth;
+  h = cvsFondo.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const particulas = Array.from({length: 80}, () => ({
+  x: Math.random() * w, y: Math.random() * h,
+  v: Math.random() * 2 + 1, l: Math.random() * 15 + 5
+}));
+
+function animarCanvas() {
+  ctxF.clearRect(0, 0, w, h);
+  ctxF.strokeStyle = 'rgba(51, 214, 255, 0.15)';
+  ctxF.lineWidth = 1.5;
+  
+  particulas.forEach(p => {
+    p.y += p.v;
+    p.x += p.v * 0.3; // ángulo
+    if (p.y > h) { p.y = 0; p.x = Math.random() * w; }
+    
+    ctxF.beginPath();
+    ctxF.moveTo(p.x, p.y);
+    ctxF.lineTo(p.x - p.l * 0.3, p.y - p.l);
+    ctxF.stroke();
+  });
+  requestAnimationFrame(animarCanvas);
+}
+animarCanvas();
+
+// 4. GSAP Superpowers 
+gsap.registerPlugin(ScrollTrigger);
+
+// A. Animación de entrada (Hero)
+const tl = gsap.timeline();
+tl.from("header", { y: -100, opacity: 0, duration: 1, ease: "power4.out" })
+  .from(".scramble", { y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out" }, "-=0.5")
+  .from(".lede", { opacity: 0, y: 20, duration: 1 }, "-=0.5")
+  .from(".chip", { scale: 0, opacity: 0, stagger: 0.1, ease: "back.out(2)" }, "-=0.8")
+  .from(".hero-img", { x: 100, opacity: 0, duration: 1.5, ease: "power4.out" }, "-=1.5");
+
+// B. Scroll Horizontal Avanzado (Pin & Scrub)
+const pista = document.getElementById('modPista');
+const vw = document.querySelector('.mod-viewport');
+
+gsap.to(pista, {
+  x: () => -(pista.scrollWidth - vw.clientWidth) + "px",
+  ease: "none",
+  scrollTrigger: {
+    trigger: "#plataforma",
+    start: "center center",
+    end: () => "+=" + pista.scrollWidth,
+    pin: true,
+    scrub: 1,
+    invalidateOnRefresh: true,
+    anticipatePin: 1
+  }
+});
+
+// C. Contador Animado (Balance)
+gsap.to("#contadorEquilibrio", {
+  innerHTML: 100,
+  duration: 3,
+  snap: { innerHTML: 1 },
+  scrollTrigger: {
+    trigger: "#balance",
+    start: "top 80%",
+  },
+  onUpdate: function() {
+    document.getElementById('contadorEquilibrio').innerHTML = this.targets()[0].innerHTML + "%";
+  }
+});
+
+// D. Efecto Magnético & Tilt 3D
+document.querySelectorAll('.magnet, .tilt').forEach(el => {
+  const isTilt = el.classList.contains('tilt');
+  el.addEventListener('mousemove', (e) => {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width/2;
+    const y = e.clientY - rect.top - rect.height/2;
+    
+    if(isTilt) {
+      gsap.to(el, { rotationY: x/15, rotationX: -y/15, duration: 0.5, ease: "power2.out", transformPerspective: 900 });
+    } else {
+      gsap.to(el, { x: x*0.3, y: y*0.3, duration: 0.4, ease: "power3.out" });
+    }
+  });
+  el.addEventListener('mouseleave', () => {
+    if(isTilt) gsap.to(el, { rotationY: 0, rotationX: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
+    else gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
+  });
+});
+
+</script>
+</body>
+</html>

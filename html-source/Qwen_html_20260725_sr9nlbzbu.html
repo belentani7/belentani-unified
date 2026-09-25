@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5"/>
+<meta name="description" content="Catalonia Hotels & Resorts — Reserva directa con mejor precio garantizado. +80 hoteles, +25 destinos en España, Europa y el Caribe. Most Welcoming Hotel Chain in Spain 2025."/>
+<meta name="theme-color" content="#080b10"/>
+<!-- Open Graph -->
+<meta property="og:title" content="Catalonia Hotels & Resorts · Reserva Directa"/>
+<meta property="og:description" content="+80 hoteles en España, Europa y el Caribe. Mejor precio garantizado y cancelación gratis."/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80"/>
+<title>Catalonia Hotels & Resorts · Reserva Directa</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://images.unsplash.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   TOKENS — Von Restorff (1 acento oro) · Fluidez (serif+sans ≥1.7lh)
+   Quiet Luxury (≥40% whitespace) · Primacía+Recencia · Dopamina
+   ═══════════════════════════════════════════════════════ */
+:root{
+  --void:#080b10;--ink:#0e151c;--ink2:#141c26;--ink3:#1a2430;
+  --paper:#f8f5ef;--paper2:#efe9df;
+  --gold:#c9a84c;--goldL:#f0dfb0;--goldD:#a6853a;
+  --teal:#2bb3a8;--coral:#d9694a;
+  --line:rgba(255,255,255,.1);--lineD:rgba(14,21,28,.1);
+  --mut:#8a94a0;--mutD:#6b7580;
+  --r:20px;--rs:14px;--sh:0 40px 100px -40px rgba(0,0,0,.6);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+  --tr:.4s var(--ease);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.7;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.06;letter-spacing:-.02em}
+::selection{background:var(--gold);color:var(--void)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.w{max-width:1320px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+.ey{font-family:var(--sans);font-size:.68rem;letter-spacing:.35em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.dk{background:var(--ink);color:var(--paper);transition:background var(--tr),color var(--tr)}.dk .ey{color:var(--goldL)}
+.ld{font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--mutD);max-width:58ch;line-height:1.8}.dk .ld{color:#a8b2be}
+.bt{display:inline-flex;align-items:center;gap:.65em;padding:1em 1.9em;border-radius:999px;font-weight:600;font-size:.9rem;letter-spacing:.02em;transition:transform .4s var(--ease),box-shadow .4s,background .4s}
+.btG{background:linear-gradient(135deg,var(--goldL),var(--gold));color:#1a1204;box-shadow:0 14px 36px -14px rgba(200,163,90,.65)}
+.btG:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 22px 48px -16px rgba(200,163,90,.8)}
+.btD{background:var(--ink);color:var(--paper)}.btD:hover{transform:translateY(-2px)}
+.btO{border:1px solid var(--line);color:var(--paper);backdrop-filter:blur(8px)}.btO:hover{background:rgba(255,255,255,.07)}
+.bi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.rv{opacity:0;transform:translateY(50px)}
+.skip{position:absolute;left:-999px;top:0;background:var(--gold);color:#1a1204;padding:12px 20px;z-index:10002;border-radius:0 0 12px 0;font-weight:600}
+.skip:focus{left:0}
+
+/* ═══ SCROLL PROGRESS — dopamina + orientación ═══ */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--goldD),var(--goldL));z-index:1001;transition:width .1s linear}
+
+/* ═══ PRELOADER — anticipación dopaminérgica ═══ */
+#pl{position:fixed;inset:0;z-index:10000;background:var(--void);display:grid;place-items:center;transition:opacity .8s var(--ease),visibility .8s}
+#pl.h{opacity:0;visibility:hidden;pointer-events:none}
+.plL{font-family:var(--serif);font-size:clamp(1.8rem,5vw,3rem);color:var(--paper);letter-spacing:.06em}.plL b{color:var(--goldL)}
+.plS{font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;color:var(--mut);margin-top:10px}
+.plB{width:200px;height:2px;background:rgba(255,255,255,.1);margin:28px auto 0;overflow:hidden;border-radius:2px}
+.plB i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--goldD),var(--goldL));border-radius:2px}
+
+/* ═══ NAV — carga cognitiva mínima ═══ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;transition:background .5s,backdrop-filter .5s,box-shadow .5s}
+.nav.sc{background:rgba(8,11,16,.88);backdrop-filter:blur(20px) saturate(1.4);box-shadow:0 1px 0 var(--line)}
+.navI{display:flex;align-items:center;justify-content:space-between;padding:16px clamp(20px,4vw,48px);max-width:1480px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.3rem;color:#fff;letter-spacing:.03em}.logo b{color:var(--goldL)}
+.logo svg{width:34px;height:34px;flex-shrink:0}
+.nL{display:flex;gap:32px;align-items:center}
+.nL a{color:rgba(255,255,255,.75);font-size:.82rem;font-weight:500;letter-spacing:.04em;position:relative;padding:6px 0;transition:color .3s}
+.nL a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--goldL);transition:width .4s var(--ease)}
+.nL a:hover{color:#fff}.nL a:hover::after{width:100%}
+.nC{display:flex;align-items:center;gap:14px}
+.brg{display:none;flex-direction:column;gap:5px;width:26px;padding:4px 0}.brg span{height:2px;background:#fff;border-radius:2px;transition:.3s}
+.mm{position:fixed;inset:0;background:var(--void);z-index:999;display:flex;flex-direction:column;gap:6px;padding:100px 36px 36px;transform:translateX(100%);transition:transform .6s var(--ease)}
+.mm.op{transform:translateX(0)}.mm a{font-family:var(--serif);font-size:1.7rem;color:var(--paper);padding:12px 0;border-bottom:1px solid var(--line)}
+
+/* ═══ HERO — primacía + inmersión (Ken Burns) ═══ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;color:#fff;overflow:hidden}
+.hero .bi{filter:brightness(.55) saturate(1.1);animation:kb 25s ease-in-out infinite alternate}
+@keyframes kb{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.12) translate(-1.5%,-1%)}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,11,16,.5)0%,rgba(8,11,16,.1)35%,rgba(8,11,16,.75)85%,rgba(8,11,16,.95)100%);z-index:1}
+.heroI{position:relative;z-index:2;padding-top:130px;width:100%}
+.hero h1{font-size:clamp(2.8rem,7vw,6rem);max-width:13ch;font-weight:500}
+.hero h1 em{font-style:italic;color:var(--goldL);font-weight:400}
+.hero .sub{margin-top:24px;font-size:clamp(1rem,1.6vw,1.22rem);max-width:44ch;color:rgba(255,255,255,.82);line-height:1.8}
+.hBdg{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.hBdg span{font-size:.76rem;border:1px solid rgba(255,255,255,.22);padding:8px 16px;border-radius:999px;backdrop-filter:blur(8px);background:rgba(255,255,255,.05);display:flex;align-items:center;gap:8px;transition:background .3s,border-color .3s}
+.hBdg span:hover{background:rgba(255,255,255,.12);border-color:var(--goldL)}
+.hCta{margin-top:38px;display:flex;gap:16px;flex-wrap:wrap}
+.scCue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.6);font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scCue i{width:1px;height:44px;background:linear-gradient(rgba(255,255,255,.6),transparent);animation:cue 2.2s infinite}
+@keyframes cue{0%{transform:scaleY(.15);transform-origin:top}50%{transform:scaleY(1)}100%{transform:scaleY(.15);transform-origin:bottom}}
+
+/* ═══ BOOKING WIZARD — 3 pasos ═══ */
+.bkW{position:relative;z-index:5;margin-top:-100px}
+.bkC{background:#fff;border-radius:28px;box-shadow:var(--sh);padding:clamp(24px,3.5vw,40px);color:var(--ink);transition:background var(--tr),color var(--tr)}
+.stpR{display:flex;align-items:center;gap:4px;margin-bottom:30px}
+.stp{display:flex;align-items:center;gap:10px;flex:1}
+.stp .dt{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.82rem;background:#eef0f2;color:var(--mutD);transition:.5s var(--ease);flex-shrink:0}
+.stp .lb{font-size:.78rem;font-weight:600;color:var(--mutD);transition:.3s;white-space:nowrap}
+.stp .br{flex:1;height:2px;background:#eef0f2;margin-left:8px;border-radius:2px;overflow:hidden;min-width:12px}
+.stp .br i{display:block;height:100%;width:0;background:var(--gold);transition:width .6s var(--ease)}
+.stp.ac .dt{background:linear-gradient(135deg,var(--goldL),var(--gold));color:#1a1204;transform:scale(1.1);box-shadow:0 4px 16px rgba(200,163,90,.4)}
+.stp.ac .lb{color:var(--ink)}.stp.dn .dt{background:var(--teal);color:#fff}.stp.dn .br i{width:100%}
+.pn{display:none;animation:fU .5s var(--ease)}.pn.ac{display:block}
+@keyframes fU{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fl label{display:flex;align-items:center;gap:7px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--mutD);margin-bottom:8px}
+.fl input,.fl select{width:100%;padding:15px 18px;border:1.5px solid #e3e6ea;border-radius:14px;font-size:.95rem;font-family:inherit;background:#fafbfc;transition:.3s;color:var(--ink)}
+.fl input:focus,.fl select:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(200,163,90,.12)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.chip{padding:10px 18px;border:1.5px solid #e3e6ea;border-radius:999px;font-size:.84rem;font-weight:500;transition:.3s var(--ease);background:#fafbfc;display:flex;align-items:center;gap:7px;color:var(--ink)}
+.chip:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 18px -8px rgba(200,163,90,.3)}
+.chip.sel{background:var(--ink);color:#fff;border-color:var(--ink);transform:translateY(-2px)}
+.sR{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid #eef0f2}
+.sR:last-child{border-bottom:none}.sR .mt small{display:block;color:var(--mutD);font-size:.76rem}
+.qty{display:flex;align-items:center;gap:16px}
+.qty button{width:36px;height:36px;border-radius:50%;border:1.5px solid #d8dce1;font-size:1.15rem;font-weight:600;color:var(--ink);transition:.25s}
+.qty button:hover:not(:disabled){border-color:var(--gold);color:var(--gold);transform:scale(1.1)}
+.qty button:disabled{opacity:.3;cursor:not-allowed}
+.qty span{min-width:24px;text-align:center;font-weight:700;font-size:1.05rem}
+.sm{background:linear-gradient(135deg,#faf7f0,#fff);border:1.5px solid #efe7d6;border-radius:18px;padding:24px}
+.sm .ln{display:flex;justify-content:space-between;padding:9px 0;font-size:.9rem;color:var(--mutD)}
+.sm .ln.tot{border-top:1.5px solid #e7ddc8;margin-top:10px;padding-top:16px;font-size:1.35rem;font-weight:800;color:var(--ink);font-family:var(--serif)}
+.sm .disc{color:var(--teal);font-weight:700}
+.wN{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px}
+.wN .bt{min-width:140px;justify-content:center}
+.bt[disabled]{opacity:.35;cursor:not-allowed;transform:none!important}
+.pk{display:flex;gap:20px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid #eef0f2}
+.pk span{font-size:.78rem;color:var(--mutD);display:flex;align-items:center;gap:7px}
+.pk i{color:var(--teal);font-size:.85rem}
+.erMsg{color:var(--coral);font-size:.84rem;font-weight:600;margin-top:8px;min-height:18px;display:none}
+.erMsg.vis{display:block}
+
+/* Availability states */
+.avLoad{display:none;text-align:center;padding:40px 20px}
+.avLoad.ac{display:block}
+.avSpin{width:40px;height:40px;border:3px solid #eef0f2;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.avErr{display:none;text-align:center;padding:30px 20px}
+.avErr.ac{display:block}
+.avErr i{font-size:2.2rem;color:var(--coral);margin-bottom:12px}
+
+/* Urgency badge (dopamina/escasez) */
+.urg{display:inline-flex;align-items:center;gap:7px;background:rgba(217,105,74,.1);color:var(--coral);font-size:.78rem;font-weight:600;padding:6px 14px;border-radius:999px;margin-top:14px}
+.urg .pulse{width:8px;height:8px;border-radius:50%;background:var(--coral);animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,105,74,.5)}70%{box-shadow:0 0 0 8px rgba(217,105,74,0)}100%{box-shadow:0 0 0 0 rgba(217,105,74,0)}}
+
+/* ═══ STICKY BAR (mobile) ═══ */
+.stkB{position:fixed;bottom:0;left:0;right:0;z-index:998;background:rgba(8,11,16,.92);backdrop-filter:blur(16px);padding:14px 20px;display:none;align-items:center;justify-content:space-between;gap:12px;transform:translateY(100%);transition:transform .5s var(--ease)}
+.stkB.sh{transform:translateY(0)}.stkB .inf{color:#fff;font-size:.82rem}.stkB .inf b{color:var(--goldL);font-family:var(--serif);font-size:1.1rem}
+
+/* ═══ STATS ═══ */
+.what{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(36px,6vw,80px);align-items:center}
+.what h2{font-size:clamp(2.1rem,4.2vw,3.6rem);margin:16px 0 20px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:34px}
+.stat{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:26px;transition:transform .5s var(--ease),border-color .4s}
+.stat:hover{transform:translateY(-6px);border-color:var(--gold)}
+.stat .num{font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,3.2rem);color:var(--goldL);line-height:1}
+.stat .cap{font-size:.8rem;color:#a8b2be;margin-top:10px}
+.wImg{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/5;box-shadow:var(--sh)}
+.wImg .flt{position:absolute;left:-20px;bottom:28px;background:#fff;color:var(--ink);padding:20px 24px;border-radius:18px;box-shadow:var(--sh);max-width:240px}
+.wImg .flt b{font-family:var(--serif);font-size:1.3rem;display:block}
+.wImg .flt small{color:var(--mutD);font-size:.76rem}
+
+/* ═══ TABS + MAPA ═══ */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 38px}
+.tab{padding:12px 26px;border-radius:999px;border:1px solid var(--lineD);font-weight:600;font-size:.88rem;transition:.35s var(--ease);cursor:pointer;background:transparent;display:flex;align-items:center;gap:8px;color:var(--ink)}
+.dk .tab{border-color:var(--line);color:#cfd6de}
+.tab.ac{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dk .tab.ac{background:linear-gradient(135deg,var(--goldL),var(--gold));color:#1a1204;border-color:transparent}
+.tab:hover{transform:translateY(-2px)}
+.rgn{display:none}.rgn.ac{display:block;animation:fU .45s var(--ease)}
+.cities{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
+.city{border:1px solid var(--lineD);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;transition:.35s var(--ease);background:#fff}
+.dk .city{background:var(--ink2);border-color:var(--line)}
+.city:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 18px 36px -22px rgba(0,0,0,.35)}
+.city b{font-family:var(--serif);font-size:1.02rem}
+.city .n{font-size:.74rem;font-weight:700;color:var(--gold);background:rgba(200,163,90,.1);padding:4px 12px;border-radius:999px}
+#dMap{height:420px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-top:24px;background:var(--ink2)}
+.mapPh{display:grid;place-items:center;height:100%;color:var(--mut);font-size:.85rem}
+
+/* ═══ HOTELES ═══ */
+.sH{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:44px}
+.sH h2{font-size:clamp(2.1rem,4.2vw,3.4rem);margin-top:14px}
+.fB{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.fBtn{padding:9px 20px;border-radius:999px;border:1px solid var(--lineD);font-weight:600;font-size:.82rem;transition:.3s;background:transparent;color:var(--mutD)}
+.fBtn.ac{background:var(--gold);color:#1a1204;border-color:var(--gold)}
+.dk .fBtn{border-color:var(--line);color:var(--mut)}.dk .fBtn.ac{background:var(--gold);color:#1a1204}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px}
+.htl{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 16px 44px -30px rgba(0,0,0,.35);transition:.45s var(--ease)}
+.htl:hover{transform:translateY(-8px);box-shadow:0 30px 64px -32px rgba(0,0,0,.5)}
+.htl .ph{position:relative;aspect-ratio:16/10;overflow:hidden}
+.htl .ph .bi{transition:transform .9s var(--ease)}.htl:hover .ph .bi{transform:scale(1.08)}
+.htl .inf{padding:22px}.htl .inf h4{font-size:1.18rem}
+.htl .inf .loc{font-size:.8rem;color:var(--mutD);margin:5px 0 16px;display:flex;align-items:center;gap:6px}
+.htl .inf .rw{display:flex;justify-content:space-between;align-items:center}
+.htl .inf .rw .pr{font-family:var(--serif);font-size:1.2rem;font-weight:700}
+.htl .inf .rw .pr small{font-family:var(--sans);font-size:.7rem;color:var(--mutD);font-weight:500}
+.rt{display:inline-flex;align-items:center;gap:5px;background:var(--gold);color:#1a1204;font-weight:700;font-size:.78rem;padding:5px 12px;border-radius:8px;position:absolute;top:18px;left:18px;z-index:2}
+.avTag{font-size:.72rem;padding:4px 10px;border-radius:999px;font-weight:600;position:absolute;top:18px;right:18px;z-index:2;backdrop-filter:blur(6px)}
+.avTag.ok{background:rgba(43,179,168,.85);color:#fff}
+.avTag.lim{background:rgba(200,163,90,.9);color:#1a1204}
+.avTag.out{background:rgba(217,105,74,.9);color:#fff}
+
+/* ═══ EXPERIENCIAS — horizontal scroll ═══ */
+.expS{display:flex;gap:20px;overflow-x:auto;padding:10px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.expS::-webkit-scrollbar{display:none}
+.expC{flex:0 0 min(420px,85vw);scroll-snap-align:start;position:relative;border-radius:22px;overflow:hidden;aspect-ratio:4/3;color:#fff}
+.expC .bi{transition:transform 1s var(--ease)}.expC:hover .bi{transform:scale(1.07)}
+.expC::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(8,11,16,.85))}
+.expC .bd{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:26px}
+.expC .bd h3{font-size:1.35rem}.expC .bd p{font-size:.85rem;color:rgba(255,255,255,.8);margin-top:6px}
+
+/* ═══ OFERTAS ═══ */
+.offers{display:grid;grid-template-columns:1.35fr 1fr;gap:22px}
+.offer{position:relative;border-radius:24px;overflow:hidden;color:#fff;min-height:360px;display:flex;align-items:flex-end}
+.offer .bi{filter:brightness(.55);transition:transform 1.2s var(--ease)}.offer:hover .bi{transform:scale(1.06)}
+.offer .bd{position:relative;z-index:2;padding:36px}
+.offer .pct{font-family:var(--serif);font-size:clamp(2.6rem,5.5vw,4.2rem);color:var(--goldL);line-height:1}
+.offer h3{font-size:clamp(1.4rem,2.5vw,2.1rem);margin:10px 0}
+.offer p{font-size:.9rem;max-width:40ch;color:rgba(255,255,255,.82)}
+.offer .vl{margin-top:16px;font-size:.76rem;border:1px solid rgba(255,255,255,.28);display:inline-block;padding:7px 14px;border-radius:999px}
+
+/* ═══ REWARDS ═══ */
+.rwd{position:relative;border-radius:32px;overflow:hidden;color:#fff;padding:clamp(44px,7vw,90px)}
+.rwd .bi{filter:brightness(.35)}.rwd .inner{position:relative;z-index:2;max-width:620px}
+.rwd h2{font-size:clamp(2.1rem,4.2vw,3.4rem);margin:16px 0 20px}
+.rwl{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:28px 0}
+.rwl div{display:flex;gap:12px;align-items:flex-start;font-size:.92rem}
+.rwl i{color:var(--goldL);font-size:1.15rem;width:1.4em;margin-top:2px}
+
+/* ═══ SOCIAL PROOF ═══ */
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px}
+.qt{background:#fff;border-radius:20px;padding:30px;border:1px solid var(--lineD);box-shadow:0 14px 40px -30px rgba(0,0,0,.35);transition:transform .4s var(--ease)}
+.qt:hover{transform:translateY(-5px)}.qt .stars{color:var(--gold);letter-spacing:3px;font-size:.9rem}
+.qt p{font-style:italic;margin:16px 0;color:#3a4550;line-height:1.8}
+.qt .who{font-weight:700;font-size:.86rem}.qt .who small{display:block;color:var(--mutD);font-weight:500}
+.sb{background:var(--ink);color:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;justify-content:center}
+.sb .big{font-family:var(--serif);font-size:3.6rem;color:var(--goldL);line-height:1}
+
+/* ═══ CTA FINAL — recencia ═══ */
+.cta{position:relative;border-radius:32px;overflow:hidden;color:#fff;text-align:center;padding:clamp(56px,9vw,120px) 24px}
+.cta .bi{filter:brightness(.45)}.cta .inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.cta h2{font-size:clamp(2.2rem,5vw,3.8rem);margin:16px 0 20px}
+
+/* ═══ FOOTER ═══ */
+.foot{position:relative;color:#a8b2be;padding:80px 0 0;overflow:hidden}
+.foot .bi{filter:brightness(.12);position:absolute;inset:0}.foot .w{position:relative;z-index:2}
+.fG{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:32px}
+.foot h5{color:#fff;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px}
+.foot a{display:block;font-size:.84rem;padding:5px 0;transition:.3s}.foot a:hover{color:var(--goldL);padding-left:5px}
+.foot .brand{font-family:var(--serif);font-size:1.6rem;color:#fff;display:flex;align-items:center;gap:10px}.foot .brand b{color:var(--goldL)}
+.foot .brand+p{margin-top:16px;font-size:.84rem;max-width:28ch}
+.fBt{margin-top:56px;padding:26px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:.76rem}
+
+/* ═══ TOAST ═══ */
+#toasts{position:fixed;bottom:90px;right:24px;z-index:10001;display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast{background:var(--ink);color:var(--paper);padding:16px 22px;border-radius:var(--rs);box-shadow:var(--sh);border-left:4px solid var(--gold);font-size:.88rem;animation:tIn .45s var(--ease);display:flex;align-items:center;gap:12px}
+.toast.ok{border-left-color:var(--teal)}.toast.err{border-left-color:var(--coral)}
+.toast.out{animation:tOut .4s var(--ease) forwards}
+@keyframes tIn{from{transform:translateX(120px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tOut{to{transform:translateX(120px);opacity:0}}
+
+/* ═══ CHATBOT ═══ */
+#cb{position:fixed;bottom:24px;right:24px;z-index:9997;display:flex;flex-direction:column;align-items:flex-end}
+#cbT{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--goldL),var(--gold));color:#1a1204;font-size:1.3rem;display:grid;place-items:center;box-shadow:0 10px 32px rgba(200,163,90,.5);transition:transform .3s}
+#cbT:hover{transform:scale(1.1)}
+#cbW{background:var(--paper);color:var(--ink);border-radius:var(--r);box-shadow:var(--sh);width:340px;max-width:82vw;margin-bottom:14px;overflow:hidden;display:none;flex-direction:column;border:1px solid var(--lineD)}
+#cbW.op{display:flex;animation:fU .35s var(--ease)}
+#cbH{background:var(--ink);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.9rem}
+#cbH i{color:var(--goldL)}
+#cbB{padding:20px;max-height:280px;overflow-y:auto;font-size:.88rem}
+#cbB p{margin-bottom:12px;line-height:1.7}
+.faqI{background:var(--ink2);color:var(--paper);padding:11px 15px;border-radius:var(--rs);margin-bottom:8px;cursor:pointer;transition:.25s;display:flex;align-items:center;gap:9px;font-size:.84rem}
+.faqI:hover{background:var(--gold);color:#1a1204}
+#cbF{padding:12px 16px;border-top:1px solid var(--lineD);display:flex;gap:8px}
+#cbF input{flex:1;padding:10px 16px;border-radius:999px;border:1px solid var(--lineD);background:#fafbfc;font-family:inherit;font-size:.85rem;color:var(--ink)}
+#cbF button{background:var(--gold);color:#1a1204;padding:8px 16px;border-radius:999px;font-weight:600}
+
+/* ═══ DARK MODE — valores concretos (sin referencia circular) ═══ */
+body.dm{--paper:#0e151c;--ink:#f8f5ef;--lineD:rgba(255,255,255,.08);--mutD:#a8b2be;--sh:0 40px 100px -40px rgba(0,0,0,.8);color-scheme:dark}
+body.dm .bkC,body.dm .city,body.dm .qt,body.dm .htl{background:var(--ink2);color:var(--paper);border-color:var(--line)}
+body.dm .chip{background:var(--ink2);color:var(--paper);border-color:var(--line)}
+body.dm .chip.sel{background:var(--gold);color:#1a1204;border-color:var(--gold)}
+body.dm .sm{background:var(--ink2);border-color:var(--line)}
+body.dm .fl input,body.dm .fl select{background:#0b1119;color:var(--paper);border-color:var(--line)}
+body.dm .fl input:focus,body.dm .fl select:focus{border-color:var(--gold);background:var(--ink2)}
+body.dm .btD{background:var(--gold);color:#1a1204}
+body.dm .nav.sc{background:rgba(8,11,16,.92)}
+body.dm .qty button{border-color:var(--line);color:var(--paper)}
+body.dm .sR{border-color:var(--line)}
+body.dm .tab{border-color:var(--line);color:var(--mut)}
+body.dm .tab.ac{background:var(--gold);color:#1a1204;border-color:var(--gold)}
+body.dm .fBtn{border-color:var(--line);color:var(--mut)}
+body.dm .fBtn.ac{background:var(--gold);color:#1a1204}
+body.dm .foot{background:#05080c}
+body.dm #cbW{background:var(--ink2);color:var(--paper);border-color:var(--line)}
+body.dm #cbF input{background:#0b1119;color:var(--paper);border-color:var(--line)}
+body.dm .qt p{color:#c2cad3}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:980px){.nL,.nC .btG{display:none}.brg{display:flex}.what,.offers,.fG{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.rwl{grid-template-columns:1fr}.stp .lb{display:none}.offers{grid-template-columns:1fr}.fG{grid-template-columns:1fr 1fr}.stkB{display:flex}}
+@media(max-width:400px){.hero h1{font-size:2.2rem}.hBdg{gap:8px}.hBdg span{font-size:.7rem;padding:6px 12px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<a href="#book" class="skip">Ir al motor de reservas</a>
+<div id="prog" aria-hidden="true"></div>
+
+<!-- PRELOADER -->
+<div id="pl"><div style="text-align:center"><div class="plL">Catalonia<b>.</b></div><div class="plS">Hotels &amp; Resorts</div><div class="plB"><i id="plI"></i></div></div></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+<div class="navI">
+  <a href="#top" class="logo" aria-label="Catalonia Hotels inicio"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="44" stroke="#c9a84c" stroke-width="3"/><path d="M28,64 Q50,26 72,64" stroke="#f0dfb0" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="33" r="7" fill="#f0dfb0"/></svg>Catalonia<b>.</b></a>
+  <nav class="nL" aria-label="Principal"><a href="#what">La cadena</a><a href="#where">Destinos</a><a href="#hotels">Hoteles</a><a href="#offers">Ofertas</a><a href="#rewards">Rewards</a></nav>
+  <div class="nC">
+    <button id="dmT" class="bt btO" style="padding:.5em .9em;font-size:.8rem" aria-label="Cambiar tema"><i class="fas fa-moon"></i></button>
+    <a href="#book" class="bt btG" style="padding:.75em 1.5em;font-size:.84rem">Reservar</a>
+    <button class="brg" id="brg" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</div>
+</header>
+<div class="mm" id="mm">
+  <a href="#what">La cadena</a><a href="#where">Destinos</a><a href="#hotels">Hoteles</a><a href="#offers">Ofertas</a><a href="#rewards">Rewards</a>
+  <a href="#book" style="color:var(--goldL)">Reservar ahora</a>
+  <button id="dmTm" style="background:none;border:none;color:var(--goldL);font-size:1.2rem;text-align:left;padding:10px 0"><i class="fas fa-moon"></i> Modo oscuro</button>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <canvas id="heroC" style="position:absolute;inset:0;z-index:0;pointer-events:none" aria-hidden="true"></canvas>
+  <img class="bi" data-photo="hero" alt="Resort Catalonia al atardecer" fetchpriority="high"/>
+  <div class="w heroI">
+    <span class="ey rv">Most Welcoming Hotel Chain in Spain · 2025</span>
+    <h1 class="rv" id="heroH1">Tu próxima escapada, <em>al mejor precio</em> garantizado.</h1>
+    <p class="sub rv">+80 hoteles y +25 destinos en España, Europa y el Caribe. Reserva directa con cancelación gratis.</p>
+    <div class="hBdg rv"><span><i class="fas fa-umbrella-beach"></i> Caribe −15 %</span><span><i class="fas fa-child"></i> Niños gratis</span><span><i class="fas fa-bolt"></i> Mejor precio</span></div>
+    <div class="hCta rv"><a href="#book" class="bt btG"><i class="fas fa-calendar-check"></i> Reservar</a><a href="#where" class="bt btO"><i class="fas fa-compass"></i> Explorar</a></div>
+  </div>
+  <div class="scCue"><span>Scroll</span><i></i></div>
+</section>
+
+<!-- BOOKING WIZARD -->
+<section class="bkW w" id="book">
+<div class="bkC rv">
+  <div class="stpR" id="stpR">
+    <div class="stp ac" data-s="1"><div class="dt">1</div><div class="lb">Destino y fechas</div><div class="br"><i></i></div></div>
+    <div class="stp" data-s="2"><div class="dt">2</div><div class="lb">Huéspedes y promo</div><div class="br"><i></i></div></div>
+    <div class="stp" data-s="3"><div class="dt">3</div><div class="lb">Confirmar reserva</div></div>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="pn ac" data-p="1">
+    <div class="fl" style="margin-bottom:18px"><label><i class="fas fa-map-marker-alt"></i> Destino</label>
+      <div class="chips" id="dChips">
+        <button class="chip sel" data-d="Caribe" data-r="300"><i class="fas fa-umbrella-beach"></i> Caribe</button>
+        <button class="chip" data-d="Barcelona" data-r="140"><i class="fas fa-landmark"></i> Barcelona</button>
+        <button class="chip" data-d="Madrid" data-r="120"><i class="fas fa-city"></i> Madrid</button>
+        <button class="chip" data-d="Riviera Maya" data-r="280"><i class="fas fa-sun"></i> Riviera Maya</button>
+        <button class="chip" data-d="Punta Cana" data-r="243"><i class="fas fa-cocktail"></i> Punta Cana</button>
+        <button class="chip" data-d="Islas" data-r="82"><i class="fas fa-ship"></i> Islas</button>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label><i class="far fa-calendar-alt"></i> Entrada</label><input type="date" id="cin" aria-label="Fecha de entrada"/></div>
+      <div class="fl"><label><i class="far fa-calendar-alt"></i> Salida</label><input type="date" id="cout" aria-label="Fecha de salida"/></div>
+    </div>
+    <div id="nH" style="margin-top:12px;font-size:.85rem;color:var(--teal);font-weight:600;min-height:20px" aria-live="polite"></div>
+    <div class="erMsg" id="e1" role="alert"></div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="pn" data-p="2">
+    <div class="sR"><div class="mt"><b>Habitaciones</b><small>Máx. 5</small></div><div class="qty"><button data-a="rooms" data-d="-1" aria-label="Menos habitaciones">−</button><span id="qR">1</span><button data-a="rooms" data-d="1" aria-label="Más habitaciones">+</button></div></div>
+    <div class="sR"><div class="mt"><b>Adultos</b><small>Desde 12 años</small></div><div class="qty"><button data-a="adults" data-d="-1" aria-label="Menos adultos">−</button><span id="qA">2</span><button data-a="adults" data-d="1" aria-label="Más adultos">+</button></div></div>
+    <div class="sR"><div class="mt"><b>Juniors</b><small>7-11 años</small></div><div class="qty"><button data-a="juniors" data-d="-1" aria-label="Menos juniors">−</button><span id="qJ">0</span><button data-a="juniors" data-d="1" aria-label="Más juniors">+</button></div></div>
+    <div class="sR"><div class="mt"><b>Niños</b><small>2-6 · ¡gratis en Caribe!</small></div><div class="qty"><button data-a="children" data-d="-1" aria-label="Menos niños">−</button><span id="qC">0</span><button data-a="children" data-d="1" aria-label="Más niños">+</button></div></div>
+    <div class="sR"><div class="mt"><b>Bebés</b><small>0-1 · cuna sujeta a disp.</small></div><div class="qty"><button data-a="infants" data-d="-1" aria-label="Menos bebés">−</button><span id="qI">0</span><button data-a="infants" data-d="1" aria-label="Más bebés">+</button></div></div>
+    <div class="fl" style="margin-top:18px"><label><i class="fas fa-tag"></i> Código promo (opcional)</label>
+      <div style="display:flex;gap:12px"><input type="text" id="cpn" placeholder="CARIBE15" style="flex:1" aria-label="Código promocional"/><button class="bt btD" id="valCpn" style="padding:.7em 1.3em">Validar</button></div>
+      <div id="cpnMsg" style="margin-top:10px;font-size:.84rem;font-weight:600;min-height:18px" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="pn" data-p="3">
+    <div class="avLoad" id="avLd"><div class="avSpin"></div><p style="color:var(--mutD)">Buscando disponibilidad...</p></div>
+    <div class="avErr" id="avErr">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p id="avErrMsg" style="color:var(--mutD);margin-bottom:16px"></p>
+      <button class="bt btD" id="retryB"><i class="fas fa-redo"></i> Reintentar</button>
+    </div>
+    <div id="avRes">
+      <div class="g2" style="align-items:start">
+        <div>
+          <h3 style="font-size:1.4rem;margin-bottom:8px">Revisa tu reserva</h3>
+          <p style="font-size:.88rem;color:var(--mutD);margin-bottom:20px">Confirma los detalles. Precio orientativo sujeto a disponibilidad.</p>
+          <div id="recap" style="font-size:.9rem;line-height:2"></div>
+          <div class="urg" id="urgB"><span class="pulse"></span> <span id="urgT">3 personas están viendo este hotel ahora</span></div>
+        </div>
+        <div class="sm" id="smry"></div>
+      </div>
+    </div>
+    <div class="erMsg" id="e3" role="alert"></div>
+  </div>
+
+  <div class="wN">
+    <button class="bt btD" id="prvB" disabled><i class="fas fa-arrow-left"></i> Atrás</button>
+    <button class="bt btG" id="nxtB">Siguiente <i class="fas fa-arrow-right"></i></button>
+  </div>
+  <div class="pk"><span><i class="fas fa-check-circle"></i> Mejor precio</span><span><i class="fas fa-check-circle"></i> Cancelación gratis</span><span><i class="fas fa-check-circle"></i> Travel Cash</span><span><i class="fas fa-check-circle"></i> Upgrade</span></div>
+</div>
+</section>
+
+<!-- STATS -->
+<section class="dk" id="what" style="padding:clamp(80px,12vw,160px) 0">
+<div class="w what">
+  <div><span class="ey rv">Qué es Catalonia</span><h2 class="rv">Una cadena española con alma mediterránea y mirada global.</h2><p class="ld rv">Con sede en <b>Barcelona</b>, combina hoteles urbanos de diseño con resorts <b>todo incluido</b> en el Caribe. Reconocida por Booking.com como la cadena más acogedora de España en 2025.</p>
+    <div class="stats"><div class="stat rv"><div class="num" data-count="80">0</div><div class="cap">Hoteles</div></div><div class="stat rv"><div class="num" data-count="25">0</div><div class="cap">Destinos</div></div><div class="stat rv"><div class="num" data-count="29">0</div><div class="cap">En Barcelona</div></div><div class="stat rv"><div class="num" data-count="8" data-suffix=".5+">0</div><div class="cap">Score Booking</div></div></div>
+  </div>
+  <div class="wImg rv"><img class="bi" data-photo="room" alt="Suite Catalonia" loading="lazy" decoding="async"/><div class="flt"><b>+34 93 236 00 59</b><small>Atención 24 h · Sede Barcelona</small></div></div>
+</div>
+</section>
+
+<!-- DESTINOS -->
+<section style="padding:clamp(80px,12vw,160px) 0" id="where">
+<div class="w">
+  <span class="ey rv">Dónde estamos</span><h2 class="rv" style="font-size:clamp(2.1rem,4.2vw,3.6rem);margin:16px 0">+25 destinos, una sola promesa.</h2>
+  <p class="ld rv">De una playa de arena blanca en el Caribe al corazón modernista de Barcelona.</p>
+  <div class="tabs rv" id="tabs"><button class="tab ac" data-r="es"><i class="fas fa-flag"></i> España</button><button class="tab" data-r="eu"><i class="fas fa-globe-europe"></i> Europa</button><button class="tab" data-r="cb"><i class="fas fa-umbrella-beach"></i> Caribe</button></div>
+  <div class="rgn ac" data-r="es"><div class="cities" id="c-es"></div></div>
+  <div class="rgn" data-r="eu"><div class="cities" id="c-eu"></div></div>
+  <div class="rgn" data-r="cb"><div class="cities" id="c-cb"></div></div>
+  <div id="dMap" class="rv" aria-label="Mapa de destinos Catalonia"><div class="mapPh"><span><i class="fas fa-map-marked-alt"></i> Cargando mapa…</span></div></div>
+</div>
+</section>
+
+<!-- HOTELES -->
+<section class="dk" id="hotels" style="padding:clamp(80px,12vw,160px) 0">
+<div class="w">
+  <div class="sH"><div><span class="ey rv">Hoteles mejor valorados</span><h2 class="rv">Los favoritos de nuestros huéspedes.</h2></div></div>
+  <div class="fB rv" id="fB"><button class="fBtn ac" data-f="all">Todos</button><button class="fBtn" data-f="urbano">Urbano</button><button class="fBtn" data-f="resort">Resort</button><button class="fBtn" data-f="adults">Adults Only</button></div>
+  <div class="cards" id="hGrid"></div>
+</div>
+</section>
+
+<!-- EXPERIENCIAS -->
+<section style="padding:clamp(80px,12vw,160px) 0" id="exp">
+<div class="w">
+  <div class="sH"><div><span class="ey rv">La experiencia</span><h2 class="rv">Más que una habitación.</h2></div></div>
+  <div class="expS rv" id="expS">
+    <div class="expC"><img class="bi" data-photo="rooftop" alt="Piscina infinity" loading="lazy" decoding="async"/><div class="bd"><h3>Piscinas infinity</h3><p>Rooftops con vistas sobre el Mediterráneo.</p></div></div>
+    <div class="expC"><img class="bi" data-photo="spa" alt="Spa" loading="lazy" decoding="async"/><div class="bd"><h3>Spa &amp; Wellness</h3><p>Circuitos termales y tratamientos de piedra volcánica.</p></div></div>
+    <div class="expC"><img class="bi" data-photo="resto" alt="Restaurante" loading="lazy" decoding="async"/><div class="bd"><h3>Gastronomía de autor</h3><p>Cocina mediterránea y fusión caribeña.</p></div></div>
+    <div class="expC"><img class="bi" data-photo="room" alt="Suite" loading="lazy" decoding="async"/><div class="bd"><h3>Suites con alma</h3><p>Diseño contemporáneo con vistas icónicas.</p></div></div>
+    <div class="expC"><img class="bi" data-photo="caribe" alt="Resort caribe" loading="lazy" decoding="async"/><div class="bd"><h3>Resorts frente al mar</h3><p>Arena blanca y todo incluido premium.</p></div></div>
+    <div class="expC"><img class="bi" data-photo="bungalow" alt="Bungalow" loading="lazy" decoding="async"/><div class="bd"><h3>Bungalows sobre el agua</h3><p>Acceso directo al caribe azul.</p></div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;color:var(--mutD);font-size:.78rem;margin-top:8px"><i class="fas fa-arrows-alt-h"></i> Desliza para explorar</div>
+</div>
+</section>
+
+<!-- OFERTAS -->
+<section class="dk" id="offers" style="padding:clamp(80px,12vw,160px) 0">
+<div class="w">
+  <div class="sH"><div><span class="ey rv">Ofertas recomendadas</span><h2 class="rv">Reserva ahora, ahorra más.</h2></div></div>
+  <div class="offers">
+    <div class="offer rv"><img class="bi" data-photo="caribe" alt="Caribe" loading="lazy" decoding="async"/><div class="bd"><div class="pct">−15 %</div><h3>El Caribe te espera</h3><p>Descuento extra en todos nuestros hoteles todo incluido.</p><span class="vl"><i class="far fa-clock"></i> Válido hasta 27 jul</span></div></div>
+    <div class="offer rv"><img class="bi" data-photo="bungalow" alt="Familia" loading="lazy" decoding="async"/><div class="bd"><div class="pct">Gratis</div><h3>Niños menores de 6</h3><p>Se alojan completamente gratis en el Caribe.</p><span class="vl"><i class="fas fa-child"></i> Family package</span></div></div>
+  </div>
+</div>
+</section>
+
+<!-- REWARDS -->
+<section style="padding:clamp(80px,12vw,160px) 0" id="rewards">
+<div class="w"><div class="rwd rv"><img class="bi" data-photo="hero" alt="" loading="lazy" decoding="async"/><div class="inner"><span class="ey">Catalonia Rewards</span><h2>Hazte miembro y viaja mejor.</h2><p style="color:rgba(255,255,255,.82)">Acumula Travel Cash y desbloquea ventajas exclusivas.</p><div class="rwl"><div><i class="fas fa-check-circle"></i><span>Mejor precio garantizado</span></div><div><i class="fas fa-check-circle"></i><span>Cancelación gratuita</span></div><div><i class="fas fa-check-circle"></i><span>Travel Cash en cada reserva</span></div><div><i class="fas fa-check-circle"></i><span>Upgrade gratis</span></div></div><a href="#book" class="bt btG">Quiero ser Rewards <i class="fas fa-arrow-right"></i></a></div></div></div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="dk" style="padding:clamp(80px,12vw,160px) 0">
+<div class="w">
+  <div class="sH"><div><span class="ey rv">Lo que dicen</span><h2 class="rv">La cadena más acogedora de España.</h2></div></div>
+  <div class="proof">
+    <div class="sb rv"><div class="big">8.5+</div><p style="margin-top:10px;color:#cfd6de">Puntuación media · Booking.com 2025</p></div>
+    <div class="qt rv"><div class="stars">★★★★★</div><p>"Ubicación imbatible y un trato que te hace sentir en casa."</p><div class="who">Laura M.<small>Barcelona Plaza</small></div></div>
+    <div class="qt rv"><div class="stars">★★★★★</div><p>"El todo incluido del Royal Bávaro es de otro nivel."</p><div class="who">Thomas K.<small>Punta Cana · Adults Only</small></div></div>
+    <div class="qt rv"><div class="stars">★★★★★</div><p>"Reservé por la web con cancelación gratis y upgrade."</p><div class="who">Sofía R.<small>Riviera Maya</small></div></div>
+  </div>
+</div>
+</section>
+
+<!-- CTA FINAL -->
+<section style="padding:clamp(80px,12vw,160px) 0">
+<div class="w"><div class="cta rv"><img class="bi" data-photo="caribe" alt="" loading="lazy" decoding="async"/><div class="inner"><span class="ey">Tu viaje empieza aquí</span><h2>Reserva directa. Vive Catalonia.</h2><p style="color:rgba(255,255,255,.82);margin-bottom:28px">Mejor precio, cancelación gratis y Rewards en +80 hoteles.</p><a href="#book" class="bt btG" style="font-size:1rem;padding:1.1em 2.4em">Buscar disponibilidad <i class="fas fa-arrow-right"></i></a></div></div></div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <img class="bi" data-photo="caribe" alt="" loading="lazy" decoding="async"/>
+  <div class="w">
+    <div class="fG">
+      <div><div class="brand"><svg width="30" height="30" viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="44" stroke="#c9a84c" stroke-width="3"/><path d="M28,64 Q50,26 72,64" stroke="#f0dfb0" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="33" r="7" fill="#f0dfb0"/></svg>Catalonia<b>.</b></div><p>Cadena hotelera española. +80 hoteles en España, Europa y el Caribe.</p><p style="margin-top:14px"><a href="tel:+34932360059" style="color:var(--goldL)"><i class="fas fa-phone-alt"></i> +34 93 236 00 59</a></p></div>
+      <div><h5>Explora</h5><a href="#what">Sobre nosotros</a><a href="#where">Destinos</a><a href="#hotels">Hoteles</a><a href="#offers">Ofertas</a><a href="#rewards">Rewards</a></div>
+      <div><h5>España</h5><a href="#">Barcelona (29)</a><a href="#">Madrid (8)</a><a href="#">Málaga (3)</a><a href="#">Sevilla (3)</a><a href="#">Tenerife (3)</a></div>
+      <div><h5>Caribe</h5><a href="#">Riviera Maya (4)</a><a href="#">Punta Cana (3)</a><a href="#">Bayahibe (2)</a><a href="#">Costa Mujeres</a><a href="#">Montego Bay</a></div>
+      <div><h5>Legal</h5><a href="#">Privacidad</a><a href="#">Cookies</a><a href="#">Aviso legal</a><a href="#">Canal ético</a></div>
+    </div>
+    <div class="fBt"><span>© 2026 Catalonia Hotels &amp; Resorts</span><span style="display:flex;gap:16px"><a href="#" aria-label="Instagram" style="color:var(--goldL)"><i class="fab fa-instagram"></i></a><a href="#" aria-label="Facebook" style="color:var(--goldL)"><i class="fab fa-facebook"></i></a><a href="#" aria-label="X" style="color:var(--goldL)"><i class="fab fa-x-twitter"></i></a><a href="#" aria-label="YouTube" style="color:var(--goldL)"><i class="fab fa-youtube"></i></a></span></div>
+  </div>
+</footer>
+
+<!-- STICKY BAR -->
+<div class="stkB" id="stkB"><div class="inf">Desde <b id="stkP">82 €</b>/noche</div><a href="#book" class="bt btG" style="padding:.7em 1.4em;font-size:.82rem">Reservar</a></div>
+
+<!-- TOASTS -->
+<div id="toasts" aria-live="polite"></div>
+
+<!-- CHATBOT -->
+<div id="cb">
+  <div id="cbW" role="dialog" aria-label="Asistente virtual Catalonia">
+    <div id="cbH"><span><i class="fas fa-concierge-bell"></i> Asistente Catalonia</span><button id="cbClose" aria-label="Cerrar chat" style="color:#fff;font-size:1.2rem;background:none;border:none">×</button></div>
+    <div id="cbB"><p>Hola. ¿En qué puedo ayudarte?</p>
+      <div class="faqI" data-k="reserva"><i class="fas fa-calendar-check"></i> ¿Cómo reservar?</div>
+      <div class="faqI" data-k="cancel"><i class="fas fa-undo"></i> Cancelación gratis</div>
+      <div class="faqI" data-k="rewards"><i class="fas fa-gift"></i> Ventajas Rewards</div>
+      <div class="faqI" data-k="caribe"><i class="fas fa-umbrella-beach"></i> Hoteles Caribe</div>
+      <div class="faqI" data-k="precio"><i class="fas fa-tag"></i> Mejor precio garantizado</div>
+      <div id="cbAns" style="margin-top:12px;font-style:italic;color:var(--gold);min-height:20px" aria-live="polite"></div>
+    </div>
+    <div id="cbF"><input type="text" id="cbIn" placeholder="Escribe tu pregunta..." aria-label="Mensaje"/><button id="cbSend" aria-label="Enviar"><i class="fas fa-paper-plane"></i></button></div>
+  </div>
+  <button id="cbT" aria-label="Abrir asistente virtual"><i class="fas fa-concierge-bell"></i></button>
+</div>
+
+<!-- ═══ THREE.JS HERO — carga condicional (solo desktop + sin reduced-motion) ═══ -->
+<script type="module">
+const prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isDesktop = window.innerWidth > 768;
+if (!prm && isDesktop) {
+  try {
+    const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    const cv = document.getElementById('heroC');
+    const rnd = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
+    rnd.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    rnd.setSize(window.innerWidth, window.innerHeight);
+    const sc = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, .1, 100);
+    cam.position.set(0, 0, 20);
+    const C = 160, g = new THREE.BufferGeometry();
+    const p = new Float32Array(C*3), sz = new Float32Array(C), ph = new Float32Array(C);
+    for (let i=0;i<C;i++){p[i*3]=(Math.random()-.5)*28;p[i*3+1]=(Math.random()-.5)*18;p[i*3+2]=(Math.random()-.5)*12;sz[i]=Math.random()*2.4+.8;ph[i]=Math.random()*Math.PI*2}
+    g.setAttribute('position', new THREE.BufferAttribute(p,3));
+    g.setAttribute('aSize', new THREE.BufferAttribute(sz,1));
+    g.setAttribute('aPhase', new THREE.BufferAttribute(ph,1));
+    const m = new THREE.ShaderMaterial({
+      transparent:true, depthWrite:false,
+      uniforms:{uTime:{value:0},uMouse:{value:new THREE.Vector2(0,0)},uC1:{value:new THREE.Color('#c9a84c')},uC2:{value:new THREE.Color('#f0dfb0')},uPR:{value:rnd.getPixelRatio()}},
+      vertexShader:`attribute float aSize;attribute float aPhase;uniform float uTime;uniform vec2 uMouse;uniform float uPR;varying float vA;void main(){vec3 pos=position;pos.y+=sin(uTime*.6+aPhase)*1.1;pos.x+=cos(uTime*.4+aPhase*1.3)*.5;vec2 d=pos.xy-uMouse*12.;float l=length(d);if(l<4.)pos.xy+=normalize(d)*(4.-l)*.3;vec4 mv=modelViewMatrix*vec4(pos,1.);gl_PointSize=aSize*uPR*(180./-mv.z);gl_Position=projectionMatrix*mv;vA=smoothstep(0.,1.,aSize/3.2)*.6;}`,
+      fragmentShader:`uniform vec3 uC1;uniform vec3 uC2;varying float vA;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float g=smoothstep(.5,0.,d);vec3 c=mix(uC1,uC2,g);gl_FragColor=vec4(c,vA*g);}`
+    });
+    sc.add(new THREE.Points(g,m));
+    let mx=0,my=0;
+    window.addEventListener('mousemove',e=>{mx=e.clientX/window.innerWidth-.5;my=-(e.clientY/window.innerHeight-.5)});
+    (function anim(){m.uniforms.uTime.value+=.016;m.uniforms.uMouse.value.set(mx,my);rnd.render(sc,cam);requestAnimationFrame(anim)})();
+    window.addEventListener('resize',()=>{cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();rnd.setSize(window.innerWidth,window.innerHeight);m.uniforms.uPR.value=rnd.getPixelRatio()});
+  } catch(e) { console.warn('Three.js no disponible:', e); }
+}
+</script>
+
+<!-- ═══ MAIN APP ═══ -->
+<script>
+/* ══════════ PHOTOS — Unsplash temático + fallback SVG ══════════ */
+const PH = {
+  hero:     'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=80',
+  caribe:   'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80',
+  rooftop:  'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
+  room:     'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80',
+  bungalow: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1200&q=80',
+  spa:      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+  resto:    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80'
+};
+const FB = {hero:'1a2430,080b10',caribe:'1f8a8a,0b3a3a',rooftop:'5a3a6a,1a0f24',room:'3a2a1a,1a1208',bungalow:'c8a35a,3a2a10',spa:'1f5a6a,082028',resto:'6a4a2a,241408'};
+function svgFB(k){const[a,b]=(FB[k]||'1a2430,080b10').split(',');return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23${a}'/><stop offset='1' stop-color='%23${b}'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/></svg>`;}
+function loadImg(el){const k=el.getAttribute('data-photo');if(!PH[k])return;el.src=PH[k];el.onerror=function(){this.onerror=null;this.src=svgFB(k)};}
+document.querySelectorAll('[data-photo]').forEach(loadImg);
+
+/* ══════════ PRELOADER ══════════ */
+const plI=document.getElementById('plI');let plP=0;
+const plT=setInterval(()=>{plP+=Math.random()*18+4;if(plP>=100){plP=100;clearInterval(plT)}plI.style.width=plP+'%';if(plP>=100)setTimeout(()=>{document.getElementById('pl').classList.add('h');initA()},400)},80);
+
+/* ══════════ HOTEL DATABASE ══════════ */
+const HOTELS=[
+{id:1,name:'Catalonia Barcelona Plaza',city:'Barcelona',country:'España',cat:'urbano',rating:8.9,rate:140,cur:'€',photo:'rooftop',avail:'ok'},
+{id:2,name:'Catalonia Grand Costa Mujeres',city:'Cancún',country:'México',cat:'resort',rating:9.5,rate:325,cur:'US$',photo:'caribe',avail:'ok'},
+{id:3,name:'Catalonia Royal Bávaro',city:'Punta Cana',country:'Rep. Dominicana',cat:'adults',rating:9.4,rate:243,cur:'US$',photo:'bungalow',avail:'ok'},
+{id:4,name:'Catalonia Plaza Mayor',city:'Madrid',country:'España',cat:'urbano',rating:8.7,rate:120,cur:'€',photo:'room',avail:'lim'},
+{id:5,name:'Catalonia Royal Tulum',city:'Riviera Maya',country:'México',cat:'adults',rating:9.2,rate:280,cur:'US$',photo:'caribe',avail:'ok'},
+{id:6,name:'Catalonia Molina Lario',city:'Málaga',country:'España',cat:'urbano',rating:8.6,rate:95,cur:'€',photo:'resto',avail:'ok'},
+{id:7,name:'Catalonia Born',city:'Barcelona',country:'España',cat:'urbano',rating:8.5,rate:110,cur:'€',photo:'room',avail:'ok'},
+{id:8,name:'Catalonia Park Putxet',city:'Barcelona',country:'España',cat:'urbano',rating:8.3,rate:85,cur:'€',photo:'room',avail:'lim'},
+{id:9,name:'Catalonia Riviera Maya',city:'Riviera Maya',country:'México',cat:'resort',rating:9.0,rate:260,cur:'US$',photo:'caribe',avail:'ok'},
+{id:10,name:'Catalonia Punta Cana',city:'Punta Cana',country:'Rep. Dominicana',cat:'resort',rating:8.8,rate:230,cur:'US$',photo:'bungalow',avail:'out'}
+];
+
+/* ══════════ PRICING ENGINE ══════════ */
+function calcPrice(d){
+  const isCar=['Caribe','Riviera Maya','Punta Cana'].includes(d.dest);
+  const cur=isCar?'US$':'€';
+  const base=d.rate*d.nights*d.rooms;
+  const jr=d.juniors*d.nights*d.rooms*(d.rate*.5);
+  const ch=isCar?0:d.children*d.nights*d.rooms*(d.rate*.25);
+  const inf=d.infants*d.nights*15;
+  const sub=base+jr+ch+inf;
+  const m=new Date(d.cin).getMonth();
+  let sf=1;if(m>=6&&m<=7)sf=1.2;if(m===11)sf=1.1;if(m<=1)sf=.9;
+  const seas=sub*sf-sub;
+  const disc=sub*(d.discount/100);
+  const tot=sub+seas-disc;
+  return{sub,seas,disc,tot,cur,isCar,chFree:isCar&&d.children>0};
+}
+
+/* ══════════ AVAILABILITY CHECK (API simulada — con return tras reject) ══════════ */
+function checkAvail(d){
+  return new Promise((res,rej)=>{
+    setTimeout(()=>{
+      const r=Math.random();
+      if(r<.05) return rej({type:'network',msg:'Error de conexión. Intenta de nuevo.'});
+      if(r<.10) return rej({type:'soldout',msg:'No hay disponibilidad para esas fechas. Prueba otras fechas.'});
+      res({status:'available',price:calcPrice(d),ref:'CAT-'+Date.now().toString(36).toUpperCase()});
+    },1800);
+  });
+}
+
+/* ══════════ BOOKING WIZARD ══════════ */
+let ws=1;
+let wd={dest:'Caribe',rate:300,cin:'',cout:'',nights:0,rooms:1,adults:2,juniors:0,children:0,infants:0,coupon:'',discount:0,ref:''};
+const lim={rooms:[1,5],adults:[1,4],juniors:[0,3],children:[0,3],infants:[0,2]};
+const qk={rooms:'qR',adults:'qA',juniors:'qJ',children:'qC',infants:'qI'};
+
+document.querySelectorAll('#dChips .chip').forEach(c=>{c.addEventListener('click',()=>{document.querySelectorAll('#dChips .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');wd.dest=c.getAttribute('data-d');wd.rate=parseInt(c.getAttribute('data-r'));updSticky()})});
+
+document.querySelectorAll('.qty button').forEach(b=>{b.addEventListener('click',()=>{const a=b.getAttribute('data-a'),d=parseInt(b.getAttribute('data-d'));wd[a]=Math.max(lim[a][0],Math.min(lim[a][1],wd[a]+d));document.getElementById(qk[a]).textContent=wd[a]})});
+
+const cinE=document.getElementById('cin'),coutE=document.getElementById('cout'),nH=document.getElementById('nH');
+function defDates(){const t=new Date();t.setDate(t.getDate()+3);cinE.value=t.toISOString().split('T')[0];cinE.min=new Date().toISOString().split('T')[0];t.setDate(t.getDate()+4);coutE.value=t.toISOString().split('T')[0];updN()}
+defDates();
+function updN(){const d1=new Date(cinE.value),d2=new Date(coutE.value);if(d1&&d2&&d2>d1){wd.nights=Math.round((d2-d1)/864e5);wd.cin=cinE.value;wd.cout=coutE.value;nH.textContent=wd.nights+' noches seleccionadas';coutE.min=cinE.value}else{wd.nights=0;nH.textContent=''}}
+cinE.addEventListener('change',updN);coutE.addEventListener('change',updN);
+
+const cpns={CARIBE15:15,DIRECT10:10,REWARDS5:5,BCN20:20};
+document.getElementById('valCpn').addEventListener('click',()=>{const c=document.getElementById('cpn').value.trim().toUpperCase(),m=document.getElementById('cpnMsg');
+if(cpns[c]){wd.coupon=c;wd.discount=cpns[c];m.style.color='var(--teal)';m.textContent='Descuento '+cpns[c]+' % aplicado';toast('Descuento '+cpns[c]+' % aplicado','ok')}
+else if(!c){wd.coupon='';wd.discount=0;m.textContent=''}
+else{wd.coupon='';wd.discount=0;m.style.color='var(--coral)';m.textContent='Código no válido. Prueba: CARIBE15, DIRECT10'}});
+
+const prvB=document.getElementById('prvB'),nxtB=document.getElementById('nxtB');
+function goS(n){
+  ws=n;document.querySelectorAll('.pn').forEach(p=>p.classList.remove('ac'));document.querySelector('.pn[data-p="'+n+'"]').classList.add('ac');
+  document.querySelectorAll('.stp').forEach(s=>{const sn=parseInt(s.getAttribute('data-s'));s.classList.remove('ac','dn');if(sn===n)s.classList.add('ac');if(sn<n)s.classList.add('dn')});
+  prvB.disabled=n===1;
+  if(n===3){nxtB.innerHTML='<i class="fas fa-check"></i> Confirmar reserva';nxtB.onclick=confirmBk;showAvail()}
+  else{nxtB.innerHTML='Siguiente <i class="fas fa-arrow-right"></i>';nxtB.onclick=()=>{if(validateStep(ws))goS(ws+1)}}
+}
+nxtB.onclick=()=>{if(validateStep(ws))goS(ws+1)};
+prvB.onclick=()=>goS(ws-1);
+
+function validateStep(s){
+  const e1=document.getElementById('e1');e1.classList.remove('vis');
+  if(s===1){
+    if(!wd.cin||!wd.cout){e1.textContent='Selecciona fechas de entrada y salida.';e1.classList.add('vis');return false}
+    if(new Date(wd.cout)<=new Date(wd.cin)){e1.textContent='La fecha de salida debe ser posterior a la entrada.';e1.classList.add('vis');return false}
+    if(wd.nights<1){e1.textContent='Selecciona al menos 1 noche.';e1.classList.add('vis');return false}
+    return true;
+  }
+  return true;
+}
+
+function showAvail(){
+  const ld=document.getElementById('avLd'),rs=document.getElementById('avRes'),er=document.getElementById('avErr'),e3=document.getElementById('e3');
+  ld.classList.add('ac');rs.style.display='none';er.classList.remove('ac');e3.classList.remove('vis');
+  checkAvail(wd).then(r=>{
+    ld.classList.remove('ac');rs.style.display='block';wd.ref=r.ref;buildSumm(r.price);
+    document.getElementById('urgT').textContent=(Math.floor(Math.random()*5)+2)+' personas están viendo este hotel ahora';
+  }).catch(e=>{
+    ld.classList.remove('ac');er.classList.add('ac');
+    document.getElementById('avErrMsg').textContent=e.msg;toast(e.msg,'err');
+  });
+}
+document.getElementById('retryB').addEventListener('click',showAvail);
+
+function buildSumm(p){
+  const cur=p.cur;
+  document.getElementById('recap').innerHTML=
+    `<div><i class="fas fa-map-marker-alt" style="color:var(--gold);width:1.4em"></i> <b>Destino:</b> ${wd.dest}</div>
+     <div><i class="far fa-calendar-alt" style="color:var(--gold);width:1.4em"></i> <b>Entrada:</b> ${wd.cin} · <b>Salida:</b> ${wd.cout}</div>
+     <div><i class="fas fa-moon" style="color:var(--gold);width:1.4em"></i> <b>Noches:</b> ${wd.nights}</div>
+     <div><i class="fas fa-door-open" style="color:var(--gold);width:1.4em"></i> <b>Hab:</b> ${wd.rooms} · <b>Adultos:</b> ${wd.adults}</div>
+     ${wd.juniors?`<div><i class="fas fa-user" style="color:var(--gold);width:1.4em"></i> <b>Juniors:</b> ${wd.juniors}</div>`:''}
+     ${wd.children?`<div><i class="fas fa-child" style="color:var(--gold);width:1.4em"></i> <b>Niños:</b> ${wd.children}${p.isCar?' (gratis)':''}</div>`:''}
+     ${wd.infants?`<div><i class="fas fa-baby" style="color:var(--gold);width:1.4em"></i> <b>Bebés:</b> ${wd.infants}</div>`:''}
+     ${wd.coupon?`<div><i class="fas fa-tag" style="color:var(--teal);width:1.4em"></i> <b>Código:</b> ${wd.coupon} (${wd.discount}%)</div>`:''}`;
+  document.getElementById('smry').innerHTML=
+    `<div class="ln"><span>Base (${wd.adults}×${wd.nights} noches)</span><span>${p.sub.toFixed(0)} ${cur}</span></div>
+     ${p.seas?`<div class="ln"><span>Ajuste de temporada</span><span>+${p.seas.toFixed(0)} ${cur}</span></div>`:''}
+     ${p.chFree?`<div class="ln disc"><span>Niños en Caribe</span><span>Gratis</span></div>`:''}
+     ${p.disc?`<div class="ln disc"><span>Desc. ${wd.coupon} (${wd.discount}%)</span><span>−${p.disc.toFixed(0)} ${cur}</span></div>`:''}
+     <div class="ln tot"><span>Total estimado</span><span>${p.tot.toFixed(0)} ${cur}</span></div>
+     <div style="margin-top:14px;font-size:.78rem;color:var(--mutD)">Ref: ${wd.ref}</div>`;
+}
+
+function confirmBk(){
+  toast('Reserva confirmada. Ref: '+wd.ref+'. Recibirás email de confirmación.','ok');
+  nxtB.disabled=true;nxtB.innerHTML='<i class="fas fa-check"></i> Reserva enviada';
+  setTimeout(()=>{nxtB.disabled=false;goS(1)},5000);
+}
+
+/* ══════════ REGIONS ══════════ */
+const RG={es:[{n:'Barcelona',c:29},{n:'Madrid',c:8},{n:'Málaga',c:3},{n:'Sevilla',c:3},{n:'Tenerife',c:3},{n:'Ibiza',c:2},{n:'Mallorca',c:2},{n:'Ronda',c:2},{n:'Bilbao',c:1},{n:'Granada',c:1},{n:'Valencia',c:1},{n:'Zaragoza',c:1}],
+eu:[{n:'Ámsterdam',c:1},{n:'Berlín',c:1},{n:'Bruselas',c:1},{n:'Oporto',c:1}],
+cb:[{n:'Riviera Maya',c:4},{n:'Punta Cana',c:3},{n:'Bayahibe',c:2},{n:'Costa Mujeres',c:1},{n:'Montego Bay',c:1},{n:'Santo Domingo',c:1}]};
+function rCities(k){document.getElementById('c-'+k).innerHTML=RG[k].map(c=>'<div class="city"><b>'+c.n+'</b><span class="n">'+c.c+'</span></div>').join('')}
+rCities('es');rCities('eu');rCities('cb');
+document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('ac'));t.classList.add('ac');const r=t.getAttribute('data-r');document.querySelectorAll('.rgn').forEach(x=>x.classList.remove('ac'));document.querySelector('.rgn[data-r="'+r+'"]').classList.add('ac')})});
+
+/* ══════════ LEAFLET MAP — lazy load con IntersectionObserver ══════════ */
+let mapInit=false;
+function initMap(){
+  if(mapInit||typeof L==='undefined')return;mapInit=true;
+  const el=document.getElementById('dMap');el.innerHTML='';
+  const map=L.map('dMap').setView([40,-3.7],5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'CARTO',maxZoom:18}).addTo(map);
+  const gI=L.divIcon({className:'',html:'<div style="width:14px;height:14px;background:#c9a84c;border-radius:50%;border:2px solid #f0dfb0;box-shadow:0 2px 8px rgba(200,163,90,.6)"></div>',iconSize:[14,14],iconAnchor:[7,7]});
+  [{lat:41.38,lng:2.17,n:'Barcelona (29)'},{lat:40.42,lng:-3.7,n:'Madrid (8)'},{lat:36.72,lng:-4.42,n:'Málaga (3)'},{lat:28.47,lng:-16.25,n:'Tenerife (3)'},{lat:52.37,lng:4.9,n:'Ámsterdam'},{lat:52.52,lng:13.4,n:'Berlín'},{lat:50.85,lng:4.35,n:'Bruselas'},{lat:41.15,lng:-8.61,n:'Oporto'},{lat:20.21,lng:-87.33,n:'Riviera Maya (4)'},{lat:18.56,lng:-68.37,n:'Punta Cana (3)'},{lat:18.38,lng:-69.34,n:'Santo Domingo'}].forEach(l=>{L.marker([l.lat,l.lng],{icon:gI}).addTo(map).bindPopup('<strong style="color:#c9a84c">'+l.n+'</strong>')});
+  setTimeout(()=>map.invalidateSize(),300);
+}
+const mapObs=new IntersectionObserver((ents)=>{ents.forEach(e=>{if(e.isIntersecting){initMap();mapObs.disconnect()}})},{rootMargin:'200px'});
+mapObs.observe(document.getElementById('dMap'));
+
+/* ══════════ HOTELS GRID ══════════ */
+const hG=document.getElementById('hGrid');
+function renderH(filter){
+  const h=filter==='all'?HOTELS:HOTELS.filter(x=>x.cat===filter);
+  hG.innerHTML=h.map(x=>`<div class="htl" data-cat="${x.cat}"><div class="ph"><img class="bi" data-photo="${x.photo}" alt="${x.name}" loading="lazy" decoding="async"/><span class="rt">${x.rating}</span><span class="avTag ${x.avail}">${x.avail==='ok'?'Disponible':x.avail==='lim'?'Últimas':'Agotado'}</span></div><div class="inf"><h4>${x.name}</h4><div class="loc"><i class="fas fa-map-marker-alt"></i> ${x.city} · ${x.country}</div><div class="rw"><div class="pr">${x.rate} ${x.cur} <small>/noche</small></div><a href="#book" class="bt btG" style="padding:.6em 1.2em">Reservar</a></div></div></div>`).join('');
+  hG.querySelectorAll('[data-photo]').forEach(loadImg);
+  if(window.gsapReady)gsap.fromTo(hG.querySelectorAll('.htl'),{opacity:0,y:40},{opacity:1,y:0,duration:.6,stagger:.08,ease:'power3.out'});
+}
+renderH('all');
+document.querySelectorAll('.fBtn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.fBtn').forEach(x=>x.classList.remove('ac'));b.classList.add('ac');renderH(b.getAttribute('data-f'))})});
+
+/* ══════════ DARK MODE ══════════ */
+function togDM(){document.body.classList.toggle('dm');const d=document.body.classList.contains('dm');document.getElementById('dmT').innerHTML=d?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';document.getElementById('dmTm').innerHTML=d?'<i class="fas fa-sun"></i> Modo claro':'<i class="fas fa-moon"></i> Modo oscuro';try{localStorage.setItem('theme',d?'dark':'light')}catch(e){}}
+document.getElementById('dmT').addEventListener('click',togDM);document.getElementById('dmTm').addEventListener('click',togDM);
+try{if(localStorage.getItem('theme')==='dark'){document.body.classList.add('dm');document.getElementById('dmT').innerHTML='<i class="fas fa-sun"></i>';document.getElementById('dmTm').innerHTML='<i class="fas fa-sun"></i> Modo claro'}}catch(e){}
+
+/* ══════════ TOAST ══════════ */
+function toast(msg,type='info'){const c=document.getElementById('toasts'),ic={info:'fa-info-circle',ok:'fa-check-circle',err:'fa-exclamation-circle'},t=document.createElement('div');t.className='toast '+type;t.innerHTML='<i class="fas '+ic[type]+'"></i><span>'+msg+'</span>';c.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),500)},3500)}
+
+/* ══════════ CHATBOT ══════════ */
+const chatAs={reserva:'Reserva directamente en nuestro wizard arriba. Selecciona destino, fechas y huéspedes. Canal directo = mejor precio garantizado.',cancel:'Todas las reservas directas incluyen cancelación gratuita. Consulta condiciones específicas en cada hotel.',rewards:'Rewards ofrece: mejor precio, cancelación gratis, Travel Cash acumulable y upgrades. Gratis al registrarte.',caribe:'10+ hoteles en Caribe: Riviera Maya (4), Punta Cana (3), Bayahibe (2), Costa Mujeres y Montego Bay. Todos todo incluido.',precio:'Nuestro mejor precio garantizado: si encuentras una tarifa más baja en otro canal, la igualamos. Reserva directa = precio mínimo + ventajas Rewards.'};
+function chatA(k){document.getElementById('cbAns').textContent=chatAs[k]||'Contacta con nuestro equipo al +34 93 236 00 59.'}
+document.querySelectorAll('.faqI').forEach(f=>f.addEventListener('click',()=>chatA(f.getAttribute('data-k'))));
+function chatS(){const q=document.getElementById('cbIn').value.trim().toLowerCase();document.getElementById('cbIn').value='';if(!q)return;const kw={reserva:['reserv','book'],cancel:['cancel','anul'],rewards:['reward','punto','cash'],caribe:['caribe','playa','resort','maya'],precio:['precio','barato','descuento','oferta']};let f=false;for(const[k,w]of Object.entries(kw)){if(w.some(x=>q.includes(x))){chatA(k);f=true;break}}if(!f)chatA('')}
+document.getElementById('cbSend').addEventListener('click',chatS);
+document.getElementById('cbIn').addEventListener('keydown',e=>{if(e.key==='Enter')chatS()});
+document.getElementById('cbT').addEventListener('click',()=>document.getElementById('cbW').classList.toggle('op'));
+document.getElementById('cbClose').addEventListener('click',()=>document.getElementById('cbW').classList.remove('op'));
+
+/* ══════════ MOBILE MENU ══════════ */
+const brg=document.getElementById('brg'),mm=document.getElementById('mm');
+brg.addEventListener('click',()=>{const op=mm.classList.toggle('op');brg.setAttribute('aria-expanded',op)});
+document.querySelectorAll('.mm a').forEach(a=>a.addEventListener('click',()=>{mm.classList.remove('op');brg.setAttribute('aria-expanded','false')}));
+
+/* ══════════ STICKY BAR — precio dinámico según destino ══════════ */
+const stkB=document.getElementById('stkB');
+function updSticky(){const isCar=['Caribe','Riviera Maya','Punta Cana'].includes(wd.dest);document.getElementById('stkP').textContent=wd.rate+' '+(isCar?'US$':'€')}
+updSticky();
+
+/* ══════════ SCROLL: nav + sticky + progress ══════════ */
+const nav=document.getElementById('nav'),prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  nav.classList.toggle('sc',y>60);
+  stkB.classList.toggle('sh',y>600);
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  prog.style.width=(h>0?(y/h*100):0)+'%';
+},{passive:true});
+
+/* ══════════ GSAP ANIMATIONS ══════════ */
+window.gsapReady=false;
+function initA(){
+  gsap.registerPlugin(ScrollTrigger);window.gsapReady=true;
+  gsap.utils.toArray('.rv').forEach(el=>{gsap.fromTo(el,{opacity:0,y:50},{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}})});
+  gsap.utils.toArray('[data-count]').forEach(el=>{const t=parseInt(el.getAttribute('data-count')),sf=el.getAttribute('data-suffix')||'';ScrollTrigger.create({trigger:el,start:'top 85%',once:true,onEnter:()=>{gsap.to({v:0},{v:t,duration:1.8,ease:'power2.out',onUpdate:function(){el.textContent=Math.round(this.targets()[0].v)+sf}})}})});
+  gsap.utils.toArray('.stat').forEach((s,i)=>{gsap.fromTo(s,{opacity:0,y:30,scale:.95},{opacity:1,y:0,scale:1,duration:.6,delay:i*.12,ease:'power2.out',scrollTrigger:{trigger:s,start:'top 90%'}})});
+  /* Hero split robusto (preserva <em>) */
+  const h1=document.getElementById('heroH1');
+  if(h1){
+    const frag=document.createDocumentFragment();
+    h1.childNodes.forEach(node=>{
+      if(node.nodeType===3){node.textContent.split(/\s+/).filter(Boolean).forEach(w=>{const sp=document.createElement('span');sp.className='sw';sp.textContent=w;frag.appendChild(sp);frag.appendChild(document.createTextNode(' '))})}
+      else if(node.nodeName==='EM'){const sp=document.createElement('em');sp.className='sw';sp.textContent=node.textContent;frag.appendChild(sp);frag.appendChild(document.createTextNode(' '))}
+    });
+    h1.innerHTML='';h1.appendChild(frag);
+    gsap.fromTo('.sw',{opacity:0,y:30,rotateX:-15},{opacity:1,y:0,rotateX:0,duration:.7,stagger:.06,ease:'power3.out',delay:.3});
+  }
+  gsap.utils.toArray('.wImg').forEach(img=>{gsap.to(img,{y:-30,ease:'none',scrollTrigger:{trigger:img,start:'top bottom',end:'bottom top',scrub:1}})});
+}
+
+/* ══════════ SCROLL ANCHORS ══════════ */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id.length<2)return;const t=document.querySelector(id);if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}})});
+</script>
+</body>
+</html>

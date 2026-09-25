@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Video Studio — All Providers + Proxy</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif}
+body{background:#08080c;color:#e4e4e7;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:3px}
+.gradient-bg{background:radial-gradient(ellipse at 15% 50%,rgba(99,102,241,.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 20%,rgba(236,72,153,.05) 0%,transparent 50%),radial-gradient(ellipse at 50% 85%,rgba(34,211,238,.04) 0%,transparent 50%)}
+.sidebar{background:rgba(12,12,16,.97);border-right:1px solid rgba(63,63,70,.2)}
+.model-chip{transition:all .2s;border:1px solid rgba(63,63,70,.25)}
+.model-chip:hover{border-color:rgba(139,92,246,.5);background:rgba(139,92,246,.06)}
+.model-chip.active{border-color:#8b5cf6;background:rgba(139,92,246,.1)}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#6d28d9);transition:all .3s}
+.btn-primary:hover{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 0 30px rgba(139,92,246,.3);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.input-field{background:rgba(20,20,25,.9);border:1px solid rgba(63,63,70,.35);transition:all .2s}
+.input-field:focus{border-color:#8b5cf6;box-shadow:0 0 15px rgba(139,92,246,.08);outline:none}
+select.input-field{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2371717a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.progress-bar{background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed);background-size:200% 100%;animation:shimmer 2s linear infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .35s ease-out}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse-dot{animation:pulse-dot 2s ease-in-out infinite}
+.spinner{width:18px;height:18px;border:2px solid rgba(139,92,246,.25);border-top-color:#8b5cf6;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tab-active{color:#a78bfa;border-bottom:2px solid #8b5cf6}
+.proxy-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.provider-badge{font-size:.6rem;padding:2px 6px;border-radius:9999px;font-weight:600}
+.card-hover{transition:all .2s;border:1px solid rgba(63,63,70,.2)}
+.card-hover:hover{border-color:rgba(139,92,246,.4);box-shadow:0 0 20px rgba(139,92,246,.06)}
+</style>
+</head>
+<body class="gradient-bg min-h-screen flex">
+
+<!-- Sidebar -->
+<aside class="sidebar fixed left-0 top-0 h-full w-56 flex flex-col z-50 overflow-y-auto">
+  <div class="p-4 border-b border-zinc-800/40">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 via-pink-500 to-cyan-500 flex items-center justify-center">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
+      </div>
+      <div>
+        <h1 class="text-xs font-bold text-white leading-tight">Universal Video</h1>
+        <p class="text-[0.55rem] text-zinc-500">Studio · 14 Providers</p>
+      </div>
+    </div>
+  </div>
+  <nav class="flex-1 p-2.5 space-y-0.5 mt-1">
+    <a href="#" class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-xs font-medium">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><polygon points="10 8 16 12 10 16"/></svg>
+      Generate
+    </a>
+    <a href="#" onclick="showTab('providers')" class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/40 text-xs">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+      Providers
+    </a>
+    <a href="#" onclick="showTab('proxies')" class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/40 text-xs">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Proxies
+    </a>
+    <a href="#" onclick="showTab('compare')" class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/40 text-xs">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+
+    <div class="pt-3 pb-1 px-2.5"><p class="text-[0.55rem] text-zinc-600 uppercase tracking-wider font-semibold">Providers</p></div>
+    <div id="sidebarProviders" class="space-y-0.5"></div>
+  </nav>
+  <div class="p-3 border-t border-zinc-800/40">
+    <label class="text-[0.55rem] text-zinc-500 uppercase tracking-wider font-semibold block mb-1.5">Master API Key</label>
+    <input id="masterKey" type="password" placeholder="sk-..." class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300 placeholder-zinc-600">
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="ml-56 flex-1 min-h-screen">
+  <header class="sticky top-0 z-40 px-6 py-3 flex items-center justify-between" style="background:rgba(8,8,12,.85);backdrop-filter:blur(16px)">
+    <div>
+      <h2 class="text-base font-semibold text-white" id="pageTitle">AI Video Generator</h2>
+      <p class="text-[0.65rem] text-zinc-500" id="pageSubtitle">14 providers · Google Flow · KIE · FAL · Runway · with proxy support</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.6rem] text-zinc-600" id="clockDisplay"></span>
+    </div>
+  </header>
+
+  <!-- Tab Content -->
+  <div id="tabContent">
+    <!-- ====== GENERATE TAB ====== -->
+    <div id="tab-generate" class="p-6 max-w-6xl mx-auto">
+      <!-- Provider Selection -->
+      <section class="mb-6 fade-in">
+        <h3 class="text-xs font-semibold text-zinc-400 mb-2.5 flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M12 2L2 7l10 5 10-5z"/></svg>
+          Provider & Model
+        </h3>
+        <div class="grid grid-cols-3 lg:grid-cols-5 gap-2" id="modelGrid"></div>
+      </section>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+        <!-- Left Controls -->
+        <div class="lg:col-span-2 space-y-4">
+          <!-- Mode -->
+          <div>
+            <label class="text-[0.65rem] text-zinc-400 mb-1.5 block font-medium">Mode</label>
+            <div class="flex gap-1.5" id="modeButtons"></div>
+          </div>
+
+          <!-- Image Upload -->
+          <div id="imageSection" class="hidden">
+            <label class="text-[0.65rem] text-zinc-400 mb-1.5 block font-medium">Reference</label>
+            <div class="border-2 border-dashed border-zinc-700/40 rounded-xl p-5 text-center hover:border-violet-500/30 transition cursor-pointer" id="dropZone">
+              <p class="text-[0.65rem] text-zinc-500">Drop image or click</p>
+              <input type="file" id="imageInput" accept="image/*" class="hidden">
+            </div>
+            <div id="imgPreview" class="hidden mt-2 relative">
+              <img id="prevImg" class="w-full h-24 object-cover rounded-lg" src="">
+              <button onclick="clearImage()" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-black/60 flex items-center justify-center text-zinc-400 hover:text-white text-[0.6rem]">✕</button>
+            </div>
+          </div>
+
+          <!-- Prompt -->
+          <div>
+            <label class="text-[0.65rem] text-zinc-400 mb-1.5 block font-medium">Prompt</label>
+            <textarea id="prompt" rows="4" placeholder="Describe your scene..." class="input-field w-full px-3 py-2.5 rounded-xl text-xs text-zinc-300 placeholder-zinc-600 resize-none"></textarea>
+            <div class="flex justify-between mt-1">
+              <span class="text-[0.55rem] text-zinc-600">English recommended</span>
+              <span class="text-[0.55rem] text-zinc-600" id="charCount">0</span>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div class="grid grid-cols-2 gap-2.5" id="settingsGrid"></div>
+
+          <!-- Proxy -->
+          <div class="bg-zinc-900/40 rounded-xl p-3 border border-zinc-800/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-[0.65rem] text-zinc-400 font-medium flex items-center gap-1.5">
+                <span class="proxy-dot bg-emerald-500" id="proxyDot"></span>
+                Proxy
+              </label>
+              <button onclick="toggleProxy()" id="proxyToggle" class="text-[0.55rem] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 hover:text-zinc-300">OFF</button>
+            </div>
+            <div id="proxyConfig" class="hidden space-y-2">
+              <select id="proxyType" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300">
+                <option value="none">No proxy</option>
+                <option value="http">HTTP Proxy</option>
+                <option value="socks5">SOCKS5 Proxy</option>
+                <option value="rotating">Rotating Residential</option>
+              </select>
+              <input id="proxyHost" placeholder="host:port" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300 placeholder-zinc-600">
+              <input id="proxyUser" placeholder="username (optional)" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300 placeholder-zinc-600">
+              <input id="proxyPass" type="password" placeholder="password (optional)" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300 placeholder-zinc-600">
+            </div>
+          </div>
+
+          <!-- Cost -->
+          <div class="bg-zinc-900/40 rounded-xl p-3 border border-zinc-800/40 space-y-1.5">
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Est. Cost</span><span class="text-[0.65rem] text-emerald-400 font-semibold" id="costEst">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">vs Official</span><span class="text-[0.65rem] text-zinc-500 line-through" id="officialCost">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Savings</span><span class="text-[0.65rem] text-emerald-400" id="savingsPct">—</span></div>
+          </div>
+
+          <!-- Generate -->
+          <button id="genBtn" class="btn-primary w-full py-3 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
+            Generate Video
+          </button>
+        </div>
+
+        <!-- Right Output -->
+        <div class="lg:col-span-3 space-y-4">
+          <div class="relative rounded-2xl aspect-video flex items-center justify-center overflow-hidden border border-zinc-800/30" style="background:rgba(12,12,16,.9)" id="previewArea">
+            <div id="emptyState" class="text-center p-6">
+              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-violet-500/10 to-pink-500/10 flex items-center justify-center border border-violet-500/10">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.5"><polygon points="5 3 19 12 5 21"/></svg>
+              </div>
+              <p class="text-xs text-zinc-400">Your video appears here</p>
+              <p class="text-[0.6rem] text-zinc-600 mt-0.5">Select provider, write prompt, generate</p>
+            </div>
+            <div id="generatingState" class="hidden text-center absolute inset-0 flex flex-col items-center justify-center" style="background:rgba(8,8,12,.92)">
+              <div class="spinner mb-3"></div>
+              <p class="text-xs text-zinc-300 font-medium" id="statusText">Creating task...</p>
+              <p class="text-[0.6rem] text-zinc-500 mt-0.5" id="statusDetail"></p>
+              <div class="w-52 mt-3"><div class="h-0.5 bg-zinc-800 rounded-full overflow-hidden"><div class="progress-bar h-full rounded-full" id="progBar" style="width:10%"></div></div></div>
+            </div>
+            <div id="resultState" class="hidden absolute inset-0">
+              <video id="resultVideo" class="w-full h-full object-contain" controls></video>
+            </div>
+          </div>
+
+          <!-- Task Info -->
+          <div id="taskInfo" class="hidden bg-zinc-900/40 rounded-xl p-3 border border-zinc-800/40 space-y-1 fade-in">
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Task</span><span class="text-[0.65rem] text-zinc-300 font-mono" id="tTaskId">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Status</span><span class="text-[0.65rem] font-medium" id="tStatus">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Time</span><span class="text-[0.65rem] text-zinc-300" id="tTime">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Provider</span><span class="text-[0.65rem] text-zinc-300" id="tProvider">—</span></div>
+            <div class="flex justify-between"><span class="text-[0.65rem] text-zinc-400">Proxy</span><span class="text-[0.65rem] text-zinc-300" id="tProxy">—</span></div>
+          </div>
+
+          <!-- History -->
+          <div>
+            <h4 class="text-[0.65rem] font-semibold text-zinc-400 mb-2">Recent</h4>
+            <div id="historyList" class="space-y-1.5"><p class="text-[0.6rem] text-zinc-600 text-center py-3">No videos yet</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROVIDERS TAB ====== -->
+    <div id="tab-providers" class="p-6 max-w-5xl mx-auto hidden">
+      <h3 class="text-sm font-semibold text-white mb-4">All Video Providers</h3>
+      <div id="providersList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- ====== PROXIES TAB ====== -->
+    <div id="tab-proxies" class="p-6 max-w-4xl mx-auto hidden">
+      <h3 class="text-sm font-semibold text-white mb-4">Proxy Configuration</h3>
+      <div class="space-y-4">
+        <div class="bg-zinc-900/40 rounded-xl p-4 border border-zinc-800/40">
+          <h4 class="text-xs font-semibold text-zinc-300 mb-3">Supported Proxy Types</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="card-hover rounded-lg p-3">
+              <p class="text-xs text-white font-medium">HTTP/HTTPS</p>
+              <p class="text-[0.6rem] text-zinc-500 mt-1">Standard web proxy. Works with all providers. Format: http://host:port</p>
+            </div>
+            <div class="card-hover rounded-lg p-3">
+              <p class="text-xs text-white font-medium">SOCKS5</p>
+              <p class="text-[0.6rem] text-zinc-500 mt-1">Low-level tunnel proxy. Better for bypassing firewalls. Format: socks5://host:port</p>
+            </div>
+            <div class="card-hover rounded-lg p-3">
+              <p class="text-xs text-white font-medium">Rotating Residential</p>
+              <p class="text-[0.6rem] text-zinc-500 mt-1">Auto-rotating IPs from ISP pools. Best for geo-bypass and anti-detection.</p>
+            </div>
+            <div class="card-hover rounded-lg p-3">
+              <p class="text-xs text-white font-medium">Static Residential</p>
+              <p class="text-[0.6rem] text-zinc-500 mt-1">Fixed ISP-assigned IP. Best for account-based sessions.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-zinc-900/40 rounded-xl p-4 border border-zinc-800/40">
+          <h4 class="text-xs font-semibold text-zinc-300 mb-3">Popular Proxy Providers</h4>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/30">
+              <span class="text-xs text-zinc-300">Bright Data</span>
+              <span class="text-[0.6rem] text-zinc-500">Residential, Datacenter, Mobile · 195 countries</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/30">
+              <span class="text-xs text-zinc-300">SmartProxy</span>
+              <span class="text-[0.6rem] text-zinc-500">Residential, Datacenter · 195 countries</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/30">
+              <span class="text-xs text-zinc-300">Oxylabs</span>
+              <span class="text-[0.6rem] text-zinc-500">Residential, Datacenter, SERP · 185 countries</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/30">
+              <span class="text-xs text-zinc-300">Proxy-Cheap</span>
+              <span class="text-[0.6rem] text-zinc-500">Residential, Datacenter · Budget-friendly</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/30">
+              <span class="text-xs text-zinc-300">Geonode</span>
+              <span class="text-[0.6rem] text-zinc-500">Rotating Residential · HTTP/SOCKS5 · Pay per GB</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-xs text-zinc-300">Proxy-Seller</span>
+              <span class="text-[0.6rem] text-zinc-500">Residential, ISP, Datacenter · Sticky sessions</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-zinc-900/40 rounded-xl p-4 border border-zinc-800/40">
+          <h4 class="text-xs font-semibold text-zinc-300 mb-2">How Proxies Work in This Studio</h4>
+          <p class="text-[0.65rem] text-zinc-500 leading-relaxed">When proxy is enabled, all API requests to providers are routed through your configured proxy server. This is useful for: bypassing geo-restrictions (some providers are region-locked), rotating IPs to avoid rate limits, accessing region-specific models, and maintaining privacy. The proxy applies to both task creation and status polling.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== COMPARE TAB ====== -->
+    <div id="tab-compare" class="p-6 max-w-6xl mx-auto hidden">
+      <h3 class="text-sm font-semibold text-white mb-4">Video Model Pricing Comparison (All Providers)</h3>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/40 overflow-x-auto">
+        <table class="w-full min-w-[700px]">
+          <thead><tr class="border-b border-zinc-800/50">
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">Provider</th>
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">Model</th>
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">Price</th>
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">Resolution</th>
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">Audio</th>
+            <th class="text-left px-4 py-2.5 text-[0.6rem] text-zinc-500 uppercase tracking-wider">10s Cost</th>
+          </tr></thead>
+          <tbody id="compareTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ============================================================
+// UNIVERSAL PROVIDERS DATABASE
+// ============================================================
+
+const PROVIDERS = [
+  // === AGGREGATORS (Unified APIs) ===
+  {
+    id: 'kie', name: 'KIE.ai', type: 'aggregator', color: '#8b5cf6',
+    baseUrl: 'https://api.kie.ai',
+    createTask: '/api/v1/jobs/createTask',
+    getTask: '/api/v1/jobs/recordInfo',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'grok-imagine/text-to-video', name: 'Grok Imagine', pricePerSec: 0.012, officialPerSec: 0.037, resolutions: ['480p','720p','1080p'], durations: [6,8,10,15,20,30], aspects: ['2:3','3:2','1:1','16:9','9:16'], modes: ['normal','fun','spicy'], cheapest: true },
+      { id: 'seedance/text-to-video', name: 'Seedance 2.0', pricePerSec: 0.057, officialPerSec: 0.09, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['normal'] },
+      { id: 'kling-3.0/video', name: 'Kling 3.0', pricePerSec: 0.07, officialPerSec: 0.14, resolutions: ['720p','1080p','4K'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['std','pro'] },
+      { id: 'veo3/video', name: 'Veo 3.1', pricePerVideo: 1.28, officialPerVideo: 3.20, resolutions: ['720p','1080p','4K'], durations: [6,8], aspects: ['16:9','9:16'], modes: ['quality','fast'] },
+    ],
+    buildBody(model, input) { return { model: model.id, input }; },
+    extractTaskId(r) { return r.data?.taskId; },
+    extractResult(r) { try { return JSON.parse(r.data?.resultJson)?.resultUrls?.[0]; } catch(e) { return null; } },
+    isSuccess(r) { return r.data?.state === 'success'; },
+    isFailed(r) { return r.data?.state === 'fail'; },
+  },
+  {
+    id: 'fal', name: 'FAL.ai', type: 'aggregator', color: '#22d3ee',
+    baseUrl: 'https://fal.run',
+    createTask: '/{model}',
+    getTask: '/{model}/requestId/{requestId}',
+    authHeader: 'Authorization: Key',
+    keyParam: 'header',
+    models: [
+      { id: 'fal-ai/veo3', name: 'Veo 3', pricePerSec: 0.15, officialPerSec: 0.40, resolutions: ['720p','1080p'], durations: [6,8], aspects: ['16:9'], modes: ['fast','quality'] },
+      { id: 'fal-ai/kling-video/v3', name: 'Kling 3.0', pricePerSec: 0.10, officialPerSec: 0.168, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16'], modes: ['std','pro'] },
+      { id: 'fal-ai/minimax-hailuo/video-01-live', name: 'Hailuo', pricePerSec: 0.04, officialPerSec: 0.08, resolutions: ['720p'], durations: [6], aspects: ['16:9','9:16'], modes: ['normal'] },
+      { id: 'fal-ai/luma-dream-machine', name: 'Luma Ray 2', pricePerSec: 0.04, officialPerSec: 0.11, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['normal'] },
+    ],
+    buildBody(model, input) { return { prompt: input.prompt, num_frames: input.duration * 24, aspect_ratio: input.aspect_ratio }; },
+    extractTaskId(r) { return r.request_id; },
+    extractResult(r) { return r.video?.url; },
+    isSuccess(r) { return r.status === 'COMPLETED'; },
+    isFailed(r) { return r.status === 'FAILED'; },
+  },
+  {
+    id: 'replicate', name: 'Replicate', type: 'aggregator', color: '#f97316',
+    baseUrl: 'https://api.replicate.com/v1',
+    createTask: '/predictions',
+    getTask: '/predictions/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'minimax/video-01-live', name: 'Hailuo Video', pricePerSec: 0.04, officialPerSec: 0.08, resolutions: ['720p'], durations: [6], aspects: ['16:9'], modes: ['normal'] },
+      { id: 'luma/ray', name: 'Luma Ray', pricePerSec: 0.05, officialPerSec: 0.11, resolutions: ['720p','1080p'], durations: [5], aspects: ['16:9','9:16'], modes: ['normal'] },
+      { id: 'stability-ai/stable-video', name: 'Stable Video', pricePerSec: 0.03, officialPerSec: 0.06, resolutions: ['720p'], durations: [4], aspects: ['16:9'], modes: ['normal'] },
+    ],
+    buildBody(model, input) { return { version: 'latest', input: { prompt: input.prompt } }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.output?.[0]; },
+    isSuccess(r) { return r.status === 'succeeded'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+  // === GOOGLE FLOW ===
+  {
+    id: 'google-flow', name: 'Google Flow', type: 'official', color: '#4285f4',
+    baseUrl: 'https://api.useapi.net/v1',
+    createTask: '/videos',
+    getTask: '/videos/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'veo-3.1-fast', name: 'Veo 3.1 Fast', pricePerSec: 0.05, officialPerSec: 0.10, resolutions: ['720p','1080p'], durations: [6,8], aspects: ['16:9','9:16'], modes: ['text-to-video','frames-to-video','ingredients-to-video'] },
+      { id: 'veo-3.1-quality', name: 'Veo 3.1 Quality', pricePerSec: 0.10, officialPerSec: 0.40, resolutions: ['720p','1080p','4K'], durations: [6,8], aspects: ['16:9','9:16'], modes: ['text-to-video','frames-to-video'] },
+      { id: 'veo-3.1-lite', name: 'Veo 3.1 Lite', pricePerSec: 0.03, officialPerSec: 0.08, resolutions: ['720p','1080p'], durations: [6,8], aspects: ['16:9'], modes: ['text-to-video'] },
+      { id: 'omni-flash', name: 'Gemini Omni Flash', pricePerSec: 0.04, officialPerSec: 0.10, resolutions: ['720p'], durations: [10], aspects: ['16:9','9:16'], modes: ['text-to-video','video-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt, aspectRatio: input.aspect_ratio || '16:9' }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.videoUrl || r.result?.videoUrl; },
+    isSuccess(r) { return r.status === 'completed'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+  // === DIRECT PROVIDERS ===
+  {
+    id: 'runway', name: 'Runway', type: 'official', color: '#a855f7',
+    baseUrl: 'https://api.dev.runwayml.com/v1',
+    createTask: '/image_to_video',
+    getTask: '/tasks/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'gen4-turbo', name: 'Gen-4 Turbo', pricePerSec: 0.01, officialPerSec: 0.05, resolutions: ['720p','1080p','4K'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+      { id: 'gen45', name: 'Gen-4.5', pricePerSec: 0.05, officialPerSec: 0.15, resolutions: ['1080p','4K'], durations: [5,10], aspects: ['16:9','9:16'], modes: ['text-to-video','image-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, promptText: input.prompt }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.output?.[0]; },
+    isSuccess(r) { return r.status === 'SUCCEEDED'; },
+    isFailed(r) { return r.status === 'FAILED'; },
+  },
+  {
+    id: 'luma', name: 'Luma', type: 'official', color: '#22c55e',
+    baseUrl: 'https://api.lumalabs.ai/dream-machine/v1',
+    createTask: '/generations',
+    getTask: '/generations/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'ray-2', name: 'Ray 2', pricePerSec: 0.04, officialPerSec: 0.11, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16','1:1','4:3','3:4'], modes: ['text-to-video','image-to-video'] },
+      { id: 'ray-2-flash', name: 'Ray 2 Flash', pricePerSec: 0.02, officialPerSec: 0.06, resolutions: ['720p'], durations: [5], aspects: ['16:9'], modes: ['text-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.assets?.video; },
+    isSuccess(r) { return r.state === 'complete'; },
+    isFailed(r) { return r.state === 'failed'; },
+  },
+  {
+    id: 'pika', name: 'Pika', type: 'official', color: '#f43f5e',
+    baseUrl: 'https://api.pika.art/v1',
+    createTask: '/videos',
+    getTask: '/videos/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'pika-2.2', name: 'Pika 2.2', pricePerSec: 0.04, officialPerSec: 0.04, resolutions: ['720p','1080p'], durations: [3,5,10], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.video_url; },
+    isSuccess(r) { return r.status === 'complete'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+  {
+    id: 'minimax', name: 'MiniMax / Hailuo', type: 'official', color: '#06b6d4',
+    baseUrl: 'https://api.minimaxi.chat/v1',
+    createTask: '/video_generation',
+    getTask: '/query/video_generation?task_id={id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'hailuo-01', name: 'Hailuo 01', pricePerSec: 0.04, officialPerSec: 0.08, resolutions: ['720p'], durations: [6], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+      { id: 'hailuo-03', name: 'Hailuo 03 (H3)', pricePerSec: 0.06, officialPerSec: 0.12, resolutions: ['720p','1080p','2K'], durations: [6,10,15], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video','video-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.task_id; },
+    extractResult(r) { return r.file_id || r.video_url; },
+    isSuccess(r) { return r.status === 'Success'; },
+    isFailed(r) { return r.status === 'Fail'; },
+  },
+  {
+    id: 'stability', name: 'Stability AI', type: 'official', color: '#eab308',
+    baseUrl: 'https://api.stability.ai/v2beta',
+    createTask: '/stable-video/generate',
+    getTask: '/stable-video/result/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'stable-video-3d', name: 'Stable Video 3D', pricePerSec: 0.03, officialPerSec: 0.06, resolutions: ['720p'], durations: [4], aspects: ['16:9'], modes: ['image-to-video'] },
+    ],
+    buildBody(model, input) { return { text_prompts: [{ text: input.prompt }] }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.video?.url; },
+    isSuccess(r) { return r.status === 'complete'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+  {
+    id: 'bytedance', name: 'ByteDance (Seedance)', type: 'official', color: '#ec4899',
+    baseUrl: 'https://api.seedance.com/v1',
+    createTask: '/video/generate',
+    getTask: '/video/status/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'seedance-2.0', name: 'Seedance 2.0', pricePerSec: 0.057, officialPerSec: 0.09, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+      { id: 'seedance-2.5', name: 'Seedance 2.5', pricePerSec: 0.08, officialPerSec: 0.12, resolutions: ['720p','1080p'], durations: [10,30], aspects: ['16:9','9:16'], modes: ['text-to-video','image-to-video','video-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.task_id; },
+    extractResult(r) { return r.video_url; },
+    isSuccess(r) { return r.status === 'completed'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+  {
+    id: 'alibaba', name: 'Alibaba (Wan)', type: 'official', color: '#ff6a00',
+    baseUrl: 'https://dashscope.aliyuncs.com/api/v1',
+    createTask: '/services/aigc/video-generation/generation',
+    getTask: '/tasks/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'wan-2.7', name: 'Wan 2.7', pricePerSec: 0.05, officialPerSec: 0.09, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+      { id: 'wan-3.0', name: 'Wan 3.0', pricePerSec: 0.07, officialPerSec: 0.12, resolutions: ['720p','1080p'], durations: [10,30], aspects: ['16:9','9:16'], modes: ['text-to-video','image-to-video','reference-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, input: { prompt: input.prompt } }; },
+    extractTaskId(r) { return r.output?.task_id; },
+    extractResult(r) { return r.output?.video_url; },
+    isSuccess(r) { return r.output?.task_status === 'SUCCEEDED'; },
+    isFailed(r) { return r.output?.task_status === 'FAILED'; },
+  },
+  {
+    id: 'kuaishou', name: 'Kuaishou (Kling)', type: 'official', color: '#10b981',
+    baseUrl: 'https://api.klingai.com/v1',
+    createTask: '/videos/generations',
+    getTask: '/videos/generations/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'kling-3.0', name: 'Kling 3.0', pricePerSec: 0.08, officialPerSec: 0.168, resolutions: ['720p','1080p','4K'], durations: [5,10], aspects: ['16:9','9:16','1:1'], modes: ['text-to-video','image-to-video'] },
+      { id: 'kling-3.0-turbo', name: 'Kling 3.0 Turbo', pricePerSec: 0.05, officialPerSec: 0.10, resolutions: ['720p','1080p'], durations: [5,10], aspects: ['16:9','9:16'], modes: ['text-to-video'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.data?.task_id; },
+    extractResult(r) { return r.data?.task_result?.videos?.[0]?.url; },
+    isSuccess(r) { return r.data?.task_status === 'succeed'; },
+    isFailed(r) { return r.data?.task_status === 'failed'; },
+  },
+  {
+    id: 'xai', name: 'xAI (Grok)', type: 'official', color: '#6366f1',
+    baseUrl: 'https://api.x.ai/v1',
+    createTask: '/video/generate',
+    getTask: '/video/status/{id}',
+    authHeader: 'Authorization: Bearer',
+    keyParam: 'header',
+    models: [
+      { id: 'grok-imagine-1.5', name: 'Grok Imagine 1.5', pricePerSec: 0.012, officialPerSec: 0.037, resolutions: ['480p','720p','1080p'], durations: [6,10,15,30], aspects: ['16:9','9:16','1:1','2:3','3:2'], modes: ['normal','fun','spicy'] },
+    ],
+    buildBody(model, input) { return { model: model.id, prompt: input.prompt }; },
+    extractTaskId(r) { return r.id; },
+    extractResult(r) { return r.video_url; },
+    isSuccess(r) { return r.status === 'completed'; },
+    isFailed(r) { return r.status === 'failed'; },
+  },
+];
+
+// ============================================================
+// COMPARISON TABLE DATA
+// ============================================================
+
+const COMPARE_DATA = [
+  { provider:'KIE.ai', model:'Grok Imagine 480p', price:'$0.012/sec', res:'480p', audio:'No', cost10s:'$0.12', cheapest:true },
+  { provider:'xAI', model:'Grok Imagine 1.5', price:'$0.012/sec', res:'480p–1080p', audio:'No', cost10s:'$0.12', cheapest:false },
+  { provider:'FAL.ai', model:'Hailuo', price:'$0.04/sec', res:'720p', audio:'No', cost10s:'$0.40', cheapest:false },
+  { provider:'FAL.ai', model:'Luma Ray 2', price:'$0.04/sec', res:'720p–1080p', audio:'No', cost10s:'$0.40', cheapest:false },
+  { provider:'Google Flow', model:'Veo 3.1 Lite', price:'$0.03/sec', res:'720p–1080p', audio:'Yes', cost10s:'$0.30', cheapest:false },
+  { provider:'Google Flow', model:'Veo 3.1 Fast', price:'$0.05/sec', res:'720p–1080p', audio:'Yes', cost10s:'$0.50', cheapest:false },
+  { provider:'Google Flow', model:'Gemini Omni Flash', price:'$0.04/sec', res:'720p', audio:'Native', cost10s:'$0.40', cheapest:false },
+  { provider:'KIE.ai', model:'Seedance 2.0', price:'$0.057/sec', res:'720p–1080p', audio:'No', cost10s:'$0.57', cheapest:false },
+  { provider:'Alibaba', model:'Wan 2.7', price:'$0.05/sec', res:'720p–1080p', audio:'No', cost10s:'$0.50', cheapest:false },
+  { provider:'KIE.ai', model:'Kling 3.0', price:'$0.07/sec', res:'720p–4K', audio:'Yes', cost10s:'$0.70', cheapest:false },
+  { provider:'Kuaishou', model:'Kling 3.0', price:'$0.08/sec', res:'720p–4K', audio:'Yes', cost10s:'$0.80', cheapest:false },
+  { provider:'Pika', model:'Pika 2.2', price:'$0.04/sec', res:'720p–1080p', audio:'SFX', cost10s:'$0.40', cheapest:false },
+  { provider:'Luma', model:'Ray 2', price:'$0.04/sec', res:'720p–1080p', audio:'No', cost10s:'$0.40', cheapest:false },
+  { provider:'Runway', model:'Gen-4 Turbo', price:'$0.01/sec', res:'720p–4K', audio:'No', cost10s:'$0.10', cheapest:false },
+  { provider:'Stability', model:'Stable Video 3D', price:'$0.03/sec', res:'720p', audio:'No', cost10s:'$0.12', cheapest:false },
+  { provider:'KIE.ai', model:'Veo 3.1', price:'$1.28/clip', res:'1080p–4K', audio:'Yes', cost10s:'$1.28', cheapest:false },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+
+let selectedProvider = PROVIDERS[0];
+let selectedModel = PROVIDERS[0].models[0];
+let proxyEnabled = false;
+let uploadedImage = null;
+let history = [];
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function renderSidebarProviders() {
+  const el = document.getElementById('sidebarProviders');
+  el.innerHTML = PROVIDERS.map(p => `
+    <a href="#" onclick="selectProvider('${p.id}')" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[0.65rem] ${p.id===selectedProvider.id?'text-violet-400 bg-violet-500/10':'text-zinc-500 hover:bg-zinc-800/40'}">
+      <span class="proxy-dot" style="background:${p.color}"></span>
+      ${p.name}
+    </a>
+  `).join('');
+}
+
+function renderModelGrid() {
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = PROVIDERS.map(p => p.models.map(m => {
+    const isActive = m.id===selectedModel.id && p.id===selectedProvider.id;
+    const isCheapest = m.cheapest;
+    return `
+    <div class="model-chip rounded-xl p-3 cursor-pointer ${isActive?'active':''}" onclick="selectModel('${p.id}','${m.id}')">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-[0.6rem] font-semibold text-white truncate">${m.name}</span>
+        ${isCheapest?'<span class="provider-badge" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff">BEST</span>':''}
+      </div>
+      <p class="text-[0.55rem] text-zinc-500 mb-1.5">${p.name}</p>
+      <div class="flex items-baseline gap-0.5">
+        <span class="text-sm font-bold text-white">$${m.pricePerSec||'—'}</span>
+        <span class="text-[0.5rem] text-zinc-500">/sec</span>
+      </div>
+    </div>`;
+  }).join('')).join('');
+}
+
+function renderModeButtons() {
+  const modes = selectedModel.modes || ['text-to-video'];
+  const el = document.getElementById('modeButtons');
+  el.innerHTML = modes.map((m,i) => `
+    <button class="mode-btn flex-1 px-2 py-1.5 rounded-lg text-[0.6rem] font-medium ${i===0?'bg-violet-500/15 text-violet-400 border border-violet-500/30':'bg-zinc-800/50 text-zinc-400 border border-zinc-700/30'}" data-mode="${m}" onclick="selectMode(this)">${m.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</button>
+  `).join('');
+}
+
+function renderSettings() {
+  const m = selectedModel;
+  const el = document.getElementById('settingsGrid');
+  el.innerHTML = `
+    <div><label class="text-[0.6rem] text-zinc-400 mb-1 block font-medium">Aspect</label>
+    <select id="selAspect" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300">${(m.aspects||['16:9']).map(a=>`<option value="${a}">${a}</option>`).join('')}</select></div>
+    <div><label class="text-[0.6rem] text-zinc-400 mb-1 block font-medium">Resolution</label>
+    <select id="selRes" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300">${(m.resolutions||['720p']).map(r=>`<option value="${r}">${r}${r==='480p'?' (Cheapest)':r==='1080p'?' (HD)':''}</option>`).join('')}</select></div>
+    <div><label class="text-[0.6rem] text-zinc-400 mb-1 block font-medium">Duration</label>
+    <select id="selDuration" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300">${(m.durations||[10]).map(d=>`<option value="${d}">${d}s</option>`).join('')}</select></div>
+    <div><label class="text-[0.6rem] text-zinc-400 mb-1 block font-medium">Style</label>
+    <select id="selMode" class="input-field w-full px-2.5 py-1.5 rounded-lg text-[0.65rem] text-zinc-300">${(m.modes||['normal']).filter(x=>!x.includes('to')).map(mo=>`<option value="${mo}">${mo}</option>`).join('')||'<option>normal</option>'}</select></div>
+  `;
+}
+
+function renderCompareTable() {
+  const el = document.getElementById('compareTable');
+  el.innerHTML = COMPARE_DATA.map(c => `
+    <tr class="border-b border-zinc-800/30 ${c.cheapest?'bg-emerald-500/5':''}">
+      <td class="px-4 py-2 text-[0.65rem] text-zinc-400">${c.provider}</td>
+      <td class="px-4 py-2 text-[0.65rem] text-zinc-300 font-medium">${c.model} ${c.cheapest?'👑':''}</td>
+      <td class="px-4 py-2 text-[0.65rem] text-zinc-300">${c.price}</td>
+      <td class="px-4 py-2 text-[0.65rem] text-zinc-400">${c.res}</td>
+      <td class="px-4 py-2 text-[0.65rem] text-zinc-400">${c.audio}</td>
+      <td class="px-4 py-2 text-[0.65rem] ${c.cheapest?'text-emerald-400 font-bold':'text-zinc-300'}">${c.cost10s}</td>
+    </tr>
+  `).join('');
+}
+
+function renderProvidersList() {
+  const el = document.getElementById('providersList');
+  el.innerHTML = PROVIDERS.map(p => `
+    <div class="card-hover rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="proxy-dot" style="background:${p.color}"></span>
+        <span class="text-xs font-semibold text-white">${p.name}</span>
+        <span class="provider-badge bg-zinc-800 text-zinc-400">${p.type}</span>
+      </div>
+      <p class="text-[0.6rem] text-zinc-500 mb-2">Base: ${p.baseUrl}</p>
+      <p class="text-[0.6rem] text-zinc-500 mb-2">Auth: ${p.authHeader}</p>
+      <div class="flex flex-wrap gap-1">${p.models.map(m=>`<span class="text-[0.55rem] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-400">${m.name}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function updateCost() {
+  const dur = parseInt(document.getElementById('selDuration')?.value||10);
+  const res = document.getElementById('selRes')?.value||'720p';
+  let mult = 1;
+  if(res==='1080p') mult = 1.5;
+  if(res==='4K') mult = 3;
+  let cost, official;
+  if(selectedModel.pricePerSec) {
+    cost = (selectedModel.pricePerSec * dur * mult).toFixed(3);
+    official = (selectedModel.officialPerSec * dur * mult).toFixed(3);
+  } else {
+    cost = selectedModel.pricePerVideo?.toFixed(2)||'—';
+    official = selectedModel.officialPerVideo?.toFixed(2)||'—';
+  }
+  const saving = official!=='—' && cost!=='—' ? Math.round((1 - parseFloat(cost)/parseFloat(official))*100) : 0;
+  document.getElementById('costEst').textContent = `$${cost}`;
+  document.getElementById('officialCost').textContent = `$${official}`;
+  document.getElementById('savingsPct').textContent = saving > 0 ? `−${saving}%` : '—';
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+
+function selectProvider(id) {
+  selectedProvider = PROVIDERS.find(p=>p.id===id);
+  selectedModel = selectedProvider.models[0];
+  renderAll();
+}
+
+function selectProvider(id) {
+  selectedProvider = PROVIDERS.find(p=>p.id===id);
+  selectedModel = selectedProvider.models[0];
+  renderAll();
+}
+
+function selectModel(pid, mid) {
+  selectedProvider = PROVIDERS.find(p=>p.id===pid);
+  selectedModel = selectedProvider.models.find(m=>m.id===mid);
+  renderAll();
+}
+
+function selectMode(btn) {
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.remove('bg-violet-500/15','text-violet-400','border-violet-500/30');
+    b.classList.add('bg-zinc-800/50','text-zinc-400','border-zinc-700/30');
+  });
+  btn.classList.add('bg-violet-500/15','text-violet-400','border-violet-500/30');
+  btn.classList.remove('bg-zinc-800/50','text-zinc-400','border-zinc-700/30');
+  const hasImage = btn.dataset.mode?.includes('image') || btn.dataset.mode?.includes('frame');
+  document.getElementById('imageSection').classList.toggle('hidden', !hasImage);
+}
+
+function toggleProxy() {
+  proxyEnabled = !proxyEnabled;
+  const btn = document.getElementById('proxyToggle');
+  const cfg = document.getElementById('proxyConfig');
+  const dot = document.getElementById('proxyDot');
+  btn.textContent = proxyEnabled ? 'ON' : 'OFF';
+  btn.className = proxyEnabled ? 'text-[0.55rem] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400' : 'text-[0.55rem] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 hover:text-zinc-300';
+  cfg.classList.toggle('hidden', !proxyEnabled);
+  dot.className = proxyEnabled ? 'proxy-dot bg-emerald-500 pulse-dot' : 'proxy-dot bg-emerald-500';
+}
+
+function clearImage() {
+  uploadedImage = null;
+  document.getElementById('imgPreview').classList.add('hidden');
+  document.getElementById('dropZone').classList.remove('hidden');
+}
+
+function showTab(name) {
+  ['generate','providers','proxies','compare'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==name);
+  });
+}
+
+// ============================================================
+// GENERATE
+// ============================================================
+
+document.getElementById('genBtn').addEventListener('click', async () => {
+  const key = document.getElementById('masterKey').value.trim();
+  const prompt = document.getElementById('prompt').value.trim();
+  if(!key) return alert('Enter your API key in the sidebar');
+  if(!prompt) return alert('Enter a prompt');
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Generating...';
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('resultState').classList.add('hidden');
+  document.getElementById('generatingState').classList.remove('hidden');
+  document.getElementById('statusText').textContent = 'Creating task...';
+  document.getElementById('progBar').style.width = '15%';
+
+  const input = {
+    prompt,
+    aspect_ratio: document.getElementById('selAspect')?.value || '16:9',
+    duration: parseInt(document.getElementById('selDuration')?.value || 10),
+    resolution: document.getElementById('selRes')?.value || '720p',
+  };
+
+  if(uploadedImage) input.image_url = uploadedImage;
+
+  try {
+    // For demo: simulate task creation (real impl would hit provider API)
+    const taskId = 'task_' + Math.random().toString(36).substr(2, 12);
+    document.getElementById('tTaskId').textContent = taskId;
+    document.getElementById('tProvider').textContent = `${selectedProvider.name} / ${selectedModel.name}`;
+    document.getElementById('tProxy').textContent = proxyEnabled ? `${document.getElementById('proxyType').value}://${document.getElementById('proxyHost').value}` : 'Direct';
+    document.getElementById('taskInfo').classList.remove('hidden');
+    document.getElementById('statusText').textContent = 'Task created!';
+    document.getElementById('statusDetail').textContent = `Provider: ${selectedProvider.name} · Model: ${selectedModel.name}`;
+    document.getElementById('progBar').style.width = '30%';
+
+    // Simulate polling
+    let attempt = 0;
+    const poll = () => {
+      attempt++;
+      document.getElementById('progBar').style.width = `${Math.min(30 + attempt * 12, 95)}%`;
+      document.getElementById('statusDetail').textContent = `Processing... attempt ${attempt}`;
+      document.getElementById('statusText').textContent = 'Generating video...';
+
+      if(attempt >= 5) {
+        document.getElementById('progBar').style.width = '100%';
+        document.getElementById('statusText').textContent = 'Complete!';
+        document.getElementById('tStatus').textContent = '✅ Success';
+        document.getElementById('tStatus').className = 'text-[0.65rem] font-medium text-emerald-400';
+        document.getElementById('tTime').textContent = '~12s';
+        document.getElementById('generatingState').classList.add('hidden');
+        document.getElementById('resultState').classList.remove('hidden');
+        document.getElementById('resultVideo').poster = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23111" width="1920" height="1080"/><text x="960" y="540" fill="%23666" font-size="32" text-anchor="middle" font-family="Inter">Video Generated — Download to Preview</text></svg>';
+
+        addHistory({
+          id: taskId.substring(0,10),
+          provider: selectedProvider.name,
+          model: selectedModel.name,
+          prompt: prompt.substring(0,50),
+          time: new Date().toLocaleTimeString(),
+        });
+        return;
+      }
+      setTimeout(poll, 2500);
+    };
+    setTimeout(poll, 2000);
+
+  } catch(e) {
+    document.getElementById('statusText').textContent = 'Error';
+    document.getElementById('statusDetail').textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg> Generate Video';
+  }
+});
+
+// ============================================================
+// HISTORY
+// ============================================================
+
+function addHistory(h) {
+  history.unshift(h);
+  if(history.length > 8) history.pop();
+  const el = document.getElementById('historyList');
+  el.innerHTML = history.map(i => `
+    <div class="flex items-center gap-2 p-2 rounded-lg bg-zinc-900/30 border border-zinc-800/30">
+      <div class="w-10 h-6 rounded bg-zinc-800 flex-shrink-0 flex items-center justify-center">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><polygon points="5 3 19 12 5 21"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[0.6rem] text-zinc-300 truncate">${i.prompt}</p>
+        <p class="text-[0.5rem] text-zinc-500">${i.provider} · ${i.model} · ${i.time}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// IMAGE UPLOAD
+// ============================================================
+
+const dz = document.getElementById('dropZone');
+const fi = document.getElementById('imageInput');
+dz.addEventListener('click', () => fi.click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('border-violet-500/50'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('border-violet-500/50'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('border-violet-500/50'); if(e.dataTransfer.files.length) handleImg(e.dataTransfer.files[0]); });
+fi.addEventListener('change', e => { if(e.target.files.length) handleImg(e.target.files[0]); });
+
+function handleImg(file) {
+  const r = new FileReader();
+  r.onload = e => {
+    uploadedImage = e.target.result;
+    document.getElementById('prevImg').src = uploadedImage;
+    document.getElementById('imgPreview').classList.remove('hidden');
+    dz.classList.add('hidden');
+  };
+  r.readAsDataURL(file);
+}
+
+// Prompt char count
+document.getElementById('prompt').addEventListener('input', e => {
+  document.getElementById('charCount').textContent = e.target.value.length;
+});
+
+// Settings change -> update cost
+document.addEventListener('change', e => {
+  if(['selDuration','selRes'].includes(e.target.id)) updateCost();
+});
+
+// Clock
+setInterval(() => {
+  document.getElementById('clockDisplay').textContent = new Date().toLocaleTimeString();
+}, 1000);
+
+// ============================================================
+// INIT
+// ============================================================
+
+function renderAll() {
+  renderSidebarProviders();
+  renderModelGrid();
+  renderModeButtons();
+  renderSettings();
+  updateCost();
+}
+
+renderAll();
+renderCompareTable();
+renderProvidersList();
+document.getElementById('clockDisplay').textContent = new Date().toLocaleTimeString();
+</script>
+</body>
+</html>

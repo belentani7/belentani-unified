@@ -1,0 +1,3366 @@
+{
+  "generated": "2026-09-25T07:35:51+00:00",
+  "count": 672,
+  "pages": [
+    {
+      "path": "01-BELENTANI-Completo-v1-69KB.html",
+      "title": "BELENTANI // JUDAS EXPERIENCE · Belentani",
+      "sha256": "4382b8ada0dd"
+    },
+    {
+      "path": "01-core.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA MASTERPIECE v11 · Belentani",
+      "sha256": "41bb1b6ded75"
+    },
+    {
+      "path": "01-core__0cd43a522688.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA MASTERPIECE v11 · Belentani",
+      "sha256": "0cd43a522688"
+    },
+    {
+      "path": "01-core__a5aef0b37044.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA MASTERPIECE v11 · Belentani",
+      "sha256": "a5aef0b37044"
+    },
+    {
+      "path": "01-judas-biometric-lock.html",
+      "title": "01 judas biometric lock · Belentani",
+      "sha256": "1d341e0ecf81"
+    },
+    {
+      "path": "01-judas-biometric-lock__d5b89f90dae9.html",
+      "title": "BELENTANI · JUDAS ERA · Biometric Lock · Belentani",
+      "sha256": "d5b89f90dae9"
+    },
+    {
+      "path": "02-hero.html",
+      "title": "02 hero · Belentani",
+      "sha256": "0d4f0e2ea6c6"
+    },
+    {
+      "path": "02-hero__b377181570df.html",
+      "title": "02 hero  b377181570df · Belentani",
+      "sha256": "b377181570df"
+    },
+    {
+      "path": "02-judas-21st-style.html",
+      "title": "02 judas 21st style · Belentani",
+      "sha256": "8d83c82e7848"
+    },
+    {
+      "path": "02-judas-21st-style__e03ba88673d8.html",
+      "title": "BELENTANI · JUDAS ERA · Version 21st.dev · Belentani",
+      "sha256": "e03ba88673d8"
+    },
+    {
+      "path": "02_mascara.html",
+      "title": "JUDAS EXPERIENCE — MÁSCARA · Belentani",
+      "sha256": "430872c63925"
+    },
+    {
+      "path": "03-artist.html",
+      "title": "03 artist · Belentani",
+      "sha256": "a164f8d59f57"
+    },
+    {
+      "path": "03-judas-cyberpunk-terminal.html",
+      "title": "03 judas cyberpunk terminal · Belentani",
+      "sha256": "4149a4d4abb0"
+    },
+    {
+      "path": "03-judas-cyberpunk-terminal__6b95573e34c3.html",
+      "title": "BELENTANI · JUDAS ERA · Terminal Cyberpunk · Belentani",
+      "sha256": "6b95573e34c3"
+    },
+    {
+      "path": "03_llave.html",
+      "title": "JUDAS EXPERIENCE — LLAVE · Belentani",
+      "sha256": "01b978643485"
+    },
+    {
+      "path": "04-judas-cinematic-threejs.html",
+      "title": "04 judas cinematic threejs · Belentani",
+      "sha256": "105939831f0f"
+    },
+    {
+      "path": "04-judas-cinematic-threejs__cedf860c1f01.html",
+      "title": "BELENTANI · JUDAS ERA · Cinematic · Belentani",
+      "sha256": "cedf860c1f01"
+    },
+    {
+      "path": "04-music.html",
+      "title": "04 music · Belentani",
+      "sha256": "46a310309a04"
+    },
+    {
+      "path": "04_corazon.html",
+      "title": "JUDAS EXPERIENCE — CORAZÓN · Belentani",
+      "sha256": "9a2d7a3a437a"
+    },
+    {
+      "path": "05-judas-dark-saas.html",
+      "title": "05 judas dark saas · Belentani",
+      "sha256": "6736a6311208"
+    },
+    {
+      "path": "05-judas-dark-saas__d19fdfebc582.html",
+      "title": "BELENTANI · JUDAS ERA · Dark SaaS · Belentani",
+      "sha256": "d19fdfebc582"
+    },
+    {
+      "path": "05-judas.html",
+      "title": "05 judas · Belentani",
+      "sha256": "a97b06605d58"
+    },
+    {
+      "path": "05_pendrive.html",
+      "title": "JUDAS EXPERIENCE — PENDRIVE · Belentani",
+      "sha256": "908b2070870c"
+    },
+    {
+      "path": "06-zion.html",
+      "title": "06 zion · Belentani",
+      "sha256": "f1159aa2b5d8"
+    },
+    {
+      "path": "063_Ecosistema-Belentani-Omega.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA HARMONIC MASTERPIECE · Belentani",
+      "sha256": "d2303d62a21e"
+    },
+    {
+      "path": "06_planeta_rojo.html",
+      "title": "JUDAS EXPERIENCE — PLANETA ROJO · Belentani",
+      "sha256": "ebc5a6d3fbab"
+    },
+    {
+      "path": "07-concept.html",
+      "title": "07 concept · Belentani",
+      "sha256": "638b518c820a"
+    },
+    {
+      "path": "07_amapola.html",
+      "title": "JUDAS EXPERIENCE — AMAPOLA · Belentani",
+      "sha256": "ced0f98460d1"
+    },
+    {
+      "path": "08-aion-workforce-public-index.html",
+      "title": "AION Workforce — Gestión de turnos · Belentani",
+      "sha256": "0692673e9ded"
+    },
+    {
+      "path": "08-portal.html",
+      "title": "08 portal · Belentani",
+      "sha256": "b084e07d7a4b"
+    },
+    {
+      "path": "088c174ab6ad_1_gemini.html",
+      "title": "Gemini en una página | Manos Abiertas · Belentani",
+      "sha256": "df5bf31bf679"
+    },
+    {
+      "path": "08_sangre.html",
+      "title": "JUDAS EXPERIENCE — SANGRE · Belentani",
+      "sha256": "7123c7da45a1"
+    },
+    {
+      "path": "09-gallery.html",
+      "title": "09 gallery · Belentani",
+      "sha256": "71fa7524dd3f"
+    },
+    {
+      "path": "094_Análisis_Integral_de_Pedro_Belentani_index.html",
+      "title": "Cassandra Complex • Pedro Belentani · Belentani",
+      "sha256": "91691c965945"
+    },
+    {
+      "path": "10-ailab.html",
+      "title": "10 ailab · Belentani",
+      "sha256": "ebb8e15b0e72"
+    },
+    {
+      "path": "11-studio.html",
+      "title": "11 studio · Belentani",
+      "sha256": "4ba08afd4855"
+    },
+    {
+      "path": "12-challenges.html",
+      "title": "12 challenges · Belentani",
+      "sha256": "1aa59d854860"
+    },
+    {
+      "path": "14-chat.html",
+      "title": "14 chat · Belentani",
+      "sha256": "29e871bd7e51"
+    },
+    {
+      "path": "14-chat__2a4a91b7192b.html",
+      "title": "14 chat  2a4a91b7192b · Belentani",
+      "sha256": "2a4a91b7192b"
+    },
+    {
+      "path": "15-overlay.html",
+      "title": "15 overlay · Belentani",
+      "sha256": "8f2c2ea5faac"
+    },
+    {
+      "path": "16-terminal.html",
+      "title": "16 terminal · Belentani",
+      "sha256": "0dc338ec1348"
+    },
+    {
+      "path": "16-terminal__ba3322f0314f.html",
+      "title": "16 terminal  ba3322f0314f · Belentani",
+      "sha256": "ba3322f0314f"
+    },
+    {
+      "path": "161_BELENTANI_OS_Portal_Completo_h1.html",
+      "title": "MIMO - Belentani Autonomous Companion · Belentani",
+      "sha256": "986b99b8d9b0"
+    },
+    {
+      "path": "161_BELENTANI_OS_Portal_Completo_h2.html",
+      "title": "MIMO | AgentOS Belentani · Belentani",
+      "sha256": "817317cc03e5"
+    },
+    {
+      "path": "17-js.html",
+      "title": "17 js · Belentani",
+      "sha256": "69797fde5a7f"
+    },
+    {
+      "path": "17-js__9285209254ee.html",
+      "title": "17 js  9285209254ee · Belentani",
+      "sha256": "9285209254ee"
+    },
+    {
+      "path": "200-webs-premium-front-design.html",
+      "title": "200 Webs Premium · Front-End Design Awards · Belentani",
+      "sha256": "c3d0648aeb2b"
+    },
+    {
+      "path": "21_ojo.html",
+      "title": "JUDAS EXPERIENCE — OJO · Belentani",
+      "sha256": "cdb473b69898"
+    },
+    {
+      "path": "23_diamante.html",
+      "title": "JUDAS EXPERIENCE — DIAMANTE · Belentani",
+      "sha256": "f3673cb2c731"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h1.html",
+      "title": "STUDIO LAB // VOZ ORACULAR v5.0 · Belentani",
+      "sha256": "83551e5a3b40"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h2.html",
+      "title": "BELENTANI STUDIO LAB // ULTIMATE 3D IMMERSIVE EXPERIENCE · Belentani",
+      "sha256": "6f7bef76aed5"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h3.html",
+      "title": "BELENTANI // DIMENSIÓN Z-AI 5.2 · Belentani",
+      "sha256": "e2d46158fdd5"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h4.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA HYPERREAL v6.0 · Belentani",
+      "sha256": "fdd2122d8eea"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h6.html",
+      "title": "BELENTANI // STUDIO LAB - OMEGA v3.0 · Belentani",
+      "sha256": "c236348f99a2"
+    },
+    {
+      "path": "258_Magia_del_Estudio_Belentani_h7.html",
+      "title": "BELENTANI // STUDIO LAB - EMBEDDED AI WORKSPACES · Belentani",
+      "sha256": "b1ab56ffd647"
+    },
+    {
+      "path": "263_Magia_del_Estudio_Belentani_h1.html",
+      "title": "STUDIO LAB - VOZ ORACULAR v5.0 · Belentani",
+      "sha256": "37096ba2dcb4"
+    },
+    {
+      "path": "264_Magia_del_Estudio_Belentani_h1.html",
+      "title": "VOZ ORACULAR | STUDIO LAB · Belentani",
+      "sha256": "96958ff8c612"
+    },
+    {
+      "path": "265_Magia_del_Estudio_Belentani_h1.html",
+      "title": "STUDIO LAB // VOZ ORACULAR v5.0 · Belentani",
+      "sha256": "ed157ee1ee7b"
+    },
+    {
+      "path": "28_aguja.html",
+      "title": "JUDAS EXPERIENCE — AGUJA · Belentani",
+      "sha256": "5fe9a24e6fa1"
+    },
+    {
+      "path": "29b3e527c107_1_office.html",
+      "title": "Office en una página | Manos Abiertas · Belentani",
+      "sha256": "3d5a99c426c6"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h1.html",
+      "title": "El Espejo de Judas | Reconoce, Sana, Libérate · Belentani",
+      "sha256": "187d070284a7"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h10.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "2e346e877ec9"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h11.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "2c13b27aa074"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h12.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "4a86c6d92b10"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h13.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "4cca60281d0f"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h14.html",
+      "title": "🌀 CASSANDRA FLUX · El Fenómeno Humano (500+ Temas) · Belentani",
+      "sha256": "52dbc0bde429"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h15.html",
+      "title": "🧬 NEURO-FLUX · Red de Conocimiento Expansiva · Belentani",
+      "sha256": "af516b173d3b"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h2.html",
+      "title": "Judas Mirror | BCN Edition 🏳️‍🌈 · Belentani",
+      "sha256": "b0f678f9b8e7"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h3.html",
+      "title": "El Espejo de Judas | Reconoce • Sana • Libérate · Belentani",
+      "sha256": "e07b874a62d4"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h4.html",
+      "title": "DUAL SCARS | Evidence • Truth • Power · Belentani",
+      "sha256": "5cde17f21ccc"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h5.html",
+      "title": "MENTAL MAP | Patrones • Claridad • Soberanía · Belentani",
+      "sha256": "c23b75a7d7dc"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h6.html",
+      "title": "EcoSilencio | Notas al Vacío • Anónimo • Sin Juicio · Belentani",
+      "sha256": "4f421694f035"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h7.html",
+      "title": "El Espejo · Las Preguntas Que Casi Nadie Dice · Belentani",
+      "sha256": "70d7bb83ff2c"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h8.html",
+      "title": "NEURO-FLUX · Pedro Belentani · Belentani",
+      "sha256": "b1f00ee651ce"
+    },
+    {
+      "path": "379_El_Espejo_de_Judas_Guía_y_Recursos_h9.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "b2cca59022e6"
+    },
+    {
+      "path": "408_Experiencia_Judas_Estilo_y_Texto_h1.html",
+      "title": "BELENTANI | JUDAS EXPERIENCE · Belentani",
+      "sha256": "cce4bc6a186f"
+    },
+    {
+      "path": "411_Frecuencia-Belentani.html",
+      "title": "BELENTANI // JUDAS ERA - Sistema Inmersivo · Belentani",
+      "sha256": "ca3a23fb9ddd"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_About.html",
+      "title": "Judas Experience | BuildAI.space · Belentani",
+      "sha256": "cad1689813f9"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_Contact.html",
+      "title": "Judas Experience | BuildAI.space · Belentani",
+      "sha256": "1a1702287a06"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_h1.html",
+      "title": "BELENTANI // JUDAS OMEGA SYSTEM · Belentani",
+      "sha256": "8134ebfecc98"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_h2.html",
+      "title": "BELENTANI // JUDAS ERA - Sistema Inmersivo · Belentani",
+      "sha256": "451984340258"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_h4.html",
+      "title": "BELENTANI // JUDAS ERA - Sistema Inmersivo · Belentani",
+      "sha256": "4e5cb27fa0a4"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_h5.html",
+      "title": "BELENTANI // JUDAS ERA - Sistema Inmersivo · Belentani",
+      "sha256": "4485cf47e4d2"
+    },
+    {
+      "path": "411_Frecuencia_Belentani_Home.html",
+      "title": "411 Frecuencia Belentani Home · Belentani",
+      "sha256": "f4eb628230a0"
+    },
+    {
+      "path": "412_Digital_Transformation_Insights_belentani_judas_omega 1.html",
+      "title": "BELENTANI // JUDAS OMEGA SYSTEM · Belentani",
+      "sha256": "1e9b5781ef38"
+    },
+    {
+      "path": "412_Digital_Transformation_Insights_BELENTANI_OMEGA.html",
+      "title": "BELENTANI · JUDAS ERA · THE ARTIFACT · Belentani",
+      "sha256": "dfd5d0547eb0"
+    },
+    {
+      "path": "445_AI_Music_Production_Tools_BELENTANI-STUDIO-FINAL.html",
+      "title": "BELENTANI STUDIO · Belentani",
+      "sha256": "da77e90bb73c"
+    },
+    {
+      "path": "469b0a9b23e4_index.html",
+      "title": "Manos Abiertas - Educación Global Inclusiva · Belentani",
+      "sha256": "701ab25228f4"
+    },
+    {
+      "path": "493_Popular_Open_Source_Projects_belentani-judas-complete - copia.html",
+      "title": "BELENTANI | SISTEMA OMNIPRESENCIA v9.0 · Belentani",
+      "sha256": "e54e34242b94"
+    },
+    {
+      "path": "500.html",
+      "title": "500 · Belentani",
+      "sha256": "6de758f98451"
+    },
+    {
+      "path": "541_Building-Belentani-AI.html",
+      "title": "CV - {{personal.nombre}} | Belentani AI · Belentani",
+      "sha256": "e5637566014d"
+    },
+    {
+      "path": "541_Building_Belentani_AI_h3.html",
+      "title": "Belentani AI • CV professional per cèntims · Belentani",
+      "sha256": "573d068d8692"
+    },
+    {
+      "path": "558_Plataforma_Espejo_de_Judas_h1.html",
+      "title": "El Espejo de Judas | Reflejo Guiado · Belentani",
+      "sha256": "63196b3199a8"
+    },
+    {
+      "path": "558_Plataforma_Espejo_de_Judas_h2.html",
+      "title": "O Espelho de Judas | Reflexo Guiado · Belentani",
+      "sha256": "b328dbc0a5b2"
+    },
+    {
+      "path": "558_Plataforma_Espejo_de_Judas_h3.html",
+      "title": "O Espelho de Judas | Reflexo Guiado · Belentani",
+      "sha256": "e9b31b7fea60"
+    },
+    {
+      "path": "558_Plataforma_Espejo_de_Judas_h4.html",
+      "title": "558 Plataforma Espejo de Judas h4 · Belentani",
+      "sha256": "c9932251d339"
+    },
+    {
+      "path": "605_Judas_Era_Unveiled_Judas_bobo_untitled.html",
+      "title": "BELENTANI · Desierto de Neón · Belentani",
+      "sha256": "739aedad5ccb"
+    },
+    {
+      "path": "7a994e42fc61_1_deepseek.html",
+      "title": "DeepSeek en una página | Manos Abiertas · Belentani",
+      "sha256": "099673b96f01"
+    },
+    {
+      "path": "937c2f654d24_1_fallback-loader.html",
+      "title": "Manos Abiertas - Cargando... · Belentani",
+      "sha256": "1764a8db234f"
+    },
+    {
+      "path": "99-close.html",
+      "title": "99 close · Belentani",
+      "sha256": "1f3a0cf74653"
+    },
+    {
+      "path": "A. Hassan on X： ＂Experimenting with adding depth to images using Metal shaders 💫_ (Inspired by iOS27 spatial framing) https：_t.co_sOYOLjkpTV＂ _ X (7_26_2026 4：27：05 PM).html",
+      "title": "A. Hassan on X: \"Experimenting with adding depth to images using Metal shaders 💫\n (Inspired by iOS27 spatial framing) ht · Belentani",
+      "sha256": "748dc619b638"
+    },
+    {
+      "path": "a4d24116b9a5_1_copilot.html",
+      "title": "Copilot en una página | Manos Abiertas · Belentani",
+      "sha256": "04e87fe396bc"
+    },
+    {
+      "path": "abduccion-hero.html",
+      "title": "Abducción Hero - Slow Motion · Belentani",
+      "sha256": "ce17e7814072"
+    },
+    {
+      "path": "About.html",
+      "title": "About · Belentani",
+      "sha256": "60deb2237f1b"
+    },
+    {
+      "path": "About__221f48fce8f5.html",
+      "title": "About | Judas Experience · Belentani",
+      "sha256": "221f48fce8f5"
+    },
+    {
+      "path": "Acceso a pedido compartido - Claude.html",
+      "title": "Acceso a pedido compartido - Claude · Belentani",
+      "sha256": "4d917b3b880b"
+    },
+    {
+      "path": "ahora.html",
+      "title": "ahora · Belentani",
+      "sha256": "84ad18fe9855"
+    },
+    {
+      "path": "AI Generation - Leonardo.Ai App - Generate AI Images, Videos & Designs.html",
+      "title": "AI Generation - Leonardo.Ai App - Generate AI Images, Videos &amp; Designs · Belentani",
+      "sha256": "81f88128ee7a"
+    },
+    {
+      "path": "ai.html",
+      "title": "Assistente local: ai · Belentani",
+      "sha256": "55c4ea9b6df9"
+    },
+    {
+      "path": "ai__85b0bd4e5bb1.html",
+      "title": "Assistente local: ai · Belentani",
+      "sha256": "85b0bd4e5bb1"
+    },
+    {
+      "path": "ai__9001ee21e40a.html",
+      "title": "Local assistant: ai · Belentani",
+      "sha256": "9001ee21e40a"
+    },
+    {
+      "path": "ai__be6b250569e2.html",
+      "title": "Assistant local: ai · Belentani",
+      "sha256": "be6b250569e2"
+    },
+    {
+      "path": "ai__f97c8dadd762.html",
+      "title": "Asistente local: ai · Belentani",
+      "sha256": "f97c8dadd762"
+    },
+    {
+      "path": "aion-client-index.html",
+      "title": "AION · Belentani",
+      "sha256": "52aa6b45179d"
+    },
+    {
+      "path": "Andrew Clare on X： ＂iOS 27 Siri Ai Animation on iPhone 17e looks interesting https：_t.co_hr0dsUUgI7＂ _ X (7_26_2026 4：27：12 PM).html",
+      "title": "Andrew Clare on X: \"iOS 27 Siri Ai Animation on iPhone 17e looks interesting https://t.co/hr0dsUUgI7\" / X · Belentani",
+      "sha256": "666f028a01b3"
+    },
+    {
+      "path": "app__b1ade18ac401.html",
+      "title": "Nexus Workforce Enterprise | Offline App · Belentani",
+      "sha256": "b1ade18ac401"
+    },
+    {
+      "path": "architecture_en.html",
+      "title": "architecture en · Belentani",
+      "sha256": "b92fc0038105"
+    },
+    {
+      "path": "architecture_es.html",
+      "title": "architecture es · Belentani",
+      "sha256": "9ef722d2a60f"
+    },
+    {
+      "path": "architecture_pt.html",
+      "title": "architecture pt · Belentani",
+      "sha256": "9c16aedd6fd5"
+    },
+    {
+      "path": "arrecife-pro-store.html",
+      "title": "Arrecife Estampas | Lifestyle & Surfwear · Belentani",
+      "sha256": "b8591797656f"
+    },
+    {
+      "path": "art-studio.html",
+      "title": "BELENTANI // JUDAS EXPERIENCE — ART STUDIO · Belentani",
+      "sha256": "b22c073fcec3"
+    },
+    {
+      "path": "artista.html",
+      "title": "Nodo 02 · ARTISTA — la mano humana · Belentani",
+      "sha256": "8302c5148b49"
+    },
+    {
+      "path": "avis-legal.html",
+      "title": "Avís legal — Belentani · estudi digital · Belentani",
+      "sha256": "05030b4eb4ae"
+    },
+    {
+      "path": "bc8ce0f483fc_neoglass-demo.html",
+      "title": "BELENTANI//WEB · NEOGLASS RED · Belentani",
+      "sha256": "94720f256d41"
+    },
+    {
+      "path": "BELENTANI _ Judas Experience (7_31_2026 10：04：40 AM).html",
+      "title": "BELENTANI // Judas Experience · Belentani",
+      "sha256": "3d0ae53fa673"
+    },
+    {
+      "path": "BELENTANI _ Ruptura y señal (8_7_2026 12：41：43 PM).html",
+      "title": "BELENTANI / Ruptura y señal · Belentani",
+      "sha256": "de636f55b300"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：37：54).html",
+      "title": "Belentani ｜ BuildAI.space (24 7 2026 11：37：54) · Belentani",
+      "sha256": "26145209f67e"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：38：23).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "d439dd485717"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：38：43).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "c3d53331c301"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：39：07).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "175c1424f43f"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：39：57).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "024b40232cb3"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (24_7_2026 11：40：28).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "11bc8a57a45c"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (7_19_2026 9：02：04 PM).html",
+      "title": "Belentani ｜ BuildAI.space (7 19 2026 9：02：04 PM) · Belentani",
+      "sha256": "70d9ab2f1ae0"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (7_28_2026 4：54：59 AM).html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "5f8b5d54f6f9"
+    },
+    {
+      "path": "Belentani ｜ BuildAI.space (7_31_2026 11：25：12 AM).html",
+      "title": "Belentani ｜ BuildAI.space (7 31 2026 11：25：12 AM) · Belentani",
+      "sha256": "3ad5532e62d3"
+    },
+    {
+      "path": "belentani-2026.html",
+      "title": "BELENTANI — Machine Alive · Belentani",
+      "sha256": "5a5ac53b4e90"
+    },
+    {
+      "path": "BELENTANI-21SRT-MASTER.html",
+      "title": "BELENTANI // MASTERCLASS 21SRT.DEV - AI SWARM & UTILITY OS · Belentani",
+      "sha256": "5b34e501a71d"
+    },
+    {
+      "path": "Belentani-_-BuildAI.space-_7_14_2026-6_05_27-AM_.html",
+      "title": "Belentani | BuildAI.space · Belentani",
+      "sha256": "35a72176aba8"
+    },
+    {
+      "path": "belentani-cv-ai-docs-ecosistema.html",
+      "title": "BELENTANI CV AI · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "83d192885ce0"
+    },
+    {
+      "path": "belentani-cv-ai-docs-index.html",
+      "title": "Belentani Document Studio · belentani7 · Belentani",
+      "sha256": "17c2f1865acb"
+    },
+    {
+      "path": "belentani-game.html",
+      "title": "BELENTANI — El Viaje · Belentani",
+      "sha256": "52714cc09ade"
+    },
+    {
+      "path": "belentani-glass-ventanas-vacias.html",
+      "title": "BELENTANI GLASS · Ventanas Vacías · Belentani",
+      "sha256": "c3d19f38f017"
+    },
+    {
+      "path": "belentani-judas-accretion-kernel.html",
+      "title": "BELENTANI // JUDAS ACCRETION KERNEL · Belentani",
+      "sha256": "ed70c0da43e7"
+    },
+    {
+      "path": "belentani-judas-era-omega-client-index.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA CORE · Belentani",
+      "sha256": "58824c5c5ced"
+    },
+    {
+      "path": "belentani-judas-experience-os-unificado.html",
+      "title": "BELENTANI // THE JUDAS EXPERIENCE — OS UNIFICADO · Belentani",
+      "sha256": "ae9493fab52e"
+    },
+    {
+      "path": "belentani-judas-experience.html",
+      "title": "belentani judas experience · Belentani",
+      "sha256": "1f68f2f2b27a"
+    },
+    {
+      "path": "belentani-judas-experience__f653166e0432.html",
+      "title": "BELENTANI · Judas Experience · Belentani",
+      "sha256": "f653166e0432"
+    },
+    {
+      "path": "BELENTANI-MARVEL-CINEMA.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA CORE // MARVEL CINEMA · Belentani",
+      "sha256": "1974b5ed5078"
+    },
+    {
+      "path": "belentani-neon-planet-engine.html",
+      "title": "BELENTANI // NEON PLANET ENGINE · Belentani",
+      "sha256": "f078a69f3081"
+    },
+    {
+      "path": "belentani-neural-icons-review-incoming-intro-clean.html",
+      "title": "NOIACORE — LAB (CONSCIOUSNESS) · Belentani",
+      "sha256": "7a06e35c8634"
+    },
+    {
+      "path": "belentani-neural-icons-review-incoming-intro-raw.html",
+      "title": "NOIACORE — LAB (CONSCIOUSNESS) · Belentani",
+      "sha256": "7d1f7d0064c8"
+    },
+    {
+      "path": "belentani-neural-icons-review-index.html",
+      "title": "Belentani Neural Icons · HBO Noir Glass · Belentani",
+      "sha256": "351be45be477"
+    },
+    {
+      "path": "BELENTANI-OMEGA-MASTER.html",
+      "title": "BELENTANI // JUDAS ERA - POLYMORPHIC WEEKEND OMEGA · Belentani",
+      "sha256": "1de694ee90b4"
+    },
+    {
+      "path": "belentani-omega-singularity.html",
+      "title": "BELENTANI // OMEGA SINGULARITY [1M] · Belentani",
+      "sha256": "1109e83dfa13"
+    },
+    {
+      "path": "belentani-os-00-control-forge-report-max.html",
+      "title": "BELENTANI FORGE v9 · Belentani",
+      "sha256": "af95523cebe6"
+    },
+    {
+      "path": "belentani-os-09-reportes-forge-report-final-2026-09-07.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "b2c80efb1d27"
+    },
+    {
+      "path": "belentani-os-09-reportes-forge-report.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "f71329f40335"
+    },
+    {
+      "path": "BELENTANI-OS-ULTIMATE.html",
+      "title": "BELENTANI OS // THIAGO PROTOCOL & NEURAL OMEGA · Belentani",
+      "sha256": "4183f84a97a7"
+    },
+    {
+      "path": "BELENTANI-PIXEL-PERFECT.html",
+      "title": "BELENTANI // JUDAS ERA · Belentani",
+      "sha256": "1137736b3c38"
+    },
+    {
+      "path": "belentani-repos-master-belentani-cv-ai-ecosistema.html",
+      "title": "BELENTANI CV AI · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "ca8a4f650ced"
+    },
+    {
+      "path": "belentani-repos-master-belentani-judas-escape-mobile-01-la-caja-de-luz.html",
+      "title": "JUDAS / 01 / La caja de luz · Belentani",
+      "sha256": "c967af2b659f"
+    },
+    {
+      "path": "belentani-repos-master-belentani-judas-escape-mobile-index.html",
+      "title": "BELENTANI / JUDAS / LIGHT ROOM · Belentani",
+      "sha256": "902436a5ea3e"
+    },
+    {
+      "path": "belentani-repos-master-belentani-judas-web-index.html",
+      "title": "BELENTANI_OS // JUDAS-CORE · Belentani",
+      "sha256": "e1f85dc8e0c3"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-immersive-portal-ecosistema.html",
+      "title": "OMEGA IMMERSIVE · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "b3775fa8f50a"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-immersive-portal-index.html",
+      "title": "BELENTANI // OMEGA CORE — JUDAS ERA | BuildAI & Official Site (belentani.es) · Belentani",
+      "sha256": "5ac70e7c3680"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-index.html",
+      "title": "BELENTANI // OMEGA CORE — JUDAS ERA | BuildAI & Official Site (belentani.es) · Belentani",
+      "sha256": "f4cf31b50e54"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-master-belentani-archive-3k.html",
+      "title": "BELENTANI / ARCHIVE · Belentani",
+      "sha256": "a7ffeb602e0b"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-master-belentani-portal-3k.html",
+      "title": "BELENTANI / PORTAL · Belentani",
+      "sha256": "0b9f74134020"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-master-belentani-studio-3k.html",
+      "title": "BELENTANI / STUDIO LAB · Belentani",
+      "sha256": "cf357414fd3f"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-master-index.html",
+      "title": "BELENTANI — Archivo vivo / OMEGA · Belentani",
+      "sha256": "920f7e929576"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-template-belentani-archive-3k.html",
+      "title": "BELENTANI / ARCHIVE · Belentani",
+      "sha256": "6d2573a32aef"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-template-belentani-portal-3k.html",
+      "title": "BELENTANI / PORTAL · Belentani",
+      "sha256": "286094e20aa6"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-template-belentani-studio-3k.html",
+      "title": "BELENTANI / STUDIO LAB · Belentani",
+      "sha256": "c721a70c3897"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-template-ecosistema.html",
+      "title": "OMEGA TEMPLATE · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "7aaba5f7fa24"
+    },
+    {
+      "path": "belentani-repos-master-belentani-omega-template-index.html",
+      "title": "BELENTANI — Archivo vivo / OMEGA · Belentani",
+      "sha256": "c7a1efae086d"
+    },
+    {
+      "path": "belentani-repos-master-belentani-the-experience-index.html",
+      "title": "BELENTANI — The Experience · Belentani",
+      "sha256": "ff0b3fb5d169"
+    },
+    {
+      "path": "belentani-repos-master-belentani-unified-campus.html",
+      "title": "belentani repos master belentani unified campus · Belentani",
+      "sha256": "38991cc3f892"
+    },
+    {
+      "path": "belentani-repos-master-belentani-unified-ecosistema.html",
+      "title": "MANOS ABIERTAS · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "c122ffcb81f5"
+    },
+    {
+      "path": "belentani-repos-master-belentani-ux-index.html",
+      "title": "BELENTANI.UX · Belentani",
+      "sha256": "21e45e528d26"
+    },
+    {
+      "path": "belentani-repos-master-belentani-v2-index.html",
+      "title": "BELENTANI v2 — Neural Lab · Belentani",
+      "sha256": "d7787f93381d"
+    },
+    {
+      "path": "belentani-repos-master-belentani7-profile-ecosistema.html",
+      "title": "BELENTANI PROFILE · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "f7ef13ca77cf"
+    },
+    {
+      "path": "belentani-repos-master-belentanislide-incoming-intro-clean.html",
+      "title": "NOIACORE — LAB (CONSCIOUSNESS) · Belentani",
+      "sha256": "c623bda2bd58"
+    },
+    {
+      "path": "belentani-repos-master-belentanislide-incoming-intro-raw.html",
+      "title": "NOIACORE — LAB (CONSCIOUSNESS) · Belentani",
+      "sha256": "652810564d3b"
+    },
+    {
+      "path": "belentani-repos-master-belentanislide-index.html",
+      "title": "Belentani Neural Icons · HBO Noir Glass · Belentani",
+      "sha256": "10d1d7cd0044"
+    },
+    {
+      "path": "belentani-repos-master-bportal-index.html",
+      "title": "BELENTANI // NEURAL CORE · Belentani",
+      "sha256": "8014569d51a0"
+    },
+    {
+      "path": "belentani-repos-master-cruzando-el-charco-404.html",
+      "title": "Ruta no encontrada · Cruzando el Charco · Belentani",
+      "sha256": "3b632c2518e0"
+    },
+    {
+      "path": "belentani-repos-master-cruzando-el-charco-ecosistema.html",
+      "title": "CRUZANDO EL CHARCO · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "de2b663d1505"
+    },
+    {
+      "path": "belentani-repos-master-cruzando-el-charco-index.html",
+      "title": "Cruzando el Charco · Barcelona + Sitges · Belentani",
+      "sha256": "28b804891990"
+    },
+    {
+      "path": "belentani-repos-master-cruzando-el-charco-legal.html",
+      "title": "Aviso legal y privacidad · Cruzando el Charco · Belentani",
+      "sha256": "08ce40f869a7"
+    },
+    {
+      "path": "belentani-repos-master-duck-ecosystem-ecosistema.html",
+      "title": "DUCK ECOSYSTEM · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "bb1d05467fde"
+    },
+    {
+      "path": "belentani-repos-master-duckhtml-ecosistema.html",
+      "title": "DUCK HTML · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "40ad5632dff6"
+    },
+    {
+      "path": "belentani-repos-master-duckhtml-index.html",
+      "title": "Duck+ — Catálogo do ecossistema · Belentani",
+      "sha256": "b999d3cd2d54"
+    },
+    {
+      "path": "belentani-repos-master-judas-access-index.html",
+      "title": "BELENTANI // Judas Experience — Acceso Secreto · Belentani",
+      "sha256": "c99b51b21a3e"
+    },
+    {
+      "path": "belentani-repos-master-lingua-aberta-campus.html",
+      "title": "belentani repos master lingua aberta campus · Belentani",
+      "sha256": "c5f928c79596"
+    },
+    {
+      "path": "belentani-repos-master-linguaforge-campus.html",
+      "title": "belentani repos master linguaforge campus · Belentani",
+      "sha256": "832bf9821c10"
+    },
+    {
+      "path": "belentani-repos-master-linguaforge-ecosistema.html",
+      "title": "LINGUAFORGE · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "a425b3021780"
+    },
+    {
+      "path": "belentani-repos-master-linguaforge-index.html",
+      "title": "LinguaForge · Aprende idiomas con intención · Belentani",
+      "sha256": "862865c7f3bd"
+    },
+    {
+      "path": "belentani-repos-master-linux-power-index.html",
+      "title": "BE.Pilot — El piloto automático de tus repos · NOICORE LAB × BELENTANI · Belentani",
+      "sha256": "9182ef016253"
+    },
+    {
+      "path": "belentani-repos-master-manos-abiertas-2026-index.html",
+      "title": "Manos Abiertas · Instituto Universal William · Belentani",
+      "sha256": "bee9093bb1ae"
+    },
+    {
+      "path": "belentani-repos-master-manosabiertas-index.html",
+      "title": "Manos Abiertas · Belentani",
+      "sha256": "3e1077f19868"
+    },
+    {
+      "path": "belentani-repos-master-manus-ai-skill-pack-ecosistema.html",
+      "title": "MANUS AI SKILL PACK · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "f2e12e28a35d"
+    },
+    {
+      "path": "belentani-repos-master-manus-ai-skill-pack-index.html",
+      "title": "Manus AI Skill Pack · Belentani",
+      "sha256": "63b5f41f647e"
+    },
+    {
+      "path": "belentani-repos-master-misaas-app.html",
+      "title": "MiSaaS — Mission Control · Belentani",
+      "sha256": "7a243e3c5fa1"
+    },
+    {
+      "path": "belentani-repos-master-misaas-index.html",
+      "title": "MiSaaS — Mission Control para Agentes Autónomos · Belentani",
+      "sha256": "9a1ac9dea15d"
+    },
+    {
+      "path": "belentani-repos-master-noiacore-ecosistema.html",
+      "title": "NOIACORE · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "2283f5f7bdbc"
+    },
+    {
+      "path": "belentani-repos-master-noiacore-labs-index.html",
+      "title": "NOIACORE — The Experience · Belentani",
+      "sha256": "b915d4e8823f"
+    },
+    {
+      "path": "belentani-repos-master-open-school-campus.html",
+      "title": "belentani repos master open school campus · Belentani",
+      "sha256": "3cb85a396dbf"
+    },
+    {
+      "path": "belentani-repos-master-open-school-index.html",
+      "title": "open-school · Belentani",
+      "sha256": "d034cf75739d"
+    },
+    {
+      "path": "belentani-repos-master-open-school-theme-demo-glass.html",
+      "title": "Belentani Glass — Assets Demo · Belentani",
+      "sha256": "8abe23f8b0aa"
+    },
+    {
+      "path": "belentani-repos-master-open-school-theme-demo.html",
+      "title": "Belentani Theme — Demo · Belentani",
+      "sha256": "173036dce110"
+    },
+    {
+      "path": "belentani-repos-master-platform1-app-index.html",
+      "title": "FIGURA · Del ruido al cliente · Belentani",
+      "sha256": "f9258137991a"
+    },
+    {
+      "path": "belentani-repos-master-portfolio-index.html",
+      "title": "BELENTANI7 — GitHub Portfolio · Belentani",
+      "sha256": "82cb33cb6529"
+    },
+    {
+      "path": "belentani-repos-master-pvc-u-frontend-index.html",
+      "title": "PVC-U Dashboard — Enterprise AI Governance · Belentani",
+      "sha256": "fef509c793bb"
+    },
+    {
+      "path": "belentani-repos-master-secure-t-university-404.html",
+      "title": "404 — Secure T University · Belentani",
+      "sha256": "09d13e267f5c"
+    },
+    {
+      "path": "belentani-repos-master-secure-t-university-campus.html",
+      "title": "belentani repos master secure t university campus · Belentani",
+      "sha256": "7734f6c285d4"
+    },
+    {
+      "path": "belentani-repos-master-secure-t-university-index.html",
+      "title": "Secure T University — Universidade digital de Cybersegurança e IA · Belentani",
+      "sha256": "9e3dc3da8cf7"
+    },
+    {
+      "path": "belentani-repos-master-ux-academy-professional-program-campus.html",
+      "title": "belentani repos master ux academy professional program campus · Belentani",
+      "sha256": "02c754380452"
+    },
+    {
+      "path": "belentani-repos-master-ux-academy-professional-program-ecosistema.html",
+      "title": "UX ACADEMY · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "5ee96566e503"
+    },
+    {
+      "path": "BELENTANI-SINGULARITY-NEON-RED.html",
+      "title": "BELENTANI — SINGULARITY // NEON RED · Belentani",
+      "sha256": "dccabbafa934"
+    },
+    {
+      "path": "BELENTANI-START.html",
+      "title": "BELENTANI — Control · Belentani",
+      "sha256": "e44f988c7097"
+    },
+    {
+      "path": "belentani-studio.html",
+      "title": "BELENTANI STUDIO · Belentani",
+      "sha256": "8f70c71dda5e"
+    },
+    {
+      "path": "belentani-unified-campus-index.html",
+      "title": "Campus ManosAbiertas · Belentani",
+      "sha256": "d5e0c7729077"
+    },
+    {
+      "path": "belentani-unified-demos-creative-web-experience.html",
+      "title": "Creative Web Algorithm — Belentani Lab · Belentani",
+      "sha256": "a567f9ad0aff"
+    },
+    {
+      "path": "belentani-unified-demos-threejs-essentials.html",
+      "title": "Three.js Essentials — Belentani Interactive Lab · Belentani",
+      "sha256": "700bc874711e"
+    },
+    {
+      "path": "belentani-web.html",
+      "title": "Judas Experience | BuildAI.space · Belentani",
+      "sha256": "80f35eebf7f2"
+    },
+    {
+      "path": "belentani-zion-orbit-v13-clean.html",
+      "title": "BELENTANI // ZION ORBIT v13.1 · Belentani",
+      "sha256": "d510cdce2c27"
+    },
+    {
+      "path": "belentani.html",
+      "title": "Nodo 01 · BELENTANI — el origen · Belentani",
+      "sha256": "2b387c01f789"
+    },
+    {
+      "path": "belentani7-github-portfolio-preview.html",
+      "title": "BELENTANI7 — GitHub Portfolio · Belentani",
+      "sha256": "3ad5a6ba0db0"
+    },
+    {
+      "path": "belentani7-profile-client-index.html",
+      "title": "BELENTANI — Full Universe · Belentani",
+      "sha256": "bf5523fa488a"
+    },
+    {
+      "path": "belentani7-profile-docs-index.html",
+      "title": "belentani7 · THE EXPERIENCE · Belentani",
+      "sha256": "6363434bfa54"
+    },
+    {
+      "path": "belentani7-profile.html",
+      "title": "belentani7 (Belentani) · Belentani",
+      "sha256": "6e932ed4e77a"
+    },
+    {
+      "path": "belentani7-profile_1.html",
+      "title": "belentani7 - GitHub Profile · Belentani",
+      "sha256": "408953202f76"
+    },
+    {
+      "path": "BELENTANI_BOOT_FIX.html",
+      "title": "BELENTANI // BOOT FIX · Belentani",
+      "sha256": "f276fc4850bf"
+    },
+    {
+      "path": "BELENTANI_DISPLAY_PEDESTAL_OMEGA.html",
+      "title": "BELENTANI // DISPLAY PEDESTAL · Belentani",
+      "sha256": "7b16f6da510e"
+    },
+    {
+      "path": "BELENTANI_FINAL.html",
+      "title": "BELENTANI · JUDAS ERA · THE ARTIFACT · Belentani",
+      "sha256": "1fb3e3740650"
+    },
+    {
+      "path": "Belentani_Judas_Complete_v1.html",
+      "title": "Belentani Judas Complete v1 · Belentani",
+      "sha256": "c6675e967e03"
+    },
+    {
+      "path": "Belentani_Judas_Omega_Prototype.html",
+      "title": "Belentani Judas Omega Prototype · Belentani",
+      "sha256": "aa0e4283e55b"
+    },
+    {
+      "path": "BELENTANI_OMEGA_CINEMA_v3.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA CINEMA v3 · Belentani",
+      "sha256": "9a603f8f1c68"
+    },
+    {
+      "path": "BELENTANI_OMEGA_FINAL_UNIFIED_v3.html",
+      "title": "BELENTANI • JUDAS ERA — OMEGA UNIFIED v3 · Belentani",
+      "sha256": "01fdfbc4de17"
+    },
+    {
+      "path": "BELENTANI_OMEGA_INFINITE_OS.html",
+      "title": "BELENTANI OMEGA OS - V3 INFINITE EXPANSION · Belentani",
+      "sha256": "026cbce05b76"
+    },
+    {
+      "path": "BELENTANI_OMEGA_MEGA_FINAL.html",
+      "title": "BELENTANI • JUDAS ERA — OMEGA MEGA FINAL · Belentani",
+      "sha256": "8926416c22f4"
+    },
+    {
+      "path": "belentani_portal_3k_1.html",
+      "title": "BELENTANI / PORTAL · Belentani",
+      "sha256": "1cdc2f488ba6"
+    },
+    {
+      "path": "BELENTANI_ULTIMATE.html",
+      "title": "BELENTANI • ULTIMATE — The Complete Experience · Belentani",
+      "sha256": "9a21f638b03f"
+    },
+    {
+      "path": "BELENTANI_ULTRA_CINEMA.html",
+      "title": "BELENTANI • ULTRA CINEMA — Omega Protocol v7 · Belentani",
+      "sha256": "b4b2b15310ed"
+    },
+    {
+      "path": "Belentani_Web_GUI_1.html",
+      "title": "Belentani OS | Multi-Stack Command Center · Belentani",
+      "sha256": "fe5bb061d972"
+    },
+    {
+      "path": "Ben 🤖 on X： ＂new model benchmark page with some new art from me https：_t.co_22vx53AK0f＂ _ X (7_26_2026 4：26：39 PM).html",
+      "title": "Ben 🤖 on X: \"new model benchmark page with some new art from me https://t.co/22vx53AK0f\" / X · Belentani",
+      "sha256": "25128c83ae25"
+    },
+    {
+      "path": "blaanla.html",
+      "title": "BELENTANI · SISTEMA SÓLIDO · JUDAS ERA · Belentani",
+      "sha256": "afb732f53b55"
+    },
+    {
+      "path": "blog-belehtani.html",
+      "title": "Belentani Blog — Análisis, IA & Perspectiva · Belentani",
+      "sha256": "4c1bceba4323"
+    },
+    {
+      "path": "BTK-DASHBOARD.html",
+      "title": "BTK Dashboard · Belentani",
+      "sha256": "07c258b8333f"
+    },
+    {
+      "path": "BuildAI-Belentani-7-16.html",
+      "title": "BuildAI Belentani 7 16 · Belentani",
+      "sha256": "94515e957085"
+    },
+    {
+      "path": "buildai-zion-core.html",
+      "title": "Neoclassicism Alive Machine 3D · Belentani",
+      "sha256": "2b60ca79e4b5"
+    },
+    {
+      "path": "c20f2507c420_1_whatsapp.html",
+      "title": "WhatsApp en una página | Manos Abiertas · Belentani",
+      "sha256": "1abf0d4fb607"
+    },
+    {
+      "path": "calculadora.html",
+      "title": "Calculadora · Manos Abiertas · Belentani",
+      "sha256": "3bda2eaa5c52"
+    },
+    {
+      "path": "campus.html",
+      "title": "campus · Belentani",
+      "sha256": "9fb79863a5dc"
+    },
+    {
+      "path": "campus__301b5eccbd34.html",
+      "title": "Manos Abiertas · Campus · Belentani",
+      "sha256": "301b5eccbd34"
+    },
+    {
+      "path": "Carquidec-Animacion-Estudio.html",
+      "title": "React Artifact · Belentani",
+      "sha256": "11107ef14707"
+    },
+    {
+      "path": "challenge_en.html",
+      "title": "challenge en · Belentani",
+      "sha256": "646338b8a013"
+    },
+    {
+      "path": "challenge_es.html",
+      "title": "challenge es · Belentani",
+      "sha256": "82d832092d15"
+    },
+    {
+      "path": "challenge_pt.html",
+      "title": "challenge pt · Belentani",
+      "sha256": "2a5237beca2f"
+    },
+    {
+      "path": "competition.html",
+      "title": "competition · Belentani",
+      "sha256": "006b92e340fb"
+    },
+    {
+      "path": "compositor-ia.html",
+      "title": "compositor ia · Belentani",
+      "sha256": "c59dde206f5f"
+    },
+    {
+      "path": "Contact.html",
+      "title": "Contact | Judas Experience · Belentani",
+      "sha256": "91fb150fb0ea"
+    },
+    {
+      "path": "convertidor-moneda.html",
+      "title": "Convertidor de moneda · Manos Abiertas · Belentani",
+      "sha256": "4b959cafdc5e"
+    },
+    {
+      "path": "cookies.html",
+      "title": "Política de cookies — Belentani · estudi digital · Belentani",
+      "sha256": "03d68a0d0c9e"
+    },
+    {
+      "path": "copilot.html",
+      "title": "Copilot en una página | Manos Abiertas · Belentani",
+      "sha256": "0a9d3e751b56"
+    },
+    {
+      "path": "courses.html",
+      "title": "Assistente local: courses · Belentani",
+      "sha256": "35fff8b9e7ee"
+    },
+    {
+      "path": "courses__383e1b52d669.html",
+      "title": "Assistant local: courses · Belentani",
+      "sha256": "383e1b52d669"
+    },
+    {
+      "path": "courses__61e872a7c70f.html",
+      "title": "Local assistant: courses · Belentani",
+      "sha256": "61e872a7c70f"
+    },
+    {
+      "path": "courses__68c0fc9f0bdf.html",
+      "title": "Asistente local: courses · Belentani",
+      "sha256": "68c0fc9f0bdf"
+    },
+    {
+      "path": "courses__b11bbc8d91e7.html",
+      "title": "Assistente local: courses · Belentani",
+      "sha256": "b11bbc8d91e7"
+    },
+    {
+      "path": "cover.html",
+      "title": "cover · Belentani",
+      "sha256": "26e5c2b6eac1"
+    },
+    {
+      "path": "cover_en.html",
+      "title": "cover en · Belentani",
+      "sha256": "58fae6716311"
+    },
+    {
+      "path": "cover_es.html",
+      "title": "cover es · Belentani",
+      "sha256": "c18cc8706039"
+    },
+    {
+      "path": "cover_pt.html",
+      "title": "cover pt · Belentani",
+      "sha256": "7e0b8df077cd"
+    },
+    {
+      "path": "cruzando-el-charco-magic-immersive.html",
+      "title": "BELENTANI // IMMERSE · Belentani",
+      "sha256": "8ad30cff3eb6"
+    },
+    {
+      "path": "cruzando-el-charco-magic-sfx.html",
+      "title": "BELENTANI // SOUND FORGE · Belentani",
+      "sha256": "458c9ca358f7"
+    },
+    {
+      "path": "cruzando-el-charco-magic-shader.html",
+      "title": "BELENTANI // MAGIC SHADER · Belentani",
+      "sha256": "e2b1ea26d0c9"
+    },
+    {
+      "path": "customer.html",
+      "title": "customer · Belentani",
+      "sha256": "c1c5ad749782"
+    },
+    {
+      "path": "cv.html",
+      "title": "Assistente local: cv · Belentani",
+      "sha256": "68b0f130396d"
+    },
+    {
+      "path": "cv__2bad8b26112c.html",
+      "title": "Assistant local: cv · Belentani",
+      "sha256": "2bad8b26112c"
+    },
+    {
+      "path": "cv__4a9feb1e15f1.html",
+      "title": "Assistente local: cv · Belentani",
+      "sha256": "4a9feb1e15f1"
+    },
+    {
+      "path": "cv__67cded0c708e.html",
+      "title": "Local assistant: cv · Belentani",
+      "sha256": "67cded0c708e"
+    },
+    {
+      "path": "cv__ab32c240e8e5.html",
+      "title": "Asistente local: cv · Belentani",
+      "sha256": "ab32c240e8e5"
+    },
+    {
+      "path": "Damonxart on X： ＂Sitting above the horizon https：_t.co_wRPuxe6Wun＂ _ X (7_26_2026 4：27：25 PM).html",
+      "title": "Damonxart on X: \"Sitting above the horizon https://t.co/wRPuxe6Wun\" / X · Belentani",
+      "sha256": "3e63045b7d47"
+    },
+    {
+      "path": "DASHBOARD-BELENTANI.html",
+      "title": "BELENTANI Â· Ecosystem Dashboard · Belentani",
+      "sha256": "60e8182aa338"
+    },
+    {
+      "path": "DASHBOARD-v4.html",
+      "title": "BELENTANI Â· Ecosystem Dashboard · Belentani",
+      "sha256": "691a94a0c2c4"
+    },
+    {
+      "path": "deepseek.html",
+      "title": "DeepSeek en una página | Manos Abiertas · Belentani",
+      "sha256": "1d71214a2814"
+    },
+    {
+      "path": "deepseek_html_20260903_756667.html",
+      "title": "🎮 PolyGlot Games 90's · Belentani",
+      "sha256": "177ef890d3c0"
+    },
+    {
+      "path": "DeepSeek_Judas_Project_Assistance.html",
+      "title": "DeepSeek Judas Project Assistance · Belentani",
+      "sha256": "124eca74e1a2"
+    },
+    {
+      "path": "demo.html",
+      "title": "El producto en acción · Belentani",
+      "sha256": "ad4ea641ff4d"
+    },
+    {
+      "path": "Descifrando personalidades a través del código fuente - Claude.html",
+      "title": "Descifrando personalidades a través del código fuente - Claude · Belentani",
+      "sha256": "9993e80307e6"
+    },
+    {
+      "path": "DIAMOND-LIVING.html",
+      "title": "BELENTANI — Diamond Living System · Belentani",
+      "sha256": "a9da5fdad380"
+    },
+    {
+      "path": "digital.html",
+      "title": "Assistente local: digital · Belentani",
+      "sha256": "854eda4fe006"
+    },
+    {
+      "path": "digital__11affdf4b8e3.html",
+      "title": "Local assistant: digital · Belentani",
+      "sha256": "11affdf4b8e3"
+    },
+    {
+      "path": "digital__3c96083f8a07.html",
+      "title": "Asistente local: digital · Belentani",
+      "sha256": "3c96083f8a07"
+    },
+    {
+      "path": "digital__b8f5555c7f80.html",
+      "title": "Assistant local: digital · Belentani",
+      "sha256": "b8f5555c7f80"
+    },
+    {
+      "path": "digital__eaeede819b1a.html",
+      "title": "Assistente local: digital · Belentani",
+      "sha256": "eaeede819b1a"
+    },
+    {
+      "path": "documento_principal.html",
+      "title": "NEUROMARKETING Y BRANDING CIENTÃFICO â€” La Arquitectura Visual de la Marca · Belentani",
+      "sha256": "ac0ee4e55712"
+    },
+    {
+      "path": "Domains ｜ Registrations ｜ Roberto7sena@yahoo.com's Account ｜ Cloudflare (7_28_2026 5：21：37 PM).html",
+      "title": "Domains | Registrations | Roberto7sena@yahoo.com's Account | Cloudflare · Belentani",
+      "sha256": "5e0b29d9e951"
+    },
+    {
+      "path": "DUCK - Discography (7_24_2026 11：56：41 PM).html",
+      "title": "DUCK - Discography · Belentani",
+      "sha256": "ac9c52e1bee8"
+    },
+    {
+      "path": "duck-ecosystem-client-index.html",
+      "title": "DUCK.OS — Ritmo & Frequência · Belentani",
+      "sha256": "e5c74e236d60"
+    },
+    {
+      "path": "duckhtml-tool-index.html",
+      "title": "Duck+ — Catálogo · Belentani",
+      "sha256": "afe7254266b0"
+    },
+    {
+      "path": "EbubeRPG ｜ Designer on X： ＂Shaders are really cool. https：_t.co_v5XfqNRmFf＂ _ X (7_26_2026 4：26：58 PM).html",
+      "title": "EbubeRPG | Designer on X: \"Shaders are really cool. https://t.co/v5XfqNRmFf\" / X · Belentani",
+      "sha256": "4e322bdb3ca9"
+    },
+    {
+      "path": "ecosistema.html",
+      "title": "BELENTANI OMEGA · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "cfc47e3dfc93"
+    },
+    {
+      "path": "ecosistema__2.html",
+      "title": "MANOS ABIERTAS · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "5465fe346562"
+    },
+    {
+      "path": "ecosistema__232af6fac0e9.html",
+      "title": "BELENTANI JUDAS · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "232af6fac0e9"
+    },
+    {
+      "path": "ecosistema__3c644341b117.html",
+      "title": "DUCK ECOSYSTEM · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "3c644341b117"
+    },
+    {
+      "path": "ecosistema__b6cbba89c5c2.html",
+      "title": "NOIACORE LAB · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "b6cbba89c5c2"
+    },
+    {
+      "path": "ecosistema__f7ee473c4ccb.html",
+      "title": "MANOS ABIERTAS · BELENTANI ECOSYSTEM CIRCUIT · Belentani",
+      "sha256": "f7ee473c4ccb"
+    },
+    {
+      "path": "ecosystem.html",
+      "title": "NOIACORE / BELENTANI · Belentani",
+      "sha256": "0e760d90b734"
+    },
+    {
+      "path": "ecosystem__2.html",
+      "title": "NOIACORE / BELENTANI · Belentani",
+      "sha256": "c20d65cd03b7"
+    },
+    {
+      "path": "Espejo de Judas ｜ BuildAI (28_5_2026 0：00：07).html",
+      "title": "Espejo de Judas ｜ BuildAI (28 5 2026 0：00：07) · Belentani",
+      "sha256": "6d8d8071f44d"
+    },
+    {
+      "path": "Espejo de Judas ｜ BuildAI.space (16_5_2026 17：10：38).html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "ef5795e90890"
+    },
+    {
+      "path": "Espejo de Judas ｜ BuildAI.space (22_5_2026 2：20：48).html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "742a8282fe79"
+    },
+    {
+      "path": "Espejo de Judas ｜ BuildAI.space (31_5_2026 3：10：48).html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "c51293bed4b9"
+    },
+    {
+      "path": "eval_review.html",
+      "title": "Eval Set Review - __SKILL_NAME_PLACEHOLDER__ · Belentani",
+      "sha256": "ce477dcc74dc"
+    },
+    {
+      "path": "FF.HTML",
+      "title": "Planeta Galáctico - Liquid Light Inmersivo · Belentani",
+      "sha256": "3a29cc43aca1"
+    },
+    {
+      "path": "folio.html",
+      "title": "FOLIO · Estudio de escritura profesional · Belentani",
+      "sha256": "706070a5f6de"
+    },
+    {
+      "path": "folio__2.html",
+      "title": "FOLIO · Estudio de escritura profesional · Belentani",
+      "sha256": "e4cd0152063f"
+    },
+    {
+      "path": "FORGE-REPORT-FINAL-2026-09-07.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "344d0ddb0db5"
+    },
+    {
+      "path": "FORGE-REPORT-MAX.html",
+      "title": "BELENTANI FORGE v9 · Belentani",
+      "sha256": "f8a07c2f9041"
+    },
+    {
+      "path": "FORGE-REPORT.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "d266da6c9e5b"
+    },
+    {
+      "path": "FORGE-REPORT__6bcb4fb6903b.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "6bcb4fb6903b"
+    },
+    {
+      "path": "FORGE-REPORT__76ecd09225e2.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "76ecd09225e2"
+    },
+    {
+      "path": "FORGEREPORT.html",
+      "title": "BELENTANI FORGE · Belentani",
+      "sha256": "a148e0265b72"
+    },
+    {
+      "path": "frame-template.html",
+      "title": "Superpowers Brainstorming · Belentani",
+      "sha256": "7b9418e9939d"
+    },
+    {
+      "path": "frame-template__6a8a4e58bd6a.html",
+      "title": "Superpowers Brainstorming · Belentani",
+      "sha256": "6a8a4e58bd6a"
+    },
+    {
+      "path": "galaxia-01.html",
+      "title": "GALAXIA 01 · EL ENTRE — LA ROCA | BELENTANI · Belentani",
+      "sha256": "f5b256ce820d"
+    },
+    {
+      "path": "galaxia-02.html",
+      "title": "GALAXIA 02 · LA DEUDA — LA ROCA | BELENTANI · Belentani",
+      "sha256": "28189bc02c26"
+    },
+    {
+      "path": "galaxia-03.html",
+      "title": "GALAXIA 03 · EL ROBO — LA ROCA | BELENTANI · Belentani",
+      "sha256": "a7abb11f1f40"
+    },
+    {
+      "path": "galaxia-04.html",
+      "title": "GALAXIA 04 · EL CANTO — LA ROCA | BELENTANI · Belentani",
+      "sha256": "bbf5732a9bdb"
+    },
+    {
+      "path": "galaxia-05.html",
+      "title": "GALAXIA 05 · LA VICTORIA AMARGA — LA ROCA | BELENTANI · Belentani",
+      "sha256": "ae1aa58977fb"
+    },
+    {
+      "path": "galaxia-06.html",
+      "title": "GALAXIA 06 · LA MENTIRA COMPARTIDA — LA ROCA | BELENTANI · Belentani",
+      "sha256": "13fdd74617ef"
+    },
+    {
+      "path": "galaxia-07.html",
+      "title": "GALAXIA 07 · EL UMBRAL — LA ROCA | BELENTANI · Belentani",
+      "sha256": "7ff3477b2440"
+    },
+    {
+      "path": "galaxia-08.html",
+      "title": "GALAXIA 08 · LA SEÑAL — LA ROCA | BELENTANI · Belentani",
+      "sha256": "d7e735788be0"
+    },
+    {
+      "path": "galaxia-09.html",
+      "title": "GALAXIA 09 · EL PORTAL — LA ROCA | BELENTANI · Belentani",
+      "sha256": "8d8ce3af2d7d"
+    },
+    {
+      "path": "galaxia-10.html",
+      "title": "GALAXIA 10 · LA CONSTELACIÓN — LA ROCA | BELENTANI · Belentani",
+      "sha256": "8169869aa025"
+    },
+    {
+      "path": "galaxia-11.html",
+      "title": "GALAXIA 11 · EL ENTRE — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "d0e9a040ec76"
+    },
+    {
+      "path": "galaxia-12.html",
+      "title": "GALAXIA 12 · LA DEUDA — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "64a2835211d0"
+    },
+    {
+      "path": "galaxia-13.html",
+      "title": "GALAXIA 13 · EL ROBO — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "f038ec52ac21"
+    },
+    {
+      "path": "galaxia-14.html",
+      "title": "GALAXIA 14 · EL CANTO — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "24da73fcbe9c"
+    },
+    {
+      "path": "galaxia-15.html",
+      "title": "GALAXIA 15 · LA VICTORIA AMARGA — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "ca47f9ccfa3c"
+    },
+    {
+      "path": "galaxia-16.html",
+      "title": "GALAXIA 16 · LA MENTIRA COMPARTIDA — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "6d5f9b857388"
+    },
+    {
+      "path": "galaxia-17.html",
+      "title": "GALAXIA 17 · EL UMBRAL — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "11b0c4d80561"
+    },
+    {
+      "path": "galaxia-18.html",
+      "title": "GALAXIA 18 · LA SEÑAL — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "a5fd6f97fde9"
+    },
+    {
+      "path": "galaxia-19.html",
+      "title": "GALAXIA 19 · EL PORTAL — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "733e4079e8f9"
+    },
+    {
+      "path": "galaxia-20.html",
+      "title": "GALAXIA 20 · LA CONSTELACIÓN — EL CRONISTA | BELENTANI · Belentani",
+      "sha256": "e3d7e3d55f75"
+    },
+    {
+      "path": "galaxia-21.html",
+      "title": "GALAXIA 21 · EL ENTRE — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "cde8ab68d3d4"
+    },
+    {
+      "path": "galaxia-22.html",
+      "title": "GALAXIA 22 · LA DEUDA — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "0d43da6240c6"
+    },
+    {
+      "path": "galaxia-23.html",
+      "title": "GALAXIA 23 · EL ROBO — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "42d8cf30c3b1"
+    },
+    {
+      "path": "galaxia-24.html",
+      "title": "GALAXIA 24 · EL CANTO — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "446f8d7eb3f4"
+    },
+    {
+      "path": "galaxia-25.html",
+      "title": "GALAXIA 25 · LA VICTORIA AMARGA — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "6392ba6eaf46"
+    },
+    {
+      "path": "galaxia-26.html",
+      "title": "GALAXIA 26 · LA MENTIRA COMPARTIDA — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "1c4896ae81a4"
+    },
+    {
+      "path": "galaxia-27.html",
+      "title": "GALAXIA 27 · EL UMBRAL — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "92158409ea16"
+    },
+    {
+      "path": "galaxia-28.html",
+      "title": "GALAXIA 28 · LA SEÑAL — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "b903aeb97f89"
+    },
+    {
+      "path": "galaxia-29.html",
+      "title": "GALAXIA 29 · EL PORTAL — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "ba9809c72f23"
+    },
+    {
+      "path": "galaxia-30.html",
+      "title": "GALAXIA 30 · LA CONSTELACIÓN — LA ANTENA | BELENTANI · Belentani",
+      "sha256": "c23cf2f44ce0"
+    },
+    {
+      "path": "galaxia-31.html",
+      "title": "GALAXIA 31 · EL ENTRE — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "60b1048a004b"
+    },
+    {
+      "path": "galaxia-32.html",
+      "title": "GALAXIA 32 · LA DEUDA — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "9511bb92087f"
+    },
+    {
+      "path": "galaxia-33.html",
+      "title": "GALAXIA 33 · EL ROBO — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "c9d3fe2036bb"
+    },
+    {
+      "path": "galaxia-34.html",
+      "title": "GALAXIA 34 · EL CANTO — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "c7c9250d46ed"
+    },
+    {
+      "path": "galaxia-35.html",
+      "title": "GALAXIA 35 · LA VICTORIA AMARGA — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "d64d350c94c5"
+    },
+    {
+      "path": "galaxia-36.html",
+      "title": "GALAXIA 36 · LA MENTIRA COMPARTIDA — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "421b6c9ea2cb"
+    },
+    {
+      "path": "galaxia-37.html",
+      "title": "GALAXIA 37 · EL UMBRAL — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "6c32c9b927a8"
+    },
+    {
+      "path": "galaxia-38.html",
+      "title": "GALAXIA 38 · LA SEÑAL — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "ca3de59d8f1c"
+    },
+    {
+      "path": "galaxia-39.html",
+      "title": "GALAXIA 39 · EL PORTAL — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "1546582826cc"
+    },
+    {
+      "path": "galaxia-40.html",
+      "title": "GALAXIA 40 · LA CONSTELACIÓN — NÚCLEO | BELENTANI · Belentani",
+      "sha256": "2babca243cc2"
+    },
+    {
+      "path": "galaxia-41.html",
+      "title": "GALAXIA 41 · EL ENTRE — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "6f9836f03732"
+    },
+    {
+      "path": "galaxia-42.html",
+      "title": "GALAXIA 42 · LA DEUDA — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "657e25bc0e4d"
+    },
+    {
+      "path": "galaxia-43.html",
+      "title": "GALAXIA 43 · EL ROBO — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "f4208dda1678"
+    },
+    {
+      "path": "galaxia-44.html",
+      "title": "GALAXIA 44 · EL CANTO — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "d409767002d6"
+    },
+    {
+      "path": "galaxia-45.html",
+      "title": "GALAXIA 45 · LA VICTORIA AMARGA — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "26de1e681e6c"
+    },
+    {
+      "path": "galaxia-46.html",
+      "title": "GALAXIA 46 · LA MENTIRA COMPARTIDA — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "b99ca45280ae"
+    },
+    {
+      "path": "galaxia-47.html",
+      "title": "GALAXIA 47 · EL UMBRAL — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "3c201978c7e6"
+    },
+    {
+      "path": "galaxia-48.html",
+      "title": "GALAXIA 48 · LA SEÑAL — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "aca4e39277a4"
+    },
+    {
+      "path": "galaxia-49.html",
+      "title": "GALAXIA 49 · EL PORTAL — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "25e65a5364f3"
+    },
+    {
+      "path": "galaxia-50.html",
+      "title": "GALAXIA 50 · LA CONSTELACIÓN — INTERFAZ | BELENTANI · Belentani",
+      "sha256": "314f7dc4d5b1"
+    },
+    {
+      "path": "gemini-code-1778298046133.html",
+      "title": "BELENTANI // JUDAS CORE // DEFINITIVE · Belentani",
+      "sha256": "2b837070d7c4"
+    },
+    {
+      "path": "gemini-code-1778303475557.html",
+      "title": "BELENTANI // JUDAS ENGINE LIVE · Belentani",
+      "sha256": "283a52f70ba2"
+    },
+    {
+      "path": "gemini-code-1781600256358.html",
+      "title": "DUCK — Produção Musical · Belentani",
+      "sha256": "31304f10d6c9"
+    },
+    {
+      "path": "gemini-code-1781600920666.html",
+      "title": "DUCK — Produção Musical | Beatmaker, Mix & Master · Belentani",
+      "sha256": "c6467536fda8"
+    },
+    {
+      "path": "gemini-code-1785369762990.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA ULTIMATE CORE · Belentani",
+      "sha256": "c7d95d1c68ff"
+    },
+    {
+      "path": "gemini-code-1788639588397.html",
+      "title": "secure T — Universidad Digital · Liquid Gold & Blue · Belentani",
+      "sha256": "417d8bf4cd1e"
+    },
+    {
+      "path": "gemini.html",
+      "title": "Gemini en una página | Manos Abiertas · Belentani",
+      "sha256": "071720d6fb63"
+    },
+    {
+      "path": "googlw.html",
+      "title": "Omega Core // Judas Experience - Belentani · Belentani",
+      "sha256": "b0f7259e6ea2"
+    },
+    {
+      "path": "guia-ia.html",
+      "title": "Guía de IA en una página · Manos Abiertas · Belentani",
+      "sha256": "91c3c5fc9a4d"
+    },
+    {
+      "path": "guia-office.html",
+      "title": "Guía de Office en una página · Manos Abiertas · Belentani",
+      "sha256": "1b6fd09013ef"
+    },
+    {
+      "path": "Home.html",
+      "title": "Home | Judas Experience · Belentani",
+      "sha256": "63fd8eea8434"
+    },
+    {
+      "path": "homeJudas Experience ｜ BuildAI.space (9_5_2026 4：30：56).html",
+      "title": "homeJudas Experience ｜ BuildAI.space (9 5 2026 4：30：56) · Belentani",
+      "sha256": "6e2f57cc87e8"
+    },
+    {
+      "path": "Horizon Color Dome — Recent (7_26_2026 4：27：13 PM).html",
+      "title": "Horizon Color Dome — Recent · Belentani",
+      "sha256": "246c6f581e38"
+    },
+    {
+      "path": "immersive.html",
+      "title": "BELENTANI // IMMERSE · Belentani",
+      "sha256": "b928a95f5c30"
+    },
+    {
+      "path": "index-1.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA CORE · Belentani",
+      "sha256": "e42f9f72d2cb"
+    },
+    {
+      "path": "index.html",
+      "title": "BELENTANI // 50 GALAXIAS — 5 Firmas x 10 Estaciones · Belentani",
+      "sha256": "63b8792356f0"
+    },
+    {
+      "path": "index__035a8d0fdaf1.html",
+      "title": "BELENTANI — Studio · Pipeline y experimentos · Belentani",
+      "sha256": "035a8d0fdaf1"
+    },
+    {
+      "path": "index__057c13e1b02c.html",
+      "title": "BELENTANI — Studio · Pipeline y experimentos · Belentani",
+      "sha256": "057c13e1b02c"
+    },
+    {
+      "path": "index__0657c205a83c.html",
+      "title": "Campus ManosAbiertas · Belentani",
+      "sha256": "0657c205a83c"
+    },
+    {
+      "path": "index__096c04588555.html",
+      "title": "BELENTANI — Raíz Oculta · Belentani",
+      "sha256": "096c04588555"
+    },
+    {
+      "path": "index__0a8f25b77c0a.html",
+      "title": "secure T — Instituto de Idiomas · Belentani",
+      "sha256": "0a8f25b77c0a"
+    },
+    {
+      "path": "index__1b59b9fcbfaa.html",
+      "title": "BELENTANI — Versiones · Belentani",
+      "sha256": "1b59b9fcbfaa"
+    },
+    {
+      "path": "index__20c4812b2319.html",
+      "title": "index  20c4812b2319 · Belentani",
+      "sha256": "20c4812b2319"
+    },
+    {
+      "path": "index__2204200af20e.html",
+      "title": "Belentani School - Plataforma ESO y Tutoría Cultural · Belentani",
+      "sha256": "2204200af20e"
+    },
+    {
+      "path": "index__220bdccc6539.html",
+      "title": "BELENTANI — Voz de Dios · Belentani",
+      "sha256": "220bdccc6539"
+    },
+    {
+      "path": "index__2380effee9aa.html",
+      "title": "PS·LM — Local PowerShell · Belentani",
+      "sha256": "2380effee9aa"
+    },
+    {
+      "path": "index__25967294ad8c.html",
+      "title": "BELENTANI — Archivo · Belentani",
+      "sha256": "25967294ad8c"
+    },
+    {
+      "path": "index__267848e58b03.html",
+      "title": "BELENTANI — Ruido Sagrado · Belentani",
+      "sha256": "267848e58b03"
+    },
+    {
+      "path": "index__29359f7289ed.html",
+      "title": "pymss WebUI · Belentani",
+      "sha256": "29359f7289ed"
+    },
+    {
+      "path": "index__31c66208091c.html",
+      "title": "Judas Experience: The Debt · Belentani",
+      "sha256": "31c66208091c"
+    },
+    {
+      "path": "index__37daafd1a724.html",
+      "title": "BELENTANI — Luz Quemada · Belentani",
+      "sha256": "37daafd1a724"
+    },
+    {
+      "path": "index__3d9e442f36b0.html",
+      "title": "BELENTANI — Judas Era / Omega · Umbral · Belentani",
+      "sha256": "3d9e442f36b0"
+    },
+    {
+      "path": "index__3f51ce27d102.html",
+      "title": "BELENTANI — Studio · Belentani",
+      "sha256": "3f51ce27d102"
+    },
+    {
+      "path": "index__41440674493a.html",
+      "title": "BELENTANI — Judas Era / Omega · Umbral · Belentani",
+      "sha256": "41440674493a"
+    },
+    {
+      "path": "index__43194e6479c1.html",
+      "title": "Judas Experience | Belentani · Belentani",
+      "sha256": "43194e6479c1"
+    },
+    {
+      "path": "index__4419cba47c42.html",
+      "title": "BELENTANI — Nexo Omega · Belentani",
+      "sha256": "4419cba47c42"
+    },
+    {
+      "path": "index__460367173f6b.html",
+      "title": "BELENTANI — Portal · Belentani",
+      "sha256": "460367173f6b"
+    },
+    {
+      "path": "index__4acd1947234a.html",
+      "title": "OpenDesign Viewer · Belentani",
+      "sha256": "4acd1947234a"
+    },
+    {
+      "path": "index__4e08c70d1e24.html",
+      "title": "BELENTANI — Portal · Ojo de Judas y terminal · Belentani",
+      "sha256": "4e08c70d1e24"
+    },
+    {
+      "path": "index__509be22a1ea0.html",
+      "title": "BELENTANI — Artista · Belentani",
+      "sha256": "509be22a1ea0"
+    },
+    {
+      "path": "index__55e75e1f551f.html",
+      "title": "BELENTANI — Archivo Sangre · Belentani",
+      "sha256": "55e75e1f551f"
+    },
+    {
+      "path": "index__56722511caca.html",
+      "title": "BELENTANI — Portal · Ojo de Judas y terminal · Belentani",
+      "sha256": "56722511caca"
+    },
+    {
+      "path": "index__5c6016a0e7bf.html",
+      "title": "OpenDesign Viewer · Belentani",
+      "sha256": "5c6016a0e7bf"
+    },
+    {
+      "path": "index__5de4574ae25a.html",
+      "title": "BELENTANI — Umbral · Belentani",
+      "sha256": "5de4574ae25a"
+    },
+    {
+      "path": "index__5eed32fb15b9.html",
+      "title": "Pair - AI Fashion Advisor · Belentani",
+      "sha256": "5eed32fb15b9"
+    },
+    {
+      "path": "index__658d0a694cd5.html",
+      "title": "Manos Abiertas — Ayuda para la comunidad inmigrante en España · Belentani",
+      "sha256": "658d0a694cd5"
+    },
+    {
+      "path": "index__65d4237ce30e.html",
+      "title": "index  65d4237ce30e · Belentani",
+      "sha256": "65d4237ce30e"
+    },
+    {
+      "path": "index__665b41ed3499.html",
+      "title": "Belentani·Judas — Ecosistema · Belentani",
+      "sha256": "665b41ed3499"
+    },
+    {
+      "path": "index__699122662b02.html",
+      "title": "Ruta de Aprendizaje · William Danilo · Belentani",
+      "sha256": "699122662b02"
+    },
+    {
+      "path": "index__69ef67204532.html",
+      "title": "BELENTANI — Llave Dorada · Belentani",
+      "sha256": "69ef67204532"
+    },
+    {
+      "path": "index__723178e95630.html",
+      "title": "BELENTANI — Eco de Judas · Belentani",
+      "sha256": "723178e95630"
+    },
+    {
+      "path": "index__73e81b5b1af1.html",
+      "title": "AURUM â€” Luxury Footwear | Calzado Artesanal de Lujo en Barcelona · Belentani",
+      "sha256": "73e81b5b1af1"
+    },
+    {
+      "path": "index__753b2788f6d5.html",
+      "title": "BELENTANI // OMEGA CORE — JUDAS ERA | BuildAI & Official Site (belentani.es) · Belentani",
+      "sha256": "753b2788f6d5"
+    },
+    {
+      "path": "index__75480c591107.html",
+      "title": "BELENTANI — Versiones · Belentani",
+      "sha256": "75480c591107"
+    },
+    {
+      "path": "index__75909504e268.html",
+      "title": "BELENTANI — Judas Era · Cinco estados · Belentani",
+      "sha256": "75909504e268"
+    },
+    {
+      "path": "index__75dba951e827.html",
+      "title": "BELENTANI — Cuerpo Memoria · Belentani",
+      "sha256": "75dba951e827"
+    },
+    {
+      "path": "index__76006d72da11.html",
+      "title": "BELENTANI · Belentani",
+      "sha256": "76006d72da11"
+    },
+    {
+      "path": "index__7729aada1e92.html",
+      "title": "BELENTANI — Judas Era · Cinco estados · Belentani",
+      "sha256": "7729aada1e92"
+    },
+    {
+      "path": "index__801cac92eee2.html",
+      "title": "Belentani · Panel de Control · Belentani",
+      "sha256": "801cac92eee2"
+    },
+    {
+      "path": "index__83e97473fd2a.html",
+      "title": "NEUROMARKETING Y BRANDING CIENTÍFICO — La Arquitectura Visual de la Marca · Belentani",
+      "sha256": "83e97473fd2a"
+    },
+    {
+      "path": "index__86790379fa78.html",
+      "title": "Belentani - The Judas Experience · Belentani",
+      "sha256": "86790379fa78"
+    },
+    {
+      "path": "index__899b847c2d55.html",
+      "title": "BELENTANI — Cristal Vivo · Belentani",
+      "sha256": "899b847c2d55"
+    },
+    {
+      "path": "index__8a67d964b923.html",
+      "title": "BELENTANI — The Judas Experience // Universo Visual Interativo · Belentani",
+      "sha256": "8a67d964b923"
+    },
+    {
+      "path": "index__8f2d9a628a52.html",
+      "title": "BELENTANI OMEGA OS - V4 FULL-STACK EDITION · Belentani",
+      "sha256": "8f2d9a628a52"
+    },
+    {
+      "path": "index__8fa6c701ff31.html",
+      "title": "BELENTANI — Contacto · Belentani",
+      "sha256": "8fa6c701ff31"
+    },
+    {
+      "path": "index__902641d167ff.html",
+      "title": "BELENTANI Ω · JUDAS ERA · Belentani",
+      "sha256": "902641d167ff"
+    },
+    {
+      "path": "index__966b4c911329.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA CORE · Belentani",
+      "sha256": "966b4c911329"
+    },
+    {
+      "path": "index__99e2647eab10.html",
+      "title": "BELENTANI — Ritual de Aire · Belentani",
+      "sha256": "99e2647eab10"
+    },
+    {
+      "path": "index__9cceed26465f.html",
+      "title": "Belentani Studio — Hacer visible lo que importa · Belentani",
+      "sha256": "9cceed26465f"
+    },
+    {
+      "path": "index__a417b244553c.html",
+      "title": "William.Game - Entretenimiento Máximo · Belentani",
+      "sha256": "a417b244553c"
+    },
+    {
+      "path": "index__a5e1cf691d49.html",
+      "title": "Belentani Portal — AI Hub · Belentani",
+      "sha256": "a5e1cf691d49"
+    },
+    {
+      "path": "index__a8d8ec6c6020.html",
+      "title": "Biblioteca Abierta — 39 idiomas, 0 archivos guardados · Belentani",
+      "sha256": "a8d8ec6c6020"
+    },
+    {
+      "path": "index__aabaefd3b327.html",
+      "title": "BELENTANI — Vida en Vapor · Belentani",
+      "sha256": "aabaefd3b327"
+    },
+    {
+      "path": "index__aadbd08236f8.html",
+      "title": "Código Reset de Mimo · Belentani",
+      "sha256": "aadbd08236f8"
+    },
+    {
+      "path": "index__ace8be2c9ee4.html",
+      "title": "Belentani Corp — Dashboard · Belentani",
+      "sha256": "ace8be2c9ee4"
+    },
+    {
+      "path": "index__b5286f93064c.html",
+      "title": "Open School — Aprende Sin Límites · Belentani",
+      "sha256": "b5286f93064c"
+    },
+    {
+      "path": "index__b5a1b4bb457e.html",
+      "title": "My Google AI Studio App · Belentani",
+      "sha256": "b5a1b4bb457e"
+    },
+    {
+      "path": "index__be98a3555b17.html",
+      "title": "BELENTANI // JUDAS ERA — PROTOCOLO ZION · Belentani",
+      "sha256": "be98a3555b17"
+    },
+    {
+      "path": "index__c0b47019f7a1.html",
+      "title": "Belentani — Ecosistema · Belentani",
+      "sha256": "c0b47019f7a1"
+    },
+    {
+      "path": "index__c24bc71a43d4.html",
+      "title": "Belentani · estudi digital — Webs amb IA a L'Hospitalet · Belentani",
+      "sha256": "c24bc71a43d4"
+    },
+    {
+      "path": "index__cf044f8897c8.html",
+      "title": "index  cf044f8897c8 · Belentani",
+      "sha256": "cf044f8897c8"
+    },
+    {
+      "path": "index__d61bbacb5335.html",
+      "title": "THE JUDAS EXPERIENCE // BIOMETRIC ONBOARDING · Belentani",
+      "sha256": "d61bbacb5335"
+    },
+    {
+      "path": "index__db9e194335e2.html",
+      "title": "20 Demos · Belentani · Belentani",
+      "sha256": "db9e194335e2"
+    },
+    {
+      "path": "index__deebf46205e3.html",
+      "title": "Belentani Corp — Windows App · Belentani",
+      "sha256": "deebf46205e3"
+    },
+    {
+      "path": "index__df9ce04877ed.html",
+      "title": "BELENTANI · Portal del Lore · Belentani",
+      "sha256": "df9ce04877ed"
+    },
+    {
+      "path": "index__f1d68e176383.html",
+      "title": "BELENTANI // JUDAS ERA - OMEGA CORE · Belentani",
+      "sha256": "f1d68e176383"
+    },
+    {
+      "path": "index__f30498a98bf0.html",
+      "title": "BELENTANI — Umbral · Belentani",
+      "sha256": "f30498a98bf0"
+    },
+    {
+      "path": "index__f37a73b76db4.html",
+      "title": "BELENTANI 21SRT // OMEGA ULTIMATE MASTERCLASS · Belentani",
+      "sha256": "f37a73b76db4"
+    },
+    {
+      "path": "index__f496eb39a9d9.html",
+      "title": "Belentani | Judas Era — NAV-SYS ZION ORBIT · Belentani",
+      "sha256": "f496eb39a9d9"
+    },
+    {
+      "path": "index__f759a15727bb.html",
+      "title": "BELENTANI — Puerta Negra · Belentani",
+      "sha256": "f759a15727bb"
+    },
+    {
+      "path": "index__f98e1a2cc52e.html",
+      "title": "Belentani Portal — AI Hub · Belentani",
+      "sha256": "f98e1a2cc52e"
+    },
+    {
+      "path": "index__fe1eca9643f2.html",
+      "title": "BELENTANI — Judas Era · Belentani",
+      "sha256": "fe1eca9643f2"
+    },
+    {
+      "path": "index__fec58bef17a8.html",
+      "title": "OpenDesign Viewer · Belentani",
+      "sha256": "fec58bef17a8"
+    },
+    {
+      "path": "insights.html",
+      "title": "insights · Belentani",
+      "sha256": "7673d7196c42"
+    },
+    {
+      "path": "IS-Internet-Synthesis.html",
+      "title": "IS — Internet Synthesis · Pedro Belentni · Belentani",
+      "sha256": "ef0b2fb68e89"
+    },
+    {
+      "path": "Jakub Wuzik on X： ＂Button also can have stunning motion. _Details... Details... Details... 👀 https：_t.co_stF1GkgSua＂ _ X (7_26_2026 4：26：55 PM).html",
+      "title": "Jakub Wuzik on X: \"Button also can have stunning motion. \nDetails... Details... Details... 👀 https://t.co/stF1GkgSua\" /  · Belentani",
+      "sha256": "ebb65cb79ccd"
+    },
+    {
+      "path": "Jakub Wuzik on X： ＂Imagine you agent have visual like this 👀 https：_t.co_4dUszrN1HH＂ _ X (7_26_2026 4：26：46 PM).html",
+      "title": "Jakub Wuzik on X: \"Imagine you agent have visual like this 👀 https://t.co/4dUszrN1HH\" / X · Belentani",
+      "sha256": "b917167b6f9a"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (23_7_2026 22：47：59).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (23 7 2026 22：47：59) · Belentani",
+      "sha256": "409b2c940d4f"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：50：51).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：50：51) · Belentani",
+      "sha256": "a3f2d7a65956"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：50：54).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：50：54) · Belentani",
+      "sha256": "2487fb908d06"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：00).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：00) · Belentani",
+      "sha256": "34f68096ec96"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：02).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：02) · Belentani",
+      "sha256": "c1b2258df4fa"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：30).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：30) · Belentani",
+      "sha256": "1aff2b0da835"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：40).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：40) · Belentani",
+      "sha256": "e2cbe24e02e6"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：50).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：50) · Belentani",
+      "sha256": "3c879f2d91dc"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (24_7_2026 11：51：56).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (24 7 2026 11：51：56) · Belentani",
+      "sha256": "d75a5158384f"
+    },
+    {
+      "path": "Judas Experience (Copy) ｜ BuildAI.space (7_31_2026 11：26：48 AM).html",
+      "title": "Judas Experience (Copy) ｜ BuildAI.space (7 31 2026 11：26：48 AM) · Belentani",
+      "sha256": "09ab8542a3ba"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (16_5_2026 17：12：05).html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "078f1a43b487"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (24_4_2026 14：57：10).html",
+      "title": "Judas Experience ｜ BuildAI.space (24 4 2026 14：57：10) · Belentani",
+      "sha256": "afb0ee3346ad"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (2_6_2026 22：49：36).html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "ea214d137392"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：31：16).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：31：16) · Belentani",
+      "sha256": "8cfdfbc5ee02"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：31：42).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：31：42) · Belentani",
+      "sha256": "3266f13501f5"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：32：03).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：32：03) · Belentani",
+      "sha256": "7bfd38dfb920"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：32：23).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：32：23) · Belentani",
+      "sha256": "5bdd0469e1e5"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：32：52).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：32：52) · Belentani",
+      "sha256": "faf63cb9c2b8"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：33：14).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：33：14) · Belentani",
+      "sha256": "4b50613301de"
+    },
+    {
+      "path": "Judas Experience ｜ BuildAI.space (9_5_2026 4：35：31).html",
+      "title": "Judas Experience ｜ BuildAI.space (9 5 2026 4：35：31) · Belentani",
+      "sha256": "0d340e3c6184"
+    },
+    {
+      "path": "judas-accretion-kernel.html",
+      "title": "THE JUDAS EXPERIENCE — BELENTANI · Belentani",
+      "sha256": "984eb7865a98"
+    },
+    {
+      "path": "judas-audio.html",
+      "title": "judas audio · Belentani",
+      "sha256": "10953622c68c"
+    },
+    {
+      "path": "judas-clean.html",
+      "title": "judas clean · Belentani",
+      "sha256": "b42975f0599c"
+    },
+    {
+      "path": "judas-experience-13898.html",
+      "title": "judas experience 13898 · Belentani",
+      "sha256": "a49dba177be7"
+    },
+    {
+      "path": "judas-experience.html",
+      "title": "The Judas Experience - Premium Effects Portfolio · Belentani",
+      "sha256": "0d9599a908ba"
+    },
+    {
+      "path": "judas-original-full.html",
+      "title": "judas original full · Belentani",
+      "sha256": "5be24ff60264"
+    },
+    {
+      "path": "Judas.html",
+      "title": "Judas · Belentani",
+      "sha256": "76bd4ca2dad0"
+    },
+    {
+      "path": "judas__c410a7c05d17.html",
+      "title": "Nodo 04 · THE JUDAS EXPERIENCE — traición, frecuencia, hackeo, redención · Belentani",
+      "sha256": "c410a7c05d17"
+    },
+    {
+      "path": "Judas__f0dce4a4a13e.html",
+      "title": "Judas | Judas Experience · Belentani",
+      "sha256": "f0dce4a4a13e"
+    },
+    {
+      "path": "Judas_Main_Prototype.html",
+      "title": "StripeM-Inner · Belentani",
+      "sha256": "445448af0112"
+    },
+    {
+      "path": "kie-video-studio - copia.html",
+      "title": "KIE Video Studio — MiniMax Style · Belentani",
+      "sha256": "bd72cc930416"
+    },
+    {
+      "path": "Konrad Reczko on X： ＂Ever since I first saw this I wanted to try implementing it in TypeGPU, and I finally got around to it while testing the new 0.8 release._You can try out the Jell….html",
+      "title": "Konrad Reczko on X: \"Ever since I first saw this I wanted to try implementing it in TypeGPU, and I finally got around to · Belentani",
+      "sha256": "94f6088d5de9"
+    },
+    {
+      "path": "ledger_en.html",
+      "title": "ledger en · Belentani",
+      "sha256": "b2287e95afd9"
+    },
+    {
+      "path": "ledger_es.html",
+      "title": "ledger es · Belentani",
+      "sha256": "103fbd5d2899"
+    },
+    {
+      "path": "ledger_pt.html",
+      "title": "ledger pt · Belentani",
+      "sha256": "0412c68ed98c"
+    },
+    {
+      "path": "legacy-onepage-20260804.html",
+      "title": "BELENTANI // OMEGA CORE — JUDAS ERA | BuildAI & Official Site (belentani.es) · Belentani",
+      "sha256": "5a3ba48631f7"
+    },
+    {
+      "path": "lingua-aberta-campus-index.html",
+      "title": "Campus lingua-aberta · Belentani",
+      "sha256": "740cc7d8b2bb"
+    },
+    {
+      "path": "lingua-aberta-client-index.html",
+      "title": "Open Tongue — Instituto de Idiomas · Belentani",
+      "sha256": "ddec3405e544"
+    },
+    {
+      "path": "linguaforge-campus-index.html",
+      "title": "Campus linguaforge · Belentani",
+      "sha256": "0708aaeefb5e"
+    },
+    {
+      "path": "linguaforge-client-index.html",
+      "title": "LinguaForge · Belentani",
+      "sha256": "a2d9855eaae3"
+    },
+    {
+      "path": "Locomotive ｜ Montreal web agency (7_26_2026 3：31：24 PM).html",
+      "title": "Locomotive | Montreal web agency · Belentani",
+      "sha256": "1d8d55d175a1"
+    },
+    {
+      "path": "manos-abiertas-report.html",
+      "title": "Lighthouse Report · Belentani",
+      "sha256": "5689b8f5d82e"
+    },
+    {
+      "path": "manos-abiertas-report__2.html",
+      "title": "Lighthouse Report · Belentani",
+      "sha256": "828894cc617e"
+    },
+    {
+      "path": "manosabiertas-public-index.html",
+      "title": "Manos Abiertas - Educación Global Inclusiva · Belentani",
+      "sha256": "f24452695160"
+    },
+    {
+      "path": "manus-ai-skill-pack-docs-index.html",
+      "title": "Manus AI Skill Pack · belentani7 · Belentani",
+      "sha256": "3bf759c85702"
+    },
+    {
+      "path": "mimo-belentani_pwa.html",
+      "title": "BELENTANI — RPG · Belentani",
+      "sha256": "d623682a4bda"
+    },
+    {
+      "path": "mimo-belentani_rpg_fable.html",
+      "title": "BELENTANI — El Viaje · Belentani",
+      "sha256": "ed99e09ede55"
+    },
+    {
+      "path": "mismanosabiertas.netlify.app_2026-08-12_22-27-16.report.html",
+      "title": "Lighthouse Report · Belentani",
+      "sha256": "0df382f9364f"
+    },
+    {
+      "path": "mismanosabiertas.netlify.app_2026-08-12_22-27-16.report__2.html",
+      "title": "Lighthouse Report · Belentani",
+      "sha256": "b2d73830f0cf"
+    },
+    {
+      "path": "moat_risks.html",
+      "title": "moat risks · Belentani",
+      "sha256": "acaa71cefc04"
+    },
+    {
+      "path": "MODULE_02_PORTAL_SECTION.html",
+      "title": "MODULE 02 PORTAL SECTION · Belentani",
+      "sha256": "949e7fda58c7"
+    },
+    {
+      "path": "modules_en.html",
+      "title": "modules en · Belentani",
+      "sha256": "7ea89cc475c5"
+    },
+    {
+      "path": "modules_es.html",
+      "title": "modules es · Belentani",
+      "sha256": "2f3d3a9a87f1"
+    },
+    {
+      "path": "modules_pt.html",
+      "title": "modules pt · Belentani",
+      "sha256": "d6a25f8344df"
+    },
+    {
+      "path": "Music.html",
+      "title": "Music | Judas Experience · Belentani",
+      "sha256": "0d31a6a571eb"
+    },
+    {
+      "path": "neon-glassmorphism.html",
+      "title": "Nodo 03 · NEON GLASSMORPHISM — el lenguaje visual · Belentani",
+      "sha256": "310d295abe5d"
+    },
+    {
+      "path": "NEURO-OMEGA-EXCEPTIONAL.html",
+      "title": "BELENTANI // JUDAS ERA — EXCEPTIONAL · Belentani",
+      "sha256": "ef4ea1fac37b"
+    },
+    {
+      "path": "next_steps_en.html",
+      "title": "next steps en · Belentani",
+      "sha256": "ea489e1ed167"
+    },
+    {
+      "path": "next_steps_es.html",
+      "title": "next steps es · Belentani",
+      "sha256": "2e345f92e916"
+    },
+    {
+      "path": "next_steps_pt.html",
+      "title": "next steps pt · Belentani",
+      "sha256": "7e4ae155a121"
+    },
+    {
+      "path": "nexus-workforce-enterprise-frontend-nexus-enterprise.html",
+      "title": "Nexus Workforce Enterprise | SaaS HR Platform · Belentani",
+      "sha256": "dd87b264bc36"
+    },
+    {
+      "path": "noiacore-dashboard.html",
+      "title": "NoiCore Labs - MCP Server Dashboard · Belentani",
+      "sha256": "96b1afb85ddf"
+    },
+    {
+      "path": "noiacore-enhanced.html",
+      "title": "NOIACORE — LAB (CONSCIOUSNESS) · Belentani",
+      "sha256": "9693b00a0ed5"
+    },
+    {
+      "path": "noiacore-unified.html",
+      "title": "NOIACORE — UNIFIED · Belentani",
+      "sha256": "b563e5f88388"
+    },
+    {
+      "path": "noiacore.html",
+      "title": "NOIACORE — LAB · Belentani",
+      "sha256": "55a1f445b982"
+    },
+    {
+      "path": "Nuevo Documento de .HTML.HTML",
+      "title": "Nuevo Documento de .HTML · Belentani",
+      "sha256": "e3b0c44298fc"
+    },
+    {
+      "path": "office.html",
+      "title": "Office en una página | Manos Abiertas · Belentani",
+      "sha256": "3db52d6cc5d9"
+    },
+    {
+      "path": "offline.html",
+      "title": "offline · Belentani",
+      "sha256": "a3812724f5b2"
+    },
+    {
+      "path": "offline__e1c3425f5d7b.html",
+      "title": "BELENTANI — OFFLINE · Belentani",
+      "sha256": "e1c3425f5d7b"
+    },
+    {
+      "path": "OMEGA-1000.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA 1000 · Belentani",
+      "sha256": "fde2a40e42ec"
+    },
+    {
+      "path": "omega-core.html",
+      "title": "BELENTANI // JUDAS EXPERIENCE — OMEGA CORE · Belentani",
+      "sha256": "493ac658836b"
+    },
+    {
+      "path": "OMEGA-GEMINI-CLEAN.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA MASTERPIECE · Belentani",
+      "sha256": "73f8440c52d5"
+    },
+    {
+      "path": "omega-living-universe.html",
+      "title": "OMEGA — Living Universe MAX · Belentani",
+      "sha256": "1e555fbb6588"
+    },
+    {
+      "path": "omega.html",
+      "title": "Nodo 05 · OMEGA — el final que continúa · Belentani",
+      "sha256": "9c110df1b765"
+    },
+    {
+      "path": "open-school-campus-index.html",
+      "title": "Campus open-school · Belentani",
+      "sha256": "19a88791614b"
+    },
+    {
+      "path": "open-school-client-index.html",
+      "title": "Open School — Aprender sin dar un solo dato · Belentani",
+      "sha256": "09685859f2a5"
+    },
+    {
+      "path": "os.html",
+      "title": "BELENTANI OS — o caos que somos · 432 Hz · Belentani",
+      "sha256": "7704bd926da7"
+    },
+    {
+      "path": "PAPELPOP - Música, cinema, famosos e televisão pra quem ama diversão (7_25_2026 10：14：32 AM).html",
+      "title": "PAPELPOP - Música, cinema, famosos e televisão pra quem ama diversão · Belentani",
+      "sha256": "8a60e9ddec0d"
+    },
+    {
+      "path": "Parallax-3-Capas-Separadas.html",
+      "title": "React Artifact · Belentani",
+      "sha256": "29d464673196"
+    },
+    {
+      "path": "Parallax-Architect.html",
+      "title": "React Artifact · Belentani",
+      "sha256": "a04e9b930427"
+    },
+    {
+      "path": "Paul Lapkin on X： ＂🌎 Space： the final frontier @Framer https：_t.co_RqZEGhnMQN＂ _ X (7_26_2026 4：26：50 PM).html",
+      "title": "Paul Lapkin on X: \"🌎 Space: the final frontier @Framer https://t.co/RqZEGhnMQN\" / X · Belentani",
+      "sha256": "30cd849fa029"
+    },
+    {
+      "path": "Pedro Belentani ｜ LinkedIn (18_6_2026 3：24：26).html",
+      "title": "Pedro Belentani | LinkedIn · Belentani",
+      "sha256": "61c4339af6c1"
+    },
+    {
+      "path": "Pedro Belentani ｜ LinkedIn (7_22_2026 7：37：22 PM).html",
+      "title": "Pedro Belentani | LinkedIn · Belentani",
+      "sha256": "17c66ef87f9a"
+    },
+    {
+      "path": "Pedro_Belentani_Arquitetura.html",
+      "title": "Pedro Belentani — Arquitetura de uma Mente Excepcional · Belentani",
+      "sha256": "2c369fa5f00e"
+    },
+    {
+      "path": "plans_en.html",
+      "title": "plans en · Belentani",
+      "sha256": "fc46b3b1d2db"
+    },
+    {
+      "path": "plans_es.html",
+      "title": "plans es · Belentani",
+      "sha256": "49aa48b7c9c9"
+    },
+    {
+      "path": "plans_pt.html",
+      "title": "plans pt · Belentani",
+      "sha256": "91cde105583c"
+    },
+    {
+      "path": "portada.html",
+      "title": "portada · Belentani",
+      "sha256": "6583407e08a9"
+    },
+    {
+      "path": "portal-diamonds.html",
+      "title": "Portal Diamonds — BELENTANI OMEGA · Belentani",
+      "sha256": "fc824c751118"
+    },
+    {
+      "path": "Portal.html",
+      "title": "Portal | Judas Experience · Belentani",
+      "sha256": "eabfe2b618e3"
+    },
+    {
+      "path": "preview-_1_.html",
+      "title": "React Artifact · Belentani",
+      "sha256": "d37e9eb10ba3"
+    },
+    {
+      "path": "preview-_2_.html",
+      "title": "React Artifact · Belentani",
+      "sha256": "8453aa3e5549"
+    },
+    {
+      "path": "preview-_5_.html",
+      "title": "Parallax Video REAL · Belentani",
+      "sha256": "f9007bd38cee"
+    },
+    {
+      "path": "pricing.html",
+      "title": "pricing · Belentani",
+      "sha256": "7d2adee8bda9"
+    },
+    {
+      "path": "privacitat.html",
+      "title": "Política de privacitat — Belentani · estudi digital · Belentani",
+      "sha256": "dca521a85339"
+    },
+    {
+      "path": "problem.html",
+      "title": "problem · Belentani",
+      "sha256": "a679a183e553"
+    },
+    {
+      "path": "problema.html",
+      "title": "problema · Belentani",
+      "sha256": "5382d170af81"
+    },
+    {
+      "path": "promo-pack.html",
+      "title": "promo pack · Belentani",
+      "sha256": "05b6a6273230"
+    },
+    {
+      "path": "promo-video.html",
+      "title": "promo video · Belentani",
+      "sha256": "70023c89f833"
+    },
+    {
+      "path": "ps-lm.html",
+      "title": "PS-LM · modelo de lenguaje local para PowerShell (sin API) · Belentani",
+      "sha256": "1bef5435a3f2"
+    },
+    {
+      "path": "qwen.html",
+      "title": "Qwen en una página | Manos Abiertas · Belentani",
+      "sha256": "e712d4d4f43e"
+    },
+    {
+      "path": "Qwen_html_20260509_iwryv216m.html",
+      "title": "CASSANDRA FLUX · Pedro Belentani · Belentani",
+      "sha256": "d1000badc9c7"
+    },
+    {
+      "path": "Qwen_html_20260509_maz73odti.html",
+      "title": "BELENTANI // ZION CORE // JUDAS ERA · Belentani",
+      "sha256": "dec8dc5b937d"
+    },
+    {
+      "path": "Qwen_html_20260616_11z7bkcvo_1.html",
+      "title": "Qwen html 20260616 11z7bkcvo 1 · Belentani",
+      "sha256": "f5c7747924ed"
+    },
+    {
+      "path": "Qwen_html_20260725_sr9nlbzbu.html",
+      "title": "Catalonia Hotels & Resorts · Reserva Directa · Belentani",
+      "sha256": "6b10725cf95a"
+    },
+    {
+      "path": "Qwen_html_20260726_3idd03vf2.html",
+      "title": "IS — Internet Synthesis · Pedro Belentni · Belentani",
+      "sha256": "e92863904dab"
+    },
+    {
+      "path": "Qwen_html_20260726_xklbs99mo.html",
+      "title": "PRISMA·26 — Motor Léxico Armónico + WebLLM · v7.0 · Belentani",
+      "sha256": "6b23f218b68b"
+    },
+    {
+      "path": "Qwen_html_20260728_9hztx20wf.html",
+      "title": "ESTUDIO TECTÓNICA | Arquitectura de Autor en Barcelona · Belentani",
+      "sha256": "e903bf239467"
+    },
+    {
+      "path": "Qwen_html_20260728_gs78b436g.html",
+      "title": "OMNIPAP — El chisme del internet, servido fresquito · Belentani",
+      "sha256": "cfc6410ed3fc"
+    },
+    {
+      "path": "Qwen_html_20260728_hj369srp7.html",
+      "title": "PRISMA·26 OMNIA — Autonomous Prompt Engine · Belentani",
+      "sha256": "17c925431fe8"
+    },
+    {
+      "path": "Qwen_html_20260728_m6tnq2mol.html",
+      "title": "NO.IA:CORE — Pedro Belentani · Belentani",
+      "sha256": "c7e7f00183f7"
+    },
+    {
+      "path": "Qwen_html_20260728_ph5oh9cvy.html",
+      "title": "PRISMA·26 — Motor Léxico Armónico + WebLLM · v8.0 ULTRA · Belentani",
+      "sha256": "e33ed9e66979"
+    },
+    {
+      "path": "Qwen_html_20260728_r1x9230le.html",
+      "title": "NO.IA:CORE — Pedro Belentani · Belentani",
+      "sha256": "49c35e1cc30d"
+    },
+    {
+      "path": "Qwen_html_20260728_r6z67praj.html",
+      "title": "OMNIPAP — El chisme del internet, servido fresquito · Belentani",
+      "sha256": "e8382ce6b1f8"
+    },
+    {
+      "path": "Qwen_html_20260728_tihxr5kmd.html",
+      "title": "NO.IA:CORE — Pedro Belentani · Belentani",
+      "sha256": "b70f44ecac94"
+    },
+    {
+      "path": "Qwen_html_20260728_xiev9551l.html",
+      "title": "MARC VIDAL | Arquitectura de Autor · Barcelona · Belentani",
+      "sha256": "23ef0f5fe058"
+    },
+    {
+      "path": "Qwen_html_20260728_zrecm3nlk.html",
+      "title": "MARC VIDAL | Arquitectura de Autor · Barcelona · Belentani",
+      "sha256": "41bf3c9da8a6"
+    },
+    {
+      "path": "Qwen_html_20260730_ql2mmfu4f.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA ULTIMATE v2.0 · Belentani",
+      "sha256": "e7f4ade318bf"
+    },
+    {
+      "path": "Qwen_html_20260730_x6l25ymos.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA DEFINITIVE · Belentani",
+      "sha256": "7d733b6c97f6"
+    },
+    {
+      "path": "Qwen_html_20260730_y2n5wydbb.html",
+      "title": "BELENTANI // JUDAS ERA — OMEGA ULTIMATE · Belentani",
+      "sha256": "be48e04c03cd"
+    },
+    {
+      "path": "Qwen_html_20260903_c6pqzhnb7.html",
+      "title": "PolyGlot 90's · William Danilo · Belentani",
+      "sha256": "af8724795c4f"
+    },
+    {
+      "path": "Qwen_html_20260904_ltaheb8jn.html",
+      "title": "SECURE·T — Digital University · Cybersecurity Advanced Program · Belentani",
+      "sha256": "4db2dc2799af"
+    },
+    {
+      "path": "Qwen_html_20260905_7s00xwu8r.html",
+      "title": "NOIACORE — The Architecture of Silent Intelligence · Belentani",
+      "sha256": "7ba2c9b4e06a"
+    },
+    {
+      "path": "Qwen_html_20260906_8t2b4dhyh.html",
+      "title": "BELENTANI STUDIO · Belentani",
+      "sha256": "23afc560cd94"
+    },
+    {
+      "path": "Qwen_html_20260907_odfxxbq3r.html",
+      "title": "BELENTANI // NEURAL ARCHITECT · Belentani",
+      "sha256": "309c829f529b"
+    },
+    {
+      "path": "reporte.html",
+      "title": "AIHound Scan Report · Belentani",
+      "sha256": "f7311b9694e8"
+    },
+    {
+      "path": "repos-belentani-office-pack-2027-index.html",
+      "title": "Belentani Office Pack · Belentani",
+      "sha256": "10d40479e7df"
+    },
+    {
+      "path": "repos-belentani-omni-industrial-index.html",
+      "title": "BELENTANI - Generador de Playlists con IA · Belentani",
+      "sha256": "e5b55eaf7ccb"
+    },
+    {
+      "path": "repos-brain-index.html",
+      "title": "NEXUS-Ω Ecosistema Agéntico Multi-Stack | Plan Maestro & Mission Control · Belentani",
+      "sha256": "a46412add6cd"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-duck-studio-animated.html",
+      "title": "DUCK STUDIO ANIMATED - Produção Musical com Animações Totais · Belentani",
+      "sha256": "17ccf02dd58b"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-duck-studio-mega-complete.html",
+      "title": "DUCK STUDIO MEGA COMPLETE v2.0 - Full Production Suite · Belentani",
+      "sha256": "ba4a431cf96a"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-duck-studio-pro.html",
+      "title": "DUCK Studio PRO - Estúdio Profissional de Produção Musical · Belentani",
+      "sha256": "7604d0552c8d"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-duck-studio-ultimate.html",
+      "title": "DUCK STUDIO ULTIMATE - Interface Profissional de Produção Musical · Belentani",
+      "sha256": "9a4a35bf4226"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-duck-studio.html",
+      "title": "DUCK Studio - Estúdio de Gravação Profissional · Belentani",
+      "sha256": "9e1dc0ed1510"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-entrega-premium.html",
+      "title": "🦆 DUCK STUDIO - Entrega Premium · Belentani",
+      "sha256": "a90a87b2fa1f"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-index.html",
+      "title": "DUCK - Produtor Musical Profissional · Belentani",
+      "sha256": "f71398dcb26a"
+    },
+    {
+      "path": "repos-duck-a-gema-1-lab-tema-switcher.html",
+      "title": "DUCK STUDIO - Tema Switcher · Belentani",
+      "sha256": "153feb6f2a54"
+    },
+    {
+      "path": "repos-heyduck-rebuild-index.html",
+      "title": "DUCK — Produção Musical | Definitive Edition · Belentani",
+      "sha256": "d256d9999b32"
+    },
+    {
+      "path": "repos-music-os-interface-v2-index.html",
+      "title": "MUSIC OS v1.0 - Dashboard de Composición Inteligente · Belentani",
+      "sha256": "304e222bc5a7"
+    },
+    {
+      "path": "repos-myopenhands-index.html",
+      "title": "Manos Abiertas - Plataforma Integral de Inclusión & Formación · Belentani",
+      "sha256": "deaf4e4cf063"
+    },
+    {
+      "path": "repos-tender-words-connect-v2-index.html",
+      "title": "ABRAZO — Palabras Tiernas, Regulación Emocional & Salud Relacional · Belentani",
+      "sha256": "ed4f1d322cb6"
+    },
+    {
+      "path": "rights.html",
+      "title": "Assistente local: rights · Belentani",
+      "sha256": "594e9716745f"
+    },
+    {
+      "path": "rights__bedbf7ea5faa.html",
+      "title": "Assistant local: rights · Belentani",
+      "sha256": "bedbf7ea5faa"
+    },
+    {
+      "path": "rights__e110581fa03c.html",
+      "title": "Assistente local: rights · Belentani",
+      "sha256": "e110581fa03c"
+    },
+    {
+      "path": "rights__eedb87b6fdfa.html",
+      "title": "Local assistant: rights · Belentani",
+      "sha256": "eedb87b6fdfa"
+    },
+    {
+      "path": "rights__f0bba12fd20c.html",
+      "title": "Asistente local: rights · Belentani",
+      "sha256": "f0bba12fd20c"
+    },
+    {
+      "path": "roadmap.html",
+      "title": "roadmap · Belentani",
+      "sha256": "3a0598476cff"
+    },
+    {
+      "path": "RotateCookiesPage.html",
+      "title": "RotateCookiesPage · Belentani",
+      "sha256": "0069b0fcbfa2"
+    },
+    {
+      "path": "sample-optimized-index.html",
+      "title": "Manos Abiertas - Tu puente hacia la IA, empleo y derechos en España · Belentani",
+      "sha256": "4c52ced10f58"
+    },
+    {
+      "path": "sample-optimized-index__2.html",
+      "title": "Manos Abiertas - Tu puente hacia la IA, empleo y derechos en España · Belentani",
+      "sha256": "f43d809bbaf9"
+    },
+    {
+      "path": "secure-t-app-client-campus.html",
+      "title": "secure T · Campus · Belentani",
+      "sha256": "96f0157a5f30"
+    },
+    {
+      "path": "secure-t-app-client-index.html",
+      "title": "Secure-T · Belentani",
+      "sha256": "1ca6ee0fa773"
+    },
+    {
+      "path": "secure-t-archive-client-index.html",
+      "title": "secure T — Universidad Digital de Ciberseguridad e IA · Belentani",
+      "sha256": "a79d8745045b"
+    },
+    {
+      "path": "secure-t-university-campus-buscar.html",
+      "title": "Buscar — Campus secure-t-university · Belentani",
+      "sha256": "8a2427aee831"
+    },
+    {
+      "path": "secure-t-university-campus-credencial.html",
+      "title": "Credencial — Campus secure-t-university · Belentani",
+      "sha256": "0e36a6e93158"
+    },
+    {
+      "path": "secure-t-university-campus-index.html",
+      "title": "Campus secure-t-university · Belentani",
+      "sha256": "df8d4a60d110"
+    },
+    {
+      "path": "secure-t-university-campus-progreso.html",
+      "title": "Progreso — Campus secure-t-university · Belentani",
+      "sha256": "016471e06fc8"
+    },
+    {
+      "path": "senior-engineer-toolbox.html",
+      "title": "Caja de Herramientas Senior Tech — Ingenieros y Arquitectos · Belentani",
+      "sha256": "94db6f051a34"
+    },
+    {
+      "path": "senior-engineer-toolbox__2.html",
+      "title": "Caja de Herramientas Senior Tech — Ingenieros y Arquitectos · Belentani",
+      "sha256": "c137c9d6f60c"
+    },
+    {
+      "path": "sfx.html",
+      "title": "BELENTANI // SOUND FORGE · Belentani",
+      "sha256": "a572071e72e0"
+    },
+    {
+      "path": "shader.html",
+      "title": "BELENTANI // MAGIC SHADER · Belentani",
+      "sha256": "51dbe9b5b1e3"
+    },
+    {
+      "path": "skills-showcase.html",
+      "title": "BELENTANI — Skills Showcase · Belentani",
+      "sha256": "91527853a400"
+    },
+    {
+      "path": "so-vivo.html",
+      "title": "SO vivo - Pedro x Judas · Belentani",
+      "sha256": "eb9a27001c7b"
+    },
+    {
+      "path": "solo-video-parallax.html",
+      "title": "Solo Video Parallax · Belentani",
+      "sha256": "b2a3457bfa0e"
+    },
+    {
+      "path": "solucion.html",
+      "title": "NEXUS DATA — La solución · Belentani",
+      "sha256": "dc2ae2fdfc36"
+    },
+    {
+      "path": "solution.html",
+      "title": "solution · Belentani",
+      "sha256": "2b4297757b56"
+    },
+    {
+      "path": "Studio.html",
+      "title": "Studio | Judas Experience · Belentani",
+      "sha256": "3125fb5b93db"
+    },
+    {
+      "path": "Tapo C200 - SecurityCam (7_25_2026 12：20：32 PM).html",
+      "title": "Tapo C200 - SecurityCam · Belentani",
+      "sha256": "186be2c4f461"
+    },
+    {
+      "path": "Tareas CLI Más Caras (7_25_2026 10：48：57 AM).html",
+      "title": "Tareas CLI Más Caras · Belentani",
+      "sha256": "595a8d34d6b2"
+    },
+    {
+      "path": "test-01-core-zoom.html",
+      "title": "BELENTANI — TEST 01 // CORE ZOOM · Belentani",
+      "sha256": "6835c53dfb58"
+    },
+    {
+      "path": "test-02-neon-explosion.html",
+      "title": "BELENTANI — TEST 02 // NEON EXPLOSION · Belentani",
+      "sha256": "90a0d87f7793"
+    },
+    {
+      "path": "test-03-web-hero.html",
+      "title": "belentani · estudi digital — SINGULARITY HERO · Belentani",
+      "sha256": "d40b2de0926e"
+    },
+    {
+      "path": "test-04-dragon-eye-glories.html",
+      "title": "BELENTANI â€” DRAGON EYE // TORRE GLORIES · Belentani",
+      "sha256": "7fb06a3debba"
+    },
+    {
+      "path": "the_world on X： ＂Hey,_I haven’t been posting in a while. _Why？ Cause I got a new job as a ticket conductor at https：_t.co_1tB076xFqt _Making web experiences that matter. https….html",
+      "title": "the_world on X: \"Hey,\nI haven’t been posting in a while. \nWhy? Cause I got a new job as a ticket conductor at https://t. · Belentani",
+      "sha256": "03c685f42e8a"
+    },
+    {
+      "path": "TRAZABILIDAD_DEFINITIVA.html",
+      "title": "Documento de Trazabilidad — Concurso Exp. 148/2026 · Belentani",
+      "sha256": "b939c480c5a0"
+    },
+    {
+      "path": "unified-maximum.html",
+      "title": "BELENTANI // Judas Era — Misión Completa Unificada · Belentani",
+      "sha256": "8a2a63f294dc"
+    },
+    {
+      "path": "universal-video-studio - copia.html",
+      "title": "Universal Video Studio — All Providers + Proxy · Belentani",
+      "sha256": "6a860a8b68a5"
+    },
+    {
+      "path": "ux-academy-professional-program-campus-index.html",
+      "title": "Campus ux-academy-professional-program · Belentani",
+      "sha256": "3c8fce9a39b7"
+    },
+    {
+      "path": "ux-academy-professional-program-client-index.html",
+      "title": "UX Academy — Diseño, growth y práctica profesional · Belentani",
+      "sha256": "ecc0f74c325d"
+    },
+    {
+      "path": "ux-academy-professional-program-docs-index.html",
+      "title": "UX Academy — Diseño, growth y práctica profesional · Belentani",
+      "sha256": "09e5450bd5da"
+    },
+    {
+      "path": "value_en.html",
+      "title": "value en · Belentani",
+      "sha256": "cb5bd8b30a6c"
+    },
+    {
+      "path": "value_es.html",
+      "title": "value es · Belentani",
+      "sha256": "9825cbf5b6b6"
+    },
+    {
+      "path": "value_pt.html",
+      "title": "value pt · Belentani",
+      "sha256": "68d654167bdd"
+    },
+    {
+      "path": "viewer.html",
+      "title": "Generative Art Viewer · Belentani",
+      "sha256": "86c79d7ce97d"
+    },
+    {
+      "path": "viewer__a53213426ee1.html",
+      "title": "Eval Review · Belentani",
+      "sha256": "a53213426ee1"
+    },
+    {
+      "path": "WEB nueva.html",
+      "title": "Belentani – Judas Era | Oráculo · Belentani",
+      "sha256": "13a5b75ddfe1"
+    },
+    {
+      "path": "web-judas-legacy.html",
+      "title": "Judas Experience - Neural Interface System | Pedro Belentani · Belentani",
+      "sha256": "7f8f439019c4"
+    },
+    {
+      "path": "web-judas.html",
+      "title": "web judas · Belentani",
+      "sha256": "ccb822228fb0"
+    },
+    {
+      "path": "webbasica3_.html",
+      "title": "BELENTANI · Judas · Belentani",
+      "sha256": "7393ed11ef67"
+    },
+    {
+      "path": "whatsapp.html",
+      "title": "WhatsApp en una página | Manos Abiertas · Belentani",
+      "sha256": "f1ec32e4a65e"
+    },
+    {
+      "path": "why_now.html",
+      "title": "why now · Belentani",
+      "sha256": "38f439a4f82a"
+    },
+    {
+      "path": "YUDHO on X： ＂𝒜𝓉 𝓉𝒽𝑒 𝐻𝑜𝓇𝒾𝓏𝑜𝓃, 𝒲𝑒 𝑀𝑒𝑒𝓉 https：_t.co_qVCMV84ULI＂ _ X (7_26_2026 4：27：22 PM).html",
+      "title": "YUDHO on X: \"𝒜𝓉 𝓉𝒽𝑒 𝐻𝑜𝓇𝒾𝓏𝑜𝓃, 𝒲𝑒 𝑀𝑒𝑒𝓉 https://t.co/qVCMV84ULI\" / X · Belentani",
+      "sha256": "ceae1c47eab4"
+    },
+    {
+      "path": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.2 (7_26_2026 3：51：54 AM).html",
+      "title": "Z.ai - Advanced AI Chatbot &amp; Agent powered by GLM-5.2 · Belentani",
+      "sha256": "982089769b26"
+    },
+    {
+      "path": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.2 (7_26_2026 3：51：55 AM).html",
+      "title": "Z.ai - Advanced AI Chatbot &amp; Agent powered by GLM-5.2 · Belentani",
+      "sha256": "78da7ad5c1d5"
+    },
+    {
+      "path": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.2 (7_30_2026 3：01：22 AM).html",
+      "title": "Z.ai - Advanced AI Chatbot &amp; Agent powered by GLM-5.2 · Belentani",
+      "sha256": "12282c500702"
+    },
+    {
+      "path": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.2 (7_30_2026 4：03：34 AM).html",
+      "title": "Z.ai - Advanced AI Chatbot &amp; Agent powered by GLM-5.2 · Belentani",
+      "sha256": "62b6f8c34c82"
+    },
+    {
+      "path": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.2 (7_30_2026 4：04：46 AM).html",
+      "title": "Z.ai - Advanced AI Chatbot &amp; Agent powered by GLM-5.2 · Belentani",
+      "sha256": "04e7e3ac7c24"
+    },
+    {
+      "path": "基于VLC架构的Web多媒体播放器.html",
+      "title": "网页工坊 · Belentani",
+      "sha256": "5f8ab9fa3eb7"
+    }
+  ]
+}

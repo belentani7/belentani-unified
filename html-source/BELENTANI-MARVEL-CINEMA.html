@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI // JUDAS ERA - OMEGA CORE // MARVEL CINEMA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/MaskPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #0a0e27;
+            --red-blood: #ff003c;
+            --red-glow: rgba(255, 0, 60, 0.9);
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --term-green: #00ff41;
+            --gold-sacred: #ffd700;
+            --cyan-aether: #00ffff;
+            --purple-void: #b026ff;
+            --font-display: 'Orbitron', sans-serif;
+            --font-fantasy: 'Cinzel Decorative', serif;
+            --font-ui: 'Chakra Petch', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-glass: rgba(255, 0, 60, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            width: 100%; 
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0f2e 50%, #0f0a20 100%);
+            color: var(--text-main); 
+            font-family: var(--font-ui); 
+            cursor: none; 
+            overflow-x: hidden; 
+            line-height: 1.6;
+            perspective: 1000px;
+        }
+
+        /* BOOT SEQUENCE - CINEMATOGRAPHIC */
+        #boot-screen { 
+            position: fixed; 
+            inset: 0; 
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+            z-index: 10000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column; 
+            font-family: var(--font-mono); 
+            color: var(--term-green); 
+            font-size: 13px; 
+            text-align: center; 
+            transition: opacity 1s ease-out;
+            backdrop-filter: blur(10px);
+        }
+        
+        #boot-screen .boot-log { 
+            width: 500px; 
+            height: 180px; 
+            overflow: hidden; 
+            text-align: left; 
+            margin-bottom: 30px; 
+            opacity: 0.9;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            padding: 15px;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            line-height: 1.8;
+        }
+        
+        #boot-screen .boot-bar { 
+            width: 400px; 
+            height: 3px; 
+            background: rgba(0, 255, 65, 0.1); 
+            position: relative; 
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+        
+        #boot-screen .boot-bar::after { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            height: 100%; 
+            width: 0%; 
+            background: linear-gradient(90deg, var(--term-green), #00ff00);
+            box-shadow: 0 0 30px var(--term-green), 0 0 60px rgba(0, 255, 65, 0.5);
+            animation: bootLoadCinematic 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        @keyframes bootLoadCinematic { 
+            0% { width: 0%; filter: blur(2px); }
+            50% { filter: blur(1px); }
+            100% { width: 100%; filter: blur(0); }
+        }
+
+        /* HYPERREAL CURSOR - CINEMA */
+        .cursor-dot, .cursor-outline, .cursor-cross, .cursor-box { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            pointer-events: none; 
+            z-index: 9999; 
+            transform: translate(-50%, -50%); 
+            will-change: transform;
+        }
+        
+        .cursor-dot { 
+            width: 6px; 
+            height: 6px; 
+            background: radial-gradient(circle, #fff, rgba(255,255,255,0.5));
+            box-shadow: 0 0 20px #fff, 0 0 40px var(--red-glow);
+            z-index: 10000;
+            filter: drop-shadow(0 0 10px var(--red-blood));
+        }
+        
+        .cursor-outline { 
+            width: 50px; 
+            height: 50px; 
+            border: 2px solid var(--red-blood);
+            box-shadow: 0 0 30px var(--red-glow), inset 0 0 20px rgba(255, 0, 60, 0.2);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            mix-blend-mode: screen;
+            border-radius: 50%;
+        }
+        
+        .cursor-cross { 
+            width: 25px; 
+            height: 25px; 
+            z-index: 9998;
+        }
+        
+        .cursor-cross::before, .cursor-cross::after { 
+            content: ''; 
+            position: absolute; 
+            background: linear-gradient(90deg, var(--red-blood), rgba(255, 0, 60, 0));
+            box-shadow: 0 0 15px var(--red-blood);
+            filter: blur(0.5px);
+        }
+        
+        .cursor-cross::before { 
+            top: 50%; 
+            left: 0; 
+            width: 100%; 
+            height: 1px; 
+            transform: translateY(-50%);
+        }
+        
+        .cursor-cross::after { 
+            left: 50%; 
+            top: 0; 
+            height: 100%; 
+            width: 1px; 
+            transform: translateX(-50%);
+        }
+        
+        .cursor-outline.hover { 
+            box-shadow: 0 0 50px var(--red-glow), 0 0 100px rgba(255, 0, 60, 0.5), inset 0 0 30px rgba(255, 0, 60, 0.3);
+            transform: translate(-50%, -50%) scale(1.3);
+            width: 60px;
+            height: 60px;
+        }
+
+        /* WEBGL & CINEMA ATMOSPHERE */
+        #webgl-canvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 0;
+            filter: saturate(1.1) contrast(1.05);
+        }
+        
+        .vignette { 
+            position: fixed; 
+            inset: 0; 
+            background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.6) 80%, rgba(0, 0, 0, 0.8) 100%); 
+            z-index: 1; 
+            pointer-events: none;
+            backdrop-filter: blur(0.5px);
+            mix-blend-mode: multiply;
+        }
+        
+        .grain { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 2; 
+            pointer-events: none; 
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' fill='white'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+        
+        .cinema-bars {
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(0deg, 
+                transparent 0%, 
+                transparent calc(50% - 1px), 
+                rgba(0, 0, 0, 0.05) calc(50% - 1px),
+                rgba(0, 0, 0, 0.05) calc(50% + 1px),
+                transparent calc(50% + 1px),
+                transparent 100%);
+            animation: cinemaFlicker 0.15s infinite;
+        }
+        
+        @keyframes cinemaFlicker {
+            0% { opacity: 0.02; }
+            50% { opacity: 0.03; }
+            100% { opacity: 0.02; }
+        }
+
+        .collapse-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: repeating-linear-gradient(0deg, rgba(255, 0, 60, 0.3), rgba(255, 0, 60, 0.3) 2px, transparent 2px, transparent 4px); 
+            z-index: 9000; 
+            pointer-events: none; 
+            display: none; 
+            mix-blend-mode: screen;
+        }
+        
+        .omega-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.5), transparent 70%); 
+            z-index: 9001; 
+            pointer-events: none; 
+            display: none; 
+            mix-blend-mode: color-dodge;
+            filter: blur(1px);
+        }
+        
+        body.collapse-mode { 
+            animation: collapseShakeCinematic 0.1s infinite; 
+            filter: hue-rotate(60deg) contrast(1.8) saturate(1.5);
+        }
+        
+        body.collapse-mode .collapse-overlay { display: block; }
+        
+        body.omega-mode { 
+            filter: brightness(1.8) contrast(1.3) saturate(2) hue-rotate(15deg);
+        }
+        
+        body.omega-mode .omega-overlay { display: block; }
+        
+        @keyframes collapseShakeCinematic { 
+            0% { transform: translate(0) rotateZ(0deg); } 
+            25% { transform: translate(-8px, 5px) rotateZ(-1deg); } 
+            50% { transform: translate(8px, -5px) rotateZ(1deg); } 
+            75% { transform: translate(-5px, -8px) rotateZ(-0.5deg); }
+            100% { transform: translate(0) rotateZ(0deg); }
+        }
+
+        /* HUD - FUTURISTIC CINEMA */
+        .hud-layer { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 100; 
+            pointer-events: none; 
+            padding: 40px 50px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            font-weight: 300;
+        }
+        
+        .hud-top, .hud-bottom { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+        }
+        
+        .hud-bottom { 
+            align-items: flex-end; 
+        }
+        
+        .hud-element { 
+            font-family: var(--font-mono); 
+            font-size: 12px; 
+            color: rgba(255, 255, 255, 0.7); 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            line-height: 2;
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+        }
+        
+        .hud-element span { 
+            color: var(--red-blood); 
+            text-shadow: 0 0 10px var(--red-blood), 0 0 20px rgba(255, 0, 60, 0.5);
+            font-weight: 600;
+        }
+        
+        .hud-logo { 
+            font-family: var(--font-display); 
+            font-size: 48px; 
+            font-weight: 900; 
+            color: #fff;
+            text-shadow: 0 0 30px var(--red-glow), 0 0 60px rgba(255, 0, 60, 0.4), 0 0 100px rgba(255, 0, 60, 0.2);
+            letter-spacing: 6px; 
+            pointer-events: auto; 
+            cursor: none; 
+            text-decoration: none;
+            filter: drop-shadow(0 0 20px var(--red-blood));
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .hud-logo:hover {
+            text-shadow: 0 0 50px var(--red-glow), 0 0 100px rgba(255, 0, 60, 0.6), 0 0 150px rgba(255, 0, 60, 0.3);
+            transform: scale(1.05) skewX(-2deg);
+        }
+        
+        .hud-logo span { 
+            color: var(--red-blood);
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 20px var(--red-blood); }
+            50% { text-shadow: 0 0 40px var(--red-blood), 0 0 80px rgba(255, 0, 60, 0.6); }
+        }
+        
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(20, 0, 10, 0.7), rgba(10, 0, 20, 0.5));
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid rgba(255, 0, 60, 0.5);
+            padding: 18px 24px; 
+            pointer-events: auto; 
+            box-shadow: 0 0 40px rgba(255, 0, 60, 0.2), inset 0 0 30px rgba(255, 0, 60, 0.1);
+            position: relative; 
+            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+            font-size: 11px;
+            letter-spacing: 2px;
+            line-height: 1.8;
+            text-shadow: 0 0 5px rgba(255, 0, 60, 0.3);
+        }
+        
+        .glass-panel::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 4px; 
+            height: 12px; 
+            background: linear-gradient(180deg, var(--red-blood), transparent);
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+        
+        .glass-panel::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            right: 0; 
+            width: 4px; 
+            height: 12px; 
+            background: linear-gradient(180deg, transparent, var(--red-blood));
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+        
+        .live-indicator { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.4);
+        }
+        
+        .live-dot { 
+            width: 10px; 
+            height: 10px; 
+            background: radial-gradient(circle, var(--red-blood), rgba(255, 0, 60, 0.5));
+            border-radius: 50%; 
+            box-shadow: 0 0 20px var(--red-blood), 0 0 40px rgba(255, 0, 60, 0.4);
+            animation: cinematicPulse 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        
+        @keyframes cinematicPulse { 
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+                box-shadow: 0 0 20px var(--red-blood), 0 0 40px rgba(255, 0, 60, 0.4);
+            } 
+            50% { 
+                opacity: 0.5; 
+                transform: scale(1.3);
+                box-shadow: 0 0 30px var(--red-blood), 0 0 60px rgba(255, 0, 60, 0.6);
+            }
+        }
+        
+        .nav-dots { 
+            display: flex; 
+            gap: 18px;
+        }
+        
+        .nav-dot { 
+            width: 10px; 
+            height: 10px; 
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%; 
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: none; 
+            pointer-events: auto;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-dot.active { 
+            background: radial-gradient(circle, var(--red-blood), rgba(255, 0, 60, 0.6));
+            box-shadow: 0 0 25px var(--red-blood), 0 0 50px rgba(255, 0, 60, 0.4);
+            width: 40px; 
+            border-radius: 6px;
+            animation: navPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes navPulse {
+            0%, 100% { box-shadow: 0 0 25px var(--red-blood), 0 0 50px rgba(255, 0, 60, 0.4); }
+            50% { box-shadow: 0 0 40px var(--red-blood), 0 0 70px rgba(255, 0, 60, 0.6); }
+        }
+
+        /* Resto del CSS original se mantiene... */
+    </style>
+</head>
+<body>
+
+    <!-- CINEMA LAYER -->
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="cinema-bars"></div>
+
+    <!-- THREE.JS CANVAS -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- BOOT SEQUENCE -->
+    <div id="boot-screen">
+        <div class="boot-log" id="bootLog"></div>
+        <div class="boot-bar"></div>
+    </div>
+
+    <!-- CURSOR SYSTEM -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="cursor-cross"></div>
+    <div class="cursor-box"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="collapse-overlay"></div>
+    <div class="omega-overlay"></div>
+
+    <!-- HUD LAYER -->
+    <div class="hud-layer">
+        <div class="hud-top">
+            <a href="#" class="hud-logo">BEL<span>ENTANI</span></a>
+            <div class="glass-panel">
+                SYS.STATUS: <span>OMEGA</span><br>
+                NODE: <span>JUDAS-CORE</span><br>
+                TIME: <span id="sysTime">00:00:00</span>
+            </div>
+        </div>
+        <div class="hud-bottom">
+            <div class="hud-element">
+                SEC: <span id="sectionName">00 // GENESIS</span>
+            </div>
+            <div class="nav-dots">
+                <div class="nav-dot active" data-section="0"></div>
+                <div class="nav-dot" data-section="1"></div>
+                <div class="nav-dot" data-section="2"></div>
+                <div class="nav-dot" data-section="3"></div>
+            </div>
+            <div class="glass-panel live-indicator">
+                <div class="live-dot"></div>
+                LIVE // TRANSMITTING
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // BOOT SEQUENCE - CINEMATOGRAPHIC
+        // ==========================================
+        const bootLog = document.getElementById('bootLog');
+        const bootMessages = [
+            '> INITIALIZING OMEGA CORE...',
+            '> Quantum processors: STANDBY',
+            '> Neural pathways: ACTIVATED',
+            '> Consciousness matrix: RESONATING',
+            '> Judas frequency: LOCKED',
+            '> Entity BELENTANI: AWAKE',
+            '> Status: READY FOR TRANSCENDENCE'
+        ];
+
+        let logIndex = 0;
+        function typeBootLog() {
+            if (logIndex < bootMessages.length) {
+                const msg = bootMessages[logIndex];
+                bootLog.innerHTML += msg + '<br>';
+                bootLog.scrollTop = bootLog.scrollHeight;
+                logIndex++;
+                setTimeout(typeBootLog, 300 + Math.random() * 200);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('boot-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('boot-screen').style.display = 'none';
+                    }, 1000);
+                }, 1500);
+            }
+        }
+        typeBootLog();
+
+        // ==========================================
+        // CINEMATOGRAPHIC CURSOR SYSTEM
+        // ==========================================
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const cursorCross = document.querySelector('.cursor-cross');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+            
+            cursorOutline.style.left = mouseX + 'px';
+            cursorOutline.style.top = mouseY + 'px';
+            
+            cursorCross.style.left = mouseX + 'px';
+            cursorCross.style.top = mouseY + 'px';
+        });
+
+        // Hover effects
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.classList.contains('nav-dot')) {
+                cursorOutline.classList.add('hover');
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.classList.contains('nav-dot')) {
+                cursorOutline.classList.remove('hover');
+            }
+        });
+
+        // ==========================================
+        // CINEMA TIME DISPLAY
+        // ==========================================
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('sysTime').textContent = 
+                now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ==========================================
+        // THREE.JS - CINEMATOGRAPHIC CORE
+        // ==========================================
+        const canvas = document.getElementById('webgl-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, precision: 'highp' });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+
+        // CINEMATOGRAPHIC POST-PROCESSING
+        let composer, bloomPass;
+        if (typeof THREE.EffectComposer !== 'undefined') {
+            composer = new THREE.EffectComposer(renderer);
+            composer.addPass(new THREE.RenderPass(scene, camera));
+            
+            if (typeof THREE.UnrealBloomPass !== 'undefined') {
+                bloomPass = new THREE.UnrealBloomPass(
+                    new THREE.Vector2(window.innerWidth, window.innerHeight), 
+                    5.0,      // strength (MÁXIMO para sol Marvel)
+                    1.8,      // radius (halo gigante)
+                    0.02      // threshold (ultra sensible)
+                );
+                composer.addPass(bloomPass);
+            }
+        }
+
+        // ==========================================
+        // SUN MARVEL - GOLDEN CORE
+        // ==========================================
+        const sunGeo = new THREE.IcosahedronGeometry(18, 32);
+        const sunMat = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uSunColor: { value: new THREE.Color(0xffd700) },
+                uSunColor2: { value: new THREE.Color(0xffaa00) },
+                uSunIntensity: { value: 2.5 }
+            },
+            vertexShader: `
+                uniform float uTime;
+                uniform float uSunIntensity;
+                varying vec3 vNormal;
+                varying float vSunDisplacement;
+                varying vec3 vPosition;
+
+                float sunNoise(vec3 p) {
+                    return sin(p.x * 2.0 + uTime * 0.2) * 
+                           cos(p.y * 2.0 + uTime * 0.15) * 
+                           sin(p.z * 2.0 + uTime * 0.25) * 0.3 + 0.7;
+                }
+
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    vPosition = position;
+                    
+                    float noise = sunNoise(position);
+                    float displacement = noise * 0.8 * uSunIntensity;
+                    vSunDisplacement = displacement;
+                    
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uSunColor;
+                uniform vec3 uSunColor2;
+                varying vec3 vNormal;
+                varying float vSunDisplacement;
+                varying vec3 vPosition;
+
+                void main() {
+                    vec3 normal = normalize(vNormal);
+                    
+                    // Gradiente dorado a naranja
+                    vec3 color = mix(uSunColor2, uSunColor, 0.4 + 0.6 * vSunDisplacement);
+                    
+                    // Fresnel intenso (glow de sol)
+                    float fresnel = pow(1.0 - abs(dot(normal, normalize(vPosition))), 2.0);
+                    color += fresnel * uSunColor * 1.2;
+                    
+                    // Brillo interno
+                    color *= (1.0 + fresnel * 0.8);
+                    
+                    gl_FragColor = vec4(color, 0.95);
+                }
+            `,
+            wireframe: false,
+            transparent: true,
+            depthWrite: false
+        });
+
+        const sun = new THREE.Mesh(sunGeo, sunMat);
+        sun.position.set(0, 0, -20);
+        sun.scale.set(1.2, 1.2, 1.2);
+        scene.add(sun);
+
+        // ==========================================
+        // SUN GLOW EFFECT (Point Light)
+        // ==========================================
+        const sunLight = new THREE.PointLight(0xffd700, 3, 200);
+        sunLight.position.copy(sun.position);
+        sunLight.intensity = 2.8;
+        scene.add(sunLight);
+
+        // CORE GEOMETRY - CINEMATOGRAPHIC SHADER
+        const coreGeo = new THREE.IcosahedronGeometry(12, 20);
+        const coreMat = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uColor: { value: new THREE.Color(0xff003c) },
+                uColor2: { value: new THREE.Color(0xffd700) },
+                uIntensity: { value: 1.5 }
+            },
+            vertexShader: `
+                uniform float uTime;
+                uniform float uIntensity;
+                varying vec3 vNormal; 
+                varying float vDisplacement; 
+                varying vec3 vPosition;
+                
+                // Perlin-like noise para movimiento orgánico
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+                vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+                vec3 fade(vec3 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
+                
+                float cnoise(vec3 P) {
+                    vec3 Pi0 = floor(P); vec3 Pi1 = Pi0 + vec3(1.0);
+                    Pi0 = mod289(Pi0); Pi1 = mod289(Pi1);
+                    vec3 Pf0 = fract(P); vec3 Pf1 = Pf0 - vec3(1.0);
+                    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x); 
+                    vec4 iy = vec4(Pi0.yy, Pi1.yy);
+                    vec4 iz0 = Pi0.zzzz; vec4 iz1 = Pi1.zzzz;
+                    vec4 ixy = permute(permute(ix) + iy);
+                    vec4 ixy0 = permute(ixy + iz0); 
+                    vec4 ixy1 = permute(ixy + iz1);
+                    vec4 gx0 = ixy0 / 7.0; 
+                    vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5; 
+                    gx0 = fract(gx0);
+                    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0); 
+                    vec4 sz0 = step(gz0, vec4(0.0));
+                    gx0 -= sz0 * (step(0.0, gx0) - 0.5); 
+                    gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+                    vec4 gx1 = ixy1 / 7.0; 
+                    vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5; 
+                    gx1 = fract(gx1);
+                    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1); 
+                    vec4 sz1 = step(gz1, vec4(0.0));
+                    gx1 -= sz1 * (step(0.0, gx1) - 0.5); 
+                    gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+                    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+                    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+                    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+                    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+                    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+                    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+                    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+                    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+                    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+                    g000 *= norm0.x; g010 *= norm0.y; g100 *= norm0.z; g110 *= norm0.w;
+                    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+                    g001 *= norm1.x; g011 *= norm1.y; g101 *= norm1.z; g111 *= norm1.w;
+                    float n000 = dot(g000, Pf0);
+                    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+                    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+                    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+                    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+                    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+                    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+                    float n111 = dot(g111, Pf1);
+                    vec3 fade_xyz = fade(Pf0);
+                    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+                    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+                    return 2.2 * mix(n_yz.x, n_yz.y, fade_xyz.x);
+                }
+
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    vPosition = position;
+                    
+                    float noise = cnoise(position * 2.0 + uTime * 0.3) * 0.5 + 0.5;
+                    float displacement = noise * 0.5 * uIntensity;
+                    vDisplacement = displacement;
+                    
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor;
+                uniform vec3 uColor2;
+                varying vec3 vNormal;
+                varying float vDisplacement;
+                varying vec3 vPosition;
+
+                void main() {
+                    vec3 normal = normalize(vNormal);
+                    float intensity = dot(normal, vec3(0.0, 1.0, 1.0));
+                    
+                    vec3 color = mix(uColor, uColor2, 0.3 + 0.7 * vDisplacement);
+                    
+                    float fresnel = pow(1.0 - abs(dot(normal, normalize(vPosition))), 3.0);
+                    color += fresnel * uColor2 * 0.5;
+                    
+                    gl_FragColor = vec4(color, 0.85 + fresnel * 0.15);
+                }
+            `,
+            wireframe: false,
+            transparent: true,
+            depthWrite: false
+        });
+
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        core.position.z = 0;
+        scene.add(core);
+
+        // CAMERA
+        camera.position.z = 45;
+
+        // ANIMATION LOOP - CINEMATOGRAPHIC
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.001;
+
+            // CAMERA CINEMATOGRAPHY - ORBITING SUN
+            const sunDistance = 50;
+            camera.position.x = Math.sin(time * 0.15) * sunDistance;
+            camera.position.y = Math.cos(time * 0.12) * 15;
+            camera.position.z = 35 + Math.cos(time * 0.1) * 5;
+            camera.lookAt(sun.position);
+
+            // SUN ROTATION - MAJESTIC
+            sun.rotation.x += 0.0001;
+            sun.rotation.y += 0.0002;
+            sun.rotation.z += 0.00008;
+
+            // CORE ORBIT AROUND SUN
+            const orbitRadius = 30;
+            core.position.x = Math.cos(time * 0.3) * orbitRadius;
+            core.position.y = Math.sin(time * 0.2) * 8;
+            core.position.z = Math.sin(time * 0.25) * orbitRadius - 20;
+
+            // CORE ROTATION - SMOOTH
+            core.rotation.x += 0.0002;
+            core.rotation.y += 0.0003;
+            core.rotation.z += 0.0001;
+
+            // SHADER ANIMATION
+            sunMat.uniforms.uTime.value = time * 50;
+            sunMat.uniforms.uSunIntensity.value = 2.2 + 0.5 * Math.sin(time * 0.5);
+            
+            coreMat.uniforms.uTime.value = time * 100;
+            coreMat.uniforms.uIntensity.value = 1.0 + 0.3 * Math.sin(time);
+
+            // SUN LIGHT PULSING
+            sunLight.intensity = 2.5 + 0.8 * Math.sin(time * 0.5);
+
+            // RENDER
+            if (composer) {
+                composer.render();
+            } else {
+                renderer.render(scene, camera);
+            }
+        }
+
+        animate();
+
+        // RESPONSIVE
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            if (composer) composer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        console.log('✓ BELENTANI OMEGA - MARVEL 2027 CINEMA EDITION ACTIVE');
+    </script>
+
+</body>
+</html>

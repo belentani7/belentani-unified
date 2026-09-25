@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manos Abiertas · Instituto Universal William</title>
+    <meta name="description" content="Plataforma educativa para latinoamericanos, brasileños y migrantes en España. Aprende IA, Office, derechos, trámites.">
+    <meta name="author" content="Pedro Belentani">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(255,255,255,0.97);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            padding: 0.65rem 1rem;
+            border: 2px solid transparent;
+            background: white;
+            color: #667eea;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        nav button:hover, nav button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .lang-toggle {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .lang-toggle button {
+            padding: 0.5rem 0.7rem;
+            font-size: 0.75rem;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            color: #333;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-toggle button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.8rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 0.7rem;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .classroom {
+            background: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .lesson {
+            border-left: 5px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-radius: 0.5rem;
+        }
+
+        .lesson h4 {
+            color: #667eea;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .lesson p {
+            color: #555;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .lesson-content {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.4rem;
+            margin: 0.8rem 0;
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .tutor-interface {
+            background: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .tutor-chat {
+            background: #f9f9f9;
+            border-radius: 0.8rem;
+            padding: 1.5rem;
+            height: 450px;
+            overflow-y: auto;
+            margin: 1.5rem 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .message {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: 2rem;
+            border-radius: 1rem 1rem 0 1rem;
+        }
+
+        .message.assistant {
+            background: #e8eef9;
+            color: #333;
+            margin-right: 2rem;
+            border-radius: 1rem 1rem 1rem 0;
+        }
+
+        .tutor-input {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .tutor-input input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .tutor-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tutor-input button {
+            padding: 1rem 2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .tutor-input button:hover {
+            background: #764ba2;
+        }
+
+        .character-showcase {
+            background: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            text-align: center;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .character-art {
+            font-size: 7rem;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .character-description {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            text-align: left;
+            margin: 1.5rem 0;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .character-description ul {
+            margin-left: 2rem;
+            margin-top: 1rem;
+        }
+
+        .character-description li {
+            margin: 0.7rem 0;
+        }
+
+        footer {
+            background: rgba(0,0,0,0.85);
+            color: white;
+            text-align: center;
+            padding: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        .cv-form {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 1rem;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">✋</div>
+                <div>
+                    <div>Manos Abiertas</div>
+                    <div style="font-size: 0.65rem; color: #999; font-weight: 400;">Instituto Universal William</div>
+                </div>
+            </div>
+
+            <nav>
+                <button class="nav-btn active" data-section="home">🏠 Inicio</button>
+                <button class="nav-btn" data-section="william">👨‍🏫 William</button>
+                <button class="nav-btn" data-section="aulas">📚 Aulas ES/EN</button>
+                <button class="nav-btn" data-section="character">👤 Personaje</button>
+                <button class="nav-btn" data-section="cv">📄 CV Generator</button>
+                <button class="nav-btn" data-section="about">ℹ️ Acerca</button>
+            </nav>
+
+            <div class="lang-toggle">
+                <button class="lang-btn active" data-lang="es">ES</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- HOME -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h1>Bienvenido a Manos Abiertas</h1>
+                <p>Plataforma educativa abierta para latinoamericanos, brasileños y migrantes en España. Aprende IA, Office, derechos, procedimientos administrativos y mucho más, con el apoyo de William, tu tutor inteligente.</p>
+                <button class="btn btn-primary nav-btn" data-section="william">Conocer a William →</button>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3>IA para Todos</h3>
+                    <p>Aprende inteligencia artificial, machine learning y deep learning desde cero, con ejemplos prácticos y aplicables a tu realidad.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Office Mastery</h3>
+                    <p>Domina Excel, Word y PowerPoint como un profesional. Desde principiante hasta nivel avanzado con proyectos reales.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Derechos y Trámites</h3>
+                    <p>Guías completas sobre derechos de migrantes en España, procedimientos administrativos, permisos y documentación.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📝</div>
+                    <h3>CV & Cartas</h3>
+                    <p>Generador inteligente de currículums profesionales y cartas de presentación. Optimizadas para ATS y reclutadores.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h3>Búsqueda de Empleo</h3>
+                    <p>Estrategias de búsqueda, preparación de entrevistas, networking y desarrollo profesional en el mercado español.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌍</div>
+                    <h3>Multiidioma</h3>
+                    <p>Disponible en español e inglés. Cursos de idiomas integrados para mejorar tu nivel y oportunidades laborales.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WILLIAM -->
+        <section id="william" class="section">
+            <div class="tutor-interface">
+                <h2>👨‍🏫 William - Tu Tutor de Sombra Inteligente</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">William es tu compañero de aprendizaje personalizado. Te acompaña en cada paso, responde tus dudas, proporciona retroalimentación y adapta el contenido a tu nivel. ¡Comienza una conversación!</p>
+
+                <div class="tutor-chat" id="tutorChat">
+                    <div class="message assistant">
+                        <strong>William:</strong> ¡Hola! Soy William, tu tutor de sombra. Estoy aquí para acompañarte en tu aprendizaje. ¿Cuál es tu nombre y qué tema te gustaría explorar hoy? Tengo lecciones sobre IA, Office, derechos de migrantes, búsqueda de empleo y mucho más.
+                    </div>
+                </div>
+
+                <div class="tutor-input">
+                    <input type="text" id="tutorInput" placeholder="Escribe tu pregunta o tema de interés...">
+                    <button onclick="sendMessage()">Enviar</button>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AULAS -->
+        <section id="aulas" class="section">
+            <div class="classroom">
+                <h2>📚 Aulas de Aprendizaje - Español & English</h2>
+                <p style="color: #666; margin-bottom: 2rem;">Módulos completos en español e inglés. Selecciona un tema y comienza a aprender al tu propio ritmo.</p>
+
+                <div class="lesson">
+                    <h4>📖 Módulo 1: Introducción a IA (Español / English)</h4>
+                    <p><strong>Duración:</strong> 4 horas | <strong>Nivel:</strong> Principiante</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Conceptos fundamentales de IA, qué es machine learning, redes neuronales, casos de uso prácticos. Incluye definiciones claras y ejemplos del mundo real.</p>
+                        <p><strong>EN:</strong> Fundamental concepts of AI, what is machine learning, neural networks, practical use cases. Includes clear definitions and real-world examples.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>📊 Módulo 2: Excel Avanzado (Español / English)</h4>
+                    <p><strong>Duración:</strong> 5 horas | <strong>Nivel:</strong> Intermedio - Avanzado</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Fórmulas complejas, tablas dinámicas, análisis de datos, gráficos profesionales, automatización con macros básicas.</p>
+                        <p><strong>EN:</strong> Complex formulas, pivot tables, data analysis, professional charts, basic macro automation.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>⚖️ Módulo 3: Derechos del Migrante en España (Español / English)</h4>
+                    <p><strong>Duración:</strong> 3 horas | <strong>Nivel:</strong> General</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Normativas migratorias, permisos de residencia, derechos laborales, acceso a sanidad, educación, vivienda y procedimientos administrativos.</p>
+                        <p><strong>EN:</strong> Migration regulations, residence permits, labor rights, access to healthcare, education, housing and administrative procedures.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>📝 Módulo 4: Escritura Profesional (Español / English)</h4>
+                    <p><strong>Duración:</strong> 3 horas | <strong>Nivel:</strong> Principiante - Intermedio</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Cómo escribir CV profesionales, cartas de presentación impactantes, emails corporativos correctos, propuestas de negocio.</p>
+                        <p><strong>EN:</strong> How to write professional resumes, impactful cover letters, correct business emails, business proposals.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>💻 Módulo 5: Word & PowerPoint (Español / English)</h4>
+                    <p><strong>Duración:</strong> 4 horas | <strong>Nivel:</strong> Principiante - Intermedio</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Crear documentos profesionales, plantillas personalizadas, presentaciones impactantes, diseño visual, impresión y exportación.</p>
+                        <p><strong>EN:</strong> Create professional documents, custom templates, impactful presentations, visual design, printing and export.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>🎯 Módulo 6: Búsqueda de Empleo y Orientación (Español / English)</h4>
+                    <p><strong>Duración:</strong> 2.5 horas | <strong>Nivel:</strong> General</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Estrategias de búsqueda en plataformas españolas, preparación de entrevistas, networking profesional, brand personal.</p>
+                        <p><strong>EN:</strong> Job search strategies on Spanish platforms, interview preparation, professional networking, personal branding.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+
+                <div class="lesson">
+                    <h4>🌐 Módulo 7: Aprendizaje de Idiomas (Español / English)</h4>
+                    <p><strong>Duración:</strong> 6 horas | <strong>Nivel:</strong> A1 - B2</p>
+                    <div class="lesson-content">
+                        <p><strong>ES:</strong> Inmersión en inglés práctico, vocabulario profesional, pronunciación, listening, conversación simulada con IA.</p>
+                        <p><strong>EN:</strong> Immersion in practical English, professional vocabulary, pronunciation, listening, simulated conversation with AI.</p>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Iniciar Módulo →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PERSONAJE -->
+        <section id="character" class="section">
+            <div class="character-showcase">
+                <h2>👤 Belentani - Figura y Mentor</h2>
+
+                <div class="character-art">👨‍💼</div>
+
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Perfil Profesional</h3>
+                <div class="character-description">
+                    <p><strong>Nombre Completo:</strong> Belentani</p>
+                    <p><strong>Edad:</strong> 28 años</p>
+                    <p><strong>Nacionalidad:</strong> Multicultural | Raíces latinoamericanas</p>
+                    <p style="margin-top: 1rem;"><strong>Apariencia:</strong> Belentani se presenta con un traje rojo elegante y sofisticado, una barba bien cuidada y cabello largo ondulado de color marrón oscuro. Su look combina profesionalismo con un toque creativo, inspirando confianza y accesibilidad. Es una figura que representa modernidad y conexión con la diversidad.</p>
+                </div>
+
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Habilidades y Experticia</h3>
+                <div class="character-description">
+                    <ul>
+                        <li>Experto en educación para comunidades migrantes y latinoamericanas</li>
+                        <li>Domina inteligencia artificial, machine learning y aplicaciones prácticas</li>
+                        <li>Maestría en Office Suite (Excel, Word, PowerPoint)</li>
+                        <li>Conocimiento profundo de derechos y procedimientos legales en España</li>
+                        <li>Experiencia en orientación de carreras y búsqueda de empleo</li>
+                        <li>Comunicador empático, claro y profundamente accesible</li>
+                        <li>Adaptable a diferentes niveles y estilos de aprendizaje</li>
+                        <li>Promotor de conexiones entre oportunidad y realidad cultural</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Misión Personal</h3>
+                <div class="character-description">
+                    <p style="font-style: italic; font-weight: bold;">"Empodera a cada migrante y latinoamericano a través de la educación abierta, sin barreras, sin discriminación. Con dignidad y oportunidad real de progreso en sus manos."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CV GENERATOR -->
+        <section id="cv" class="section">
+            <div class="classroom">
+                <h2>📄 Generador de CV Profesional</h2>
+                <p style="color: #666; margin-bottom: 2rem;">Crea tu currículum en minutos. Nuestro generador optimiza tu CV para ATS (Applicant Tracking Systems) y reclutadores.</p>
+
+                <div class="cv-form">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" placeholder="Ej: Juan García Rodríguez">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Profesional</label>
+                        <input type="email" placeholder="Ej: juan.garcia@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" placeholder="Ej: +34 612 345 678">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ubicación</label>
+                        <input type="text" placeholder="Ej: Madrid, España">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resumen Profesional</label>
+                        <textarea placeholder="Breve descripción de tu perfil profesional, fortalezas y objetivos..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Experiencia Laboral</label>
+                        <textarea placeholder="Cargo | Empresa | Período | Responsabilidades y logros..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Educación</label>
+                        <textarea placeholder="Grado/Certificado | Institución | Año de conclusión..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Habilidades Técnicas</label>
+                        <textarea placeholder="Excel, Word, Python, JavaScript, SQL, etc. (separa con comas)..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Habilidades Blandas</label>
+                        <textarea placeholder="Liderazgo, comunicación, trabajo en equipo, etc. (separa con comas)..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; padding: 1.2rem;">📥 Generar y Descargar CV</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section">
+            <div class="classroom">
+                <h2>ℹ️ Acerca de Manos Abiertas</h2>
+
+                <div class="lesson">
+                    <h4>Nuestra Misión</h4>
+                    <p>Proporcionar educación abierta, gratuita y de calidad para latinoamericanos, brasileños y migrantes en España, eliminando barreras de acceso a conocimiento profesional y empoderamiento.</p>
+                </div>
+
+                <div class="lesson">
+                    <h4>¿Por qué Manos Abiertas?</h4>
+                    <p>Porque creemos que la educación es un derecho fundamental. Las manos abiertas simbolizan recibimiento, ayuda y solidaridad. Queremos que cada migrante sienta que tiene las puertas abiertas para aprender, crecer y prosperar.</p>
+                </div>
+
+                <div class="lesson">
+                    <h4>Plataforma 100% Abierta</h4>
+                    <p>Todo el código fuente está disponible en GitHub. Los cursos pueden ser descargados, modificados y compartidos. No hay paywall oculto. Educación transparente para todos.</p>
+                </div>
+
+                <div class="lesson">
+                    <h4>Contacto y Comunidad</h4>
+                    <p><strong>Email:</strong> belentani7studio@proton.me</p>
+                    <p><strong>GitHub:</strong> github.com/belentani7</p>
+                    <p><strong>Web:</strong> manos-abiertas.education</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2026 Manos Abiertas - Instituto Universal William</p>
+        <p>Plataforma Educativa Abierta para Migrantes y Latinoamericanos</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">Creado por Pedro Belentani | Código abierto | Educación sin barreras</p>
+    </footer>
+
+    <script>
+        let currentLanguage = 'es';
+
+        // NAVIGATION
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const sectionId = this.dataset.section;
+                if (sectionId) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(sectionId).classList.add('active');
+
+                    document.querySelectorAll('nav .nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            });
+        });
+
+        // LANGUAGE TOGGLE
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentLanguage = this.dataset.lang;
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // WILLIAM CHAT
+        function sendMessage() {
+            const input = document.getElementById('tutorInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            const chat = document.getElementById('tutorChat');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<strong>Tú:</strong> ${message}`;
+            chat.appendChild(userMsg);
+
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            // Simular respuesta de William
+            setTimeout(() => {
+                const responses = [
+                    '¡Excelente pregunta! Déjame desarrollar esto para ti con más detalle...',
+                    'Ese es un punto crítico. Veamos paso a paso cómo funciona...',
+                    '¡Correcto! Ahora profundicemos en este tema fundamental...',
+                    'Interesante observación. Esto se conecta directamente con...',
+                    'Muy bien pensado. Déjame compartirte una estrategia práctica para esto...',
+                    '¡Eso muestra que estás pensando correctamente! Ahora vamos al siguiente nivel...',
+                ];
+
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'message assistant';
+                assistantMsg.innerHTML = `<strong>William:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
+                chat.appendChild(assistantMsg);
+                chat.scrollTop = chat.scrollHeight;
+
+                // Actualizar progress bar
+                const progress = document.getElementById('progressBar');
+                const currentWidth = parseFloat(progress.style.width) || 0;
+                progress.style.width = (currentWidth + 10) + '%';
+            }, 500);
+        }
+
+        document.getElementById('tutorInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

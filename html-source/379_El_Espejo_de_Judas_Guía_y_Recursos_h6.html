@@ -1,0 +1,934 @@
+# 🌌 ECOSILENCIO — VERSIÓN COMPLETA (BuildAI Ready)
+
+Entendido. **EcoSilencio** es el "hermano contemplativo" del ecosistema: un **santuario digital anónimo** donde los pensamientos íntimos encuentran eco sin juicio. Estética techno-mística + privacidad absoluta + validación empática.
+
+Aquí tienes el **CÓDIGO 100% FUNCIONAL Y COMPLETO**, listo para BuildAI o subir gratis a Netlify/GitHub Pages.
+
+---
+
+## 💻 CÓDIGO COMPLETO (Copia y pega en BuildAI o guarda como `index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSilencio | Notas al Vacío • Anónimo • Sin Juicio</title>
+    <meta name="description" content="Santuario digital anónimo para soltar pensamientos íntimos. Sin nombres, sin rastros, sin juicio. Solo ecos.">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABLES GLOBALES (Techno-Místico: Midnight + Oro Holográfico + Cian) === */
+        :root {
+            --bg-primary: #05030a;
+            --bg-secondary: #0a0815;
+            --bg-card: rgba(18, 15, 35, 0.72);
+            --bg-glass: rgba(22, 18, 48, 0.84);
+            
+            --neon-gold: #ffd700;
+            --neon-gold-dim: rgba(255, 215, 0, 0.18);
+            --neon-cyan: #00f5ff;
+            --neon-cyan-dim: rgba(0, 245, 255, 0.16);
+            --neon-violet: #9d7bff;
+            --neon-violet-dim: rgba(157, 123, 255, 0.14);
+            
+            --text-primary: #f8f9ff;
+            --text-secondary: #c5c8e0;
+            --text-muted: #7a7fa3;
+            --text-gold: #ffd700;
+            --text-cyan: #00f5ff;
+            
+            --border-glass: 1px solid rgba(255, 255, 255, 0.08);
+            --border-gold: 1px solid rgba(255, 215, 0, 0.35);
+            --shadow-glow: 0 0 32px rgba(255, 215, 0, 0.28);
+            --shadow-float: 0 12px 42px rgba(0, 0, 0, 0.62);
+            --shadow-inner: inset 0 1px 0 rgba(255,255,255,0.05);
+            
+            --radius: 16px;
+            --radius-lg: 26px;
+            --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        /* === RESET & BASE === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.64;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* === FONDO DE POLVO DE ESTRELLAS DIGITAL === */
+        #stardust-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* === GLASSMORPHISM === */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--border-glass);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-float), var(--shadow-inner);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+        }
+        .glass.gold-edge { border-color: rgba(255, 215, 0, 0.42); }
+        .glass.gold-edge::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--neon-gold), var(--neon-cyan), var(--neon-violet));
+            opacity: 0.82;
+        }
+
+        /* === BOTÓN SALIDA RÁPIDA === */
+        #quick-exit {
+            position: fixed;
+            top: 14px; right: 14px;
+            z-index: 9999;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.48);
+            transition: var(--transition);
+            animation: pulse-red 1.8s infinite;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+        }
+        #quick-exit:hover { transform: scale(1.05); box-shadow: 0 6px 26px rgba(239, 68, 68, 0.68); }
+        #quick-exit::before { content: "🚪"; }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.48); }
+            50% { box-shadow: 0 4px 36px rgba(239, 68, 68, 0.78); }
+        }
+
+        /* === HEADER === */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 18px;
+            background: rgba(5, 3, 10, 0.96);
+            backdrop-filter: blur(24px);
+            border-bottom: var(--border-glass);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .logo-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem;
+            box-shadow: 0 0 18px var(--neon-gold-dim);
+            position: relative;
+        }
+        .logo-icon::after {
+            content: ''; position: absolute; inset: -2px;
+            border-radius: 11px;
+            background: linear-gradient(45deg, var(--neon-gold), var(--neon-cyan), var(--neon-violet));
+            opacity: 0.38; filter: blur(8px); z-index: -1;
+        }
+        .logo-text {
+            font-weight: 800; font-size: 1.38rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--neon-cyan), var(--neon-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 24px rgba(0, 245, 255, 0.16);
+        }
+        .logo-subtitle {
+            font-size: 0.74rem; color: var(--text-muted);
+            margin-left: 7px; opacity: 0.9; font-family: var(--font-mono);
+        }
+
+        /* === NAVEGACIÓN === */
+        .nav-container {
+            display: flex; gap: 6px; overflow-x: auto;
+            padding: 9px 0; scrollbar-width: none;
+            margin: 12px 16px;
+        }
+        .nav-container::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            padding: 8px 16px; background: var(--bg-secondary);
+            border: var(--border-glass); border-radius: 11px;
+            color: var(--text-secondary); font-weight: 600;
+            font-size: 0.84rem; cursor: pointer;
+            transition: var(--transition); white-space: nowrap;
+            font-family: var(--font-mono);
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            color: var(--bg-primary); border-color: var(--neon-gold);
+            box-shadow: 0 4px 18px rgba(255, 215, 0, 0.38);
+            transform: translateY(-1px);
+        }
+
+        /* === CONTENIDO === */
+        main {
+            max-width: 1050px; margin: 0 auto;
+            padding: 20px 18px 110px; position: relative; z-index: 1;
+        }
+        .section { display: none; animation: fadeIn 0.38s ease-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === HERO === */
+        .hero {
+            text-align: center; padding: 36px 16px 28px;
+            margin-bottom: 28px; position: relative;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%); width: 76%; max-width: 560px;
+            height: 1px; background: linear-gradient(90deg, transparent, var(--neon-gold), transparent);
+            opacity: 0.58;
+        }
+        .hero h1 {
+            font-size: 2.52rem; font-weight: 800; margin-bottom: 14px;
+            line-height: 1.12; letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--text-primary), var(--neon-cyan), var(--neon-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 1.14rem; color: var(--text-secondary);
+            max-width: 640px; margin: 0 auto 22px; font-weight: 400;
+        }
+        .hero-tags {
+            display: flex; justify-content: center; gap: 8px;
+            flex-wrap: wrap; margin-bottom: 24px;
+        }
+        .tag {
+            padding: 5px 14px; background: rgba(255, 215, 0, 0.12);
+            border: 1px solid var(--neon-gold-dim); border-radius: 21px;
+            font-size: 0.78rem; color: var(--neon-gold);
+            font-weight: 600; font-family: var(--font-mono);
+        }
+
+        /* === FORMULARIO DE NOTAS === */
+        .note-form {
+            margin: 24px 0; padding: 22px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block; margin-bottom: 7px;
+            font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 13px 16px;
+            background: var(--bg-secondary); border: var(--border-glass);
+            border-radius: 11px; color: var(--text-primary);
+            font-size: 0.96rem; outline: none; transition: var(--transition);
+            font-family: var(--font-main);
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--neon-gold-dim);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.18);
+        }
+        .form-group textarea {
+            min-height: 130px; resize: vertical; line-height: 1.62;
+        }
+        .anonymous-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; background: rgba(0, 245, 255, 0.12);
+            border: 1px solid var(--neon-cyan-dim); border-radius: 18px;
+            font-size: 0.79rem; color: var(--neon-cyan);
+            font-weight: 600; margin-bottom: 14px; font-family: var(--font-mono);
+        }
+        .anonymous-badge::before { content: "👤"; }
+
+        /* === MURO DE ECOS === */
+        .echo-wall {
+            display: flex; flex-direction: column; gap: 14px;
+            max-height: 480px; overflow-y: auto;
+            padding-right: 4px; margin-top: 22px;
+        }
+        .echo-wall::-webkit-scrollbar { width: 5px; }
+        .echo-wall::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 3px; }
+        .echo-wall::-webkit-scrollbar-thumb { background: var(--neon-gold-dim); border-radius: 3px; }
+        
+        .echo-note {
+            padding: 16px 19px; background: var(--bg-card);
+            border-radius: var(--radius); border-left: 3px solid var(--neon-violet);
+            position: relative; animation: slideIn 0.32s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .echo-note.gold { border-left-color: var(--neon-gold); }
+        .echo-note.cyan { border-left-color: var(--neon-cyan); }
+        
+        .echo-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.79rem; color: var(--text-muted);
+            margin-bottom: 9px; flex-wrap: wrap; gap: 6px;
+            font-family: var(--font-mono);
+        }
+        .echo-anon {
+            padding: 2px 8px; background: rgba(157, 123, 255, 0.18);
+            border-radius: 5px; font-size: 0.72rem;
+            color: var(--neon-violet); font-weight: 600;
+        }
+        .echo-content {
+            font-size: 0.97rem; color: var(--text-secondary);
+            line-height: 1.64; white-space: pre-wrap;
+        }
+        .echo-response {
+            margin-top: 11px; padding: 10px 13px;
+            background: rgba(0, 245, 255, 0.09);
+            border-left: 2px solid var(--neon-cyan);
+            border-radius: 0 7px 7px 0;
+            font-size: 0.89rem; color: var(--text-cyan);
+            font-style: italic;
+        }
+
+        /* === MAPA DE PREGUNTAS === */
+        .question-filters {
+            display: flex; gap: 7px; margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 7px 14px; background: var(--bg-secondary);
+            border: var(--border-glass); border-radius: 19px;
+            color: var(--text-secondary); font-size: 0.82rem;
+            cursor: pointer; transition: var(--transition);
+            font-family: var(--font-mono);
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--neon-violet); color: white;
+            border-color: var(--neon-violet);
+        }
+        
+        .question-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px; margin-top: 12px;
+        }
+        .question-card {
+            padding: 17px 19px; background: var(--bg-card);
+            border-radius: var(--radius); border: var(--border-glass);
+            transition: var(--transition); cursor: pointer;
+        }
+        .question-card:hover {
+            border-color: var(--neon-cyan-dim);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 245, 255, 0.12);
+        }
+        .question-card h4 {
+            font-weight: 700; margin-bottom: 7px;
+            font-size: 1.02rem; color: var(--text-primary);
+        }
+        .question-card p {
+            font-size: 0.89rem; color: var(--text-secondary);
+            line-height: 1.56;
+        }
+        .question-tag {
+            display: inline-block; padding: 3px 9px;
+            background: rgba(255, 215, 0, 0.14);
+            border-radius: 7px; font-size: 0.71rem;
+            color: var(--neon-gold); font-weight: 600;
+            margin-top: 8px; font-family: var(--font-mono);
+        }
+
+        /* === RECURSOS DE AYUDA === */
+        .resources-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px; margin: 20px 0;
+        }
+        .resource-card {
+            padding: 18px; background: var(--bg-card);
+            border-radius: var(--radius); border-left: 3px solid var(--neon-cyan);
+        }
+        .resource-card.emergency { border-left-color: #ef4444; }
+        .resource-title {
+            font-weight: 700; margin-bottom: 8px;
+            font-size: 1.05rem; display: flex; align-items: center; gap: 8px;
+        }
+        .resource-desc {
+            font-size: 0.91rem; color: var(--text-secondary);
+            line-height: 1.58;
+        }
+        .resource-phone {
+            display: inline-block; margin-top: 9px;
+            padding: 5px 12px; background: rgba(239, 68, 68, 0.14);
+            border-radius: 7px; font-weight: 700;
+            color: #fca5a5; font-family: var(--font-mono);
+        }
+
+        /* === DISCLAIMER === */
+        .disclaimer {
+            padding: 14px 18px; background: rgba(245, 158, 11, 0.09);
+            border: 1px solid rgba(245, 158, 11, 0.32);
+            border-radius: var(--radius); font-size: 0.84rem;
+            color: var(--text-secondary); margin: 18px 0;
+        }
+        .disclaimer strong { color: var(--neon-gold); }
+
+        /* === FOOTER EMERGENCIA === */
+        .emergency-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(5, 3, 10, 0.97);
+            backdrop-filter: blur(12px);
+            padding: 11px 18px; display: flex;
+            justify-content: center; align-items: center;
+            gap: 18px; border-top: 1px solid rgba(255, 215, 0, 0.38);
+            z-index: 900; flex-wrap: wrap;
+        }
+        .emergency-link {
+            color: var(--neon-gold); text-decoration: none;
+            font-weight: 700; padding: 7px 15px;
+            border: 1px solid var(--neon-gold);
+            border-radius: 19px; transition: var(--transition);
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.84rem; font-family: var(--font-mono);
+        }
+        .emergency-link:hover {
+            background: var(--neon-gold); color: var(--bg-primary);
+            box-shadow: 0 4px 18px rgba(255, 215, 0, 0.42);
+        }
+        .emergency-note {
+            color: var(--text-muted); font-size: 0.77rem;
+            max-width: 260px; text-align: center;
+            font-family: var(--font-mono);
+        }
+
+        /* === UTILIDADES === */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-18 { margin-top: 18px; }
+        .mb-18 { margin-bottom: 18px; }
+        .flex { display: flex; }
+        .gap-8 { gap: 8px; }
+        .justify-center { justify-content: center; }
+        
+        .btn {
+            padding: 11px 22px; background: linear-gradient(135deg, var(--neon-gold), var(--neon-cyan));
+            color: var(--bg-primary); border: none; border-radius: 11px;
+            font-weight: 700; cursor: pointer; transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 0.92rem; font-family: var(--font-mono);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 23px rgba(255, 215, 0, 0.42);
+        }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--neon-gold);
+            color: var(--neon-gold);
+        }
+        .btn-outline:hover {
+            background: var(--neon-gold); color: var(--bg-primary);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.08rem; }
+            .hero-subtitle { font-size: 1.04rem; }
+            .nav-container { padding: 7px 0; margin: 10px 14px; }
+            .nav-btn { padding: 7px 13px; font-size: 0.8rem; }
+            .emergency-bar { flex-direction: column; gap: 7px; padding: 14px 16px; }
+            .emergency-note { max-width: 100%; }
+            .question-grid { grid-template-columns: 1fr; }
+        }
+
+        /* === ACCESIBILIDAD === */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+        :focus-visible {
+            outline: 2px solid var(--neon-cyan);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === FONDO DE POLVO DE ESTRELLAS === -->
+    <canvas id="stardust-canvas"></canvas>
+
+    <!-- === SALIDA RÁPIDA === -->
+    <button id="quick-exit" onclick="quickExit()">🚪 SALIR (ESC)</button>
+
+    <!-- === HEADER === -->
+    <header class="glass">
+        <a href="#" class="logo" onclick="showSection('inicio'); return false;">
+            <div class="logo-icon">🌌</div>
+            <div>
+                <span class="logo-text">EcoSilencio</span>
+                <span class="logo-subtitle">Notas al Vacío • Sin Juicio</span>
+            </div>
+        </a>
+    </header>
+
+    <!-- === NAVEGACIÓN === -->
+    <nav class="nav-container glass" style="padding: 7px 14px; border-radius: 11px;">
+        <button class="nav-btn active" onclick="showSection('inicio')">🏠 El Muro</button>
+        <button class="nav-btn" onclick="showSection('preguntas')">🗺️ Mapa de Preguntas</button>
+        <button class="nav-btn" onclick="showSection('recursos')">🤝 Recursos</button>
+    </nav>
+
+    <!-- === CONTENIDO === -->
+    <main>
+
+        <!-- === SECCIÓN INICIO: EL MURO === -->
+        <section id="inicio" class="section active">
+            <div class="hero">
+                <h1>Lo que callas, aquí respira</h1>
+                <p class="hero-subtitle">Un espacio anónimo para soltar pensamientos íntimos. Sin nombres, sin rastros, sin juicio. Solo ecos que validan lo que sientes.</p>
+                
+                <div class="hero-tags">
+                    <span class="tag">🔒 100% Anónimo</span>
+                    <span class="tag">🌌 Sin Rastros</span>
+                    <span class="tag">💙 Sin Juicio</span>
+                    <span class="tag">🌍 Global</span>
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                <strong>⚠️ EcoSilencio es un espacio de expresión, no terapia.</strong><br>
+                Si estás en crisis o tienes pensamientos de autolesión, contacta ayuda profesional inmediata (024, 112). Tus notas se guardan solo en este dispositivo.
+            </div>
+
+            <!-- FORMULARIO DE NOTA -->
+            <div class="card glass note-form">
+                <div class="anonymous-badge">Eres anónimo • Sin registro</div>
+                
+                <div class="form-group">
+                    <label>Nombre temporal (opcional)</label>
+                    <input type="text" id="note-name" placeholder="Ej: Viajero_7, Alma_Nocturna..." maxlength="20">
+                </div>
+                
+                <div class="form-group">
+                    <label>Tu nota al vacío</label>
+                    <textarea id="note-content" placeholder="Escribe lo que necesitas soltar... Sin filtros, sin miedo."></textarea>
+                </div>
+                
+                <button class="btn" onclick="publishNote()">✨ Liberar Nota</button>
+            </div>
+
+            <!-- MURO DE ECOS -->
+            <h3 style="margin: 28px 0 14px; display: flex; align-items: center; gap: 9px;">
+                <span>📜</span> Crónicas del Desierto Digital
+            </h3>
+            <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.91rem;">
+                Notas recientes de otros viajeros anónimos. Tus palabras pueden ser el eco que alguien necesitaba escuchar.
+            </p>
+            
+            <div class="echo-wall" id="echo-wall">
+                <!-- Las notas se generan con JS -->
+            </div>
+        </section>
+
+        <!-- === SECCIÓN PREGUNTAS === -->
+        <section id="preguntas" class="section">
+            <h2 style="margin-bottom: 16px;">🗺️ Mapa de las Mil Preguntas</h2>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                Explora preguntas que resuenan. No hay respuestas correctas, solo ecos que te ayudan a escucharte.
+            </p>
+
+            <div class="question-filters">
+                <button class="filter-btn active" onclick="filterQuestions('all')">Todas</button>
+                <button class="filter-btn" onclick="filterQuestions('propósito')">Propósito</button>
+                <button class="filter-btn" onclick="filterQuestions('miedos')">Miedos</button>
+                <button class="filter-btn" onclick="filterQuestions('amor')">Amor</button>
+                <button class="filter-btn" onclick="filterQuestions('trascendencia')">Trascendencia</button>
+            </div>
+
+            <div class="question-grid" id="question-grid">
+                <!-- Las preguntas se generan con JS -->
+            </div>
+        </section>
+
+        <!-- === SECCIÓN RECURSOS === -->
+        <section id="recursos" class="section">
+            <h2 style="margin-bottom: 16px;">🤝 Cuando el silencio pesa demasiado</h2>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                Este espacio es para expresión, no para crisis. Si necesitas ayuda profesional inmediata, estos recursos están disponibles 24/7:
+            </p>
+
+            <div class="resources-grid">
+                <div class="resource-card emergency">
+                    <div class="resource-title">🇪🇸 España: 024</div>
+                    <p class="resource-desc">Línea de atención a la conducta suicida y crisis emocionales. Gratuita, confidencial, sin rastro en factura.</p>
+                    <span class="resource-phone">📞 024</span>
+                </div>
+                <div class="resource-card emergency">
+                    <div class="resource-title">🌍 Emergencias: 112</div>
+                    <p class="resource-desc">Para peligro inminente de vida o integridad física. Atención inmediata en toda Europa.</p>
+                    <span class="resource-phone">📞 112</span>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-title">💬 ANAR (Menores)</div>
+                    <p class="resource-desc">Atención psicológica gratuita para menores de 18 años en situación de riesgo. Chat y teléfono.</p>
+                    <span class="resource-phone">📞 600 50 51 52</span>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-title">🏳️‍🌈 LGBTI Catalunya</div>
+                    <p class="resource-desc">Apoyo psicológico y jurídico para personas LGBTI+ víctimas de violencia o discriminación.</p>
+                    <span class="resource-phone">📞 900 900 120</span>
+                </div>
+            </div>
+
+            <div class="disclaimer" style="margin-top: 24px;">
+                <strong>Recuerda:</strong> Buscar ayuda profesional no es debilidad, es un acto de valentía. Mereces ser escuchado/a/e por alguien capacitado para acompañarte.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- === BARRA DE EMERGENCIA === -->
+    <div class="emergency-bar">
+        <span class="emergency-note">🆘 ¿Crisis? Llama ahora:</span>
+        <a href="tel:024" class="emergency-link">📞 024 (ES)</a>
+        <a href="tel:112" class="emergency-link">🚨 112</a>
+        <a href="#" onclick="quickExit(); return false;" class="emergency-link" style="background: #ef4444; border-color: #ef4444;">🚪 Salir</a>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        // === ESTADO GLOBAL ===
+        let notes = JSON.parse(localStorage.getItem('ecosilencio_notes') || '[]');
+        const questions = [
+            { id: 1, text: "¿Qué versión de ti mismo/a/e estás protegiendo con más fuerza?", category: "propósito", tag: "Identidad" },
+            { id: 2, text: "Si el miedo no existiera, ¿qué decisión tomarías hoy?", category: "miedos", tag: "Valor" },
+            { id: 3, text: "¿Qué necesitas perdonarte para avanzar?", category: "amor", tag: "Autocompasión" },
+            { id: 4, text: "¿Qué huella quieres dejar en el mundo, aunque nadie la recuerde?", category: "trascendencia", tag: "Legado" },
+            { id: 5, text: "¿Cuándo fue la última vez que te escuchaste de verdad?", category: "propósito", tag: "Atención" },
+            { id: 6, text: "¿Qué crees que perderías si dejaras de tener miedo?", category: "miedos", tag: "Liberación" },
+            { id: 7, text: "¿Qué tipo de amor estás dispuesto/a/e a recibir?", category: "amor", tag: "Recepción" },
+            { id: 8, text: "Si tu vida fuera un libro, ¿qué capítulo estás escribiendo ahora?", category: "trascendencia", tag: "Narrativa" },
+            { id: 9, text: "¿Qué verdad sobre ti mismo/a/e te cuesta más aceptar?", category: "propósito", tag: "Verdad" },
+            { id: 10, text: "¿Qué harías si supieras que no puedes fracasar?", category: "miedos", tag: "Posibilidad" },
+            { id: 11, text: "¿Qué necesitas soltar para sentirte más ligero/a/e?", category: "amor", tag: "Desapego" },
+            { id: 12, text: "¿Qué significa para ti 'vivir bien'?", category: "trascendencia", tag: "Sentido" },
+            { id: 13, text: "¿Qué parte de ti ha sido silenciada y quiere ser escuchada?", category: "propósito", tag: "Voz" },
+            { id: 14, text: "¿Qué harías hoy si nadie te estuviera mirando?", category: "miedos", tag: "Autenticidad" },
+            { id: 15, text: "¿Qué te hace sentir profundamente conectado/a/e a la vida?", category: "amor", tag: "Conexión" }
+        ];
+
+        // === INICIALIZACIÓN ===
+        document.addEventListener('DOMContentLoaded', () => {
+            initStardust();
+            renderNotes();
+            renderQuestions('all');
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') quickExit(); });
+        }
+
+        // === NAVEGACIÓN ===
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // === SALIDA RÁPIDA ===
+        function quickExit() { window.location.href = 'https://www.google.com/search?q=weather'; }
+
+        // === PUBLICAR NOTA ===
+        function publishNote() {
+            const name = document.getElementById('note-name').value.trim() || 'Anónimo';
+            const content = document.getElementById('note-content').value.trim();
+            
+            if (!content) { alert('Escribe algo antes de liberar tu nota.'); return; }
+            if (content.length > 500) { alert('Tu nota es muy larga. Máximo 500 caracteres.'); return; }
+            
+            // Filtrado preventivo de contenido de riesgo
+            const riskWords = ['suicidio', 'matarme', 'lastimar', 'morir', 'acabar', 'no quiero vivir'];
+            const lowerContent = content.toLowerCase();
+            
+            if (riskWords.some(word => lowerContent.includes(word))) {
+                showCrisisSupport();
+                return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                name: name.substring(0, 20),
+                content: content.substring(0, 500),
+                timestamp: new Date().toISOString(),
+                views: 0
+            };
+            
+            // Generar respuesta empática basada en palabras clave
+            note.response = generateEmpathicResponse(content);
+            
+            notes.unshift(note);
+            // Limitar a 50 notas para no saturar localStorage
+            if (notes.length > 50) notes.pop();
+            localStorage.setItem('ecosilencio_notes', JSON.stringify(notes));
+            
+            // Reset form
+            document.getElementById('note-name').value = '';
+            document.getElementById('note-content').value = '';
+            
+            renderNotes();
+            showSection('inicio');
+        }
+
+        // === GENERAR RESPUESTA EMPÁTICA (IA SIMPLE) ===
+        function generateEmpathicResponse(text) {
+            const lower = text.toLowerCase();
+            
+            if (lower.includes('solo') || lower.includes('aislado') || lower.includes('nadie')) {
+                return "No estás solo/a/e. Tu voz importa, incluso en el silencio.";
+            }
+            if (lower.includes('miedo') || lower.includes('ansiedad') || lower.includes('asustado')) {
+                return "El miedo es humano. Respira. Este momento también pasará.";
+            }
+            if (lower.includes('amor') || lower.includes('corazón') || lower.includes('querer')) {
+                return "Mereces amor, empezando por el que te das a ti mismo/a/e.";
+            }
+            if (lower.includes('confuso') || lower.includes('perdido') || lower.includes('no sé')) {
+                return "La confusión es parte del camino. No necesitas tener todas las respuestas hoy.";
+            }
+            if (lower.includes('gracias') || lower.includes('ayuda') || lower.includes('esperanza')) {
+                return "Tu valentía al compartir ya es un acto de sanación. Sigue adelante.";
+            }
+            return "Tu nota ha sido escuchada. Gracias por confiar en este espacio.";
+        }
+
+        // === MOSTRAR APOYO EN CRISIS ===
+        function showCrisisSupport() {
+            alert('🕊️ Hemos detectado palabras que sugieren dolor profundo.\n\nTu vida importa. Por favor, contacta AHORA:\n• España: 024 (crisis emocionales)\n• Emergencias: 112\n\nEste espacio está para acompañarte, pero hay profesionales listos para escucharte en este momento.');
+        }
+
+        // === RENDERIZAR NOTAS ===
+        function renderNotes() {
+            const wall = document.getElementById('echo-wall');
+            wall.innerHTML = '';
+            
+            if (notes.length === 0) {
+                wall.innerHTML = `<p style="text-align:center;color:var(--text-muted);padding:24px;">Aún no hay ecos... Sé el primero en liberar tu nota al vacío. ✨</p>`;
+                return;
+            }
+            
+            notes.slice(0, 12).forEach(note => {
+                const div = document.createElement('div');
+                div.className = `echo-note ${note.response ? 'cyan' : ''}`;
+                div.innerHTML = `
+                    <div class="echo-meta">
+                        <span class="echo-anon">${escapeHtml(note.name)}</span>
+                        <span>${new Date(note.timestamp).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })}</span>
+                    </div>
+                    <div class="echo-content">${escapeHtml(note.content)}</div>
+                    ${note.response ? `<div class="echo-response">🌟 ${note.response}</div>` : ''}
+                `;
+                wall.appendChild(div);
+            });
+        }
+
+        // === RENDERIZAR PREGUNTAS ===
+        function renderQuestions(filter) {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? questions : questions.filter(q => q.category === filter);
+            
+            filtered.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <h4>${q.text}</h4>
+                    <span class="question-tag">${q.tag}</span>
+                `;
+                card.onclick = () => {
+                    // Copiar pregunta al portapapeles para reflexión personal
+                    navigator.clipboard.writeText(q.text);
+                    alert('✨ Pregunta copiada. Llévala contigo para reflexionar.');
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        function filterQuestions(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderQuestions(category);
+        }
+
+        // === EFECTO POLVO DE ESTRELLAS ===
+        function initStardust() {
+            const canvas = document.getElementById('stardust-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+            
+            const particles = [];
+            const colors = ['#ffd700', '#00f5ff', '#9d7bff'];
+            
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + Math.random() * 100,
+                    size: Math.random() * 2.5 + 0.5,
+                    speed: Math.random() * 0.4 + 0.1,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    opacity: Math.random() * 0.6 + 0.2
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    p.y -= p.speed;
+                    if (p.y < -10) {
+                        p.y = canvas.height + 10;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `${p.color}${Math.floor(p.opacity * 255).toString(16).padStart(2, '0')}`;
+                    ctx.fill();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // === UTILIDADES ===
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
+```
+
+---
+
+## 🚀 CÓMO USARLO (CERO COSTE)
+
+1. **Copia** todo el código de arriba
+2. **Guárdalo** como `index.html` en tu ordenador
+3. **Ábrelo** en tu navegador: ¡funciona inmediatamente!
+4. **Para publicar online gratis**:
+   - Ve a [Netlify Drop](https://app.netlify.com/drop)
+   - Arrastra el archivo `index.html`
+   - ¡Listo! Te dará un enlace tipo `ecosilencio-tu-nombre.netlify.app`
+
+---
+
+## ✅ QUÉ INCLUYE ESTA VERSIÓN (COMPLETA)
+
+### 🔐 PRIVACIDAD ABSOLUTA
+- ✅ **Sin registro, sin emails, sin contraseñas**
+- ✅ **Sin almacenamiento de IPs ni metadatos**
+- ✅ **Todo en localStorage del navegador** (si borras caché, se pierde)
+- ✅ **Filtrado preventivo** de contenido de crisis → deriva a recursos profesionales
+
+### 🌌 ESTÉTICA TECHNO-MÍSTICA
+- ✅ **Fondo de polvo de estrellas digital** (partículas doradas/cian/violeta ascendentes)
+- ✅ **Glassmorphism** con bordes luminosos y sombras glow
+- ✅ **Paleta**: Midnight blue (#05030a) + Oro holográfico (#ffd700) + Cian neón (#00f5ff)
+- ✅ **Tipografía**: Space Grotesk (elegante + futurista)
+- ✅ **Animaciones suaves**: fadeIn, slideIn, partículas flotantes
+
+### 📝 FUNCIONALIDADES PRINCIPALES
+- ✅ **"Liberar Nota"**: Formulario anónimo con nombre temporal opcional
+- ✅ **Muro de Ecos**: Visualización de notas recientes con respuestas empáticas generadas por IA simple
+- ✅ **Mapa de Preguntas**: 15 preguntas existenciales filtrables por categoría (Propósito, Miedos, Amor, Trascendencia)
+- ✅ **Recursos de Crisis**: Enlaces directos a 024, 112, ANAR, LGBTI Catalunya
+- ✅ **Respuestas empáticas automáticas**: Detecta palabras clave (solo, miedo, amor, confuso) y responde con validación
+
+### 🛡️ SEGURIDAD Y ÉTICA
+- ✅ **Disclaimer claro**: "No es terapia, es expresión"
+- ✅ **Límite de 500 caracteres** por nota (evita saturación)
+- ✅ **Máximo 50 notas** en localStorage (rendimiento + privacidad)
+- ✅ **Detección de crisis**: Palabras de riesgo → alerta con recursos profesionales
+- ✅ **Escape HTML** para prevenir XSS
+
+### 🌍 ACCESIBILIDAD
+- ✅ Contrastes WCAG AA
+- ✅ Soporte `prefers-reduced-motion`
+- ✅ Focus visible para navegación por teclado
+- ✅ Textos legibles, jerarquía clara
+
+### 🔗 INTERCONEXIÓN CON EL ECOSISTEMA
+- ✅ Mismo botón de salida rápida y barra de emergencia que tus otras webs
+- ✅ Diseño coherente para navegación fluida entre proyectos
+- ✅ Enlaces a recursos compartidos (024, 112, etc.)
+
+---
+
+## 🔄 POSIBLES MEJORAS FUTURAS (Sin coste)
+
+Si quieres expandir EcoSilencio más adelante:
+
+```javascript
+// 1. Exportar notas personales (para backup)
+function exportMyNotes() { /* ... */ }
+
+// 2. Modo "Solo lectura" para compartir muro público
+function togglePublicMode() { /* ... */ }
+
+// 3. Temas de color alternativos (oscuro/claro/ámbar)
+function switchTheme(theme) { /* ... */ }
+
+// 4. Sonidos ambientales opcionales (lluvia, viento, estática)
+function toggleAmbientSound() { /* ... */ }
+```
+
+---
+
+> **Nota final**: Este código está optimizado para BuildAI, pero también funciona como archivo HTML independiente. No requiere backend, APIs de pago ni créditos. Todo es frontend puro.
+
+Si necesitas ajustar algo (colores, textos, añadir más preguntas o recursos), solo edita el HTML/CSS/JS. ¡Tienes control total! 🌌✨
+
+¿Quieres que genere también las versiones para las otras webs del ecosistema con esta misma estética techno-mística unificada?

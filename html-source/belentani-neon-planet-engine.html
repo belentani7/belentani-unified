@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI // NEON PLANET ENGINE</title>
+<style>
+  :root {
+    --neon-cyan: #00f3ff;
+    --neon-pink: #ff0055;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background-color: #000; 
+    color: var(--neon-cyan); 
+    overflow: hidden; 
+    font-family: var(--mono);
+    user-select: none;
+  }
+  #webgl-container { position: fixed; inset: 0; z-index: 1; }
+  
+  #hud {
+    position: fixed; inset: 0; z-index: 10; pointer-events: none;
+    padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .hud-box {
+    background: rgba(0, 15, 20, 0.4); border: 1px solid rgba(0, 243, 255, 0.3);
+    backdrop-filter: blur(8px); padding: 1rem; width: max-content;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  }
+  .title { font-size: 1.2rem; font-weight: bold; letter-spacing: 0.3em; margin-bottom: 0.5rem; text-shadow: 0 0 10px var(--neon-cyan); }
+  .stats { font-size: 0.7rem; line-height: 1.8; letter-spacing: 0.1em; color: rgba(255,255,255,0.7); }
+  .stats b { color: var(--neon-pink); }
+  .controls-hint { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--neon-cyan); animation: pulse 2s infinite alternate; }
+  
+  @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-cyan); } }
+  .crosshair {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 30px; height: 30px; border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 50%;
+    z-index: 5; pointer-events: none;
+  }
+  .crosshair::before, .crosshair::after {
+    content: ''; position: absolute; background: rgba(0, 243, 255, 0.5);
+  }
+  .crosshair::before { top: 14px; left: -10px; width: 50px; height: 1px; }
+  .crosshair::after { left: 14px; top: -10px; width: 1px; height: 50px; }
+</style>
+<!-- Import Map para carregar Three.js e Post-Processing diretamente da CDN -->
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+</head>
+<body>
+
+<div id="webgl-container"></div>
+<div class="crosshair"></div>
+
+<div id="hud">
+  <div class="hud-box">
+    <div class="title">LIQUID NEON EXOPLANET</div>
+    <div class="stats">
+      SYSTEM // <b>XJ-99 OMEGA</b><br>
+      CORE TEMP // <b>14,500 K</b><br>
+      ATMOSPHERE // <b>IONIZED PLASMA</b><br>
+      RINGS // <b>PHOTONIC FLUID</b>
+    </div>
+  </div>
+  <div class="controls-hint">
+    [ DRAG TO ORBIT ] --- [ SCROLL TO ZOOM/GET CLOSER ] --- [ AUTO-PHYSICS ENABLED ]
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+/**
+ * MOTOR GRÁFICO & CÂMERA
+ */
+const container = document.getElementById('webgl-container');
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setClearColor(0x000205);
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x000205, 0.001);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(0, 150, 450);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance = 65;  // Distância mínima (Quão perto você pode chegar)
+controls.maxDistance = 2000;
+controls.enablePan = false;
+
+/**
+ * POST-PROCESSING (EFEITO NEON/GLOW)
+ */
+const renderScene = new RenderPass(scene, camera);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.5, 0.8, 0.1);
+const composer = new EffectComposer(renderer);
+composer.addPass(renderScene);
+composer.addPass(bloomPass);
+
+/**
+ * CHUNK DE SHADER COMUM (FBM NOISE)
+ */
+const noiseChunk = `
+  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+  
+  float snoise(vec3 v) {
+    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+    vec3 i  = floor(v + dot(v, C.yyy));
+    vec3 x0 = v - i + dot(i, C.xxx);
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+    vec3 x1 = x0 - i1 + C.xxx;
+    vec3 x2 = x0 - i2 + C.yyy;
+    vec3 x3 = x0 - D.yyy;
+    i = mod289(i);
+    vec4 p = permute(permute(permute(
+              i.z + vec4(0.0, i1.z, i2.z, 1.0))
+            + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+            + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+    float n_ = 0.142857142857;
+    vec3 ns = n_ * D.wyz - D.xzx;
+    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_);
+    vec4 x = x_ *ns.x + ns.yyyy;
+    vec4 y = y_ *ns.x + ns.yyyy;
+    vec4 h = 1.0 - abs(x) - abs(y);
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+    vec4 s0 = floor(b0)*2.0 + 1.0;
+    vec4 s1 = floor(b1)*2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+    vec3 p0 = vec3(a0.xy, h.x);
+    vec3 p1 = vec3(a0.zw, h.y);
+    vec3 p2 = vec3(a1.xy, h.z);
+    vec3 p3 = vec3(a1.zw, h.w);
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+    vec4 m = max(0.5 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    m = m * m; return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
+  }
+
+  float fbm(vec3 x) {
+    float v = 0.0;
+    float a = 0.5;
+    vec3 shift = vec3(100.0);
+    for (int i = 0; i < 5; ++i) {
+      v += a * snoise(x);
+      x = x * 2.0 + shift;
+      a *= 0.5;
+    }
+    return v;
+  }
+`;
+
+/**
+ * 1. O PLANETA (SUPERFÍCIE NEON LÍQUIDA)
+ */
+const planetGeo = new THREE.SphereGeometry(60, 128, 128);
+const planetMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0 },
+    uColor1: { value: new THREE.Color('#00f3ff') }, // Cyan
+    uColor2: { value: new THREE.Color('#ff0055') }, // Pink
+    uColor3: { value: new THREE.Color('#10002b') }  // Dark Void
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    void main() {
+      vUv = uv;
+      vPosition = position;
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    ${noiseChunk}
+    uniform float uTime;
+    uniform vec3 uColor1;
+    uniform vec3 uColor2;
+    uniform vec3 uColor3;
+    varying vec2 vUv;
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+
+    void main() {
+      vec3 pos = vPosition * 0.03;
+      
+      // Múltiplas camadas de ruído para o efeito líquido/magma
+      float q = fbm(pos + uTime * 0.1);
+      float r = fbm(pos + q + uTime * 0.15 - pos.x * 0.5);
+      float noiseVal = fbm(pos + r);
+      
+      // Mistura das cores neon
+      vec3 color = mix(uColor3, uColor2, smoothstep(0.0, 0.6, noiseVal));
+      color = mix(color, uColor1, smoothstep(0.4, 1.0, noiseVal));
+      
+      // Iluminação de borda (Fresnel)
+      float fresnel = pow(1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+      color += uColor1 * fresnel * 0.8;
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `,
+});
+const planet = new THREE.Mesh(planetGeo, planetMat);
+scene.add(planet);
+
+/**
+ * 2. A ATMOSFERA (GLOW EXTERNO)
+ */
+const atmoGeo = new THREE.SphereGeometry(66, 64, 64);
+const atmoMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uColor: { value: new THREE.Color('#00f3ff') }
+  },
+  vertexShader: `
+    varying vec3 vNormal;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 uColor;
+    varying vec3 vNormal;
+    void main() {
+      // Glow suave nas bordas, desaparece no centro
+      float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 2.5);
+      gl_FragColor = vec4(uColor * intensity * 1.5, intensity);
+    }
+  `,
+  transparent: true,
+  blending: THREE.AdditiveBlending,
+  side: THREE.BackSide,
+  depthWrite: false
+});
+const atmosphere = new THREE.Mesh(atmoGeo, atmoMat);
+scene.add(atmosphere);
+
+/**
+ * 3. ANÉIS DE LUZ LÍQUIDA (Shader Matemático Radial)
+ */
+const ringGeo = new THREE.PlaneGeometry(350, 350, 64, 64);
+const ringMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0 },
+    uColor1: { value: new THREE.Color('#00f3ff') },
+    uColor2: { value: new THREE.Color('#ff0055') }
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    varying vec3 vPos;
+    void main() {
+      vUv = uv;
+      vPos = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    ${noiseChunk}
+    uniform float uTime;
+    uniform vec3 uColor1;
+    uniform vec3 uColor2;
+    varying vec2 vUv;
+    varying vec3 vPos;
+
+    void main() {
+      // Converter UV plano para coordenadas polares (Raio e Ângulo)
+      vec2 centered = vUv - 0.5;
+      float radius = length(centered) * 2.0; // 0 no centro, 1 na borda
+      float angle = atan(centered.y, centered.x);
+      
+      // Máscara do Anel (Buraco no meio, fade nas bordas)
+      if(radius < 0.4 || radius > 0.95) discard;
+      float ringMask = smoothstep(0.4, 0.45, radius) * smoothstep(0.95, 0.85, radius);
+
+      // Distorção polar (O fluido rodando em círculos)
+      vec3 polarPos = vec3(radius * 10.0, angle * 5.0 - uTime * 0.5, uTime * 0.2);
+      float n = fbm(polarPos);
+      
+      // Faixas de energia baseadas no raio e ruído
+      float bands = sin(radius * 50.0 + n * 10.0 - uTime * 3.0);
+      bands = smoothstep(0.5, 1.0, bands);
+
+      vec3 color = mix(uColor1, uColor2, n);
+      color *= bands * 2.0; // Intensifica a luz nas faixas
+
+      gl_FragColor = vec4(color, ringMask * bands * n);
+    }
+  `,
+  transparent: true,
+  blending: THREE.AdditiveBlending,
+  side: THREE.DoubleSide,
+  depthWrite: false
+});
+const rings = new THREE.Mesh(ringGeo, ringMat);
+rings.rotation.x = Math.PI / 1.7; // Inclinação do anel
+scene.add(rings);
+
+/**
+ * 4. POEIRA ESTELAR (Fundo imersivo)
+ */
+const starGeo = new THREE.BufferGeometry();
+const starCount = 3000;
+const starPos = new Float32Array(starCount * 3);
+for(let i=0; i < starCount * 3; i++) {
+  starPos[i] = (Math.random() - 0.5) * 2000;
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const starMat = new THREE.PointsMaterial({
+  color: 0xffffff, size: 1.5, transparent: true, opacity: 0.8,
+  blending: THREE.AdditiveBlending
+});
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
+
+/**
+ * LOOP DE ANIMAÇÃO
+ */
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const time = clock.getElapsedTime();
+
+  // Atualiza Shaders
+  planetMat.uniforms.uTime.value = time;
+  ringMat.uniforms.uTime.value = time;
+
+  // Rotações sutis independentes do usuário
+  planet.rotation.y = time * 0.05;
+  rings.rotation.z = time * 0.02;
+  stars.rotation.y = time * 0.01;
+
+  controls.update(); // Permite o "chegar perto" suave
+  composer.render(); // Renderiza com Post-Processing (Bloom Neon)
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
+</script>
+</body>
+</html>

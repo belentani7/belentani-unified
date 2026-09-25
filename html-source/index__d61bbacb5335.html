@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE JUDAS EXPERIENCE // BIOMETRIC ONBOARDING</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--void:#0a0a0a;--neon-red:#ff0000;--matrix-green:#00ff41;--cyan:#00ffff;--dark-red:#330000;--glass:rgba(255,0,0,0.03);--glass-border:rgba(255,0,0,0.15)}
+@font-face{font-family:'Mono';src:local('Courier New'),local('monospace')}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:#fff;font-family:'Courier New',monospace;cursor:none}
+body{position:relative}
+canvas#matrix{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.35}
+canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.crt-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px)}
+.crt-overlay::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.6) 100%);pointer-events:none;z-index:9999}
+.custom-cursor{position:fixed;width:20px;height:20px;border:2px solid var(--neon-red);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width 0.1s,height 0.1s;border-color var(--neon-red);mix-blend-mode:difference}
+.custom-cursor::after{content:'';position:absolute;top:50%;left:50%;width:4px;height:4px;background:var(--neon-red);border-radius:50%;transform:translate(-50%,-50%)}
+.hud{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9997;pointer-events:none}
+.hud-top{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start}
+.hud-panel{background:rgba(10,10,10,0.85);border:1px solid var(--glass-border);padding:10px 16px;font-size:11px;color:var(--neon-red);letter-spacing:2px;backdrop-filter:blur(4px)}
+.hud-panel span{color:var(--matrix-green)}
+.hud-bottom{position:absolute;bottom:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end}
+.hud-coords{font-size:10px;color:rgba(255,0,0,0.4);letter-spacing:3px}
+.screen-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;align-items:center;justify-content:center}
+.screen{display:none;width:100%;height:100%;position:absolute;top:0;left:0;flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity 0.6s ease}
+.screen.active{display:flex;opacity:1}
+.screen-title{font-size:clamp(18px,4vw,42px);font-weight:bold;color:var(--neon-red);letter-spacing:8px;text-transform:uppercase;text-shadow:0 0 20px rgba(255,0,0,0.6),0 0 60px rgba(255,0,0,0.2);margin-bottom:8px;text-align:center}
+.screen-subtitle{font-size:clamp(10px,1.5vw,14px);color:rgba(255,0,0,0.5);letter-spacing:6px;margin-bottom:40px;text-align:center}
+.scan-visual{width:min(300px,70vw);height:min(300px,70vw);border:1px solid var(--glass-border);position:relative;display:flex;align-items:center;justify-content:center;margin:20px 0;overflow:hidden}
+.scan-visual::before{content:'';position:absolute;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--neon-red),transparent);animation:scanLine 2.5s ease-in-out infinite}
+.scan-visual::after{content:'';position:absolute;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--neon-red),transparent);animation:scanLineV 3s ease-in-out infinite}
+@keyframes scanLine{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes scanLineV{0%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:100%;opacity:0}}
+.scan-icon{font-size:clamp(40px,10vw,80px);color:var(--neon-red);opacity:0.3;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:0.6;transform:scale(1.05)}}
+.progress-bar{width:min(400px,80vw);height:3px;background:rgba(255,0,0,0.1);margin-top:30px;position:relative;overflow:hidden}
+.progress-fill{height:100%;background:var(--neon-red);width:0%;transition:width 0.1s linear;box-shadow:0 0 10px var(--neon-red)}
+.nav-hint{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);z-index:9997;color:rgba(255,0,0,0.3);font-size:10px;letter-spacing:4px;pointer-events:none;text-align:center}
+.nav-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:9997;display:flex;flex-direction:column;gap:12px}
+.nav-dot{width:8px;height:8px;border:1px solid rgba(255,0,0,0.3);border-radius:50%;cursor:pointer;pointer-events:all;transition:all 0.3s}
+.nav-dot.active{background:var(--neon-red);border-color:var(--neon-red);box-shadow:0 0 10px var(--neon-red)}
+.nav-dot:hover{border-color:var(--neon-red);transform:scale(1.3)}
+.glitch{animation:glitch 0.3s infinite}
+@keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(2px,-2px)}100%{transform:translate(0)}}
+.flicker{animation:flicker 0.15s infinite}
+@keyframes flicker{0%{opacity:0.97}50%{opacity:1}100%{opacity:0.98}}
+.bio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(280px,60vw);margin:10px 0}
+.bio-cell{aspect-ratio:1;border:1px solid var(--glass-border);background:var(--glass);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,0,0,0.3);animation:cellPulse 1.5s ease-in-out infinite}
+.bio-cell:nth-child(odd){animation-delay:0.5s}
+@keyframes cellPulse{0%,100%{border-color:rgba(255,0,0,0.1)}50%{border-color:rgba(255,0,0,0.3)}}
+.id-frame{width:min(260px,65vw);aspect-ratio:1.586;border:1px solid var(--glass-border);padding:20px;position:relative;display:flex;flex-direction:column;justify-content:space-between}
+.id-frame::before{content:'CLASSIFIED';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:24px;color:rgba(255,0,0,0.06);letter-spacing:8px;white-space:nowrap}
+.id-field{border-bottom:1px solid rgba(255,0,0,0.1);padding:6px 0;font-size:10px;color:rgba(255,0,0,0.5);letter-spacing:2px}
+.id-field span{color:var(--matrix-green)}
+.wave-container{width:min(400px,80vw);height:80px;display:flex;align-items:center;justify-content:center;gap:3px}
+.wave-bar{width:3px;background:var(--neon-red);border-radius:2px;animation:wave 1.2s ease-in-out infinite;opacity:0.6}
+@keyframes wave{0%,100%{height:8px}50%{height:60px}}
+.neural-node{position:absolute;width:6px;height:6px;background:var(--neon-red);border-radius:50%;animation:nodeGlow 2s ease-in-out infinite}
+@keyframes nodeGlow{0%,100%{box-shadow:0 0 4px var(--neon-red);opacity:0.3}50%{box-shadow:0 0 16px var(--neon-red);opacity:1}}
+.enter-btn{margin-top:30px;padding:12px 40px;background:transparent;border:1px solid var(--neon-red);color:var(--neon-red);font-family:inherit;font-size:12px;letter-spacing:4px;cursor:pointer;pointer-events:all;transition:all 0.3s;text-transform:uppercase}
+.enter-btn:hover{background:var(--neon-red);color:var(--void);box-shadow:0 0 30px rgba(255,0,0,0.4)}
+.type-text{overflow:hidden;white-space:nowrap;border-right:2px solid var(--neon-red);animation:typing 3s steps(40) 1s forwards, blink 0.8s step-end infinite;width:0}
+@keyframes typing{to{width:100%}}
+@keyframes blink{50%{border-color:transparent}}
+.audio-indicator{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9997;display:flex;gap:3px;align-items:flex-end;height:16px}
+.audio-bar{width:2px;background:var(--neon-red);transition:height 0.1s;border-radius:1px}
+.screen-label{position:fixed;top:50%;left:20px;transform:translateY(-50%) rotate(-90deg);transform-origin:center;z-index:9997;color:rgba(255,0,0,0.15);font-size:9px;letter-spacing:6px;pointer-events:none;white-space:nowrap}
+.status-ok{color:var(--matrix-green) !important}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.6s ease forwards}
+@media(max-width:768px){
+.hud-panel{font-size:9px;padding:6px 10px;letter-spacing:1px}
+.nav-dots{right:10px;gap:8px}
+.nav-dot{width:6px;height:6px}
+.screen-title{letter-spacing:4px}
+.screen-subtitle{letter-spacing:2px;font-size:10px}
+}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<canvas id="particles"></canvas>
+<div class="crt-overlay"></div>
+<div class="custom-cursor" id="cursor"></div>
+
+<div class="hud">
+<div class="hud-top">
+<div class="hud-panel">JUDAS://SYS <span id="hud-status">ACTIVE</span></div>
+<div class="hud-panel" id="hud-time">00:00:00</div>
+<div class="hud-panel">CLEARANCE: <span>LVL-7</span></div>
+</div>
+<div class="hud-bottom">
+<div class="hud-coords" id="hud-coords">LAT 0.0000 / LNG 0.0000</div>
+<div class="hud-coords" id="hud-mem">MEM: 0MB</div>
+</div>
+</div>
+
+<div class="screen-label" id="screen-label">SCREEN 01 // RETINA</div>
+<div class="nav-dots" id="nav-dots"></div>
+
+<div class="audio-indicator" id="audio-indicator"></div>
+
+<!-- SCREEN 1: RETINA -->
+<div class="screen-container">
+<div class="screen active" id="screen-1">
+<div class="screen-title">RETINAL SCAN</div>
+<div class="screen-subtitle">INITIATING OCULAR BIOMETRIC</div>
+<div class="scan-visual">
+<div class="scan-icon">&#9899;</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-1"></div></div>
+<div class="nav-hint">PRESS [2] OR WAIT</div>
+</div>
+
+<!-- SCREEN 2: FINGERPRINT -->
+<div class="screen" id="screen-2">
+<div class="screen-title">FINGERPRINT</div>
+<div class="screen-subtitle">DERMAL PATTERN ANALYSIS</div>
+<div class="scan-visual">
+<div style="position:relative;width:100%;height:100%">
+<svg viewBox="0 0 200 200" style="width:60%;height:60%;position:absolute;top:20%;left:20%;opacity:0.3">
+<ellipse cx="100" cy="100" rx="60" ry="80" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+<ellipse cx="100" cy="100" rx="50" ry="70" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+<ellipse cx="100" cy="100" rx="40" ry="60" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+<ellipse cx="100" cy="100" rx="30" ry="50" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+<ellipse cx="100" cy="100" rx="20" ry="40" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+<ellipse cx="100" cy="100" rx="10" ry="30" fill="none" stroke="#ff0000" stroke-width="0.5"/>
+</svg>
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-2"></div></div>
+<div class="nav-hint">PRESS [3] OR WAIT</div>
+</div>
+
+<!-- SCREEN 3: VOICE -->
+<div class="screen" id="screen-3">
+<div class="screen-title">VOICE MATCH</div>
+<div class="screen-subtitle">VOCAL WAVEFORM SIGNATURE</div>
+<div class="scan-visual">
+<div class="wave-container" id="wave-container"></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-3"></div></div>
+<div class="nav-hint">PRESS [4] OR WAIT</div>
+</div>
+
+<!-- SCREEN 4: FACIAL 3D -->
+<div class="screen" id="screen-4">
+<div class="screen-title">FACIAL 3D</div>
+<div class="screen-subtitle">TOPOGRAPHIC MAPPING</div>
+<div class="scan-visual">
+<div class="bio-grid" id="bio-grid"></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-4"></div></div>
+<div class="nav-hint">PRESS [5] OR WAIT</div>
+</div>
+
+<!-- SCREEN 5: ID -->
+<div class="screen" id="screen-5">
+<div class="screen-title">IDENTITY</div>
+<div class="screen-subtitle">DOCUMENT VERIFICATION</div>
+<div class="id-frame">
+<div class="id-field">SUBJECT: <span>JUDAS-001</span></div>
+<div class="id-field">STATUS: <span class="status-ok">VERIFIED</span></div>
+<div class="id-field">DEBT: <span>UNPAID</span></div>
+<div class="id-field">CLEARANCE: <span>LVL-7</span></div>
+<div class="id-field">ORIGIN: <span>UNKNOWN</span></div>
+<div class="id-field">TIMESTAMP: <span id="id-timestamp">--</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-5"></div></div>
+<div class="nav-hint">PRESS [6] OR WAIT</div>
+</div>
+
+<!-- SCREEN 6: NEURAL -->
+<div class="screen" id="screen-6">
+<div class="screen-title">NEURAL SCAN</div>
+<div class="screen-subtitle">COGNITIVE PATTERN EXTRACTION</div>
+<div class="scan-visual" id="neural-container" style="position:relative">
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-6"></div></div>
+<div class="nav-hint">PRESS [7] OR WAIT</div>
+</div>
+
+<!-- SCREEN 7: WELCOME -->
+<div class="screen" id="screen-7">
+<div class="screen-title glitch flicker">ACCESS GRANTED</div>
+<div class="screen-subtitle">WELCOME TO THE JUDAS EXPERIENCE</div>
+<div style="text-align:center;margin:20px 0">
+<div style="font-size:clamp(12px,2vw,16px);color:rgba(255,0,0,0.5);letter-spacing:3px;margin-bottom:16px">ALL BIOMETRIC PROTOCOLS: <span class="status-ok">CONFIRMED</span></div>
+<div style="font-size:10px;color:rgba(255,0,0,0.3);letter-spacing:2px">SUBJECT INTEGRATED // ENJAMBRE ACTIVE</div>
+</div>
+<button class="enter-btn" id="enter-btn" onclick="enterExperience()">ENTER THE VOID</button>
+<div class="nav-hint">[1-6] REVISIT // [ESC] EXIT</div>
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ========== MATRIX RAIN ==========
+const matrixCanvas=document.getElementById('matrix');
+const mCtx=matrixCanvas.getContext('2d');
+let mCols,mDrops;
+const matrixChars='JUDAS零壱弐参肆伍陸漆捌玖01アイウエオカキクケコVOIDProtocolJudah betrayal';
+function initMatrix(){
+matrixCanvas.width=window.innerWidth;
+matrixCanvas.height=window.innerHeight;
+mCols=Math.floor(matrixCanvas.width/14);
+mDrops=[];
+for(let i=0;i<mCols;i++)mDrops[i]=Math.random()*-100;
+}
+function drawMatrix(){
+mCtx.fillStyle='rgba(10,10,10,0.05)';
+mCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
+mCtx.fillStyle='#00ff41';
+mCtx.font='14px monospace';
+for(let i=0;i<mCols;i++){
+const t=matrixChars[Math.floor(Math.random()*matrixChars.length)];
+mCtx.fillText(t,i*14,mDrops[i]*14);
+if(mDrops[i]*14>matrixCanvas.height&&Math.random()>0.975)mDrops[i]=0;
+mDrops[i]++;
+}
+}
+
+// ========== PARTICLE SYSTEM ==========
+const partCanvas=document.getElementById('particles');
+const pCtx=partCanvas.getContext('2d');
+let particles=[];
+const PARTICLE_COUNT=5000;
+function initParticles(){
+partCanvas.width=window.innerWidth;
+partCanvas.height=window.innerHeight;
+particles=[];
+for(let i=0;i<PARTICLE_COUNT;i++){
+particles.push({
+x:Math.random()*partCanvas.width,
+y:Math.random()*partCanvas.height,
+vx:(Math.random()-0.5)*0.3,
+vy:(Math.random()-0.5)*0.3,
+size:Math.random()*1.5+0.3,
+alpha:Math.random()*0.4+0.1,
+color:Math.random()>0.85?'#ff0000':'#00ff41'
+});
+}
+}
+function drawParticles(){
+pCtx.clearRect(0,0,partCanvas.width,partCanvas.height);
+for(let i=0;i<particles.length;i++){
+const p=particles[i];
+p.x+=p.vx;p.y+=p.vy;
+if(p.x<0)p.x=partCanvas.width;
+if(p.x>partCanvas.width)p.x=0;
+if(p.y<0)p.y=partCanvas.height;
+if(p.y>partCanvas.height)p.y=0;
+pCtx.globalAlpha=p.alpha;
+pCtx.fillStyle=p.color;
+pCtx.fillRect(p.x,p.y,p.size,p.size);
+}
+pCtx.globalAlpha=1;
+}
+
+// ========== CUSTOM CURSOR ==========
+const cur=document.getElementById('cursor');
+document.addEventListener('mousemove',function(e){
+cur.style.left=e.clientX+'px';
+cur.style.top=e.clientY+'px';
+});
+
+// ========== HUD ==========
+const hudTime=document.getElementById('hud-time');
+const hudCoords=document.getElementById('hud-coords');
+const hudMem=document.getElementById('hud-mem');
+function updateHUD(){
+const n=new Date();
+hudTime.textContent=n.toTimeString().split(' ')[0];
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(function(p){
+hudCoords.textContent='LAT '+p.coords.latitude.toFixed(4)+' / LNG '+p.coords.longitude.toFixed(4);
+});
+}
+if(performance.memory){
+hudMem.textContent='MEM: '+Math.round(performance.memory.usedJSHeapSize/1048576)+'MB';
+}
+}
+
+// ========== AUDIO SYSTEM ==========
+let audioCtx,audioPlaying=false;
+const audioIndicator=document.getElementById('audio-indicator');
+let audioBars=[];
+function initAudioIndicator(){
+for(let i=0;i<20;i++){
+const bar=document.createElement('div');
+bar.className='audio-bar';
+bar.style.height='2px';
+audioIndicator.appendChild(bar);
+audioBars.push(bar);
+}
+}
+function animateAudioBars(){
+if(!audioPlaying)return;
+for(let i=0;i<audioBars.length;i++){
+audioBars[i].style.height=(Math.random()*14+2)+'px';
+}
+requestAnimationFrame(animateAudioBars);
+}
+function startAudio(){
+if(audioPlaying)return;
+try{
+audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+const osc1=audioCtx.createOscillator();
+const osc2=audioCtx.createOscillator();
+const osc3=audioCtx.createOscillator();
+const gain=audioCtx.createGain();
+const gain2=audioCtx.createGain();
+const filter=audioCtx.createBiquadFilter();
+osc1.type='sine';osc1.frequency.value=432;
+osc2.type='sine';osc2.frequency.value=216;
+osc3.type='triangle';osc3.frequency.value=432;
+gain.gain.value=0.06;
+gain2.gain.value=0.03;
+filter.type='lowpass';filter.frequency.value=800;filter.Q.value=2;
+osc1.connect(gain);osc2.connect(gain2);osc3.connect(gain2);
+gain.connect(filter);gain2.connect(filter);
+filter.connect(audioCtx.destination);
+osc1.start();osc2.start();osc3.start();
+audioPlaying=true;
+initAudioIndicator();
+animateAudioBars();
+}catch(e){console.log('Audio blocked',e);}
+}
+
+// ========== SCREENS ==========
+const screenNames=['RETINA','FINGERPRINT','VOICE','FACIAL 3D','IDENTITY','NEURAL','WELCOME'];
+let currentScreen=1;
+const totalScreens=7;
+
+function createNavDots(){
+const container=document.getElementById('nav-dots');
+for(let i=1;i<=totalScreens;i++){
+const dot=document.createElement('div');
+dot.className='nav-dot'+(i===1?' active':'');
+dot.setAttribute('data-screen',i);
+dot.addEventListener('click',function(){goToScreen(i);});
+container.appendChild(dot);
+}
+}
+
+function updateNavDots(){
+document.querySelectorAll('.nav-dot').forEach(function(d){
+d.classList.toggle('active',parseInt(d.getAttribute('data-screen'))===currentScreen);
+});
+}
+
+function goToScreen(n){
+if(n<1||n>totalScreens)return;
+document.getElementById('screen-'+currentScreen).classList.remove('active');
+currentScreen=n;
+document.getElementById('screen-'+currentScreen).classList.add('active');
+document.getElementById('screen-label').textContent='SCREEN 0'+n+' // '+screenNames[n-1];
+updateNavDots();
+}
+
+function autoProgress(screenNum,duration){
+const bar=document.getElementById('progress-'+screenNum);
+if(!bar)return;
+let elapsed=0;
+const interval=setInterval(function(){
+elapsed+=50;
+bar.style.width=Math.min(100,(elapsed/duration)*100)+'%';
+if(elapsed>=duration){
+clearInterval(interval);
+if(screenNum<totalScreens)setTimeout(function(){goToScreen(screenNum+1);},400);
+}
+},50);
+}
+
+// ========== SCREEN-SPECIFIC INIT ==========
+function initVoiceBars(){
+const container=document.getElementById('wave-container');
+container.innerHTML='';
+for(let i=0;i<30;i++){
+const bar=document.createElement('div');
+bar.className='wave-bar';
+bar.style.animationDelay=(i*0.05)+'s';
+container.appendChild(bar);
+}
+}
+
+function initBioGrid(){
+const grid=document.getElementById('bio-grid');
+grid.innerHTML='';
+for(let i=0;i<9;i++){
+const cell=document.createElement('div');
+cell.className='bio-cell';
+cell.textContent=Math.random()>0.5?'1':'0';
+grid.appendChild(cell);
+}
+}
+
+function initNeuralNodes(){
+const container=document.getElementById('neural-container');
+container.innerHTML='';
+for(let i=0;i<12;i++){
+const node=document.createElement('div');
+node.className='neural-node';
+node.style.left=Math.random()*80+10+'%';
+node.style.top=Math.random()*80+10+'%';
+node.style.animationDelay=Math.random()*2+'s';
+container.appendChild(node);
+}
+}
+
+function updateTimestamp(){
+const el=document.getElementById('id-timestamp');
+if(el)el.textContent=new Date().toISOString().split('.')[0]+'Z';
+}
+
+// ========== INIT ==========
+function init(){
+initMatrix();
+initParticles();
+createNavDots();
+initVoiceBars();
+initBioGrid();
+initNeuralNodes();
+updateTimestamp();
+
+setInterval(function(){
+drawMatrix();
+drawParticles();
+},33);
+
+setInterval(updateHUD,1000);
+updateHUD();
+
+autoProgress(1,5000);
+
+document.addEventListener('keydown',function(e){
+startAudio();
+const key=parseInt(e.key);
+if(key>=1&&key<=7){
+goToScreen(key);
+if(key>=1&&key<=6)autoProgress(key,4000);
+}
+if(e.key==='Escape')goToScreen(1);
+});
+
+document.addEventListener('click',function(){startAudio();});
+}
+
+window.enterExperience=function(){
+const btn=document.getElementById('enter-btn');
+btn.textContent='LOADING...';
+btn.style.background='var(--neon-red)';
+btn.style.color='var(--void)';
+setTimeout(function(){
+btn.textContent='ENTERED';
+},1500);
+};
+
+init();
+})();
+</script>
+</body>
+</html>

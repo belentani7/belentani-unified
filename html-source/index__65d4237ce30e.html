@@ -1,0 +1,271 @@
+<body>
+  <!-- 3D Space Background -->
+  <canvas id="space-canvas"></canvas>
+  <canvas id="matrix-canvas"></canvas>
+  <div></div><!-- Ship HUD Frame -->
+  <div class="ship-frame">
+    <div></div></div>
+
+  <!-- Navigation -->
+  <header class="nav-header">
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav">
+      <button class="nav-link active" data-section="home">Home</button>
+      <button class="nav-link" data-section="artist">The Artist</button>
+      <button class="nav-link" data-section="music">Music</button>
+      <button class="nav-link" data-section="studio">Studio</button>
+      <button class="nav-link" data-section="judas">Judas</button>
+      <button class="nav-link" data-section="portal">Portal</button>
+      <button class="nav-link" data-section="gallery">Gallery</button>
+      <button class="nav-link" data-section="contact">Contact</button>
+    </nav>
+    <div class="lang-selector" id="lang-selector">
+      <button class="lang-btn active" data-lang="es">🇪🇸</button>
+      <button class="lang-btn" data-lang="en">🇬🇧</button>
+      <button class="lang-btn" data-lang="pt">🇧🇷</button>
+      <button class="lang-btn" data-lang="fr">🇫🇷</button>
+      <button class="lang-btn" data-lang="it">🇮🇹</button>
+    </div>
+  </header>
+
+  <!-- Alert Banner (hack status) -->
+  <div id="alert-banner" class="alert-banner hidden">
+    <span class="alert-pulse">⚠</span>
+    <span id="alert-text">INTRUSIÓN DETECTADA — VIRUS THIAGO ACTIVO</span>
+  </div>
+
+  <!-- Main Content Sections -->
+  <main class="content-wrapper">
+
+    <!-- HOME -->
+    <section id="section-home" class="section active">
+      <div class="hero">
+        <h1 class="glitch-title" data-text="BELENTANI">BELENTANI</h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">Verified Global Artist</p>
+        <p class="hero-tagline" data-i18n="hero.tagline">NAV-SYS // ZION ORBIT — Nave en órbita. Frecuencia activa.</p>
+        <div class="hero-buttons">
+          <button class="btn-neon" data-section="music" data-i18n="hero.btnMusic">Escuchar Música</button>
+          <button class="btn-neon outline" data-section="portal" data-i18n="hero.btnPortal">Abrir Portal</button>
+          <button class="btn-neon outline" data-section="artist" data-i18n="hero.btnArtist">Conocer al Artista</button>
+        </div>
+      </div>
+      <div class="card-grid">
+        <article class="glass-card">
+          <div class="card-icon">🎵</div>
+          <h3 data-i18n="cards.sonic.title">Sonic Worlds</h3>
+          <p data-i18n="cards.sonic.desc">Pop, R&B y electrónica como herramienta de supervivencia emocional.</p>
+        </article>
+        <article class="glass-card">
+          <div class="card-icon">👁</div>
+          <h3 data-i18n="cards.visual.title">Visual Concepts</h3>
+          <p data-i18n="cards.visual.desc">Mitología Judas, el Artefacto y los 5 Elementos en órbita.</p>
+        </article>
+        <article class="glass-card">
+          <div class="card-icon">🤖</div>
+          <h3 data-i18n="cards.ai.title">AI Creation Tools</h3>
+          <p data-i18n="cards.ai.desc">Belentani Neural Network — 30+ herramientas creativas en construcción.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- THE ARTIST -->
+    <section id="section-artist" class="section">
+      <h2 class="section-title" data-i18n="artist.title">The Artist</h2>
+      <div class="bio-block glass-panel">
+        <p data-i18n="artist.bio">Pedro Belentani es un cantante y compositor independiente nacido en São Paulo, Brasil, el 7 de abril de 1995, y criado en Barcelona, España. Su carrera profesional despegó a los 21 años en la escena de la música electrónica (EDM) junto a Mark Nerom, aunque con el tiempo ha consolidado un sonido propio que navega entre el pop contemporáneo, el R&B y la electrónica, utilizando la música como una herramienta de supervivencia emocional para procesar relaciones y experiencias personales. A partir de 2022, Belentani estrechó lazos con la escena musical de Recife, Brasil, colaborando estrechamente con el productor Hey Duck para añadir texturas frescas a su discografía. Entre sus trabajos más relevantes destacan álbumes como "Mon Amour" (2025) y sencillos de gran acogida como "Therapist", "I Wrote a Song" y su reciente lanzamiento "Judas" (2026). Residente en Barcelona, ha logrado hitos locales importantes, incluyendo una actuación masiva en la Plaza Universidad, consolidándose como una de las voces emergentes más interesantes de la escena híbrida luso-española.</p>
+      </div>
+      <h3 class="subsection-title" data-i18n="artist.protocol">Protocolo de los 5 Elementos del Artefacto</h3>
+      <div class="elements-grid">
+        <div class="element-card" data-element="pedro">
+          <div class="element-orb" style="--el-color:#708090"></div>
+          <h4>PEDRO</h4>
+          <p data-i18n="elements.pedro">La roca fundacional. El ancla.</p>
+        </div>
+        <div class="element-card" data-element="marcos">
+          <div class="element-orb" style="--el-color:#4682b4"></div>
+          <h4>MARCOS</h4>
+          <p data-i18n="elements.marcos">El cronista del colapso. El observador.</p>
+        </div>
+        <div class="element-card" data-element="santos">
+          <div class="element-orb" style="--el-color:#ffd700"></div>
+          <h4>SANTOS</h4>
+          <p data-i18n="elements.santos">Santidad plural. Resistencia viral.</p>
+        </div>
+        <div class="element-card" data-element="belentani">
+          <div class="element-orb" style="--el-color:#ff1744"></div>
+          <h4>BELENTANI</h4>
+          <p data-i18n="elements.belentani">Integración del guerrero y la voz del ángel. Belleza pura.</p>
+        </div>
+        <div class="element-card" data-element="human">
+          <div class="element-orb" style="--el-color:#e0e0e0"></div>
+          <h4>THE HUMAN</h4>
+          <p data-i18n="elements.human">El operador. Mantiene la integridad en el mundo real.</p>
+        </div>
+      </div>
+      <div class="duck-block glass-panel">
+        <h3>Hey Duck Prod</h3>
+        <p data-i18n="artist.duck">Productor de Recife, Brasil. Sin él, el beat no latiría igual. Colaborador esencial en la Era Judas y texturas frescas de la discografía Belentani.</p>
+        <div class="social-links">
+          <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MUSIC -->
+    <section id="section-music" class="section">
+      <h2 class="section-title" data-i18n="music.title">Music</h2>
+      <div class="embed-container glass-panel">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5JcFv0sLFBilhePMEqz7Uk?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+      <div class="platform-links">
+        <a href="https://open.spotify.com/artist/5JcFv0sLFBilhePMEqz7Uk" target="_blank" class="btn-neon" rel="noopener">Spotify</a>
+        <a href="https://music.apple.com/us/artist/belentani/1522171354" target="_blank" class="btn-neon outline" rel="noopener">Apple Music</a>
+        <a href="https://music.amazon.com" target="_blank" class="btn-neon outline" rel="noopener">Amazon Music</a>
+        <a href="https://soundcloud.com" target="_blank" class="btn-neon outline" rel="noopener">SoundCloud</a>
+        <a href="https://youtube.com" target="_blank" class="btn-neon outline" rel="noopener">YouTube</a>
+      </div>
+    </section>
+
+    <!-- STUDIO -->
+    <section id="section-studio" class="section">
+      <h2 class="section-title" data-i18n="studio.title">Studio — Belentani Neural Network</h2>
+      <p class="studio-intro" data-i18n="studio.intro">30+ herramientas de IA creativa. En construcción.</p>
+      <div class="card-grid">
+        <article class="glass-card"><h3 data-i18n="studio.tools.sketch">Refinador de bocetos</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+        <article class="glass-card"><h3 data-i18n="studio.tools.palette">Generador de paletas por estado de ánimo</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+        <article class="glass-card"><h3 data-i18n="studio.tools.compose">Asistente de composición musical</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+        <article class="glass-card"><h3 data-i18n="studio.tools.lyrics">Asistente de escritura de letras</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+        <article class="glass-card"><h3 data-i18n="studio.tools.story">Generador de conceptos de historia</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+        <article class="glass-card"><h3 data-i18n="studio.tools.character">Generador de diseño de personajes</h3><span class="badge" data-i18n="studio.soon">Próximamente</span></article>
+      </div>
+      <p class="studio-footer" data-i18n="studio.footer">Belentani se está convirtiendo en analista de sistemas y especialista en IA. Su proyecto ofrece herramientas para el autoconocimiento, la creatividad y la diversión. Todo en construcción.</p>
+    </section>
+
+    <!-- JUDAS -->
+    <section id="section-judas" class="section">
+      <h2 class="section-title" data-i18n="judas.title">Judas</h2>
+      <div class="judas-image glass-panel">
+        <div class="judas-placeholder">
+          <span data-i18n="judas.imageAlt">Belentani bajo la lluvia — Era Judas</span>
+        </div>
+      </div>
+      <div class="lore-block glass-panel">
+        <p data-i18n="judas.lore">Judas y San Pedro fueron una vez inseparables, elevados a una hermandad íntima. Judas intentó robar el Artefacto: la Llave Dorada que Pedro custodiaba. Comprendiendo la inevitabilidad trágica, Pedro se lo permitió. Pero entonces la Voz – una combinación divina del guerrero masculino y la resonancia angélica – reclamó atención. El robo se detuvo. Se forjó un acuerdo: Judas tomaría la llave y la proclamaría el Artefacto. Este acto selló su ruina, pero le concedió la lección profunda del Sello Volador Dorado. Un complejo semi-romance los unía. Judas perdonó a Pedro por completo, hechizado por el canto – un acto de gracia a pesar de su naturaleza intrínsecamente narcisista y malévola. El "final mediocre" de Judas es la clave maestra. No le concedemos el honor de ser el gran destructor, sino el papel de alguien que aceptó un secreto para encajar en una historia que el mundo necesitaba oír. Permanece en el reino del símbolo.</p>
+      </div>
+      <div class="system-halt">
+        <p class="halt-text">SYSTEM HALT // PROTOCOL SUSPENDED</p>
+        <p class="halt-warning" data-i18n="judas.warning">Resonancia emocional no identificada. Proceder con precaución.</p>
+      </div>
+    </section>
+
+    <!-- PORTAL (Ychat AI) -->
+    <section id="section-portal" class="section">
+      <h2 class="section-title" data-i18n="portal.title">Portal — Ychat IA</h2>
+      <p class="portal-desc" data-i18n="portal.desc">Oráculo conversacional a bordo. Puede hablar, purgar virus o iniciar autodestrucción.</p>
+      <div class="portal-container glass-panel">
+        <div class="portal-header">
+          <span class="portal-status" id="portal-status">● ONLINE</span>
+          <button class="voice-toggle" id="voice-toggle" title="Activar voz">🔊</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg oracle">
+            <span class="msg-label">YCHAT // ORÁCULO</span>
+            <p data-i18n="portal.welcome">Bienvenido al Portal. Escribe un nombre sagrado, un comando o habla conmigo. Puedo purgar virus (escribe "curar") o destruir el sistema ("thiago").</p>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Escribe un comando..." autocomplete="off" data-i18n-placeholder="portal.placeholder">
+          <button id="chat-send" class="btn-neon" data-i18n="portal.send">Enviar</button>
+          <button id="chat-mic" class="btn-neon outline" title="Hablar">🎤</button>
+        </div>
+        <div class="portal-commands">
+          <span data-i18n="portal.hint">Comandos: lorena, natalia, duck, reset, status, belentani free, curar, thiago</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="section-gallery" class="section">
+      <h2 class="section-title" data-i18n="gallery.title">Art Gallery</h2>
+      <div class="masonry-grid" id="gallery-grid">
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:200px">Judas Era</div></div>
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:280px">Artefacto</div></div>
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:180px">Mon Amour</div></div>
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:240px">Therapist</div></div>
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:220px">Hey Duck</div></div>
+        <div class="gallery-item"><div class="gallery-placeholder" style="--h:260px">Llave Dorada</div></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="section-contact" class="section">
+      <h2 class="section-title" data-i18n="contact.title">Contact</h2>
+      <div class="contact-grid">
+        <a href="https://instagram.com/belentani_" target="_blank" class="contact-card glass-panel" rel="noopener">
+          <span>Instagram</span>
+          <small>@belentani_</small>
+        </a>
+        <a href="https://youtube.com" target="_blank" class="contact-card glass-panel" rel="noopener">
+          <span>YouTube</span>
+          <small>Belentani Official</small>
+        </a>
+        <a href="https://open.spotify.com/artist/5JcFv0sLFBilhePMEqz7Uk" target="_blank" class="contact-card glass-panel" rel="noopener">
+          <span>Spotify</span>
+          <small>Belentani</small>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating 5 Elements -->
+  <div class="floating-elements" id="floating-elements">
+    <div class="float-orb" data-el="pedro" style="--c:#708090" title="Pedro"><span>PEDRO</span></div>
+    <div class="float-orb" data-el="marcos" style="--c:#4682b4" title="Marcos"><span>MARCOS</span></div>
+    <div class="float-orb" data-el="santos" style="--c:#ffd700" title="Santos"><span>SANTOS</span></div>
+    <div class="float-orb" data-el="belentani" style="--c:#ff1744" title="Belentani"><span>BELENTANI</span></div>
+    <div class="float-orb" data-el="human" style="--c:#e0e0e0" title="The Human"><span>HUMAN</span></div>
+  </div>
+
+  <!-- Terminal HUD -->
+  <aside class="terminal-hud" id="terminal-hud">
+    <div class="hud-title">NAV-SYS // ZION ORBIT</div>
+    <div class="hud-line">X-AXIS: <span id="hud-x">12.579</span></div>
+    <div class="hud-line">Y-AXIS: <span id="hud-y">105.005</span></div>
+    <div class="hud-line">Z-AXIS: <span id="hud-z">-43.153</span></div>
+    <div class="hud-line">INTEGRITY: <span id="hud-integrity">99.8</span>%</div>
+    <div class="hud-line">CPU: <span id="hud-cpu">45.7</span>% | RAM: <span id="hud-ram">61.2</span>%</div>
+    <div class="hud-line">LINK: <span id="hud-link">STABLE</span></div>
+    <div class="hud-line">LAST PATCH: <span id="hud-patch">—</span></div>
+    <div class="hud-line">VIRUS: <span id="hud-virus">NONE</span></div>
+  </aside>
+
+  <!-- Floating Agent -->
+  <div class="floating-agent" id="floating-agent">
+    <button class="agent-minimize" id="agent-minimize">−</button>
+    <div class="agent-face" id="agent-face">(◕‿◕)</div>
+    <div class="agent-bubble hidden" id="agent-bubble"></div>
+  </div>
+
+  <!-- Thiago Countdown -->
+  <div id="virus-countdown" class="virus-countdown hidden">
+    <span id="countdown-num">10</span>
+    <p data-i18n="virus.msg">AUTODESTRUCCIÓN INMINENTE</p>
+  </div>
+
+  <!-- Language sweep overlay -->
+  <div id="lang-sweep" class="lang-sweep hidden"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/three-scene.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/agent.js"></script>
+  <script src="js/portal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

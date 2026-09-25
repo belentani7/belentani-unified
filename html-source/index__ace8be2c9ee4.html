@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belentani Corp — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--accent:#00ff88;--accent-dim:rgba(0,255,136,.12);--accent2:#ff0080;--text:#fff;--text-sec:#8888aa;--border:rgba(255,255,255,.06);--radius:.75rem;--radius-xl:1rem;--shadow:0 4px 24px rgba(0,0,0,.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Sidebar */
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.sidebar-logo{width:36px;height:36px;border-radius:.5rem;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.sidebar-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem}
+.sidebar-title span{color:var(--accent)}
+.sidebar-nav{flex:1;padding:.75rem;overflow-y:auto}
+.nav-section{font-size:.65rem;color:#555;text-transform:uppercase;letter-spacing:.1em;padding:.75rem .75rem .5rem;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .75rem;border-radius:var(--radius);font-size:.85rem;color:var(--text-sec);cursor:pointer;transition:all .15s;position:relative}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--accent);border-radius:0 2px 2px 0}
+.nav-badge{margin-left:auto;padding:.15rem .5rem;border-radius:1rem;font-size:.65rem;font-weight:600}
+.badge-accent{background:var(--accent-dim);color:var(--accent)}
+.badge-red{background:rgba(239,68,68,.12);color:#ef4444}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.main-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.85);backdrop-filter:blur(20px)}
+.main-header h2{font-family:'Space Grotesk',sans-serif;font-size:1.1rem}
+.header-actions{display:flex;gap:.5rem}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--text-sec);cursor:pointer;font-size:.9rem;transition:all .15s}
+.icon-btn:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.content{flex:1;overflow-y:auto;padding:1.5rem}
+
+/* KPI Cards */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.25rem;transition:all .3s}
+.kpi:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 0 20px var(--accent-dim)}
+.kpi-label{font-size:.8rem;color:var(--text-sec);margin-bottom:.5rem}
+.kpi-value{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)}
+.kpi-change{font-size:.75rem;margin-top:.5rem}
+.kpi-change.up{color:#22c55e}.kpi-change.down{color:#ef4444}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem}
+.chart-card h3{font-family:'Space Grotesk',sans-serif;font-size:1rem;margin-bottom:1rem}
+.chart-container{position:relative;height:250px}
+canvas{width:100%!important;height:100%!important}
+
+/* Table */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem;overflow-x:auto}
+.table-card h3{font-family:'Space Grotesk',sans-serif;font-size:1rem;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:.75rem;font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+td{padding:.75rem;font-size:.85rem;border-bottom:1px solid var(--border)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.status{padding:.2rem .6rem;border-radius:1rem;font-size:.7rem;font-weight:600}
+.s-active{background:rgba(34,197,94,.12);color:#22c55e}
+.s-pending{background:rgba(245,158,11,.12);color:#f59e0b}
+.s-cancelled{background:rgba(239,68,68,.12);color:#ef4444}
+.s-new{background:rgba(59,130,246,.12);color:#3b82f6}
+
+/* Templates */
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem;cursor:pointer;transition:all .3s}
+.template-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,255,136,.1)}
+.template-card .icon{font-size:2rem;margin-bottom:1rem}
+.template-card h4{font-family:'Space Grotesk',sans-serif;font-size:1rem;margin-bottom:.5rem}
+.template-card p{font-size:.85rem;color:var(--text-sec);margin-bottom:1rem;line-height:1.5}
+.template-card .price{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:var(--accent)}
+.template-card .features{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.template-card .feature{padding:.2rem .6rem;background:var(--accent-dim);color:var(--accent);border-radius:1rem;font-size:.7rem;font-weight:500}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;width:500px;max-width:95vw}
+.modal h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:1rem}
+.modal label{display:block;font-size:.85rem;color:var(--text-sec);margin-bottom:.5rem;margin-top:1rem}
+.modal input,.modal select,.modal textarea{width:100%;padding:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.9rem}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--accent)}
+.modal-actions{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem}
+.btn{padding:.6rem 1.25rem;border-radius:var(--radius);font-weight:600;font-size:.85rem;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{box-shadow:0 0 20px var(--accent-dim)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text-sec)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--text)}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1.25rem;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);font-size:.85rem;z-index:300;transform:translateY(100px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* Responsive */
+@media(max-width:768px){.sidebar{display:none}.kpi-row{grid-template-columns:repeat(2,1fr)}.chart-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🏢</div>
+    <div class="sidebar-title">Belentani<span>Corp</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="switchView('dashboard',this)">📊 Dashboard</div>
+    <div class="nav-item" onclick="switchView('clients',this)">👥 Clientes <span class="nav-badge badge-accent" id="clientCount">0</span></div>
+    <div class="nav-item" onclick="switchView('bookings',this)">📅 Reservas <span class="nav-badge badge-accent" id="bookingCount">0</span></div>
+    <div class="nav-item" onclick="switchView('leads',this)">🎯 Leads <span class="nav-badge badge-red" id="leadCount">0</span></div>
+    <div class="nav-section">Productos</div>
+    <div class="nav-item" onclick="switchView('templates',this)">🧩 Templates</div>
+    <div class="nav-item" onclick="switchView('agent',this)">🤖 Agente IA</div>
+    <div class="nav-section">Sistema</div>
+    <div class="nav-item" onclick="switchView('analytics',this)">📈 Analytics</div>
+    <div class="nav-item" onclick="switchView('settings',this)">⚙️ Configuración</div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="main-header">
+    <h2 id="viewTitle">Dashboard</h2>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="refreshData()" title="Actualizar">🔄</button>
+      <button class="icon-btn" onclick="openModal('addClient')" title="Nuevo cliente">＋</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Dashboard View -->
+    <div class="view active" id="view-dashboard">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-label">Ingresos</div><div class="kpi-value" id="kpi-revenue">€0</div><div class="kpi-change up">↑ 12.5%</div></div>
+        <div class="kpi"><div class="kpi-label">Clientes</div><div class="kpi-value" id="kpi-clients">0</div><div class="kpi-change up">↑ 8.3%</div></div>
+        <div class="kpi"><div class="kpi-label">Reservas</div><div class="kpi-value" id="kpi-bookings">0</div><div class="kpi-change up">↑ 15.2%</div></div>
+        <div class="kpi"><div class="kpi-label">Leads</div><div class="kpi-value" id="kpi-leads">0</div><div class="kpi-change down">↓ 3.1%</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><h3>Ingresos mensuales</h3><div class="chart-container"><canvas id="revenueChart"></canvas></div></div>
+        <div class="chart-card"><h3>Por tipo de negocio</h3><div class="chart-container"><canvas id="typeChart"></canvas></div></div>
+      </div>
+      <div class="table-card"><h3>Últimas reservas</h3><table><thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Estado</th></tr></thead><tbody id="recentBookings"></tbody></table></div>
+    </div>
+
+    <!-- Clients View -->
+    <div class="view" id="view-clients">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="font-family:'Space Grotesk',sans-serif">Clientes</h3>
+        <button class="btn btn-primary" onclick="openModal('addClient')">+ Nuevo cliente</button>
+      </div>
+      <div class="table-card"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Email</th><th>Ciudad</th><th>Template</th><th>Estado</th></tr></thead><tbody id="clientsTable"></tbody></table></div>
+    </div>
+
+    <!-- Bookings View -->
+    <div class="view" id="view-bookings">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="font-family:'Space Grotesk',sans-serif">Reservas</h3>
+        <button class="btn btn-primary" onclick="openModal('addBooking')">+ Nueva reserva</button>
+      </div>
+      <div class="table-card"><table><thead><tr><th>Ref</th><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Estado</th></tr></thead><tbody id="bookingsTable"></tbody></table></div>
+    </div>
+
+    <!-- Leads View -->
+    <div class="view" id="view-leads">
+      <h3 style="font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">Leads</h3>
+      <div class="table-card"><table><thead><tr><th>Nombre</th><th>Email</th><th>Tipo</th><th>Mensaje</th><th>Estado</th></tr></thead><tbody id="leadsTable"></tbody></table></div>
+    </div>
+
+    <!-- Templates View -->
+    <div class="view" id="view-templates">
+      <h3 style="font-family:'Space Grotesk',sans-serif">Templates disponibles</h3>
+      <p style="color:var(--text-sec);font-size:.9rem;margin-bottom:.5rem">Cada template es un sitio completo listo para personalizar y desplegar.</p>
+      <div class="template-grid" id="templateGrid"></div>
+    </div>
+
+    <!-- Agent View -->
+    <div class="view" id="view-agent">
+      <h3 style="font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">Agente IA — Multi-LLM</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="chart-card">
+          <h4 style="margin-bottom:1rem">Proveedor activo</h4>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="setProvider('openai')">💚 GPT-4o</button>
+            <button class="btn btn-secondary" onclick="setProvider('google')">🔵 Gemini</button>
+            <button class="btn btn-secondary" onclick="setProvider('xiaomi')">📱 MiMo</button>
+          </div>
+          <p style="color:var(--text-sec);font-size:.85rem;margin-top:1rem">El agente gestiona clientes, reservas, leads y automatiza tareas repetitivas.</p>
+        </div>
+        <div class="chart-card">
+          <h4 style="margin-bottom:1rem">Tareas autónomas</h4>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:var(--surface2);border-radius:var(--radius)"><span style="font-size:.85rem">📧 Seguimiento leads</span><span class="status s-active">Activo</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:var(--surface2);border-radius:var(--radius)"><span style="font-size:.85rem">📅 Recordatorios reserva</span><span class="status s-active">Activo</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:var(--surface2);border-radius:var(--radius)"><span style="font-size:.85rem">📊 Informe semanal</span><span class="status s-pending">Pendiente</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;background:var(--surface2);border-radius:var(--radius)"><span style="font-size:.85rem">🔔 Alertas stock</span><span class="status s-new">Configurar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics View -->
+    <div class="view" id="view-analytics">
+      <h3 style="font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">Analytics</h3>
+      <div class="chart-grid">
+        <div class="chart-card"><h3>Reservas por mes</h3><div class="chart-container"><canvas id="bookingsChart"></canvas></div></div>
+        <div class="chart-card"><h3>Satisfacción</h3><div style="text-align:center;padding:2rem"><div style="font-size:4rem;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent)">94%</div><p style="color:var(--text-sec);margin-top:.5rem">Satisfacción promedio</p><div style="margin-top:1rem;font-size:1.5rem;color:#f59e0b">★★★★★</div><p style="color:var(--text-sec);font-size:.85rem">4.8 rating promedio</p></div></div>
+      </div>
+    </div>
+
+    <!-- Settings View -->
+    <div class="view" id="view-settings">
+      <h3 style="font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">Configuración</h3>
+      <div class="chart-card" style="max-width:600px">
+        <h4 style="margin-bottom:1rem">API Configuration</h4>
+        <label>API Base URL</label>
+        <input type="text" value="http://localhost:8000/api" style="width:100%;padding:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.85rem;margin-bottom:1rem">
+        <label>Default LLM Provider</label>
+        <select style="width:100%;padding:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text)">
+          <option>GPT-4o (OpenAI)</option>
+          <option>Gemini 1.5 (Google)</option>
+          <option>MiMo v2.5 (Xiaomi)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="addClient">
+  <div class="modal">
+    <h3>Nuevo cliente</h3>
+    <label>Nombre del negocio</label><input type="text" id="c-name" placeholder="Hotel Barcelona Plaza">
+    <label>Tipo</label><select id="c-type"><option>hotel</option><option>salon</option><option>ecommerce</option><option>restaurant</option></select>
+    <label>Email</label><input type="email" id="c-email" placeholder="info@hotel.com">
+    <label>Teléfono</label><input type="tel" id="c-phone" placeholder="+34 93 123 4567">
+    <label>Dirección</label><input type="text" id="c-address" placeholder="Calle Example 123">
+    <label>Ciudad</label><input type="text" id="c-city" placeholder="Barcelona">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addClient')">Cancelar</button>
+      <button class="btn btn-primary" onclick="createClient()">Crear cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Booking Modal -->
+<div class="modal-overlay" id="addBooking">
+  <div class="modal">
+    <h3>Nueva reserva</h3>
+    <label>Cliente ID</label><input type="number" id="b-client" placeholder="1">
+    <label>Nombre cliente</label><input type="text" id="b-name" placeholder="Juan García">
+    <label>Email</label><input type="email" id="b-email" placeholder="juan@email.com">
+    <label>Servicio</label><input type="text" id="b-service" placeholder="Suite Superior">
+    <label>Fecha</label><input type="date" id="b-date">
+    <label>Hora</label><input type="time" id="b-time" value="14:00">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addBooking')">Cancelar</button>
+      <button class="btn btn-primary" onclick="createBooking()">Crear reserva</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const API = 'http://localhost:8000/api';
+let currentView = 'dashboard';
+let charts = {};
+
+// ── View switching ──
+function switchView(view, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', clients:'Clientes', bookings:'Reservas', leads:'Leads', templates:'Templates', agent:'Agente IA', analytics:'Analytics', settings:'Configuración' };
+  document.getElementById('viewTitle').textContent = titles[view] || view;
+  currentView = view;
+  if (view === 'dashboard' || view === 'analytics') loadCharts();
+  if (view === 'templates') loadTemplates();
+}
+
+// ── API calls ──
+async function api(path, method = 'GET', body = null) {
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API + path, opts);
+    return await res.json();
+  } catch (e) { console.error('API error:', e); return null; }
+}
+
+// ── Data loading ──
+async function refreshData() {
+  const [clients, bookings, leads, analytics] = await Promise.all([
+    api('/clients'), api('/bookings'), api('/leads'), api('/analytics')
+  ]);
+  
+  if (analytics) {
+    document.getElementById('kpi-revenue').textContent = '€' + (analytics.revenue || 0).toLocaleString();
+    document.getElementById('kpi-clients').textContent = analytics.clients || 0;
+    document.getElementById('kpi-bookings').textContent = analytics.bookings || 0;
+    document.getElementById('kpi-leads').textContent = analytics.leads || 0;
+    document.getElementById('clientCount').textContent = analytics.clients || 0;
+    document.getElementById('bookingCount').textContent = analytics.bookings || 0;
+    document.getElementById('leadCount').textContent = analytics.leads || 0;
+  }
+  
+  if (bookings && bookings.data) {
+    document.getElementById('recentBookings').innerHTML = bookings.data.slice(-5).reverse().map(b =>
+      `<tr><td>${b.customer_name}</td><td>${b.service}</td><td>${b.date} ${b.time}</td><td><span class="status s-${b.status}">${b.status}</span></td></tr>`
+    ).join('');
+    document.getElementById('bookingsTable').innerHTML = bookings.data.map(b =>
+      `<tr><td style="font-family:'JetBrains Mono',monospace;font-size:.8rem">${b.ref}</td><td>${b.customer_name}</td><td>${b.service}</td><td>${b.date} ${b.time}</td><td><span class="status s-${b.status}">${b.status}</span></td></tr>`
+    ).join('');
+  }
+  
+  if (clients && clients.data) {
+    document.getElementById('clientsTable').innerHTML = clients.data.map(c =>
+      `<tr><td>${c.name}</td><td>${c.business_type}</td><td>${c.email}</td><td>${c.city}</td><td>${c.template || '—'}</td><td><span class="status s-${c.status}">${c.status}</span></td></tr>`
+    ).join('');
+  }
+  
+  if (leads && leads.data) {
+    document.getElementById('leadsTable').innerHTML = leads.data.map(l =>
+      `<tr><td>${l.name}</td><td>${l.email}</td><td>${l.business_type}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${l.message}</td><td><span class="status s-${l.status}">${l.status}</span></td></tr>`
+    ).join('');
+  }
+}
+
+// ── Charts ──
+async function loadCharts() {
+  const data = await api('/analytics/monthly');
+  if (!data) return;
+  
+  // Destroy existing charts
+  Object.values(charts).forEach(c => c.destroy());
+  
+  charts.revenue = new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        label: 'Ingresos (€)',
+        data: data.revenue,
+        borderColor: '#00ff88',
+        backgroundColor: 'rgba(0,255,136,.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#8888aa', font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#555' } },
+        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#555', callback: v => '€' + v / 1000 + 'k' } }
+      }
+    }
+  });
+  
+  charts.type = new Chart(document.getElementById('typeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Hoteles', 'Salones', 'E-commerce', 'Restaurantes'],
+      datasets: [{ data: [35, 25, 25, 15], backgroundColor: ['#00ff88', '#ff0080', '#f59e0b', '#3b82f6'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#8888aa', padding: 15 } } } }
+  });
+  
+  if (document.getElementById('bookingsChart')) {
+    charts.bookings = new Chart(document.getElementById('bookingsChart'), {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [{ label: 'Reservas', data: data.bookings, backgroundColor: 'rgba(0,255,136,.3)', borderColor: '#00ff88', borderWidth: 1, borderRadius: 4 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#8888aa' } } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#555' } },
+          y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#555' } }
+        }
+      }
+    });
+  }
+}
+
+// ── Templates ──
+async function loadTemplates() {
+  const data = await api('/templates');
+  if (!data) return;
+  document.getElementById('templateGrid').innerHTML = data.templates.map(t => `
+    <div class="template-card" onclick="assignTemplate('${t.id}')">
+      <div class="icon">${t.id === 'hotel' ? '🏨' : t.id === 'salon' ? '💇' : t.id === 'ecommerce' ? '🛍️' : '🍽️'}</div>
+      <h4>${t.name}</h4>
+      <p>${t.description}</p>
+      <div class="price">${t.price}</div>
+      <div class="features">${t.features.map(f => `<span class="feature">${f}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ── CRUD operations ──
+async function createClient() {
+  const data = {
+    name: document.getElementById('c-name').value,
+    business_type: document.getElementById('c-type').value,
+    email: document.getElementById('c-email').value,
+    phone: document.getElementById('c-phone').value,
+    address: document.getElementById('c-address').value,
+    city: document.getElementById('c-city').value
+  };
+  if (!data.name || !data.email) { toast('Nombre y email requeridos'); return; }
+  await api('/clients', 'POST', data);
+  closeModal('addClient');
+  refreshData();
+  toast('Cliente creado');
+}
+
+async function createBooking() {
+  const data = {
+    client_id: parseInt(document.getElementById('b-client').value) || 1,
+    customer_name: document.getElementById('b-name').value,
+    customer_email: document.getElementById('b-email').value,
+    service: document.getElementById('b-service').value,
+    date: document.getElementById('b-date').value,
+    time: document.getElementById('b-time').value
+  };
+  if (!data.customer_name || !data.date) { toast('Nombre y fecha requeridos'); return; }
+  await api('/bookings', 'POST', data);
+  closeModal('addBooking');
+  refreshData();
+  toast('Reserva creada');
+}
+
+async function assignTemplate(templateId) {
+  toast(`Template "${templateId}" seleccionado. Asigna a un cliente desde la vista Clientes.`);
+}
+
+function setProvider(p) { toast(`Proveedor cambiado a ${p}`); }
+
+// ── UI helpers ──
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Init ──
+refreshData();
+</script>
+</body>
+</html>

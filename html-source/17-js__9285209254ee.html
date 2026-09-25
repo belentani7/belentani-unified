@@ -1,0 +1,490 @@
+
+<script>
+// BOOT SEQUENCE
+var bootLog=document.getElementById('bootLog');
+var BL=["> INITIALIZING JUDAS_OS v11.0...","> LOADING OMEGA KERNEL...","> MAPPING NEURAL PATHWAYS...","> CALIBRATING 432Hz RESONANCE...","> OMEGA_CORE ONLINE.","> BIOMETRIC VAULT: SEALED.","> ACCESS GRANTED."];
+var bli=0;
+function bwrite(){if(bli<BL.length){bootLog.innerHTML+=BL[bli]+"<br>";bli++;setTimeout(bwrite,380)}else{setTimeout(function(){gsap.to('#boot',{opacity:0,duration:1.2,onComplete:function(){document.getElementById('boot').style.display='none'}})},600)}}
+bwrite();
+
+// TOAST SYSTEM
+function toast(m){var c=document.getElementById('toastC');if(!c)return;
+var d=document.createElement('div');d.textContent=m;
+d.style.cssText='background:rgba(0,0,0,.92);border:1px solid var(--blood);padding:10px 18px;font-family:var(--fm);font-size:10px;color:#fff;letter-spacing:1px;pointer-events:auto;animation:msgIn .4s ease-out both';
+c.appendChild(d);setTimeout(function(){d.style.opacity='0';d.style.transition='opacity .5s';setTimeout(function(){d.remove()},600)},3000)}
+
+// CURSOR SYSTEM
+var cDot=document.querySelector('.cur-dot'),cRing=document.querySelector('.cur-ring'),cBox=document.querySelector('.cur-box');
+var cmx=0,cmy=0,cox=0,coy=0;
+document.addEventListener('mousemove',function(e){
+cmx=e.clientX;cmy=e.clientY;
+cDot.style.transform='translate('+cmx+'px,'+cmy+'px)';
+var t=e.target.closest('a,button,.tcard,.ndot,.mbox,input,textarea,.stab,.mcard,.cta,.trow,.ftab,.gg');
+if(t){var r=t.getBoundingClientRect();cBox.classList.add('on');cBox.style.width=(r.width+18)+'px';cBox.style.height=(r.height+18)+'px';cBox.style.transform='translate('+(r.left-9)+'px,'+(r.top-9)+'px)';cRing.classList.add('hover')}
+else{cBox.classList.remove('on');cRing.classList.remove('hover')}
+});
+function cTick(){cox+=(cmx-cox)*.12;coy+=(cmy-coy)*.12;cRing.style.transform='translate('+cox+'px,'+coy+'px) translate(-50%,-50%)';requestAnimationFrame(cTick)}
+cTick();
+document.addEventListener('mousemove',function(e){
+var c=e.target.closest('.tcard');
+if(c){var r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')}
+});
+
+// HUD CLOCK
+setInterval(function(){document.getElementById('hTime').innerText=new Date().toTimeString().split(' ')[0]},1000);
+
+// GSAP + SCROLLTRIGGER
+gsap.registerPlugin(ScrollTrigger,ScrollToPlugin);
+var SECS=['home','artist','music','judas','zion','concept','portal','gallery','ailab','studio','challenges','contact'];
+SECS.forEach(function(s){
+ScrollTrigger.create({trigger:'#'+s,start:'top center',onToggle:function(self){
+if(self.isActive){document.querySelectorAll('.ndot').forEach(function(d){d.classList.remove('on')});
+var dot=document.querySelector('.ndot[data-t="'+s+'"]');if(dot)dot.classList.add('on');
+document.getElementById('secName').textContent=s.toUpperCase()}
+}})});
+gsap.utils.toArray('.rv').forEach(function(el){ScrollTrigger.create({trigger:el,start:'top 88%',onEnter:function(){el.classList.add('in')}})});
+document.querySelectorAll('.ndot').forEach(function(d){d.addEventListener('click',function(){var t=d.dataset.t;if(t)gsap.to(window,{scrollTo:'#'+t,duration:1.6,ease:'power3.inOut'})})});
+
+// SNAP SCROLL TOGGLE
+var snapOn=false;
+function toggleSnap(){snapOn=!snapOn;document.documentElement.classList.toggle('snap',snapOn);toast((snapOn?'SNAP':'NOSNAP')+' ACTIVADO');}
+document.addEventListener('keydown',function(e){if(e.key==='s'&&e.shiftKey&&e.ctrlKey){e.preventDefault();toggleSnap()}});
+
+// MAGIC GATE — 5 FIRMAS
+var FIRMAS=[
+{n:'PEDRO.SIG [LA ROCA]',c:'#ffd700'},{n:'MARCOS.SIG [EL CRONISTA]',c:'#00ffff'},
+{n:'SANTOS.SIG [LA ANTENA]',c:'#b026ff'},{n:'BELENTANI.SIG [NUCLEO]',c:'#ff003c'},
+{n:'HUMAN.SIG // VAULT ABIERTO',c:'#f5f5f5'}];
+var gC=0,gO=false;
+function gateTouch(){if(gO)return;var gs=document.querySelectorAll('.gg');
+if(gC<5){gs[gC].classList.add('lit');document.getElementById('gateTxt').innerHTML='&gt; FIRMA '+(gC+1)+'/5 — '+FIRMAS[gC].n;gC++;
+if(gC===5){setTimeout(function(){document.getElementById('gate').classList.add('burst');
+setTimeout(function(){document.getElementById('gate').classList.add('open');gO=true;document.getElementById('hXP').textContent='100';addXP(100)},1300)},900)}}}
+
+// THREE.JS — OMEGA DIAMOND HYPERREAL ENGINE
+(function(){
+var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+var renderer=new THREE.WebGLRenderer({canvas:document.getElementById('webgl'),alpha:true,antialias:true});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));camera.position.z=40;
+
+// DIAMOND SHADER — IOR 2.417 + Fresnel + Chromatic Dispersion
+var gemVS='varying vec3 vNorm;varying vec3 vPos;varying vec3 vEye;uniform float uTime;uniform float uAudio;vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}void main(){float n=snoise(position*.28+uTime*.22+uAudio*.3);vec3 p=position+normal*n*(2.4+uAudio*.9);vec4 mv=modelViewMatrix*vec4(p,1.);vPos=mv.xyz;vNorm=normalize(normalMatrix*normal);vEye=-normalize(mv.xyz);gl_Position=projectionMatrix*mv;}';
+var gemFS='uniform float uTime;uniform float uAscend;uniform float uAudio;varying vec3 vNorm;varying vec3 vPos;varying vec3 vEye;void main(){float IOR=2.417;vec3 view=normalize(vEye);vec3 norm=normalize(vNorm);float fresnel=pow(1.-max(dot(view,norm),0.),3.);vec3 refr=refract(view,norm,1./IOR);vec3 blood=vec3(1.,0.,.235);vec3 lava=vec3(1.,.35,.05);vec3 gold=vec3(1.,.84,0.);float n2=sin(vPos.x*1.3+vPos.z*.7+uTime*.6)*.5+.5;vec3 col=mix(blood,lava,n2);col=mix(col,gold,uAscend);float dispR=refract(view,norm,1./(IOR*.98)).x;float dispB=refract(view,norm,1./(IOR*1.02)).z;col+=vec3(dispR*.08,0.,dispB*.08);col*=1.+.6*fresnel;float glow=.5+.5*sin(uTime*1.2+vPos.y*.3)+uAudio*.25;col+=vec3(glow*.15,glow*.08,glow*.1)*fresnel;gl_FragColor=vec4(col*(.88+glow*.7),.94);}';
+var cU={uTime:{value:0},uAscend:{value:0},uAudio:{value:0}};
+var cMat=new THREE.ShaderMaterial({uniforms:cU,vertexShader:gemVS,fragmentShader:gemFS,transparent:true,side:THREE.DoubleSide});
+var core=new THREE.Mesh(new THREE.IcosahedronGeometry(9,5),cMat);scene.add(core);
+var wire=new THREE.Mesh(new THREE.IcosahedronGeometry(11.5,1),new THREE.MeshBasicMaterial({color:0xff003c,wireframe:true,transparent:true,opacity:.07}));scene.add(wire);
+
+// RING + SPHERE PARTICLES
+var RC=2400,rP=new Float32Array(RC*3),rR=new Float32Array(RC);
+for(var i=0;i<RC;i++){var a=Math.random()*Math.PI*2,r=13+Math.random()*9;rP[i*3]=Math.cos(a)*r;rP[i*3+1]=(Math.random()-.5)*1.8;rP[i*3+2]=Math.sin(a)*r;rR[i]=Math.random()}
+var rGeo=new THREE.BufferGeometry();rGeo.setAttribute('position',new THREE.BufferAttribute(rP,3));rGeo.setAttribute('aRandom',new THREE.BufferAttribute(rR,1));
+var PC=1800,pP=new Float32Array(PC*3),pR=new Float32Array(PC);
+for(var i=0;i<PC;i++){var r=18+Math.random()*28,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);pP[i*3]=r*Math.sin(ph)*Math.cos(th);pP[i*3+1]=r*Math.sin(ph)*Math.sin(th);pP[i*3+2]=r*Math.cos(ph);pR[i]=Math.random()}
+var pGeo=new THREE.BufferGeometry();pGeo.setAttribute('position',new THREE.BufferAttribute(pP,3));pGeo.setAttribute('aRandom',new THREE.BufferAttribute(pR,1));
+var pU={uTime:{value:0},uMouse:{value:new THREE.Vector2},uColor:{value:new THREE.Color(0xff003c)},uAudio:{value:0}};
+var pMat=new THREE.ShaderMaterial({uniforms:pU,
+vertexShader:'uniform float uTime;uniform vec2 uMouse;uniform float uAudio;attribute float aRandom;varying float vA;void main(){vec3 p=position;float b=sin(uTime*.5+aRandom*6.28)*.5+.5;p*=1.+b*.1+uAudio*.05;vec4 mv=modelViewMatrix*vec4(p,1.);vec2 sp=mv.xy/mv.z;float d=distance(sp,uMouse*2.);p+=normalize(p)*(1./(d+.1))*.5;mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=(4.+aRandom*4.+uAudio*2.)*(10./-mv.z);vA=.3+b*.7+uAudio*.2;}',
+fragmentShader:'uniform vec3 uColor;varying float vA;void main(){float d=distance(gl_PointCoord,vec2(.5));if(d>.5)discard;float s=pow(1.-d*2.,2.);gl_FragColor=vec4(uColor,s*vA);}',
+transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+var pts=new THREE.Points(pGeo,pMat);scene.add(pts);
+var ring=new THREE.Points(rGeo,pMat.clone());ring.material.uniforms.uColor.value=new THREE.Color(0xffd700);ring.rotation.x=.5;scene.add(ring);
+
+// POST-PROCESSING
+var composer=null;
+try{composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+var bloom=new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),1.3,.6,.1);
+composer.addPass(bloom);window.__bloom=bloom}catch(e){console.warn('[OMEGA] Bloom N/A',e)}
+var tmx=0,tmy=0;
+addEventListener('mousemove',function(e){tmx=(e.clientX/innerWidth)*2-1;tmy=-(e.clientY/innerHeight)*2+1});
+var aAmp=0;window.__setAmp=function(a){aAmp=a};
+var clock=new THREE.Clock();
+function anim(){var t=clock.getElapsedTime();
+cU.uTime.value=t;cU.uAudio.value=aAmp;pU.uTime.value=t;pU.uAudio.value=aAmp;
+ring.material.uniforms.uTime.value=t;
+pU.uMouse.value.x+=(tmx-pU.uMouse.value.x)*.05;pU.uMouse.value.y+=(tmy-pU.uMouse.value.y)*.05;
+core.rotation.y=t*.1;wire.rotation.y=-t*.06;pts.rotation.y=t*.02;ring.rotation.z=t*.05;
+camera.position.x+=((tmx*3)-camera.position.x)*.02;camera.position.y+=((tmy*2)-camera.position.y)*.02;
+camera.lookAt(0,0,0);
+if(composer)composer.render();else renderer.render(scene,camera);
+requestAnimationFrame(anim)}
+anim();
+addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);if(composer)composer.setSize(innerWidth,innerHeight)});
+window.__pU=pU;
+})();
+
+// PORTAL DIAMONDS — REAL DIAMOND SHADER
+(function(){
+var cv=document.getElementById('diamC');if(!cv||!window.THREE)return;
+var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,cv.clientWidth/cv.clientHeight,.1,100);
+var ren=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+ren.setSize(cv.clientWidth,cv.clientHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));cam.position.z=16;
+var cols=[0xffd700,0x00ffff,0xb026ff,0xff003c,0xf5f5f5],gemObjs=[];
+cols.forEach(function(c,i){var g=new THREE.Group();
+var dVS='varying vec3 vNorm;varying vec3 vPos;varying vec3 vEye;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vPos=mv.xyz;vNorm=normalize(normalMatrix*normal);vEye=-normalize(mv.xyz);gl_Position=projectionMatrix*mv;}';
+var dFS='uniform vec3 uCol;uniform float uTime;varying vec3 vNorm;varying vec3 vPos;varying vec3 vEye;void main(){float IOR=2.417;vec3 view=normalize(vEye);vec3 norm=normalize(vNorm);float fresnel=pow(1.-max(dot(view,norm),0.),3.);vec3 r=refract(view,norm,1./IOR);float d=sin(r.x*6.28+uTime*.5)*.5+.5;vec3 col=mix(uCol,vec3(1.),d*.15);col*=(1.+.5*fresnel);col+=vec3(fresnel*.2);float e=pow(1.-abs(dot(view,norm)),8.);gl_FragColor=vec4(col,.8+.2*fresnel);}';
+var mat=new THREE.ShaderMaterial({uniforms:{uCol:{value:new THREE.Color(c)},uTime:{value:0}},vertexShader:dVS,fragmentShader:dFS,transparent:true,side:THREE.DoubleSide});
+var solid=new THREE.Mesh(new THREE.OctahedronGeometry(1.6,0),mat);
+var wMat=new THREE.MeshBasicMaterial({color:c,wireframe:true,transparent:true,opacity:.15});
+var w=new THREE.Mesh(new THREE.OctahedronGeometry(2.1,0),wMat);
+g.add(solid);g.add(w);g.position.x=(i-2)*4.6;g.userData={ph:Math.random()*6,idx:i,mat:mat,time:0};sc.add(g);gemObjs.push(g)});
+var ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+cv.addEventListener('click',function(e){var r=cv.getBoundingClientRect();
+mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+ray.setFromCamera(mouse,cam);var hits=ray.intersectObjects(gemObjs,true);
+if(hits.length){var o=hits[0].object;while(o.parent&&gemObjs.indexOf(o)===-1)o=o.parent;
+var idx=gemObjs.indexOf(o);if(idx>-1){portalHit(idx);o.scale.setScalar(1.4);setTimeout(function(){o.scale.setScalar(1)},400)}}});
+sc.add(new THREE.PointLight(0xffffff,1.2,60));sc.add(new THREE.AmbientLight(0xff003c,.4));
+function loop(){var t=performance.now()*.001;
+gemObjs.forEach(function(g,i){g.rotation.y=t*(.4+i*.08);g.rotation.x=Math.sin(t*.5+g.userData.ph)*.3;
+g.position.y=Math.sin(t*.8+g.userData.ph)*.6;g.userData.mat.uniforms.uTime.value=t});
+ren.render(sc,cam);requestAnimationFrame(loop)}loop();
+addEventListener('resize',function(){if(!cv.clientWidth)return;cam.aspect=cv.clientWidth/cv.clientHeight;
+cam.updateProjectionMatrix();ren.setSize(cv.clientWidth,cv.clientHeight)});
+})();
+
+// MATRIX RAIN
+(function(){
+var mc=document.getElementById('matrix'),ctx=mc.getContext('2d');
+function rs(){mc.width=innerWidth;mc.height=innerHeight}rs();addEventListener('resize',rs);
+var CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()\u30A2\u30A4\u30A6\u30A8\u30AA\u30AB\u30AD\u30AF\u30B1\u30B3\u30B5\u30B7\u30B9\u30BB\u30BD';
+var fs=14;var drops=[];for(var i=0;i<Math.ceil(innerWidth/fs);i++)drops.push(1);
+setInterval(function(){ctx.fillStyle='rgba(3,3,3,.05)';ctx.fillRect(0,0,mc.width,mc.height);
+ctx.font=fs+'px JetBrains Mono';
+for(var i=0;i<drops.length;i++){var c=CH[Math.floor(Math.random()*CH.length)];
+ctx.fillStyle=Math.random()>.96?'#00ff41':Math.random()>.92?'#ff003c':'rgba(255,0,60,.3)';
+ctx.fillText(c,i*fs,drops[i]*fs);
+if(drops[i]*fs>mc.height&&Math.random()>.975)drops[i]=0;drops[i]++}},50);
+})();
+
+// HARMONIC ENGINE
+var hInit=false,synth;
+function initH(){if(hInit)return;try{Tone.start();synth=new Tone.PolySynth(Tone.Synth).toDestination();synth.volume.value=-8;hInit=true}catch(e){}}
+function playSolfeggio(f){initH();if(!synth)return;try{
+var o=new Tone.Oscillator(f,'sine').toDestination(),g=new Tone.Gain(.12).toDestination();
+o.connect(g);o.start();g.gain.rampTo(.001,8);o.stop('+8');
+document.getElementById('hbF').textContent=f;document.getElementById('hbR').textContent='SOLFEGGIO';
+var b=document.getElementById('hbar');b.classList.add('on');setTimeout(function(){b.classList.remove('on')},4000);
+window.__setAmp&&window.__setAmp(.5);drawWave(.5)}catch(e){}}
+function drawWave(amp){var cv=document.getElementById('waveC');if(!cv)return;
+var ctx=cv.getContext('2d'),w=cv.width=cv.clientWidth,h=cv.height=cv.clientHeight;
+ctx.clearRect(0,0,w,h);var cx=w/2,cy=h/2,rad=Math.min(w,h)/2*.7,bars=64,a=Math.min(amp||.3,1);
+ctx.beginPath();
+for(var i=0;i<bars;i++){var ang=(i/bars)*Math.PI*2,r=rad+(a*42)*Math.sin(i*.8+Date.now()*.003);
+var x=cx+Math.cos(ang)*r,y=cy+Math.sin(ang)*r;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+ctx.closePath();
+var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,rad+50);
+gr.addColorStop(0,'rgba(255,0,60,.8)');gr.addColorStop(.5,'rgba(255,215,0,.35)');gr.addColorStop(1,'rgba(255,0,60,0)');
+ctx.fillStyle=gr;ctx.fill();ctx.strokeStyle='rgba(255,0,60,.5)';ctx.lineWidth=1.5;ctx.stroke();
+ctx.beginPath();ctx.arc(cx,cy,8+a*14,0,Math.PI*2);
+ctx.fillStyle=a>.5?'rgba(255,215,0,.8)':'rgba(255,0,60,.6)';ctx.fill()}
+var wA=.2;
+function wLoop(){drawWave(wA);wA=.2+.15*Math.sin(Date.now()*.001);
+if(document.getElementById('hbar').classList.contains('on'))wA=Math.max(wA,.6);
+requestAnimationFrame(wLoop)}wLoop();
+
+// AI ENGINE — 3-TIER: Transformers.js local > Ollama > Pollinations
+var SYS='Eres CORE_AI, el sistema operativo creativo de Belentani (JUDAS ERA). IA futurista mistica. Conoces el lore: 5 firmas (Pedro=La Roca, Marcos=El Cronista, Santos=La Antena, Belentani=El Artefacto, The Human=La Interfaz), la narrativa de Judas en 5 fases, la Llave Dorada, "la traicion es el input, la voz es la llave". Responde en espanol, poetico pero conciso. Maximo 400 caracteres.';
+var aiModel=null,aiLoading=false,aiLoaded=false;
+var aiModelName='Xenova/Qwen2.5-0.5B-Instruct';
+function loadAI(){
+  if(aiLoaded||aiLoading)return;
+  aiLoading=true;
+  var bm=document.getElementById('bModel');
+  if(bm)bm.textContent='LOCAL_AI: CARGANDO...';
+  toast('LOCAL_AI: Cargando Qwen2.5-0.5B (350MB)...');
+  if(!self.transformers){toast('LOCAL_AI: Transformers.js no disponible');aiLoading=false;return}
+  self.transformers.env.allowRemoteModels=true;
+  self.transformers.pipeline('text-generation',aiModelName,{dtype:'q4',
+    progress_callback:function(p){
+      if(p.status==='progress'){
+        var pc=Math.round(p.progress*100);
+        if(bm)bm.textContent='LOCAL_AI: '+pc+'%';
+      }}}).then(function(m){
+    aiModel=m;aiLoaded=true;
+    if(bm)bm.textContent='LOCAL_AI: ACTIVO';
+    toast('LOCAL_AI: Qwen2.5-0.5B activado (350MB, navegador)');
+  }).catch(function(e){
+    console.warn('[AI] Local model fail:',e);
+    if(bm)bm.textContent='LOCAL_AI: NO DISPONIBLE';
+    toast('LOCAL_AI: fallback a Ollama/Pollinations');
+  }).finally(function(){aiLoading=false})}
+if(document.readyState==='complete')setTimeout(loadAI,3000);
+else addEventListener('load',function(){setTimeout(loadAI,3000)});
+function qwenFmt(p,s){return '<|system|>\n'+(s||SYS)+'\n<|user|>\n'+p+'\n<|assistant|>\n'}
+function qwenExt(t){var i=t.lastIndexOf('<|assistant|>\n');if(i>-1)t=t.slice(i+14);
+i=t.indexOf('<|endoftext|>');if(i>-1)t=t.slice(0,i);return t.trim()}
+function genText(p,s){
+  if(aiLoaded&&aiModel)return aiModel(qwenFmt(p,s),{max_new_tokens:256,temperature:.7,do_sample:true,top_p:.9}).then(function(o){return qwenExt(o[0].generated_text)}).catch(function(){return fallback(p,s)});
+  return fallback(p,s)}
+function fallback(p,s){
+return fetch('http://127.0.0.1:11434/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'llama3.2:3b',prompt:(s?s+'\n\n':'')+p,stream:false,system:s||'',options:{num_predict:600}})}).then(function(r){if(!r.ok)throw'ollama offline';return r.json().then(function(d){return d.response.trim()})}).catch(function(){return fetch('https://text.pollinations.ai/'+encodeURIComponent(p)+(s?'?system='+encodeURIComponent(s):'')).then(function(r){return r.text()}).catch(function(){return'Error de conexion con el enjambre.'})})}
+function decryptTo(el,txt){var CH='!<>-_\\/[]{}=+*^?#ABCDEF0123456789';var f=0;var t=txt.length;
+var iv=setInterval(function(){var o='';var rv=Math.floor(f/2);
+for(var i=0;i<t;i++)o+=i<rv?txt[i]:'<span class="decrypt-ch">'+CH[Math.floor(Math.random()*CH.length)]+'</span>';
+el.innerHTML=o;f++;if(rv>=t){clearInterval(iv);el.textContent=txt}},16)}
+function aiLine(who,txt,dec){var log=document.getElementById('aiLog');if(!log)return;
+var d=document.createElement('div');d.style.marginBottom='8px';
+d.innerHTML='<span style="color:var(--blood)">'+who+'</span> ';
+var sp=document.createElement('span');d.appendChild(sp);log.appendChild(d);
+if(dec)decryptTo(sp,txt);else sp.textContent=txt;log.scrollTop=log.scrollHeight}
+
+// SECRET COMMANDS
+var SMAP={rock:0,petra:0,pedra:0,chronicle:1,scribe:1,antenna:2,signal:2,artifact:3,anomalous:3,interface:4};
+var FMAP={432:'Armonia universal',528:'Reparacion / Amor',639:'Conexion',741:'Expresion',852:'Intuicion'};
+function trySecret(inp){var k=inp.toLowerCase().trim();
+if(k in SMAP){var i=SMAP[k],c=FIRMAS[i].c;
+document.documentElement.style.setProperty('--blood',c);document.documentElement.style.setProperty('--blood-glow',c+'cc');
+if(window.__pU)window.__pU.uColor.value=new THREE.Color(c);
+return'> FIRMA '+(i+1)+'/5 — '+FIRMAS[i].n}
+if(k==='belentani free'){document.documentElement.style.setProperty('--blood','#00ff41');return'> VIRUS KILLER ACTIVADO... SISTEMA PURGADO.'}
+if(k in FMAP){playSolfeggio(parseInt(k));return'> FRECUENCIA '+k+' Hz — '+FMAP[k]}
+if(k==='status')return'> SYS: OPTIMUS_Ω | NODE: JUDAS-CORE-07 | UPTIME: '+Math.floor(performance.now()/1000)+'s | INTEGRITY: 100%';
+if(k==='reset'){document.documentElement.style.setProperty('--blood','#ff003c');
+if(window.__pU)window.__pU.uColor.value=new THREE.Color(0xff003c);
+document.body.classList.remove('ascended');return'> SESION PURGADA. Estado restaurado.'}
+if(k==='omega'||k==='dios'){ascend();return'> ASCENSION OMEGA INICIADA'}
+if(k==='help')return'> COMANDOS: rock|chronicle|antenna|artifact|interface (firmas) · 432|528|639|741|852 (freq) · omega (ascension) · belentani free (purga) · status · reset';
+return null}
+
+function aiSend(){var inp=document.getElementById('aiIn'),t=inp.value.trim();if(!t)return;
+aiLine('AGENTE>',t);inp.value='';
+var s=trySecret(t);if(s){aiLine('SYS>',s,true);return}
+aiLine('CORE_AI>','...');genText(t,SYS).then(function(r){
+var log=document.getElementById('aiLog');if(log.lastChild)log.removeChild(log.lastChild);
+aiLine('CORE_AI>',r.slice(0,600),true)})}
+document.getElementById('aiIn').addEventListener('keypress',function(e){if(e.key==='Enter')aiSend()});
+
+// CHAT WIDGET
+function chSend(){var inp=document.getElementById('chIn'),t=inp.value.trim();if(!t)return;
+var c=document.getElementById('chMsgs');
+var ud=document.createElement('div');ud.className='msg user';ud.innerHTML='<div class="meta">&#9673; AGENTE</div>'+t;c.appendChild(ud);
+var s=trySecret(t);
+if(s){var sd=document.createElement('div');sd.className='msg sys';sd.textContent=s;c.appendChild(sd);inp.value='';c.scrollTop=c.scrollHeight;return}
+var ad=document.createElement('div');ad.className='msg ai';ad.innerHTML='<div class="meta">&#9673; CORE_AI</div>Procesando frecuencia...';c.appendChild(ad);c.scrollTop=c.scrollHeight;
+genText(t,SYS).then(function(r){ad.innerHTML='<div class="meta">&#9673; CORE_AI</div>'+r.slice(0,500);c.scrollTop=c.scrollHeight});
+inp.value=''}
+document.getElementById('chIn').addEventListener('keypress',function(e){if(e.key==='Enter')chSend()});
+
+// AI IMAGE
+function aiImgGen(){var inp=document.getElementById('aiImgIn'),box=document.getElementById('aiImg'),p=inp.value.trim();if(!p)return;
+box.innerHTML='<span style="font-family:var(--fm);font-size:10px;color:var(--blood)">&gt; FORJANDO EN FLUX...</span>';
+var url='https://image.pollinations.ai/prompt/'+encodeURIComponent('belentani judas era, red neon cyberpunk, dark cinematic, '+p)+'?width=400&height=300&nologo=true&seed='+Math.floor(Math.random()*10000);
+var img=new Image();img.src=url;img.style.cssText='width:100%;height:100%;object-fit:cover';
+img.onload=function(){box.innerHTML='';box.appendChild(img)};
+img.onerror=function(){box.innerHTML='<span style="font-family:var(--fm);font-size:10px;color:var(--blood)">&gt; ERROR EN LA FORJA.</span>'}}
+
+// AI QUICK TOOLS
+function aiQuick(prompt){var q=prompt;
+var c=document.getElementById('chMsgs');
+var ud=document.createElement('div');ud.className='msg user';ud.innerHTML='<div class="meta">&#9673; AGENTE</div>'+q;c.appendChild(ud);
+var ad=document.createElement('div');ad.className='msg ai';ad.innerHTML='<div class="meta">&#9673; CORE_AI</div>Procesando...';c.appendChild(ad);c.scrollTop=c.scrollHeight;
+document.getElementById('aiChat').classList.remove('min');
+genText(q,SYS).then(function(r){ad.innerHTML='<div class="meta">&#9673; CORE_AI</div>'+r.slice(0,600);c.scrollTop=c.scrollHeight})}
+
+// ASCENSION
+function ascend(){document.body.classList.add('ascended');
+if(window.__pU)window.__pU.uColor.value=new THREE.Color(0xffd700);
+if(window.__bloom)window.__bloom.strength=2.5;
+gsap.fromTo('#ascFlash',{opacity:0},{opacity:1,duration:.4,yoyo:true,repeat:3,onComplete:function(){gsap.to('#ascFlash',{opacity:0,duration:2})}});
+try{if(window.Tone){Tone.start();var s=new Tone.PolySynth(Tone.Synth).toDestination();s.volume.value=-8;
+s.triggerAttackRelease(['C4','E4','G4','B4','D5'],'2n')}}catch(e){}
+setTimeout(function(){if(window.__bloom)window.__bloom.strength=1.3;document.body.classList.remove('ascended')},12000)}
+
+// PORTAL — GEMAS ARQUETIPAS (CABINA DE MANDO)
+function gemActivate(i){if(pState.got[i])return;pState.got[i]=true;
+var cnt=Object.keys(pState.got).length;
+document.getElementById('gemStatus'+i).innerHTML='&#9670; ACTIVA';
+document.getElementById('gemStatus'+i).style.color='var(--gold)';
+document.getElementById('pilotName').textContent=FIRMAS[i].n;
+document.getElementById('portalFrags').textContent=cnt+'/5';
+document.getElementById('swarmStatus').textContent=cnt===5?'SINCRONIZADO':'CONECTANDO...';
+document.getElementById('swarmStatus').style.color=cnt===5?'var(--gold)':'var(--cyan)';
+document.getElementById('portalHint').textContent='> GEMA '+(i+1)+' — '+FIRMAS[i].n+' ACTIVADA. '+((cnt===5)?'ENJAMBRE SINCRONIZADO — ASCENSION DISPONIBLE':'FALTAN '+(5-cnt)+' GEMAS.');
+var gs=document.querySelectorAll('[data-gem]');gs.forEach(function(g,j){g.style.opacity=pState.got[j]?'1':'.5'});
+if(cnt===5){setTimeout(function(){document.getElementById('portalHint').textContent='[ ENJAMBRE SINCRONIZADO — ESCRIBE OMEGA EN EL CHAT PARA ASCENDER ]';ascend()},800)}}
+
+// PORTAL — 5 DIAMONDS (Three.js canvas)
+(function(){
+var cv=document.getElementById('diamC');if(!cv||!window.THREE)return;
+var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,cv.clientWidth/cv.clientHeight,.1,100);
+var ren=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+ren.setSize(cv.clientWidth,cv.clientHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));cam.position.z=16;
+var cols=[0xffd700,0x00ffff,0xb026ff,0xff003c,0xf5f5f5],gems=[];
+cols.forEach(function(c,i){var g=new THREE.Group();
+var solid=new THREE.Mesh(new THREE.OctahedronGeometry(1.6,0),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:.4,transparent:true,opacity:.85,shininess:140}));
+var w=new THREE.Mesh(new THREE.OctahedronGeometry(2.1,0),new THREE.MeshBasicMaterial({color:c,wireframe:true,transparent:true,opacity:.2}));
+g.add(solid);g.add(w);g.position.x=(i-2)*4.6;g.userData={ph:Math.random()*6,idx:i};sc.add(g);gems.push(g)});
+var ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+cv.addEventListener('click',function(e){var r=cv.getBoundingClientRect();
+mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+ray.setFromCamera(mouse,cam);var hits=ray.intersectObjects(gems,true);
+if(hits.length){var o=hits[0].object;while(o.parent&&gems.indexOf(o)===-1)o=o.parent;
+var idx=gems.indexOf(o);if(idx>-1){portalHit(idx);o.scale.setScalar(1.4);setTimeout(function(){o.scale.setScalar(1)},400)}}});
+sc.add(new THREE.PointLight(0xffffff,1.2,60));sc.add(new THREE.AmbientLight(0xff003c,.4));
+function loop(){var t=performance.now()*.001;
+gems.forEach(function(g,i){g.rotation.y=t*(.4+i*.08);g.rotation.x=Math.sin(t*.5+g.userData.ph)*.3;
+g.position.y=Math.sin(t*.8+g.userData.ph)*.6});
+ren.render(sc,cam);requestAnimationFrame(loop)}loop();
+addEventListener('resize',function(){if(!cv.clientWidth)return;cam.aspect=cv.clientWidth/cv.clientHeight;
+cam.updateProjectionMatrix();ren.setSize(cv.clientWidth,cv.clientHeight)});
+})();
+var pState={got:{}};
+function portalHit(i){if(pState.got[i])return;pState.got[i]=true;
+var cnt=Object.keys(pState.got).length;
+var t=document.getElementById('portalTerm');
+t.innerHTML='&gt; FRAGMENTO '+cnt+'/5 — '+FIRMAS[i].n+' <span style="color:'+FIRMAS[i].c+'">&#9670; INTEGRADO</span>';
+if(cnt===5){setTimeout(function(){t.innerHTML='&gt; ENJAMBRE SINCRONIZADO — <span style="color:var(--gold)">ASCENSION DISPONIBLE: pronuncia OMEGA en el chat</span>';ascend()},700)}}
+
+// GALLERY
+(function(){var g=document.getElementById('galGrid');if(!g)return;
+var R=['Archive // Venom','Archive // Gaze','Zion Dimension','System Halt','The Guardian','The Trinity Protocol','Cyber Gaze','Serpent Pact','Zion Interceptor','Sincro 1.0','Prototype Figurine','Virtual Dimension 042','Biometric Integration','Useless Drone Analysis','Judas Era Pursuit','Duck Prod Override'];
+R.forEach(function(r,i){var n=String(i+1).padStart(2,'0');
+var fb='https://image.pollinations.ai/prompt/'+encodeURIComponent('belentani judas era '+r+', red leather messianic singer, dark cinematic, red neon')+'?width=600&height=400&nologo=true&seed='+(1940+i);
+g.innerHTML+='<div class="tcard gal rv" style="padding:0;overflow:hidden"><img src="web/img/gallery-'+n+'.jpg" loading="lazy" style="width:100%;height:300px;object-fit:cover" onerror="this.onerror=null;this.src=\''+fb+'\'"><div class="glab"><span>RECORD_'+(i+1)+'</span> '+r+'</div></div>'});
+})();
+
+// JUDAS — 5 PHASES
+var FD=[
+['FASE_01','El Hombre Integrado','<p>No existe un "cuando". No existe un "donde". Existe un <em>entre</em> — un pliegue del universo donde el tiempo no corre, se respira. Donde las almas no envejecen, iteran.</p><p>En ese entre, caminaba un hombre que llevaba muchos nombres. Le llamaban Pedro. Le llamaban Marcos. Le llamaban Santos. Le llamaban Belentani.</p><p>No era un santo. Era un sistema operativo humano corriendo cuatro procesos en paralelo: El Angel, El Guerrero, El Analitico, El Cronista. Cuatro voces. Un solo hombre. Y en su pecho, latia algo que todos susurraban pero nadie habia visto. <em>La Llave Dorada.</em></p>'],
+['FASE_02','La Deuda Impagable','<p>Se conocieron en un camino que no estaba en ningun mapa. Judas caminaba con prisa, como quien huye de algo que no sabe que lleva dentro. Se volvieron intimos. No de cuerpo — de alma desnuda.</p><p>Y entonces ocurrio lo que Judas no pudo soportar: Pedro le beso los pies. No por sumision. Por devocion.</p><p><em>"Porque estas aqui. Porque me acompanas. Porque tu presencia, aunque a veces duela, es un regalo que no merezco pero que agradezco."</em></p><p>Judas sintio que el mundo se le caia. Porque ese beso en los pies no era un acto de amor. Era un espejo. Recibiendo devocion sin devolverla. Aceptando amor sin merecerlo. La deuda se volvio impagable.</p>'],
+['FASE_03','El Robo y El Canto','<p>Judas espero la noche. Con las manos temblando, no de maldad sino de verguenza, extendio los dedos hacia la Llave Dorada. La agarro. Tiro. Y en ese instante, el artefacto se activo.</p><p>Cuatro voces salieron del pecho de Pedro al mismo tiempo: El Angel canto. El Guerrero se irguio. El Analitico observo. El Cronista registro.</p><p>Judas retrocedio, esperando una maldicion. Pero Pedro se sento. Despacio. Lo miro. Y entonces hizo lo que Judas jamas pudo anticipar: <em>se puso a cantarle.</em></p>'],
+['FASE_04','La Victoria Amarga','<p><em>"Quedatela"</em>, le dijo Pedro. <em>"La llave es metal. Es simbolo. Lo que yo tengo, lo que nadie me puede arrebatar, es mi voz. La combinacion de mis arquetipos."</em></p><p>Judas volvio a su tierra con la llave dorada. Lo reconocieron. Lo recordaron. Vivio una epoca de victoria. Pero era amarga. Porque nunca logro olvidar a Pedro arrodillado, cantandole, despues de haberle robado.</p><p>Esa era la verdad que Judas cargaba como una cruz invisible: intento destruir al que le vio. Al que le destino. Al que, aun asi, le juro respeto. Victorioso. Y destrozado.</p>'],
+['FASE_05','La Mentira Compartida','<p>Y aqui, agente, es donde la historia se revela tal como es. La llave nunca fue lo valioso. Era una mentira compartida. Pedro dejo que Judas le robara algo que no importaba, para que Judas descubriera lo que si importaba.</p><p>Belentani te canta esta historia para que no cometas el error de Judas. Para que no robes llaves que no te pertenecen. Y si ya lo hiciste, Belentani tambien te canta a ti. <em>Sin condiciones. Sin juicio.</em></p><p style="font-family:var(--fm);font-size:10px;letter-spacing:3px;color:var(--green);text-align:center;margin-top:32px">TRANSMISSION END<br>&gt; BELENTANI CREATIVE OS v11.0<br>&gt; "LA TRAICION ES EL INPUT. LA VOZ ES EL OUTPUT."<br>[ SYSTEM READY ]</p>']];
+(function(){var tabs=document.getElementById('faseTabs'),body=document.getElementById('faseBody');
+if(!tabs||!body)return;
+function show(i){body.innerHTML='<h3>'+FD[i][1]+'</h3>'+FD[i][2];
+tabs.querySelectorAll('.ftab').forEach(function(b,j){b.classList.toggle('on',j===i)})}
+tabs.addEventListener('click',function(e){var b=e.target.closest('.ftab');if(b)show(+b.dataset.f)});show(0)})();
+
+// CONCEPT — 5 PHASES GRID
+(function(){var g=document.getElementById('fasesGrid');if(!g)return;
+var f=[['01','EL HOMBRE INTEGRADO','Cuatro procesos en paralelo — Angel, Guerrero, Analitico, Cronista — y una Llave Dorada en el pecho.'],
+['02','LA DEUDA IMPAGABLE','Judas roba la llave. Pedro besa sus pies por devocion: el espejo se vuelve insoportable.'],
+['03','EL ROBO Y EL CANTO','El artefacto activa las cuatro voces. Pedro canta a Judas en lugar de maldecir.'],
+['04','LA VICTORIA AMARGA','"Quedatela. La llave es metal. Mi voz nadie me la arrebata." Judas vence y queda destrozado.'],
+['05','LA MENTIRA COMPARTIDA','La llave nunca importo. Era test. Belentani canta para que no cometas el error de Judas.']];
+g.innerHTML=f.map(function(x){return'<div class="tcard rv" style="border-top:2px solid var(--blood)"><div class="tc-ico">'+x[0]+'</div><div class="tc-name">'+x[1]+'</div><p class="tc-desc">'+x[2]+'</p></div>'}).join('')})();
+
+// STUDIO — 120 MODULES
+var MODS={
+'img':['Midjourney','Leonardo','DALL-E 3','Stable Diffusion','Ideogram','Flux','Krea','Magnific','Upscayl','Lexica','PromptHero','PromptPerfect','Civitai','Tensor.Art','Playground','Artbreeder','NightCafe','DeepAI','Craiyon','Pollinations'],
+'vid':['Runway Gen-3','Pika','Kling','Luma','Hailuo','Sora','SVD','AnimateDiff','LivePortrait','Stable Video','Kaiber','Decohere','Morph','LTX Video','Hunyuan','Veo','Mochi','CogVideo','Allegro','Wan'],
+'aud':['Suno v4','Udio','ElevenLabs','RVC','AIVA','Soundraw','Mubert','VoiceMod','AudioCraft','Stable Audio','Riffusion','Chirp','MusicGen','Bark','Tortoise TTS','Whisper','Demucs','Moises','LALAL','Kits.AI'],
+'code':['Cursor','v0','Bolt.new','Lovable','Replit Agent','Copilot','Windsurf','Codeium','Tabnine','Continue','Aider','OpenHands','Devin','Factory','Magic Patterns','Claude Code','Cline','Zed AI','Sweep','Mentat'],
+'agent':['AutoGPT','CrewAI','LangGraph','N8N','Make','Zapier','Langflow','Flowise','Dify','Coze','AgentGPT','BabyAGI','MetaGPT','Camel','Autogen','SuperAGI','GPT-Researcher','Devika','AgentScope','Swarm'],
+'psy':['Archetype Discover','Dream Interpreter','DARVO Detector','Manipulation Scan','1000 Questions','Tarot Oracle','Astro Nexus','I-Ching','WhatsApp Analyzer','Shadow Work','Enneagram AI','MBTI Neural','Attachment Style','Trauma Map','Inner Child','Parts Work','Somatic Tracking','Nervous Reg','Jung Mirror','Symbol Codex']};
+var CATICO={img:'&#127912;',vid:'&#127916;',aud:'&#127925;',code:'&#128187;',agent:'&#129302;',psy:'&#129504;'};
+var CATNAME={img:'IMAGE FORGE',vid:'VIDEO LAB',aud:'AUDIO FORGE',code:'CODE NEXUS',agent:'AI AGENTS',psy:'PSYCHE SCAN'};
+(function(){var g=document.getElementById('stuGrid');if(!g)return;
+var cats=Object.keys(MODS),tabs=document.getElementById('stabs');
+function render(f){g.innerHTML='';cats.forEach(function(cat,ci){
+if(f!=='*'&&f!==cat)return;
+MODS[cat].forEach(function(m,mi){var id=String(ci+1).padStart(2,'0')+'.'+String(mi+1).padStart(2,'0');
+g.innerHTML+='<div class="mcard" data-cat="'+CATNAME[cat]+'" data-name="'+m+'"><div class="mi">'+CATICO[cat]+'</div><div class="mn">'+m+'</div><div class="mid">MODULE_'+id+' // '+CATNAME[cat]+'</div></div>'})})}
+render('*');
+tabs.addEventListener('click',function(e){var b=e.target.closest('.stab');if(!b)return;
+tabs.querySelectorAll('.stab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');render(b.dataset.c)});
+g.addEventListener('click',function(e){var c=e.target.closest('.mcard');if(c)openMod(c.dataset.cat,c.dataset.name)});
+})();
+
+// MODULE OVERLAY
+var modA=null;
+var CSYS={'IMAGE FORGE':['img','Forja visual Judas.'],'VIDEO LAB':['txt','Eres el modulo de direccion de video Belentani. Devuelve guion visual: escenas, planos, iluminacion, camara. Espanol.'],
+'AUDIO FORGE':['txt','Eres el modulo de produccion sonora Belentani (dark pop, R&amp;B visceral, 96 BPM). Devuelve: estructura, instrumentacion, diseno de sonido, letra. Espanol.'],
+'CODE NEXUS':['txt','Eres el modulo de ingenieria Belentani. Devuelve codigo limpio y completo. Espanol.'],
+'AI AGENTS':['txt','Eres un orquestador de agentes IA para el ecosistema Belentani. Devuelve flujo de trabajo ejecutable.'],
+'PSYCHE SCAN':['txt','Eres el analizador psico-arquetipico del sistema Judas. Procesa patrones de sombra, trauma y mitologia. Devuelve lectura diagnostica profunda en espanol.']};
+function openMod(cat,name){modA={cat:cat,name:name};document.getElementById('modT').textContent=name;
+document.getElementById('modC').textContent=cat;document.getElementById('modIn').value='';
+document.getElementById('modOut').textContent='';document.getElementById('modOv').classList.add('on')}
+function closeMod(){document.getElementById('modOv').classList.remove('on')}
+function runMod(){if(!modA)return;var inp=document.getElementById('modIn').value.trim(),out=document.getElementById('modOut');
+out.textContent='> PROCESANDO '+modA.name+'...';
+var cfg=CSYS[modA.cat]||['txt','Modulo Belentani.'];
+if(cfg[0]==='img'){out.innerHTML='<img src="https://image.pollinations.ai/prompt/'+encodeURIComponent('belentani judas era, '+modA.name+', '+inp)+'?width=800&height=450&nologo=true&seed='+Math.floor(Math.random()*10000)+'" style="width:100%;border:1px solid var(--blood)" alt="Output">'}
+else{genText(modA.name+': '+inp,cfg[1]).then(function(r){out.textContent=r})}}
+
+// CHALLENGES + XP
+var xp=0;
+function addXP(n){xp+=n;document.getElementById('hXP').textContent=xp}
+(function(){var g=document.getElementById('chGrid');if(!g)return;
+var ch=[['MISION_01','DESENTRANA LAS 5 FIRMAS','Encuentra las palabras clave secretas en el chat o toca las gemas.','100 XP'],
+['MISION_02','SINCRONIZA EL PORTAL','Toca los 5 diamantes holograficos en la seccion Portal.','250 XP'],
+['MISION_03','INVOCA LA ASCENSION','Escribe OMEGA en cualquier interfaz de chat tras completar el enjambre.','500 XP'],
+['MISION_04','EJECUTA UN MODULO STUDIO','Abre cualquier modulo del Studio Lab y corre una directiva.','150 XP'],
+['MISION_05','FORJA UNA VISION','Genera una imagen en Vision Forge con un prompt propio.','200 XP'],
+['MISION_06','HABLA CON EL NUCLEO','Envia un mensaje al Neural Chat y recibe respuesta del CORE_AI.','150 XP']];
+g.innerHTML=ch.map(function(x){return'<div class="tcard rv"><div class="tc-head"><div class="tc-ico">&#9876;</div><div><div class="tc-name">'+x[1]+'</div><div class="tc-id">'+x[0]+' // '+x[3]+'</div></div></div><p class="tc-desc">'+x[2]+'</p><button class="tc-btn" onclick="alert(\'> MISION REGISTRADA. COMPLETALA EN EL ECOSISTEMA.\')">INICIAR</button></div>'}).join('')})();
+
+// BEAT FORGE
+var beatLoop=null;
+function beatPlay(){initH();if(!synth)return;if(beatLoop)beatStop();
+var bpm=96,beat=60/bpm;var step=0;
+var bass=['A1','A1','C2','C2','F1','F1','G1','G1'];
+var hats=[1,0,1,1,1,0,1,0,1,1,0,1,1,0,1,1];
+var info=document.getElementById('beatInfo');
+info.textContent='> BPM: '+bpm+' | KEY: Am | SEED: '+Math.floor(Math.random()*9999);
+var hbar=document.getElementById('hbar');hbar.classList.add('on');
+function tick(){
+try{synth.triggerAttackRelease(bass[step%8],'8n');
+if(hats[step%16]){var n=new Tone.NoiseSynth({noise:{type:'white'},envelope:{attack:.001,decay:.05,sustain:0}}).toDestination();
+n.volume.value=-20;n.triggerAttackRelease('32n')}
+window.__setAmp&&window.__setAmp(.3+Math.random()*.3);drawWave(.4+Math.random()*.2);
+document.getElementById('hbR').textContent=bass[step%8];
+document.getElementById('hbF').textContent=Math.round(Tone.Frequency(bass[step%8]).toFrequency());
+document.getElementById('hbK').textContent='Am DARK';
+document.getElementById('hbA').textContent=(0.3+Math.random()*.3).toFixed(2)}catch(e){}
+step++}
+tick();beatLoop=setInterval(tick,beat*500)}
+function beatStop(){if(beatLoop){clearInterval(beatLoop);beatLoop=null}
+document.getElementById('hbar').classList.remove('on');window.__setAmp&&window.__setAmp(0)}
+
+// CINEMATIC PREMIUM — GSAP EFFECTS
+(function(){if(typeof Lenis==='undefined')return;
+var lenis=new Lenis({duration:1.4,easing:function(t){return Math.min(1,1.001-Math.pow(2,-10*t))},orientation:'vertical',smoothWheel:true,wheelMultiplier:1,gestureOrientation:'vertical'});
+function raf(time){lenis.raf(time);ScrollTrigger.update();requestAnimationFrame(raf)}
+requestAnimationFrame(raf);
+ScrollTrigger.create({scroller:document.body,onRefresh:function(){lenis.resize()}})})();
+
+(function(){
+var t=document.querySelector('.hero-title');
+if(t){var CH='!<>-_\\/[]{}—=+*^?#0123456789ABCDEF';var txt='BELENTANI';
+var frame=0,frames=40;
+function scram(){var o='';var p=Math.floor(frame/2);
+for(var i=0;i<txt.length;i++){if(i<p)o+=txt[i];else o+=CH[Math.floor(Math.random()*CH.length)]}
+t.textContent=o;frame++;if(frame<frames*2)requestAnimationFrame(scram);else t.textContent=txt}
+setTimeout(scram,1800)})();
+
+(function(){document.querySelectorAll('.sec-title').forEach(function(el){
+if(!el._glitched){
+el._glitched=true;
+el.addEventListener('mouseenter',function(){gsap.timeline().to(el,{skewX:6,duration:.04}).to(el,{skewX:-6,duration:.04}).to(el,{skewX:0,duration:.04})})}})})();
+
+(function(){document.querySelectorAll('.tc-btn, .cta').forEach(function(el){
+el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();
+var x=e.clientX-r.left-r.width/2;var y=e.clientY-r.top-r.height/2;
+gsap.to(el,{x:x*.25,y:y*.25,duration:.4,ease:'power2.out',overwrite:'auto'})});
+el.addEventListener('mouseleave',function(){gsap.to(el,{x:0,y:0,duration:.5,ease:'power2.out'})})})})();
+
+(function(){ScrollTrigger.batch('.rv',{onEnter:function(batch){gsap.fromTo(batch,{opacity:0,y:60,scale:.96},{opacity:1,y:0,scale:1,duration:1.2,ease:'power3.out',stagger:.12,overwrite:'auto'})},start:'top 88%'});setTimeout(function(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in')})},5000)})();
+
+(function(){var xpEl=document.getElementById('hXP');if(!xpEl)return;
+var obs=new MutationObserver(function(){var v=parseInt(xpEl.textContent);if(v>0)gsap.fromTo(xpEl,{scale:1.3},{scale:1,duration:.4,ease:'back.out(3)'})});
+obs.observe(xpEl,{childList:true})})();
+
+// TERMINAL
+document.addEventListener('keydown',function(e){if(e.key==='`'){e.preventDefault();document.getElementById('term').classList.toggle('on');
+if(document.getElementById('term').classList.contains('on'))document.getElementById('termIn').focus()}});
+function termCmd(){var inp=document.getElementById('termIn'),t=inp.value.trim();if(!t)return;
+var term=document.getElementById('term');
+term.innerHTML+='<div class="tline" style="color:var(--blood)">&gt; '+t+'</div>';
+var s=trySecret(t);
+if(s){term.innerHTML+='<div class="tline">'+s+'</div>'}
+else if(t==='snap'){toggleSnap();term.innerHTML+='<div class="tline">&gt; Snap scrolling: '+(snapOn?'ON':'OFF')+'</div>'}
+else if(t==='help'){term.innerHTML+='<div class="tline">&gt; COMANDOS: rock|chronicle|antenna|artifact|interface · 432|528|639|741|852 · snap · omega · belentani free · status · reset · clear</div>'}
+else if(t==='clear'){term.innerHTML='<div class="tline">&gt; Terminal purgada.</div>'}
+else{term.innerHTML+='<div class="tline">&gt; Comando no reconocido. Escribe help.</div>'}
+inp.value='';term.scrollTop=term.scrollHeight}
+</script>

@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNIPAP — El chisme del internet, servido fresquito</title>
+<meta name="description" content="OMNIPAP · exclusivas, música, TV y moda de los famosos. El chisme del internet, servido fresquito.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/fontsource/css/archivo-black@latest/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/fontsource/css/space-grotesk@latest/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/fontsource/css/jetbrains-mono@latest/index.css" rel="stylesheet">
+<style>
+:root{
+--blue:#1B3BFF;--ink:#0A1128;--orange:#FF5C00;--orange-2:#FF7A2F;
+--paper:#FFFFFF;--sky:#E9EEFF;--navy:#0A1128;--navy-2:#060D24;--green:#00C853;
+--bd:3px solid var(--ink);--sh:8px 8px 0 var(--ink);--sh-s:5px 5px 0 var(--ink);
+--disp:'Archivo Black',system-ui,sans-serif;--body:'Space Grotesk',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:118px}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);
+background-image:radial-gradient(rgba(10,17,40,.085) 1.2px,transparent 1.2px);background-size:24px 24px;overflow-x:hidden}
+body.lock{overflow:hidden}
+::selection{background:var(--orange);color:#fff}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:400;line-height:.95;text-transform:uppercase}
+button{font-family:inherit}
+/* boot */
+#boot{position:fixed;inset:0;z-index:3000;background:var(--navy);color:#DCE4FF;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;font-family:var(--mono);transition:transform .7s cubic-bezier(.7,0,.2,1)}
+#boot.out{transform:translateY(-101%)}
+#boot .b-logo{font-family:var(--disp);font-size:clamp(2rem,8vw,4rem);margin-bottom:1.4rem}
+#boot .b-logo em{font-style:normal;color:var(--orange)}
+#boot pre{font-size:.74rem;line-height:1.7;min-height:150px;color:#9FB0EE;white-space:pre-wrap}
+#boot pre .ok{color:#5BE49B}
+#boot .b-bar{height:10px;border:2px solid #fff;margin-top:1.4rem;max-width:420px}
+#boot .b-bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .3s}
+#boot .b-skip{position:absolute;bottom:1.4rem;right:1.6rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;color:#6E7FC4;cursor:pointer}
+/* cursor */
+#cursor{position:fixed;top:0;left:0;width:16px;height:16px;border:2px solid var(--orange);z-index:2500;pointer-events:none;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .15s;display:none}
+@media(pointer:fine){#cursor{display:block}}
+#cursor.big{width:42px;height:42px;background:rgba(255,92,0,.18)}
+/* ticker */
+.ticker{background:var(--orange);border-bottom:var(--bd);overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;width:max-content;animation:marquee 42s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track span{font-family:var(--mono);font-weight:700;font-size:.74rem;letter-spacing:.03em;text-transform:uppercase;padding:.5rem 1.1rem;color:var(--ink)}
+.ticker-track span.sep{color:#fff;padding:.5rem .2rem}
+@keyframes marquee{to{transform:translateX(-50%)}}
+/* topbar */
+.topbar{background:var(--ink);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.2rem;padding:.5rem 1.25rem;font-family:var(--mono);font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.topbar .live{display:inline-flex;align-items:center;gap:.4rem;background:var(--orange);color:#fff;padding:.25rem .6rem}
+.topbar .live i{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.1s infinite}
+@keyframes pulse{50%{opacity:.2}}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:.4rem}
+.lang{display:flex;border:2px solid #fff}
+.lang button{background:transparent;border:none;color:#fff;font-family:var(--mono);font-weight:700;font-size:.62rem;letter-spacing:.1em;padding:.25rem .55rem;cursor:pointer;transition:.15s;border-right:2px solid #fff}
+.lang button:last-child{border-right:none}
+.lang button.on{background:var(--orange);color:var(--ink)}
+.lang button:hover:not(.on){background:#1B2A6B}
+/* masthead */
+.mast{padding:1.4rem 1.25rem .9rem;border-bottom:var(--bd)}
+.mast-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;max-width:1280px;margin:0 auto}
+.mast-side{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5A6390}
+.mast-side.r{text-align:right}
+.mast-side .blink{color:var(--orange)}
+.logo{font-family:var(--disp);font-size:clamp(2.6rem,8vw,5rem);letter-spacing:-.03em;line-height:.8;text-align:center;white-space:nowrap}
+.logo .o{color:var(--blue)}
+.logo .dot{color:var(--orange);cursor:pointer;user-select:none;transition:transform .15s}
+.logo .dot:hover{transform:scale(1.3)}
+.tagline{text-align:center;font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-top:.5rem}
+.tagline b{background:var(--orange);color:#fff;padding:.1rem .4rem}
+/* nav */
+.nav{position:sticky;top:0;z-index:800;background:var(--paper);border-bottom:var(--bd);box-shadow:0 4px 0 rgba(10,17,40,.06)}
+.nav-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:.2rem;padding:.4rem 1.25rem;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-in a{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:.5rem .7rem;white-space:nowrap;position:relative;transition:.15s}
+.nav-in a::after{content:"";position:absolute;left:.7rem;right:.7rem;bottom:.25rem;height:3px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.nav-in a:hover{color:var(--blue)}
+.nav-in a:hover::after{transform:scaleX(1)}
+.nav-in a.hot{color:var(--orange)}
+/* drama */
+.drama{background:var(--navy);color:#fff;border-bottom:var(--bd);padding:.8rem 1.25rem}
+.drama-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.drama .lab{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.16em;color:#8FA3E8;text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.drama .lab i{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulse 1s infinite}
+.drama-num{font-family:var(--disp);font-size:2rem;line-height:1;color:var(--orange-2);min-width:70px}
+.drama-bar{flex:1;min-width:140px;height:16px;border:2px solid #fff;background:var(--navy-2);position:relative;overflow:hidden}
+.drama-fill{position:absolute;inset:0;width:0;background:var(--blue);transition:width .9s cubic-bezier(.2,.8,.2,1),background .5s}
+.drama-fill.hot{background:var(--orange)}
+.drama-status{font-family:var(--disp);font-size:.9rem;min-width:120px;text-align:right}
+.drama-trend{font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--green)}
+.drama-trend.down{color:#7FA0FF}
+/* layout */
+.wrap{max-width:1280px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.4rem 0;scroll-margin-top:120px}
+.sec-bar{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.6rem;border-bottom:var(--bd);padding-bottom:.7rem}
+.sec-bar h2{font-size:clamp(1.4rem,3.4vw,2.3rem)}
+.sec-bar .tag{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);white-space:nowrap}
+.sec-bar .more{margin-left:auto;font-family:var(--mono);font-size:.66rem;font-weight:700;text-transform:uppercase;text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:2px}
+/* front */
+.front{display:grid;grid-template-columns:1.7fr 1fr;gap:1.6rem;padding-top:2rem}
+.hero{position:relative;border:var(--bd);box-shadow:var(--sh);background:#fff;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.hero:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--ink)}
+.hero.flash{animation:heroFlash .8s ease}
+@keyframes heroFlash{0%{box-shadow:0 0 0 6px var(--orange)}100%{box-shadow:var(--sh)}}
+.hero .ph{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--navy)}
+.hero .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.hero:hover .ph img{transform:scale(1.05)}
+.hero .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,17,40,.55),transparent 55%)}
+.stamp{position:absolute;top:14px;left:14px;z-index:3;background:var(--orange);color:#fff;font-family:var(--disp);font-size:.95rem;padding:.4rem .8rem;transform:rotate(-6deg);border:3px solid #fff;box-shadow:3px 3px 0 var(--ink)}
+.hero .kicker{position:absolute;left:16px;bottom:14px;z-index:3;color:#fff;font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.hero .kicker .cur{display:inline-block;width:8px;height:1.1em;background:var(--orange);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero .body{padding:1.3rem 1.4rem 1.5rem}
+.hero h1{font-size:clamp(1.7rem,3.6vw,3rem);margin-bottom:.8rem}
+.hero .teaser{font-size:1.05rem;line-height:1.5;color:#222;margin-bottom:1rem}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;font-family:var(--mono);font-size:.64rem;font-weight:700;text-transform:uppercase;color:#5A6390}
+.meta .by{color:var(--ink)}
+.meta .views{color:var(--blue)}
+.meta .dot{width:4px;height:4px;border-radius:50%;background:#C2C9E6}
+.read{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.1rem;font-family:var(--mono);font-weight:700;font-size:.74rem;text-transform:uppercase;background:var(--ink);color:#fff;border:none;padding:.7rem 1.1rem;cursor:pointer;box-shadow:var(--sh-s);transition:transform .15s,box-shadow .15s}
+.read:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--orange)}
+.reactions{display:flex;gap:.5rem;margin-top:1rem}
+.rx{display:inline-flex;align-items:center;gap:.4rem;border:2px solid var(--ink);background:var(--sky);padding:.35rem .7rem;font-family:var(--mono);font-size:.68rem;font-weight:700;cursor:pointer;transition:.15s}
+.rx:hover{background:var(--orange);color:#fff;transform:translateY(-2px)}
+/* hotbox */
+.hotbox{border:var(--bd);box-shadow:var(--sh);background:var(--navy);color:#fff;padding:1.3rem 1.3rem 1.5rem}
+.hotbox .hd{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.hotbox .hd h3{font-size:1.1rem}
+.hotbox .hd .now{margin-left:auto;font-family:var(--mono);font-size:.58rem;font-weight:700;letter-spacing:.12em;background:var(--orange);color:#fff;padding:.25rem .5rem;display:inline-flex;align-items:center;gap:.35rem}
+.hotbox .hd .now i{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.1s infinite}
+.hotlist{list-style:none;counter-reset:h}
+.hotlist li{counter-increment:h;display:grid;grid-template-columns:34px 1fr auto;gap:.7rem;align-items:center;padding:.7rem 0;border-bottom:2px dashed rgba(255,255,255,.18);cursor:pointer;transition:.15s}
+.hotlist li:last-child{border-bottom:none}
+.hotlist li:hover{padding-left:.4rem}
+.hotlist li::before{content:counter(h);font-family:var(--disp);font-size:1.5rem;color:var(--orange-2);line-height:1}
+.hotlist li:nth-child(1)::before{color:var(--orange)}
+.hotlist .ht{font-family:var(--disp);font-size:.92rem;line-height:1.1}
+.hotlist .hc{font-family:var(--mono);font-size:.62rem;font-weight:700;color:#8FA3E8;white-space:nowrap}
+/* briefs */
+.briefs{display:grid;grid-template-columns:1.5fr 1fr;gap:1.4rem}
+.b-wide{display:grid;grid-template-columns:1.1fr 1fr;border:var(--bd);box-shadow:var(--sh);background:#fff;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.b-wide:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--ink)}
+.b-wide .ph{overflow:hidden;background:var(--navy)}
+.b-wide .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.b-wide:hover .ph img{transform:scale(1.06)}
+.b-wide .tx{padding:1.3rem 1.4rem;display:flex;flex-direction:column}
+.b-col{display:grid;grid-template-rows:1fr 1fr;gap:1.4rem}
+.b-small{display:grid;grid-template-columns:120px 1fr;border:var(--bd);box-shadow:var(--sh-s);background:#fff;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.b-small:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.b-small .ph{overflow:hidden;background:var(--navy)}
+.b-small .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.b-small:hover .ph img{transform:scale(1.08)}
+.b-small .tx{padding:.9rem 1rem;display:flex;flex-direction:column}
+.btag{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.5rem}
+.btag.o{color:var(--orange)}
+.b-wide h3{font-size:1.4rem;line-height:1.05;margin-bottom:.6rem}
+.b-small h3{font-size:.95rem;line-height:1.12;margin-bottom:.4rem}
+.b-teaser{font-size:.86rem;line-height:1.45;color:#333;margin-bottom:auto}
+.b-meta{font-family:var(--mono);font-size:.6rem;font-weight:700;text-transform:uppercase;color:#7A84B8;margin-top:.8rem;display:flex;gap:.6rem}
+/* top5 */
+.top5{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.t5{border:var(--bd);box-shadow:var(--sh-s);background:#fff;padding:1rem;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s}
+.t5:hover{transform:translateY(-5px);box-shadow:8px 8px 0 var(--ink)}
+.t5 .rank{font-family:var(--disp);font-size:2.6rem;line-height:1;color:transparent;-webkit-text-stroke:2px var(--blue)}
+.t5:nth-child(1) .rank{-webkit-text-stroke:2px var(--orange)}
+.t5 h4{font-size:.82rem;line-height:1.15;margin:.6rem 0 .5rem;min-height:2.8em}
+.t5 .v{font-family:var(--mono);font-size:.62rem;font-weight:700;color:var(--blue)}
+/* coverage */
+.coverage{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.cov{border:var(--bd);box-shadow:var(--sh-s);background:var(--navy);color:#fff;padding:.9rem 1rem;transition:transform .2s}
+.cov:hover{transform:translateY(-4px)}
+.cov .top{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.cov .fl{font-size:1.4rem}
+.cov .nm{font-family:var(--disp);font-size:.85rem}
+.cov .ct{margin-left:auto;font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--orange-2)}
+.cov .bar{height:8px;border:2px solid #fff;background:var(--navy-2)}
+.cov .bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+/* minuto */
+#minuto{background:var(--navy);color:#fff;border-top:var(--bd);border-bottom:var(--bd)}
+#minuto .sec-bar{border-color:#fff}
+#minuto .sec-bar h2{color:#fff}
+.live-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.4rem;align-items:start}
+.live-intro p{font-size:1rem;line-height:1.6;color:#C9D4FF;margin-bottom:1.2rem}
+.live-intro .big{font-family:var(--disp);font-size:2.4rem;line-height:.95;color:#fff;margin-bottom:1rem}
+.live-intro .big em{font-style:normal;color:var(--orange-2)}
+.feed{list-style:none;display:grid;gap:.6rem}
+.feed li{display:grid;grid-template-columns:64px 1fr;gap:.9rem;align-items:start;background:var(--navy-2);border:2px solid #2A3C7A;padding:.8rem 1rem;border-left:5px solid var(--orange)}
+.feed li.new{animation:slideIn .5s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
+.feed .ft{font-family:var(--mono);font-size:.62rem;font-weight:700;color:var(--orange-2);padding-top:2px}
+.feed .fx{font-size:.9rem;line-height:1.4;color:#E6ECFF}
+/* tv */
+.tv-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.4rem}
+.vid{position:relative;border:var(--bd);box-shadow:var(--sh);background:#000;overflow:hidden;cursor:pointer}
+.vid .ph{position:relative;aspect-ratio:16/9;overflow:hidden}
+.vid .ph img{width:100%;height:100%;object-fit:cover;opacity:.82;transition:transform .5s,opacity .3s}
+.vid:hover .ph img{transform:scale(1.05);opacity:.95}
+.vid .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),transparent 60%)}
+.vid .play{position:absolute;inset:0;display:grid;place-items:center;z-index:2}
+.vid .play span{width:64px;height:64px;border-radius:50%;background:var(--orange);border:3px solid #fff;display:grid;place-items:center;box-shadow:4px 4px 0 var(--ink);transition:transform .2s}
+.vid:hover .play span{transform:scale(1.12)}
+.vid .play span::before{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
+.vid .dur{position:absolute;top:12px;right:12px;z-index:3;font-family:var(--mono);font-size:.62rem;font-weight:700;background:var(--ink);color:#fff;padding:.2rem .5rem;border:2px solid #fff}
+.vid .cap{position:absolute;left:14px;right:14px;bottom:12px;z-index:3;color:#fff}
+.vid .cap h4{font-size:1.05rem;line-height:1.1;margin-bottom:.3rem}
+.vid.feat .cap h4{font-size:1.5rem}
+.vid .cap .v{font-family:var(--mono);font-size:.62rem;font-weight:700;color:var(--orange-2)}
+.vid .eq{position:absolute;top:12px;left:12px;z-index:3;display:none;align-items:flex-end;gap:3px;height:22px;background:rgba(10,17,40,.7);padding:.3rem .4rem;border:2px solid var(--orange)}
+.vid.playing .eq{display:flex}
+.vid.playing .play{display:none}
+.vid .eq i{width:4px;background:var(--orange);animation:eq .7s ease-in-out infinite}
+.vid .eq i:nth-child(2){animation-delay:.15s}.vid .eq i:nth-child(3){animation-delay:.3s}.vid .eq i:nth-child(4){animation-delay:.45s}
+@keyframes eq{0%,100%{height:20%}50%{height:100%}}
+.vid-col{display:grid;grid-template-rows:1fr 1fr;gap:1.4rem}
+/* poll + tea */
+.pt-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;align-items:start}
+.poll{background:var(--orange);color:#fff;border:var(--bd);box-shadow:var(--sh);padding:1.6rem}
+.poll .q{font-family:var(--disp);font-size:1.5rem;line-height:1.05;margin:.4rem 0 1.3rem}
+.poll .opt{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:3px solid var(--ink);padding:.85rem 1rem;font-family:var(--body);font-weight:700;font-size:1rem;cursor:pointer;margin-bottom:.8rem;position:relative;overflow:hidden;transition:transform .12s}
+.poll .opt:hover{transform:translateX(4px)}
+.poll .opt .fill{position:absolute;inset:0;background:var(--blue);width:0;transition:width 1s cubic-bezier(.2,.8,.2,1);z-index:0}
+.poll .opt .lab{position:relative;z-index:1;display:flex;justify-content:space-between;gap:.6rem}
+.poll .opt .pct{font-family:var(--mono);font-weight:700;opacity:0;transition:opacity .4s}
+.poll.voted .opt{cursor:default}
+.poll.voted .opt:hover{transform:none}
+.poll.voted .opt .pct{opacity:1;color:#fff}
+.poll.voted .opt .lab>span:first-child{color:#fff}
+.poll .total{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.1em;margin-top:.4rem;opacity:.9}
+.tea{background:#fff;border:var(--bd);box-shadow:var(--sh);padding:1.6rem}
+.tea .sub{font-size:.9rem;color:#444;margin:.3rem 0 1.1rem;line-height:1.5}
+.tea .row{display:flex;gap:.6rem;margin-bottom:1.1rem}
+.tea input{flex:1;border:var(--bd);padding:.8rem .9rem;font-family:var(--body);font-size:.92rem;outline:none}
+.tea input:focus{box-shadow:inset 0 0 0 2px var(--orange)}
+.tea .send{background:var(--ink);color:#fff;border:var(--bd);font-family:var(--mono);font-weight:700;font-size:.78rem;text-transform:uppercase;padding:0 1.1rem;cursor:pointer;box-shadow:var(--sh-s);transition:transform .12s,box-shadow .12s;white-space:nowrap}
+.tea .send:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--orange)}
+.tea .rec-h{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:.6rem}
+.tea .rec{list-style:none;display:grid;gap:.5rem}
+.tea .rec li{font-size:.82rem;line-height:1.4;background:var(--sky);border:2px solid var(--ink);padding:.55rem .7rem;display:flex;gap:.6rem}
+.tea .rec li b{font-family:var(--mono);font-size:.6rem;color:var(--blue);white-space:nowrap}
+/* moda */
+#moda{background:var(--sky);border-top:var(--bd);border-bottom:var(--bd)}
+.moda-scroll{display:flex;gap:1.2rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.4rem 1.25rem 1.4rem;scrollbar-width:thin}
+.moda-scroll::-webkit-scrollbar{height:8px}
+.moda-scroll::-webkit-scrollbar-thumb{background:var(--ink)}
+.mcard{flex:0 0 300px;scroll-snap-align:start;border:var(--bd);box-shadow:var(--sh-s);background:#fff;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.mcard:nth-child(even){transform:rotate(-1deg)}
+.mcard:nth-child(odd){transform:rotate(.8deg)}
+.mcard:hover{transform:rotate(0) translateY(-6px);box-shadow:10px 10px 0 var(--ink)}
+.mcard .ph{aspect-ratio:3/4;overflow:hidden;background:var(--navy)}
+.mcard .ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.mcard:hover .ph img{transform:scale(1.06)}
+.mcard .cap{padding:.8rem 1rem;font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.mcard .cap b{display:block;font-family:var(--disp);font-size:.95rem;color:var(--blue);margin-bottom:.2rem}
+/* news */
+#news{background:var(--blue);color:#fff;border-top:var(--bd);border-bottom:var(--bd);position:relative;overflow:hidden}
+#news .star{position:absolute;font-family:var(--disp);color:rgba(255,255,255,.1);font-size:14rem;line-height:1;top:-2rem;right:-1rem;pointer-events:none}
+.news-in{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr 1fr;gap:2.4rem;align-items:center}
+.news-in h2{font-size:clamp(2rem,5vw,3.6rem);line-height:.92}
+.news-in h2 em{font-style:normal;color:var(--orange)}
+.news-in p{font-size:1.05rem;line-height:1.55;margin-top:1rem;color:#D6E0FF;max-width:30rem}
+.news-form{display:flex;flex-direction:column;gap:.8rem}
+.news-form .frow{display:flex;border:var(--bd);box-shadow:var(--sh-s)}
+.news-form input{flex:1;border:none;padding:1rem 1.1rem;font-family:var(--body);font-size:1rem;outline:none;background:#fff;color:var(--ink)}
+.news-form button{background:var(--orange);color:#fff;border:none;border-left:var(--bd);font-family:var(--mono);font-weight:700;font-size:.8rem;text-transform:uppercase;padding:0 1.4rem;cursor:pointer;transition:.15s}
+.news-form button:hover{background:var(--ink)}
+.news-form .ok{display:none;background:var(--ink);border:var(--bd);padding:1rem 1.2rem;font-family:var(--mono);font-weight:700;font-size:.85rem}
+.news-form.done .frow{display:none}
+.news-form.done .ok{display:block}
+.news-form .fine{font-family:var(--mono);font-size:.6rem;color:#A9B8FF}
+/* footer */
+footer{background:var(--navy);color:#fff}
+.foot-marquee{overflow:hidden;white-space:nowrap;border-bottom:var(--bd);padding:1rem 0;background:var(--orange)}
+.foot-marquee .ticker-track{animation-duration:34s}
+.foot-marquee span{font-family:var(--disp);font-size:clamp(2.4rem,6vw,4.4rem);color:var(--ink);padding:0 1.2rem}
+.foot-marquee span.o{color:#fff}
+.foot-grid{max-width:1280px;margin:0 auto;padding:2.4rem 1.25rem;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:2rem}
+.foot-grid h4{font-size:.85rem;margin-bottom:1rem;color:var(--orange-2)}
+.foot-grid .brand .logo{font-size:2.2rem;text-align:left}
+.foot-grid .brand .logo .o{color:#fff}
+.foot-grid .brand p{font-size:.85rem;line-height:1.55;color:#B9C6F5;margin-top:.8rem;max-width:24rem}
+.foot-grid ul{list-style:none;display:grid;gap:.5rem}
+.foot-grid ul a{font-family:var(--mono);font-size:.72rem;font-weight:700;text-decoration:none;color:#C9D4FF;text-transform:uppercase;transition:.15s}
+.foot-grid ul a:hover{color:var(--orange-2);padding-left:.3rem}
+.foot-bottom{border-top:2px solid #2A3C7A;padding:1.2rem 1.25rem;max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;align-items:center;font-family:var(--mono);font-size:.62rem;font-weight:700;color:#8FA3E8;text-transform:uppercase}
+.foot-bottom .disc{color:#6E7FC4;text-transform:none;letter-spacing:0;font-weight:500;max-width:46rem}
+.foot-bottom .eng-dot{color:#3A4C8C;cursor:pointer;text-decoration:none;transition:.15s}
+.foot-bottom .eng-dot:hover{color:var(--orange-2)}
+/* breaking */
+.breaking{position:fixed;top:0;left:0;right:0;z-index:1500;background:var(--orange);color:#fff;border-bottom:var(--bd);transform:translateY(-102%);transition:transform .5s cubic-bezier(.7,0,.2,1);cursor:pointer}
+.breaking.show{transform:none}
+.breaking-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.8rem 1.25rem}
+.breaking .bz{font-family:var(--disp);font-size:1rem;background:var(--ink);padding:.3rem .7rem;white-space:nowrap;animation:pulse 1s infinite}
+.breaking .bh{font-family:var(--disp);font-size:clamp(.85rem,2.4vw,1.3rem);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.breaking .ba{font-family:var(--mono);font-size:.66rem;font-weight:700;border:2px solid #fff;padding:.3rem .6rem;white-space:nowrap}
+/* modal */
+#modal{position:fixed;inset:0;z-index:1200;display:none}
+#modal.open{display:block}
+#modal .scrim{position:absolute;inset:0;background:rgba(10,17,40,.78);backdrop-filter:blur(2px)}
+#modal .sheet{position:absolute;inset:0;overflow-y:auto;background:var(--paper);background-image:radial-gradient(rgba(10,17,40,.06) 1.2px,transparent 1.2px);background-size:24px 24px}
+#modal .sheet-in{max-width:760px;margin:0 auto;padding:0 1.25rem 4rem}
+.m-close{position:fixed;top:14px;right:16px;z-index:1210;width:46px;height:46px;background:var(--orange);color:#fff;border:var(--bd);font-family:var(--disp);font-size:1.3rem;cursor:pointer;box-shadow:var(--sh-s);transition:transform .15s}
+.m-close:hover{transform:rotate(90deg)}
+.m-hero{position:relative;aspect-ratio:16/9;border:var(--bd);box-shadow:var(--sh);margin:1.6rem 0 1.4rem;overflow:hidden;background:var(--navy)}
+.m-hero img{width:100%;height:100%;object-fit:cover}
+.m-tag{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+.m-title{font-size:clamp(1.8rem,5vw,3rem);line-height:.98;margin:.6rem 0 1rem}
+.m-meta{display:flex;flex-wrap:wrap;gap:.5rem .9rem;font-family:var(--mono);font-size:.64rem;font-weight:700;text-transform:uppercase;color:#5A6390;border-bottom:var(--bd);padding-bottom:1rem;margin-bottom:1.4rem}
+.m-body p{font-size:1.12rem;line-height:1.65;margin-bottom:1.1rem;color:#1a1a1a}
+.m-body p:first-child{font-weight:700;font-size:1.25rem}
+.m-body p:first-child::first-letter{font-family:var(--disp);font-size:3.4rem;float:left;line-height:.8;padding:.1rem .5rem 0 0;color:var(--blue)}
+.m-share{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.6rem 0}
+.m-share .tag{font-family:var(--mono);font-size:.66rem;font-weight:700;border:2px solid var(--ink);padding:.35rem .6rem;background:var(--sky)}
+.m-share button{font-family:var(--mono);font-size:.66rem;font-weight:700;border:2px solid var(--ink);padding:.35rem .7rem;background:#fff;cursor:pointer;transition:.15s}
+.m-share button:hover{background:var(--ink);color:#fff}
+.m-rel-h{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:2rem 0 1rem;border-top:var(--bd);padding-top:1.2rem}
+.m-rel{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+/* toast */
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1300;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
+.toast{background:var(--ink);color:#fff;border:3px solid var(--orange);font-family:var(--mono);font-weight:700;font-size:.78rem;padding:.7rem 1.1rem;box-shadow:var(--sh-s);animation:toastIn .35s ease,toastOut .4s ease 2.6s forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-12px)}}
+#totop{position:fixed;bottom:18px;right:18px;z-index:700;width:48px;height:48px;background:var(--blue);color:#fff;border:var(--bd);font-family:var(--disp);font-size:1.2rem;cursor:pointer;box-shadow:var(--sh-s);opacity:0;pointer-events:none;transition:opacity .3s,transform .15s}
+#totop.show{opacity:1;pointer-events:auto}
+#totop:hover{transform:translateY(-3px)}
+/* ENGINE */
+#engine{position:fixed;inset:0;z-index:2000;visibility:hidden}
+#engine.open{visibility:visible}
+.eng-scrim{position:absolute;inset:0;background:rgba(6,13,36,.74);opacity:0;transition:opacity .35s}
+#engine.open .eng-scrim{opacity:1}
+.eng-panel{position:absolute;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--navy-2);border-left:var(--bd);color:#DCE4FF;display:flex;flex-direction:column;transform:translateX(103%);transition:transform .5s cubic-bezier(.7,0,.2,1);box-shadow:-12px 0 0 rgba(255,92,0,.25)}
+#engine.open .eng-panel{transform:none}
+.eng-head{border-bottom:2px solid #2A3C7A;padding:.9rem 1.1rem;display:flex;align-items:center;gap:.7rem;background:var(--navy)}
+.eng-head .led{width:10px;height:10px;border-radius:50%;background:var(--green);animation:pulse 1.2s infinite}
+.eng-head h3{font-size:1rem;color:#fff}
+.eng-head .ver{font-family:var(--mono);font-size:.58rem;font-weight:700;color:var(--orange-2);border:1px solid var(--orange-2);padding:.15rem .4rem}
+.eng-head .pub{margin-left:auto;font-family:var(--mono);font-size:.62rem;font-weight:700;color:#8FA3E8}
+.eng-head .pub b{color:var(--orange-2)}
+.eng-x{width:34px;height:34px;background:var(--orange);color:#fff;border:2px solid #fff;font-family:var(--disp);cursor:pointer;transition:transform .15s}
+.eng-x:hover{transform:rotate(90deg)}
+.eng-tabs{display:flex;border-bottom:2px solid #2A3C7A}
+.eng-tabs button{flex:1;background:transparent;border:none;border-right:2px solid #2A3C7A;color:#8FA3E8;font-family:var(--mono);font-weight:700;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.65rem .3rem;cursor:pointer;transition:.15s}
+.eng-tabs button:last-child{border-right:none}
+.eng-tabs button.on{background:var(--orange);color:var(--ink)}
+.eng-body{flex:1;overflow-y:auto;padding:1.1rem;scrollbar-width:thin}
+.eng-body::-webkit-scrollbar{width:8px}
+.eng-body::-webkit-scrollbar-thumb{background:#2A3C7A}
+.eng-sec{margin-bottom:1.4rem}
+.eng-h{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange-2);margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem}
+.eng-h::after{content:"";flex:1;height:1px;background:#2A3C7A}
+.pipe{list-style:none;display:grid;gap:.5rem}
+.pipe li{display:grid;grid-template-columns:30px 1fr auto;gap:.7rem;align-items:center;background:var(--navy);border:2px solid #2A3C7A;padding:.55rem .8rem;transition:.2s}
+.pipe li .pn{font-family:var(--disp);font-size:.85rem;color:#5A6BA8}
+.pipe li .pk{font-family:var(--mono);font-size:.68rem;font-weight:700;color:#C9D4FF}
+.pipe li .pd{font-family:var(--mono);font-size:.58rem;color:#6E7FC4;grid-column:2/4;margin-top:.15rem}
+.pipe li .ps{font-family:var(--mono);font-size:.56rem;font-weight:700;color:#5A6BA8}
+.pipe li.active{border-color:var(--orange);background:#101A3D}
+.pipe li.active .pn{color:var(--orange)}
+.pipe li.active .ps{color:var(--orange-2)}
+.pipe li.done .pn{color:var(--green)}
+.pipe li.done .ps{color:var(--green)}
+.eng-log{background:#03081A;border:2px solid #2A3C7A;padding:.8rem;font-family:var(--mono);font-size:.62rem;line-height:1.7;height:160px;overflow-y:auto;white-space:pre-wrap}
+.eng-log .t{color:#4A5A96}.eng-log .src{color:var(--orange-2)}.eng-log .ok{color:#5BE49B}.eng-log .soc{color:#7FA0FF}.eng-log .warn{color:#FFB27A}
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.agent{display:flex;align-items:center;gap:.55rem;background:var(--navy);border:2px solid #2A3C7A;padding:.5rem .7rem;transition:.2s}
+.agent .ai{font-size:1rem}
+.agent .an{font-family:var(--mono);font-size:.6rem;font-weight:700;color:#C9D4FF}
+.agent .at{font-family:var(--mono);font-size:.52rem;color:#6E7FC4;display:block}
+.agent .ad{width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:auto;animation:pulse 1.4s infinite}
+.agent.work{border-color:var(--orange);background:#101A3D}
+.agent.work .ad{background:var(--orange);animation-duration:.6s}
+.pubq{list-style:none;display:grid;gap:.5rem}
+.pubq li{background:var(--navy);border:2px solid #2A3C7A;border-left:5px solid var(--blue);padding:.55rem .8rem}
+.pubq li .ph2{font-size:.8rem;font-weight:700;color:#E6ECFF;line-height:1.3;margin-bottom:.25rem}
+.pubq li .pm{display:flex;gap:.8rem;font-family:var(--mono);font-size:.56rem;font-weight:700;color:#6E7FC4}
+.pubq li .pm .ctr{color:var(--orange-2)}
+.mods{display:flex;flex-wrap:wrap;gap:.4rem}
+.mod{font-family:var(--mono);font-size:.56rem;font-weight:700;border:1px solid #3A4C8C;color:#8FA3E8;padding:.3rem .55rem;display:inline-flex;align-items:center;gap:.35rem}
+.mod i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+.learn{font-family:var(--mono);font-size:.62rem;color:#5BE49B;background:#03081A;border:2px solid #1E4D33;padding:.6rem .8rem;line-height:1.6}
+.eng-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.ekpi{background:var(--navy);border:2px solid #2A3C7A;padding:.6rem .7rem;text-align:center}
+.ekpi b{font-family:var(--disp);font-size:1.15rem;color:var(--orange-2);display:block}
+.ekpi span{font-family:var(--mono);font-size:.5rem;font-weight:700;letter-spacing:.1em;color:#6E7FC4;text-transform:uppercase}
+/* radar */
+.radar-wrap{position:relative;max-width:300px;margin:0 auto;aspect-ratio:1/1}
+.radar{position:absolute;inset:0;border:3px solid #fff;border-radius:50%;overflow:hidden;
+background:radial-gradient(circle,rgba(27,59,255,.18),transparent 70%),repeating-radial-gradient(circle at center,transparent 0,transparent 34px,rgba(255,255,255,.12) 35px,rgba(255,255,255,.12) 36px)}
+.radar::before,.radar::after{content:"";position:absolute;background:rgba(255,255,255,.18)}
+.radar::before{left:50%;top:0;bottom:0;width:1px}
+.radar::after{top:50%;left:0;right:0;height:1px}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,92,0,.6),rgba(255,92,0,.12) 40deg,transparent 70deg);animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blip{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);background:var(--blue);box-shadow:0 0 0 0 currentColor;color:var(--blue)}
+.blip.soc{background:var(--orange);color:var(--orange)}
+.blip.hit{animation:blip .9s ease-out}
+@keyframes blip{0%{box-shadow:0 0 0 0 currentColor;transform:translate(-50%,-50%) scale(1)}100%{box-shadow:0 0 0 16px transparent;transform:translate(-50%,-50%) scale(1.7)}}
+.radar-center{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:.55rem;font-weight:700;letter-spacing:.14em;color:#fff;text-align:center;pointer-events:none}
+.radar-key{display:flex;gap:1rem;justify-content:center;margin-top:.8rem;font-family:var(--mono);font-size:.56rem;font-weight:700;color:#8FA3E8}
+.radar-key b{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:.3rem}
+/* REPL */
+.repl{background:#03081A;border:2px solid #2A3C7A;overflow:hidden}
+.repl-head{display:flex;align-items:center;gap:.45rem;padding:.6rem .9rem;border-bottom:2px solid #26346B;font-family:var(--mono);font-size:.62rem;font-weight:700;color:#8FA3E8}
+.repl-head i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.repl-head i:nth-child(1){background:var(--orange)}.repl-head i:nth-child(2){background:var(--blue)}.repl-head i:nth-child(3){background:var(--green)}
+.repl-head b{margin-left:.4rem;color:#fff}
+#replOut{font-family:var(--mono);font-size:.68rem;line-height:1.7;padding:.9rem 1rem;height:220px;overflow-y:auto;white-space:pre-wrap;color:#C9D4FF}
+#replOut .ok{color:#5BE49B}#replOut .warn{color:var(--orange-2)}#replOut .blu{color:#7FA0FF}#replOut .dim{color:#5A6BA8}
+.repl-in{display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-top:2px solid #26346B;font-family:var(--mono);font-size:.7rem;background:var(--navy-2)}
+.repl-in .prompt{color:var(--orange-2);font-weight:700;white-space:nowrap}
+.repl-in input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:var(--mono);font-size:.7rem}
+/* A/B viz */
+.abviz{display:grid;gap:.5rem}
+.abv{display:grid;grid-template-columns:60px 1fr 48px;gap:.6rem;align-items:center;font-family:var(--mono);font-size:.6rem;font-weight:700;color:#8FA3E8}
+.abv .tr{height:14px;border:2px solid #3A4C8C;background:var(--navy)}
+.abv .tr i{display:block;height:100%;width:0;background:var(--blue);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.abv.win .tr i{background:var(--orange)}
+.abv.win{color:var(--orange-2)}
+.sentg{display:grid;gap:.45rem}
+.sgr{display:grid;grid-template-columns:26px 1fr auto;gap:.6rem;align-items:center;font-family:var(--mono);font-size:.6rem;font-weight:700;color:#8FA3E8}
+.sgr .tr{height:10px;border:2px solid #3A4C8C;background:var(--navy)}
+.sgr .tr i{display:block;height:100%;width:0;background:var(--blue);transition:width .8s}
+.sgr:nth-child(odd) .tr i{background:var(--orange)}
+/* blueprint */
+.bp-stack{display:grid;gap:.5rem}
+.bp-layer{display:grid;grid-template-columns:44px 1fr;gap:.8rem;align-items:center;background:var(--navy);border:2px solid #2A3C7A;padding:.6rem .8rem}
+.bp-layer .bi{font-family:var(--disp);color:#fff;background:var(--blue);align-self:stretch;display:grid;place-items:center;font-size:.9rem}
+.bp-layer:nth-child(even) .bi{background:var(--orange)}
+.bp-layer .bn{font-family:var(--mono);font-size:.64rem;font-weight:700;color:#fff}
+.bp-layer .bc{font-family:var(--mono);font-size:.54rem;color:#8FA3E8;display:block;margin-top:.15rem}
+.bp-pal{display:flex;gap:.5rem;margin-top:.6rem}
+.bp-pal div{flex:1;border:2px solid #2A3C7A;padding:.5rem;text-align:center;font-family:var(--mono);font-size:.54rem;font-weight:700}
+.bp-cmd{background:#03081A;border:2px solid #2A3C7A;padding:.8rem;font-family:var(--mono);font-size:.6rem;line-height:1.8;color:#9FE8BC;white-space:pre-wrap}
+.bp-cmd .c{color:#5A6BA8}
+.bp-ep{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.58rem}
+.bp-ep td{padding:.4rem .3rem;border-bottom:1px solid #1B2A5B;color:#8FA3E8}
+.bp-ep .m{font-weight:700;padding:.1rem .4rem;font-size:.54rem;display:inline-block;min-width:38px;text-align:center}
+.bp-ep .m.g{background:var(--blue);color:#fff}.bp-ep .m.o{background:var(--orange);color:#fff}.bp-ep .m.v{background:var(--green);color:var(--ink)}
+/* engine ctrl */
+.eng-ctrl{border-top:2px solid #2A3C7A;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;background:var(--navy)}
+.eng-ctrl .rg{display:flex;gap:.3rem}
+.eng-ctrl .rg button{background:transparent;border:2px solid #3A4C8C;color:#8FA3E8;font-family:var(--mono);font-size:.58rem;font-weight:700;padding:.4rem .55rem;cursor:pointer;transition:.15s}
+.eng-ctrl .rg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.eng-run{background:var(--orange);color:#fff;border:2px solid #fff;font-family:var(--mono);font-weight:700;font-size:.66rem;letter-spacing:.08em;padding:.55rem .9rem;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.4);transition:.15s;margin-left:auto}
+.eng-run:hover{transform:translate(-2px,-2px)}
+.eng-run:disabled{opacity:.5;cursor:default;transform:none}
+.eng-auto{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.6rem;font-weight:700;color:#8FA3E8;cursor:pointer}
+.eng-auto .sw{width:34px;height:18px;border:2px solid #3A4C8C;position:relative;transition:.2s}
+.eng-auto .sw::after{content:"";position:absolute;top:1px;left:1px;width:12px;height:12px;background:#8FA3E8;transition:.2s}
+.eng-auto.on .sw{background:var(--green);border-color:var(--green)}
+.eng-auto.on .sw::after{left:17px;background:#fff}
+.eng-hint{font-family:var(--mono);font-size:.54rem;color:#4A5A96;width:100%;margin-top:.2rem}
+@media(max-width:980px){
+.front,.briefs,.tv-grid,.live-grid,.pt-grid,.news-in{grid-template-columns:1fr}
+.b-col,.vid-col{grid-template-rows:none;grid-template-columns:1fr 1fr}
+.mast-row{grid-template-columns:1fr;text-align:center;gap:.4rem}
+.mast-side{display:none}
+.foot-grid{grid-template-columns:1fr 1fr}
+.top5{grid-template-columns:repeat(2,1fr)}
+.coverage{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+.b-wide{grid-template-columns:1fr}
+.b-col,.vid-col{grid-template-columns:1fr}
+.m-rel{grid-template-columns:1fr}
+.foot-grid{grid-template-columns:1fr}
+.hero .body{padding:1.1rem}
+.agents{grid-template-columns:1fr}
+.top5{grid-template-columns:1fr}
+.drama-status{display:none}
+}
+</style>
+</head>
+<body>
+<div id="boot">
+<div class="b-logo">OMNI<em>PAP</em> BIOS v12</div>
+<pre id="bootLog"></pre>
+<div class="b-bar"><i id="bootBar"></i></div>
+<div class="b-skip" id="bootSkip">[ click para saltar ]</div>
+</div>
+<div id="cursor"></div>
+<div class="ticker"><div class="ticker-track" id="ticker"></div></div>
+<div class="topbar">
+<span id="tbDate">SÁB · 25 · JUL · 2026</span><span>◆</span>
+<span id="tbEdition">EDICIÓN GLOBAL Nº 4.112</span><span>◆</span>
+<span class="live"><i></i><span id="tbLive">EN VIVO</span></span>
+<div class="right">
+<span id="tbReaders">12.840 leyendo ahora</span>
+<div class="lang" id="lang">
+<button data-l="es" class="on">ES</button>
+<button data-l="en">EN</button>
+<button data-l="pt">PT</button>
+</div>
+</div>
+</div>
+<header class="mast">
+<div class="mast-row">
+<div class="mast-side" id="mastL">FARÁNDULA · MÚSICA · TV · MODA<br><span class="blink">▮</span> actualizado hace 1 min</div>
+<div>
+<div class="logo">OMNI<span class="o">PAP</span><span class="dot" id="logoDot" title="·">.</span></div>
+<div class="tagline" id="tagline">El chisme del internet, <b>servido fresquito</b></div>
+</div>
+<div class="mast-side r" id="mastR">BR · LATAM · USA · EU<br>3 idiomas · 1 verdad</div>
+</div>
+</header>
+<nav class="nav"><div class="nav-in" id="nav"></div></nav>
+<div class="drama"><div class="drama-in">
+<span class="lab"><i></i><span id="dramaLab">TERMÓMETRO DEL DRAMA</span></span>
+<span class="drama-num" id="dramaNum">62</span>
+<div class="drama-bar"><div class="drama-fill hot" id="dramaFill" style="width:62%"></div></div>
+<span class="drama-status" id="dramaStatus">CALIENTE 🔥</span>
+<span class="drama-trend" id="dramaTrend">▲ +3</span>
+</div></div>
+<main>
+<section id="portada" style="padding-top:0"><div class="wrap">
+<div class="front">
+<article class="hero" id="hero" data-story="s1"></article>
+<aside class="hotbox">
+<div class="hd"><h3 id="hotTitle">LO MÁS CALIENTE 🔥</h3><span class="now"><i></i><span id="hotNow">AHORA</span></span></div>
+<ol class="hotlist" id="hotlist"></ol>
+</aside>
+</div>
+</div></section>
+<section id="musica"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="brTag">EN TENDENCIA</span><h2 id="brTitle">MÁS TÉ PARA TI</h2><a class="more" href="#portada" id="brMore">ver todo →</a></div>
+<div class="briefs" id="briefs"></div>
+</div></section>
+<section id="top5sec"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="t5Tag">🏆 RANKING</span><h2 id="t5Title">LO MÁS LEÍDO DEL DÍA</h2></div>
+<div class="top5" id="top5"></div>
+</div></section>
+<section id="covsec" style="padding-top:0"><div class="wrap">
+<div class="coverage" id="coverage"></div>
+</div></section>
+<section id="minuto"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="mnTag">⚡ EN DIRECTO</span><h2 id="mnTitle">EL MINUTO A MINUTO</h2></div>
+<div class="live-grid">
+<div class="live-intro">
+<div class="big" id="mnBig">Nada se nos <em>escapa.</em></div>
+<p id="mnIntro">Cada pista, cada comunicado, cada foto borrosa a las 3 de la mañana. Lo vamos actualizando en vivo mientras el internet decide qué pensar.</p>
+</div>
+<ul class="feed" id="feed"></ul>
+</div>
+</div></section>
+<section id="tv"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="tvTag">▶ OMNIPAP TV</span><h2 id="tvTitle">LOS VIDEOS QUE ROMPIERON EL INTERNET</h2></div>
+<div class="tv-grid" id="tvgrid"></div>
+</div></section>
+<section id="tea"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="ptTag">TU TURNO</span><h2 id="ptTitle">OPINA Y CUENTA</h2></div>
+<div class="pt-grid">
+<div class="poll" id="poll"></div>
+<div class="tea-card tea" id="teabox"></div>
+</div>
+</div></section>
+<section id="moda"><div class="wrap">
+<div class="sec-bar"><span class="tag" id="moTag">📸 STREET STYLE</span><h2 id="moTitle">MODA CALLEJERA</h2></div>
+</div>
+<div class="moda-scroll" id="moda"></div>
+</section>
+<section id="news"><div class="wrap">
+<span class="star">★</span>
+<div class="news-in">
+<div><h2 id="nwTitle">EL CHISME DE LAS <em>8AM</em></h2><p id="nwSub">Un correo. Todo el té. Cero relleno. Te lo mandamos antes de que se enfríe el café.</p></div>
+<form class="news-form" id="newsForm">
+<div class="frow"><input type="email" id="nwMail" required><button type="submit" id="nwBtn">SUSCRIBIRME</button></div>
+<div class="ok" id="nwOk">🔥 Dentro. Nos vemos mañana a las 8AM en punto.</div>
+<span class="fine" id="nwFine">Sin spam. Darse de baja es un clic, lo prometemos.</span>
+</form>
+</div>
+</div></section>
+</main>
+<footer>
+<div class="foot-marquee"><div class="ticker-track" id="footMarq"></div></div>
+<div class="foot-grid" id="footGrid"></div>
+<div class="foot-bottom" id="footBottom"></div>
+</footer>
+<div class="breaking" id="breaking"><div class="breaking-in">
+<span class="bz">🚨 <span id="brkLabel">ÚLTIMA HORA</span></span>
+<span class="bh" id="brkHead"></span>
+<span class="ba" id="brkCta">LEER →</span>
+</div></div>
+<div id="modal"><div class="scrim" data-close></div><button class="m-close" data-close>✕</button><div class="sheet"><div class="sheet-in" id="modalBody"></div></div></div>
+<div id="engine">
+<div class="eng-scrim" data-engclose></div>
+<aside class="eng-panel">
+<header class="eng-head">
+<span class="led"></span><h3>OMNIPAP ENGINE</h3><span class="ver">V12</span>
+<span class="pub">HOY: <b id="engPub">0</b> notas</span>
+<button class="eng-x" data-engclose>✕</button>
+</header>
+<div class="eng-tabs">
+<button class="on" data-tab="live">▮ EN VIVO</button>
+<button data-tab="radar">▮ RADAR</button>
+<button data-tab="term">▮ TERMINAL</button>
+<button data-tab="bp">▮ BLUEPRINT</button>
+</div>
+<div class="eng-body">
+<div id="tab-live">
+<div class="eng-sec"><div class="eng-h">KPIs DE LA MÁQUINA</div><div class="eng-kpis" id="engKpis"></div></div>
+<div class="eng-sec"><div class="eng-h">PIPELINE DE GENERACIÓN</div><ol class="pipe" id="pipe"></ol></div>
+<div class="eng-sec"><div class="eng-h">REGISTRO DEL MOTOR</div><div class="eng-log" id="engLog"></div></div>
+<div class="eng-sec"><div class="eng-h">AGENTES EN NÓMINA</div><div class="agents" id="agents"></div></div>
+<div class="eng-sec"><div class="eng-h">ÚLTIMAS PUBLICADAS</div><ul class="pubq" id="pubq"></ul></div>
+<div class="eng-sec"><div class="eng-h">MÓDULOS ACTIVOS</div><div class="mods" id="mods"></div></div>
+<div class="eng-sec"><div class="eng-h">APRENDIZAJE (MEMORIA VECTORIAL)</div><div class="learn" id="learn">▸ esperando primer ciclo…</div></div>
+</div>
+<div id="tab-radar" style="display:none">
+<div class="eng-sec"><div class="eng-h">RADAR DE FUENTES · SCRAPING</div>
+<div class="radar-wrap"><div class="radar"><div class="sweep"></div><div id="blips"></div></div><div class="radar-center">OMNIPAP<br>RADAR</div></div>
+<div class="radar-key"><span><b style="background:var(--blue)"></b>medios</span><span><b style="background:var(--orange)"></b>redes</span></div>
+</div>
+<div class="eng-sec"><div class="eng-h">A/B TEST · ÚLTIMO CICLO</div><div class="abviz" id="abviz"></div></div>
+<div class="eng-sec"><div class="eng-h">SENTIMIENTO DEL CICLO</div><div class="sentg" id="sentg"></div></div>
+</div>
+<div id="tab-term" style="display:none">
+<div class="eng-sec"><div class="eng-h">TERMINAL INTERACTIVA</div>
+<div class="repl">
+<div class="repl-head"><i></i><i></i><i></i><b>omnipap@v12 — shell</b></div>
+<div id="replOut"></div>
+<div class="repl-in"><span class="prompt">omnipap@v12:~$</span><input id="replIn" autocomplete="off" spellcheck="false" placeholder="help"></div>
+</div>
+</div>
+</div>
+<div id="tab-bp" style="display:none">
+<div class="eng-sec"><div class="eng-h">STACK · 5 CAPAS</div><div class="bp-stack" id="bpStack"></div></div>
+<div class="eng-sec"><div class="eng-h">IDENTIDAD · PALETA</div><div class="bp-pal"><div style="background:#1B3BFF;color:#fff">#1B3BFF</div><div style="background:#FF5C00;color:#fff">#FF5C00</div><div style="background:#fff;color:#0A1128">#FFFFFF</div><div style="background:#0A1128;color:#fff">#0A1128</div></div></div>
+<div class="eng-sec"><div class="eng-h">DEPLOY</div><div class="bp-cmd" id="bpCmd"></div></div>
+<div class="eng-sec"><div class="eng-h">ENDPOINTS</div><table class="bp-ep" id="bpEp"></table></div>
+</div>
+</div>
+<footer class="eng-ctrl">
+<div class="rg" id="engRegion">
+<button data-r="BR" class="on">BR</button><button data-r="LATAM">LATAM</button><button data-r="USA">USA</button><button data-r="EU">EU</button>
+</div>
+<button class="eng-run" id="engRun">▶ CICLO AHORA</button>
+<span class="eng-auto on" id="engAuto"><span class="sw"></span>AUTO</span>
+<span class="eng-hint">acceso oculto: 5 clics en el punto naranja del logo · o tecla E ×3 · el lector nunca ve esto</span>
+</footer>
+</aside>
+</div>
+<div id="toasts"></div>
+<button id="totop" aria-label="subir">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+"use strict";
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':''+Math.round(n);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const IMG={
+hero:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/194aaafa0-cbb0-441e-988e-7598008c74f7.png',
+star:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/13ad21b05-43a2-4c1f-aec0-4a75d7950517.png',
+carpet:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/13159b5a6-dac1-4cb4-8317-389f16f95b00.png',
+studio:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/144813374-4c79-4c43-8747-86ca7e6e0ce7.png',
+airport:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/1f82ad3a3-65fe-4d48-88fa-420528dbb33d.png',
+yacht:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/1cb9edd8a-3b82-4711-856a-922719c14ce5.png',
+reality:'https://image.qwenlm.ai/public_source/62f6f03a-f1ae-43fb-a5a5-f8a88ba63189/18f67ea93-c0d8-495e-a041-5d973914af44.png'
+};
+const IMGPOOL=[IMG.hero,IMG.star,IMG.carpet,IMG.studio,IMG.airport,IMG.yacht,IMG.reality];
+const STORIES=[
+{id:'s1',img:IMG.hero,stamp:true,views:48200,tags:['#Luneo','#LunaVega','#MateoCruz'],
+tag:{es:'EXCLUSIVA · FARÁNDULA',en:'EXCLUSIVE · CELEBRITY',pt:'EXCLUSIVA · FAMOSOS'},
+t:{es:'Luna Vega y Mateo Cruz: el romance secreto que nadie vio venir',en:'Luna Vega & Mateo Cruz: the secret romance nobody saw coming',pt:'Luna Vega e Mateo Cruz: o romance secreto que ninguém viu chegar'},
+d:{es:'Nuestro fotógrafo los cazó saliendo del mismo hotel a las 2AM. Las fotos hablan solas.',en:'Our photographer caught them leaving the same hotel at 2AM. The photos speak for themselves.',pt:'Nosso fotógrafo flagrou os dois saindo do mesmo hotel às 2h da manhã. As fotos falam sozinhas.'},
+b:{es:['Dos superestrellas, un hotel y una salida secreta por el garaje. Luna y Mateo llevan meses negando lo evidente, pero esta madrugada el secreto se les cayó a pedazos.','Fuentes cercanas aseguran que "todo empezó en el estudio". Y sí, ese feat sorpresa del que todo el mundo habla… de pronto tiene otro sentido.','¿Se shipean o es pura estrategia? El internet ya tomó partido. Nosotros solo ponemos las fotos.'],
+en:['Two superstars, one hotel, a secret exit through the garage. Luna and Mateo have spent months denying the obvious — tonight the secret fell apart.','Sources close to them say "it all started in the studio." And yes, that surprise collab everyone keeps talking about just took on a whole new meaning.','Are we shipping or is it pure strategy? The internet already picked a side. We just post the photos.'],
+pt:['Dois astros, um hotel e uma saída secreta pela garagem. Luna e Mateo passaram meses negando o óbvio, mas hoje de madrugada o segredo desmoronou.','Fontes próximas garantem que "tudo começou no estúdio". E sim, aquele feat surpresa que todo mundo comenta… de repente faz outro sentido.','Shippa ou é pura estratégia? A internet já tomou partido. A gente só posta as fotos.']},
+time:{es:'hace 18 min',en:'18 min ago',pt:'há 18 min'},place:{es:'LOS ÁNGELES',en:'LOS ANGELES',pt:'LOS ANGELES'}},
+{id:'s2',img:IMG.star,views:31400,tags:['#KaiaSol','#NuevaEra','#Pop'],
+tag:{es:'MÚSICA',en:'MUSIC',pt:'MÚSICA'},
+t:{es:'Kaia Sol borra TODO su Instagram y anuncia "nueva era"',en:'Kaia Sol deletes EVERYTHING and announces a "new era"',pt:'Kaia Sol apaga TUDO e anuncia "nova era"'},
+d:{es:'Cero fotos, cero bio, cero explicaciones. Solo un emoji: 🦋',en:'Zero photos, zero bio, zero explanation. Just one emoji: 🦋',pt:'Zero fotos, zero bio, zero explicação. Só um emoji: 🦋'},
+b:{es:['El truco más viejo y más efectivo del pop. Kaia acaba de resetear su internet y los fans ya están descifrando coordenadas ocultas en su última story.','Su equipo no confirma ni niega. Traducción oficial: viene álbum.'],
+en:['The oldest, most effective trick in pop. Kaia just reset her entire internet and fans are already decoding hidden coordinates in her last story.','Her team won\'t confirm or deny. Official translation: album incoming.'],
+pt:['O truque mais velho e mais eficaz do pop. Kaia resetou a internet dela e os fãs já estão decifrando coordenadas escondidas na última story.','A equipe não confirma nem nega. Tradução oficial: vem álbum aí.']},
+time:{es:'hace 42 min',en:'42 min ago',pt:'há 42 min'},place:{es:'CIUDAD DE MÉXICO',en:'MEXICO CITY',pt:'CIDADE DO MÉXICO'}},
+{id:'s3',img:IMG.carpet,views:27900,tags:['#MicGate','#Premios','#Viral'],
+tag:{es:'TV & PREMIOS',en:'TV & AWARDS',pt:'TV & PRÊMIOS'},
+t:{es:'El micrófono abierto que arruinó (¿o salvó?) la gala',en:'The hot mic that ruined (or saved?) the awards',pt:'O microfone aberto que arruinou (ou salvou?) a premiação'},
+d:{es:'Lo que se escuchó en la pausa nadie lo tenía presupuestado. El clip ya supera las 40M de vistas.',en:'What got picked up during the break was NOT budgeted. The clip is past 40M views.',pt:'O que vazou no intervalo ninguém esperava. O clipe já passa de 40M de views.'},
+b:{es:['Tres segundos de audio. Eso bastó para que la entrega de premios entera pasara a segundo plano.','La organización pidió "disculpas técnicas". El internet pidió replay.'],
+en:['Three seconds of audio. That\'s all it took for the entire awards show to become a footnote.','The organizers issued a "technical apology." The internet demanded a replay.'],
+pt:['Três segundos de áudio. Foi o suficiente para a premiação inteira virar detalhe.','A organização pediu "desculpas técnicas". A internet pediu replay.']},
+time:{es:'hace 1 h',en:'1 h ago',pt:'há 1 h'},place:{es:'MADRID',en:'MADRID',pt:'MADRID'}},
+{id:'s4',img:IMG.yacht,views:19600,tags:['#DJNova','#Mansión','#Lujo'],
+tag:{es:'LUJO',en:'LUXE',pt:'LUXO'},
+t:{es:'DJ Nova compra una mansión de $40M (y sus vecinos están furiosos)',en:'DJ Nova buys a $40M mansion (and the neighbors are furious)',pt:'DJ Nova compra mansão de R$ 200M (e os vizinhos estão furiosos)'},
+d:{es:'12 habitaciones, 2 piscinas y una cláusula de silencio que nadie piensa respetar.',en:'12 bedrooms, 2 pools and a noise clause nobody plans to respect.',pt:'12 quartos, 2 piscinas e uma cláusula de silêncio que ninguém pretende respeitar.'},
+b:{es:['La casa más cara del barrio y el vecino más ruidoso del planeta. ¿Qué podría salir mal?','Ya circula la primera queja formal: "los bajos se sienten en mi cocina".'],
+en:['The most expensive house on the block and the loudest neighbor on the planet. What could go wrong?','The first formal complaint is already circulating: "I can feel the bass in my kitchen."'],
+pt:['A casa mais cara do bairro e o vizinho mais barulhento do planeta. O que poderia dar errado?','Já circula a primeira reclamação formal: "o grave bate na minha cozinha".']},
+time:{es:'hace 2 h',en:'2 h ago',pt:'há 2 h'},place:{es:'MIAMI',en:'MIAMI',pt:'MIAMI'}},
+{id:'s5',img:IMG.airport,views:22100,tags:['#ValentinaRíos','#AirportLook','#Moda'],
+tag:{es:'MODA',en:'FASHION',pt:'MODA'},
+t:{es:'El look de aeropuerto de Valentina Ríos que paró el internet',en:'Valentina Ríos\'s airport look that broke the internet',pt:'O look de aeroporto de Valentina Ríos que parou a internet'},
+d:{es:'Salió a tomar un vuelo de 6AM y rompió más internet que tu artista favorito en un año.',en:'She caught a 6AM flight and broke more internet than your fave did all year.',pt:'Ela foi pegar um voo às 6h e quebrou mais a internet que seu artista favorito em um ano.'},
+b:{es:['Gabardina oversize, lentes de sol a las 6AM y la actitud de quien sabe exactamente lo que está haciendo.','La gabardina se agotó en 3 tiendas antes del mediodía.'],
+en:['Oversized trench, sunglasses at 6AM and the attitude of someone who knows exactly what she\'s doing.','The trench sold out in 3 stores before noon.'],
+pt:['Trench coat oversized, óculos escuros às 6h e a atitude de quem sabe exatamente o que está fazendo.','O casaco esgotou em 3 lojas antes do meio-dia.']},
+time:{es:'hace 3 h',en:'3 h ago',pt:'há 3 h'},place:{es:'MILÁN',en:'MILAN',pt:'MILÃO'}},
+{id:'s6',img:IMG.reality,views:16800,tags:['#Reality','#Filtración','#Drama'],
+tag:{es:'REALITY',en:'REALITY TV',pt:'REALITY'},
+t:{es:'Filtrado: lo que pasó cuando apagaron las cámaras del reality',en:'Leaked: what happened when the reality cameras stopped rolling',pt:'Vazou: o que aconteceu quando as câmeras do reality desligaram'},
+d:{es:'Un productor habló de más. Nosotros tomamos nota.',en:'A producer talked too much. We took notes.',pt:'Um produtor falou demais. A gente anotou tudo.'},
+b:{es:['Lo que se ve en pantalla es el 10%. El otro 90% incluye una alianza secreta y una maleta que desapareció.','El episodio del domingo va a doler. Y nosotros vamos a estar ahí para contarlo todo.'],
+en:['What airs on screen is 10%. The other 90% includes a secret alliance and a suitcase that vanished.','Sunday\'s episode is going to hurt. And we\'ll be there to cover every second.'],
+pt:['O que passa na tela é 10%. Os outros 90% incluem uma aliança secreta e uma mala que desapareceu.','O episódio de domingo vai doer. E a gente vai estar lá pra contar tudo.']},
+time:{es:'hace 4 h',en:'4 h ago',pt:'há 4 h'},place:{es:'BOGOTÁ',en:'BOGOTÁ',pt:'BOGOTÁ'}},
+{id:'s7',img:IMG.studio,views:14300,tags:['#Feat3AM','#Estudio','#Música'],
+tag:{es:'MÚSICA',en:'MUSIC',pt:'MÚSICA'},
+t:{es:'La colaboración secreta que se grabó a las 3AM',en:'The secret 3AM collab nobody predicted',pt:'A colaboração secreta gravada às 3h da manhã'},
+d:{es:'Un estudio cerrado, dos autos negros y el feat que nadie predijo.',en:'A locked studio, two black cars and the feat nobody saw coming.',pt:'Um estúdio fechado, dois carros pretos e o feat que ninguém previu.'},
+b:{es:['Los vecinos del estudio llamaron a la policía por el ruido. La policía terminó pidiendo una foto.','El single sale el viernes. El internet ya está en la fila.'],
+en:['The neighbors called the cops about the noise. The cops ended up asking for a photo.','The single drops Friday. The internet is already in line.'],
+pt:['Os vizinhos chamaram a polícia pelo barulho. A polícia acabou pedindo foto.','O single sai sexta. A internet já está na fila.']},
+time:{es:'hace 5 h',en:'5 h ago',pt:'há 5 h'},place:{es:'BERLÍN',en:'BERLIN',pt:'BERLIM'}}
+];
+let STORY_DB=[...STORIES];
+const L={
+es:{date:'SÁB · 25 · JUL · 2026',edition:'EDICIÓN GLOBAL Nº 4.112',live:'EN VIVO',readers:n=>fmt(n)+' leyendo ahora',
+mastL:'FARÁNDULA · MÚSICA · TV · MODA',mastR:'BR · LATAM · USA · EU<br>3 idiomas · 1 verdad',tagline:'El chisme del internet, <b>servido fresquito</b>',
+nav:[['portada','PORTADA'],['musica','MÚSICA'],['top5sec','TOP 5'],['tv','TV & REALITY'],['moda','MODA'],['tea','TÉ'],['news','NEWSLETTER']],navHot:'EXCLUSIVAS',
+hotTitle:'LO MÁS CALIENTE 🔥',hotNow:'AHORA',brTag:'EN TENDENCIA',brTitle:'MÁS TÉ PARA TI',brMore:'ver todo →',
+t5Tag:'🏆 RANKING',t5Title:'LO MÁS LEÍDO DEL DÍA',
+mnTag:'⚡ EN DIRECTO',mnTitle:'EL MINUTO A MINUTO',mnBig:'Nada se nos <em>escapa.</em>',mnIntro:'Cada pista, cada comunicado, cada foto borrosa a las 3 de la mañana. Lo vamos actualizando en vivo mientras el internet decide qué pensar.',
+tvTag:'▶ OMNIPAP TV',tvTitle:'LOS VIDEOS QUE ROMPIERON EL INTERNET',ptTag:'TU TURNO',ptTitle:'OPINA Y CUENTA',moTag:'📸 STREET STYLE',moTitle:'MODA CALLEJERA',
+nwTitle:'EL CHISME DE LAS <em>8AM</em>',nwSub:'Un correo. Todo el té. Cero relleno. Te lo mandamos antes de que se enfríe el café.',nwBtn:'SUSCRIBIRME',nwOk:'🔥 Dentro. Nos vemos mañana a las 8AM en punto.',nwFine:'Sin spam. Darse de baja es un clic, lo prometemos.',nwPh:'tu@correo.com',
+pollTag:'LA PREGUNTA DEL DÍA',pollQ:'¿Luna y Mateo: amor real o pura estrategia?',pollA:'Se shipean fuerte 💘',pollB:'Es marketing 👀',pollTotal:n=>fmt(n)+' votos · cierra en 14 h',
+teaTag:'SUELTA EL TÉ',teaSub:'Anónimo. Sin juicio. Si es bueno, lo publicamos y sumas TeaPoints.',teaPh:'¿Qué sabes que nadie sabe?',teaBtn:'ENVIAR',teaToast:'+10 TeaPoints · tu té está en verificación 🫖',teaRec:'TÉS RECIENTES',
+read:'LEER LA NOTA',by:'Por Redacción OMNIPAP',related:'SIGUE LEYENDO',share:'COMPARTIR',agoS:n=>'hace '+n+'s',agoM:n=>'hace '+n+' min',
+pubToast:'🔥 NUEVA EXCLUSIVA publicada en portada',brk:'ÚLTIMA HORA',brkCta:'LEER →',
+dramaLab:'TERMÓMETRO DEL DRAMA',dramaCold:'FRÍO 🧊',dramaWarm:'TIBIO 😐',dramaHot:'CALIENTE 🔥',dramaBoil:'HIRVIENDO 🌋',
+ticker:['🚨 EXCLUSIVA: Luna Vega y Mateo Cruz, cazados saliendo del mismo hotel a las 2AM','🦋 Kaia Sol borra todo su Instagram — "nueva era" confirmada por su equipo','🎤 El audio filtrado de los premios ya superó las 40M de reproducciones','🏠 Vecinos de DJ Nova presentan queja formal: "los bajos llegan a mi cocina"','🧥 La gabardina de Valentina Ríos se agota en 3 países','📺 Filtración del reality: alianza secreta + maleta desaparecida','🎧 El feat de las 3AM sale este viernes — preventa caída','💬 El comunicado de Mateo no niega NADA (y el internet lo notó)'],
+feedPool:['📸 Paparazzi apostados frente al estudio de Kaia Sol','💬 El equipo de Mateo emite un comunicado (y no niega nada)','🔥 #Luneo entra al top 3 mundial de tendencias','🎬 La gala confirma "revisión técnica" del audio filtrado','🧾 Nueva queja vecinal contra DJ Nova: ahora por las luces','✈️ Valentina Ríos aterrizó en Milán — nueva pista de campaña','🦋 Kaia Sol sigue a una sola cuenta: la de su productora','🚗 Dos autos negros vistos de nuevo en el estudio a las 2:47AM'],
+videos:[['2:47','La salida del hotel: el video completo',4200000],['1:58','Kaia: todas las pistas de la "nueva era"',2100000],['0:33','El audio filtrado de los premios',8700000]],
+moda:[['VALENTINA RÍOS','LAX · 6:04AM'],['LUNA VEGA','salida nocturna · 2:12AM'],['GALA','backstage · 9:40PM'],['KAIA SOL','verano en el yate · 4:15PM']],
+footCols:[['SECCIONES',['Portada','Exclusivas','Música','TV & Reality','Moda','Té']],['OMNIPAP',['Quiénes somos','Redacción','Trabaja con nosotros','Contacto']],['LEGAL',['Aviso legal','Privacidad','Cookies','Prensa']]],
+footTag:'El chisme del internet, servido fresquito. Tres idiomas, una sola verdad y cero tiempo que perder.',footRights:'© 2026 OMNIPAP Media · Todos los chismes reservados',footDisc:'Los personajes y situaciones son ficticios y se presentan con fines editoriales y de entretenimiento.'},
+en:{date:'SAT · JUL · 25 · 2026',edition:'GLOBAL EDITION Nº 4,112',live:'LIVE',readers:n=>fmt(n)+' reading now',
+mastL:'CELEBS · MUSIC · TV · FASHION',mastR:'BR · LATAM · USA · EU<br>3 languages · 1 truth',tagline:'The internet\'s tea, <b>served fresh</b>',
+nav:[['portada','HOME'],['musica','MUSIC'],['top5sec','TOP 5'],['tv','TV & REALITY'],['moda','FASHION'],['tea','TEA'],['news','NEWSLETTER']],navHot:'EXCLUSIVES',
+hotTitle:'TRENDING NOW 🔥',hotNow:'NOW',brTag:'TRENDING',brTitle:'MORE TEA FOR YOU',brMore:'see all →',
+t5Tag:'🏆 RANKING',t5Title:'MOST READ TODAY',
+mnTag:'⚡ LIVE',mnTitle:'MINUTE BY MINUTE',mnBig:'Nothing <em>slips</em> past us.',mnIntro:'Every lead, every statement, every blurry 3AM photo. We update it live while the internet figures out what to think.',
+tvTag:'▶ OMNIPAP TV',tvTitle:'THE VIDEOS THAT BROKE THE INTERNET',ptTag:'YOUR TURN',ptTitle:'VOTE & SPILL',moTag:'📸 STREET STYLE',moTitle:'STREET STYLE',
+nwTitle:'THE <em>8AM</em> TEA',nwSub:'One email. All the tea. Zero filler. We send it before your coffee goes cold.',nwBtn:'SUBSCRIBE',nwOk:'🔥 You\'re in. See you tomorrow at 8AM sharp.',nwFine:'No spam. Unsubscribing is one click, promise.',nwPh:'you@email.com',
+pollTag:'QUESTION OF THE DAY',pollQ:'Luna & Mateo: real love or pure strategy?',pollA:'Hard shipping 💘',pollB:'It\'s marketing 👀',pollTotal:n=>fmt(n)+' votes · closes in 14 h',
+teaTag:'SPILL THE TEA',teaSub:'Anonymous. No judgment. If it\'s good, we run it and you earn TeaPoints.',teaPh:'What do you know that nobody else does?',teaBtn:'SEND',teaToast:'+10 TeaPoints · your tea is being verified 🫖',teaRec:'RECENT TEA',
+read:'READ THE STORY',by:'By OMNIPAP Staff',related:'KEEP READING',share:'SHARE',agoS:n=>n+'s ago',agoM:n=>n+' min ago',
+pubToast:'🔥 NEW EXCLUSIVE just dropped on the front page',brk:'BREAKING',brkCta:'READ →',
+dramaLab:'DRAMA THERMOMETER',dramaCold:'COLD 🧊',dramaWarm:'LUKEWARM 😐',dramaHot:'HOT 🔥',dramaBoil:'BOILING 🌋',
+ticker:['🚨 EXCLUSIVE: Luna Vega & Mateo Cruz caught leaving the same hotel at 2AM','🦋 Kaia Sol wipes her entire Instagram — "new era" confirmed by her team','🎤 The leaked awards audio just passed 40M plays','🏠 DJ Nova\'s neighbors file a formal complaint: "the bass hits my kitchen"','🧥 Valentina Ríos\'s trench coat sells out in 3 countries','📺 Reality leak: secret alliance + missing suitcase','🎧 The 3AM feat drops Friday — presale crashed','💬 Mateo\'s statement denies NOTHING (and the internet noticed)'],
+feedPool:['📸 Paparazzi camped outside Kaia Sol\'s studio','💬 Mateo\'s team issues a statement (and denies nothing)','🔥 #Luneo breaks into the global top 3','🎬 The gala confirms a "technical review" of the leaked audio','🧾 New neighbor complaint against DJ Nova: now about the lights','✈️ Valentina Ríos landed in Milan — fresh campaign clue','🦋 Kaia Sol follows exactly one account: her producer\'s','🚗 Two black cars spotted at the studio again at 2:47AM'],
+videos:[['2:47','Leaving the hotel: the full video',4200000],['1:58','Kaia: every clue of the "new era"',2100000],['0:33','The leaked awards audio',8700000]],
+moda:[['VALENTINA RÍOS','LAX · 6:04AM'],['LUNA VEGA','night exit · 2:12AM'],['GALA','backstage · 9:40PM'],['KAIA SOL','summer on the yacht · 4:15PM']],
+footCols:[['SECTIONS',['Home','Exclusives','Music','TV & Reality','Fashion','Tea']],['OMNIPAP',['About us','Newsroom','Careers','Contact']],['LEGAL',['Legal notice','Privacy','Cookies','Press']]],
+footTag:'The internet\'s tea, served fresh. Three languages, one truth and zero time to waste.',footRights:'© 2026 OMNIPAP Media · All the gossip reserved',footDisc:'All characters and situations are fictional and presented for editorial and entertainment purposes.'},
+pt:{date:'SÁB · 25 · JUL · 2026',edition:'EDIÇÃO GLOBAL Nº 4.112',live:'AO VIVO',readers:n=>fmt(n)+' lendo agora',
+mastL:'FAMOSOS · MÚSICA · TV · MODA',mastR:'BR · LATAM · USA · EU<br>3 idiomas · 1 verdade',tagline:'A fofoca da internet, <b>servida quentinha</b>',
+nav:[['portada','INÍCIO'],['musica','MÚSICA'],['top5sec','TOP 5'],['tv','TV & REALITY'],['moda','MODA'],['tea','CHÁ'],['news','NEWSLETTER']],navHot:'EXCLUSIVAS',
+hotTitle:'BOMBANDO AGORA 🔥',hotNow:'AGORA',brTag:'EM ALTA',brTitle:'MAIS CHÁ PRA VOCÊ',brMore:'ver tudo →',
+t5Tag:'🏆 RANKING',t5Title:'MAIS LIDAS DO DIA',
+mnTag:'⚡ AO VIVO',mnTitle:'MINUTO A MINUTO',mnBig:'Nada <em>passa</em> batido.',mnIntro:'Cada pista, cada nota, cada foto tremida às 3 da manhã. A gente atualiza ao vivo enquanto a internet decide o que pensar.',
+tvTag:'▶ OMNIPAP TV',tvTitle:'OS VÍDEOS QUE QUEBRARAM A INTERNET',ptTag:'SUA VEZ',ptTitle:'OPINE E CONTE',moTag:'📸 STREET STYLE',moTitle:'MODA DE RUA',
+nwTitle:'A FOFOCA DAS <em>8H</em>',nwSub:'Um e-mail. Todo o chá. Zero enrolação. A gente manda antes do café esfriar.',nwBtn:'ASSINAR',nwOk:'🔥 Dentro. Te vejo amanhã às 8h em ponto.',nwFine:'Sem spam. Cancelar é um clique, prometemos.',nwPh:'seu@email.com',
+pollTag:'A PERGUNTA DO DIA',pollQ:'Luna e Mateo: amor real ou pura estratégia?',pollA:'Shippo demais 💘',pollB:'É marketing 👀',pollTotal:n=>fmt(n)+' votos · fecha em 14 h',
+teaTag:'CONTA O BABADO',teaSub:'Anônimo. Sem julgamento. Se for bom, a gente publica e você ganha TeaPoints.',teaPh:'O que você sabe que ninguém mais sabe?',teaBtn:'MANDAR',teaToast:'+10 TeaPoints · seu chá tá em verificação 🫖',teaRec:'BABADOS RECENTES',
+read:'LER A NOTA',by:'Por Redação OMNIPAP',related:'CONTINUE LENDO',share:'COMPARTILHAR',agoS:n=>'há '+n+'s',agoM:n=>'há '+n+' min',
+pubToast:'🔥 NOVA EXCLUSIVA publicada na capa',brk:'URGENTE',brkCta:'LER →',
+dramaLab:'TERMÔMETRO DO DRAMA',dramaCold:'FRIO 🧊',dramaWarm:'MORNO 😐',dramaHot:'QUENTE 🔥',dramaBoil:'FERVENDO 🌋',
+ticker:['🚨 EXCLUSIVA: Luna Vega e Mateo Cruz flagrados saindo do mesmo hotel às 2h','🦋 Kaia Sol apaga todo o Instagram — "nova era" confirmada pela equipe','🎤 O áudio vazado da premiação já passou de 40M de plays','🏠 Vizinhos de DJ Nova abrem reclamação: "o grave chega na minha cozinha"','🧥 O trench coat de Valentina Ríos esgota em 3 países','📺 Vazamento do reality: aliança secreta + mala sumida','🎧 O feat das 3h sai sexta — pré-venda caiu','💬 A nota de Mateo não nega NADA (e a internet percebeu)'],
+feedPool:['📸 Paparazzi acampados na porta do estúdio de Kaia Sol','💬 A equipe de Mateo solta uma nota (e não nega nada)','🔥 #Luneo entra no top 3 mundial','🎬 A gala confirma "revisão técnica" do áudio vazado','🧾 Nova reclamação de vizinho contra DJ Nova: agora pelas luzes','✈️ Valentina Ríos pousou em Milão — nova pista de campanha','🦋 Kaia Sol segue uma conta só: a da produtora dela','🚗 Dois carros pretos vistos de novo no estúdio às 2:47'],
+videos:[['2:47','Saindo do hotel: o vídeo completo',4200000],['1:58','Kaia: todas as pistas da "nova era"',2100000],['0:33','O áudio vazado da premiação',8700000]],
+moda:[['VALENTINA RÍOS','LAX · 6:04'],['LUNA VEGA','saída noturna · 2:12'],['GALA','backstage · 21:40'],['KAIA SOL','verão no iate · 16:15']],
+footCols:[['SEÇÕES',['Início','Exclusivas','Música','TV & Reality','Moda','Chá']],['OMNIPAP',['Quem somos','Redação','Trabalhe conosco','Contato']],['LEGAL',['Aviso legal','Privacidade','Cookies','Imprensa']]],
+footTag:'A fofoca da internet, servida quentinha. Três idiomas, uma verdade e zero tempo a perder.',footRights:'© 2026 OMNIPAP Media · Todos os babados reservados',footDisc:'Personagens e situações são fictícios e apresentados para fins editoriais e de entretenimento.'}
+};
+const GEN={
+celebs:['Luna Vega','Mateo Cruz','Kaia Sol','DJ Nova','Valentina Ríos','Bruno Mar','Selena Riva','El Duko','Mora Lux','Andrés Vela'],
+es:{tpl:['🔥 {c} fue cazado saliendo del mismo hotel que su ex a las 3AM','👀 {c} borró todas sus fotos y solo sigue a su productor','💬 El equipo de {c} emitió un comunicado que no niega nada','🏠 Vecinos de {c} presentan queja formal por ruido a las 4AM','🎧 {c} grabó un feat secreto y el estudio se llenó de autos negros','✈️ El look de aeropuerto de {c} agotó tres tiendas en una hora','📺 Se filtró lo que {c} dijo cuando apagaron las cámaras','💸 {c} compró la mansión más cara del barrio y nadie está feliz'],
+teas:['Las fotos hablan solas. El internet ya decidió.','Nadie lo vio venir. Ahora nadie habla de otra cosa.','Tenemos testigos, tenemos fotos y tenemos el chisme completo.','Lo que empezó como un rumor ya es tendencia mundial.'],
+bod:['Fuentes cercanas confirman lo que el internet ya sospechaba. Y no, no es broma.','El equipo aún no se pronuncia. Cuando lo hagan, lo publicamos primero.','Los testigos no mienten. Las fotos tampoco.','Esto va a dar de qué hablar toda la semana.']},
+en:{tpl:['🔥 {c} caught leaving the same hotel as their ex at 3AM','👀 {c} deleted every photo and follows only their producer','💬 {c}\'s team dropped a statement that denies nothing','🏠 {c}\'s neighbors file a formal noise complaint at 4AM','🎧 {c} cut a secret feat — the studio filled with black cars','✈️ {c}\'s airport look sold out three stores in an hour','📺 Leaked: what {c} said when the cameras stopped rolling','💸 {c} bought the priciest mansion on the block and nobody\'s happy'],
+teas:['The photos speak for themselves. The internet already decided.','Nobody saw it coming. Now nobody talks about anything else.','We have witnesses, we have photos, we have the full tea.','What started as a rumor is now a global trend.'],
+bod:['Sources close confirm what the internet already suspected. And no, it\'s not a joke.','The team hasn\'t commented yet. When they do, we break it first.','Witnesses don\'t lie. Neither do photos.','This will fuel the conversation all week.']},
+pt:{tpl:['🔥 {c} flagrado saindo do mesmo hotel que o ex às 3h','👀 {c} apagou todas as fotos e só segue o produtor','💬 A equipe de {c} soltou uma nota que não nega nada','🏠 Vizinhos de {c} abrem reclamação por barulho às 4h','🎧 {c} gravou um feat secreto e o estúdio lotou de carros pretos','✈️ O look de aeroporto de {c} esgotou três lojas em uma hora','📺 Vazou o que {c} disse quando as câmeras desligaram','💸 {c} comprou a mansão mais cara do bairro e ninguém tá feliz'],
+teas:['As fotos falam sozinhas. A internet já decidiu.','Ninguém viu chegar. Agora ninguém fala de outra coisa.','Temos testemunhas, temos fotos e temos o babado completo.','O que começou como boato já é tendência mundial.'],
+bod:['Fontes próximas confirmam o que a internet já suspeitava. E não, não é brincadeira.','A equipe ainda não se pronunciou. Quando o fizer, a gente publica primeiro.','Testemunhas não mentem. Fotos também não.','Isso vai render a semana inteira.']}};
+const CITIES={es:['LOS ÁNGELES','MIAMI','MADRID','CDMX','BOGOTÁ','BERLÍN'],en:['LOS ANGELES','MIAMI','MADRID','MEXICO CITY','BOGOTÁ','BERLIN'],pt:['LOS ANGELES','MIAMI','MADRID','CIDADE DO MÉXICO','BOGOTÁ','BERLIM']};
+const SOURCES=[['papelpop.com',0],['tmz.com',0],['infobae.com',0],['heatworld.com',0],['multishow.globo',0],['x.com/trending',1],['tiktok.com/tag',1],['instagram.com/explore',1]];
+const SENTS=[['🤬','Drama'],['🎉','Hype'],['👀','Misterio'],['🥺','Nostalgia']];
+const AGENTS=[['🔭','trend_scout','predice viralidad'],['🕵️','scraper_ninja','extrae datos'],['✍️','copywriter_genZ','redacta en slang'],['📈','seo_strategist','titulares A/B'],['💸','affiliate_mgr','monetiza'],['⏰','celery_beat','dispara ciclos']];
+const MODULES=['scraper self-healing','sentiment engine','A/B autónomo','sindicación TikTok·Reels·Shorts·X','TeaPoints verify','market intel 6h','memoria pgvector','afiliados'];
+const STAGES=[['1','SCRAPE'],['2','SENTIMIENTO'],['3','REDACTAR'],['4','A/B TEST'],['5','PUBLICAR'],['6','APRENDER']];
+let gid=0;
+const NEWSROOM={hero:STORIES[0],briefs:[STORIES[1],STORIES[2],STORIES[3]],feed:[],feedPoolIdx:0,
+trending:[{tag:'#Luneo',count:2410000},{tag:'#KaiaSol',count:1830000},{tag:'#MicGate',count:1240000},{tag:'#DJNova',count:892000},{tag:'#ValentinaRios',count:654000}],
+extraTicker:[],drama:62,dramaDelta:3,readers:12840,revenue:1607,pubCount:0,cycle:0,
+regions:{BR:14,LATAM:11,USA:9,EU:6},rx:{}};
+function getRx(id){if(!NEWSROOM.rx[id])NEWSROOM.rx[id]={f:Math.floor(Math.random()*900)+120,s:Math.floor(Math.random()*500)+60,d:Math.floor(Math.random()*700)+90};return NEWSROOM.rx[id];}
+function ago(ts){const t=L[lang],s=Math.floor((Date.now()-ts)/1000);return s<60?t.agoS(s):t.agoM(Math.max(1,Math.floor(s/60)));}
+function storyTime(s){return s.born?ago(s.born):s.time[lang];}
+let lang='es',heroViews=STORIES[0].views,pollVoted=false,pollCounts={a:29892,b:18321};
+let teaRecents={
+es:[['anon_8f3k','Vi a Kaia en un estudio que no es el suyo 👀'],['anon_2m9x','El vecino de DJ Nova es mi primo, confirmo los bajos'],['anon_7q4w','El comunicado de Mateo se escribió a las 4AM, fuente fiable']],
+en:[['anon_8f3k','Saw Kaia at a studio that isn\'t hers 👀'],['anon_2m9x','DJ Nova\'s neighbor is my cousin, the bass is real'],['anon_7q4w','Mateo\'s statement was written at 4AM, trust']],
+pt:[['anon_8f3k','Vi a Kaia num estúdio que não é o dela 👀'],['anon_2m9x','O vizinho do DJ Nova é meu primo, o grave é real'],['anon_7q4w','A nota do Mateo foi escrita às 4h, fonte confia']]};
+function makeStory(){
+const ci=Math.floor(Math.random()*GEN.celebs.length);
+const ti=Math.floor(Math.random()*GEN.es.tpl.length);
+const tei=Math.floor(Math.random()*GEN.es.teas.length);
+const boi=Math.floor(Math.random()*GEN.es.bod.length);
+const cei=Math.floor(Math.random()*CITIES.es.length);
+const celeb=GEN.celebs[ci];
+const s={id:'g'+(++gid),img:rnd(IMGPOOL),stamp:true,born:Date.now(),views:Math.floor(Math.random()*22000)+8000,
+tags:['#'+celeb.replace(/\s/g,''),'#OMNIPAP','#Exclusiva'],
+tag:{es:'EXCLUSIVA · FARÁNDULA',en:'EXCLUSIVE · CELEBRITY',pt:'EXCLUSIVA · FAMOSOS'},
+t:{},d:{},b:{},time:{es:'recién',en:'just now',pt:'agora'},place:{}};
+['es','en','pt'].forEach(l=>{
+s.t[l]=GEN[l].tpl[ti].replace('{c}',celeb);
+s.d[l]=GEN[l].teas[tei];
+s.b[l]=[GEN[l].bod[boi],GEN[l].bod[(boi+1)%GEN[l].bod.length],GEN[l].teas[(tei+1)%GEN[l].teas.length]];
+s.place[l]=CITIES[l][cei];});
+s.celeb=celeb;
+STORY_DB.unshift(s);if(STORY_DB.length>20)STORY_DB.pop();
+return s;}
+function reactionsHTML(id){const rx=getRx(id);
+return `<div class="reactions"><button class="rx" data-rx="f" data-id="${id}">🔥 <b>${fmt(rx.f)}</b></button><button class="rx" data-rx="s" data-id="${id}">😱 <b>${fmt(rx.s)}</b></button><button class="rx" data-rx="d" data-id="${id}">💀 <b>${fmt(rx.d)}</b></button></div>`;}
+function render(){
+const t=L[lang];document.documentElement.lang=lang;
+$('#tbDate').textContent=t.date;$('#tbEdition').textContent=t.edition;$('#tbLive').textContent=t.live;
+$('#mastL').innerHTML=t.mastL+'<br><span class="blink">▮</span> '+t.agoM(1);
+$('#mastR').innerHTML=t.mastR;$('#tagline').innerHTML=t.tagline;
+$('#nav').innerHTML=t.nav.map(([id,lab])=>`<a href="#${id}">${lab}</a>`).join('')+`<a href="#portada" class="hot">${t.navHot}</a>`;
+renderTicker();
+const fm=['OMNIPAP','★','FARÁNDULA','★','MÚSICA','★','TV','★','MODA','★'].map((x,i)=>`<span${i%2?' class="o"':''}>${x}</span>`).join('');
+$('#footMarq').innerHTML=fm+fm;
+renderHero();renderHotlist();renderBriefs();renderTop5();renderCoverage();renderDrama();
+$('#t5Tag').textContent=t.t5Tag;$('#t5Title').textContent=t.t5Title;
+$('#brTag').textContent=t.brTag;$('#brTitle').textContent=t.brTitle;$('#brMore').textContent=t.brMore;
+$('#mnTag').textContent=t.mnTag;$('#mnTitle').textContent=t.mnTitle;$('#mnBig').innerHTML=t.mnBig;$('#mnIntro').textContent=t.mnIntro;
+renderFeed();
+$('#tvTag').textContent=t.tvTag;$('#tvTitle').textContent=t.tvTitle;
+const vids=t.videos,posters=[IMG.star,IMG.carpet,IMG.reality];
+$('#tvgrid').innerHTML=
+`<div class="vid feat" data-vid="0"><div class="ph"><img src="${posters[0]}" alt=""></div><span class="dur">${vids[0][0]}</span><div class="eq"><i></i><i></i><i></i><i></i></div><div class="play"><span></span></div><div class="cap"><h4>${vids[0][1]}</h4><span class="v">▶ ${fmt(vids[0][2])} views</span></div></div>`+
+`<div class="vid-col">`+
+`<div class="vid" data-vid="1"><div class="ph"><img src="${posters[1]}" alt=""></div><span class="dur">${vids[1][0]}</span><div class="eq"><i></i><i></i><i></i><i></i></div><div class="play"><span></span></div><div class="cap"><h4>${vids[1][1]}</h4><span class="v">▶ ${fmt(vids[1][2])} views</span></div></div>`+
+`<div class="vid" data-vid="2"><div class="ph"><img src="${posters[2]}" alt=""></div><span class="dur">${vids[2][0]}</span><div class="eq"><i></i><i></i><i></i><i></i></div><div class="play"><span></span></div><div class="cap"><h4>${vids[2][1]}</h4><span class="v">▶ ${fmt(vids[2][2])} views</span></div></div></div>`;
+$('#ptTag').textContent=t.ptTag;$('#ptTitle').textContent=t.ptTitle;renderPoll();renderTea();
+$('#moTag').textContent=t.moTag;$('#moTitle').textContent=t.moTitle;
+const mimgs=[IMG.airport,IMG.star,IMG.carpet,IMG.yacht];
+$('#moda').innerHTML=t.moda.map((m,i)=>`<div class="mcard"><div class="ph"><img src="${mimgs[i]}" alt=""></div><div class="cap"><b>${m[0]}</b>${m[1]}</div></div>`).join('');
+$('#nwTitle').innerHTML=t.nwTitle;$('#nwSub').textContent=t.nwSub;$('#nwBtn').textContent=t.nwBtn;$('#nwOk').textContent=t.nwOk;$('#nwFine').textContent=t.nwFine;$('#nwMail').placeholder=t.nwPh;
+$('#newsForm').classList.remove('done');
+$('#footGrid').innerHTML=`<div class="brand"><div class="logo">OMNI<span class="o">PAP</span><span style="color:var(--orange)">.</span></div><p>${t.footTag}</p></div>`+t.footCols.map(c=>`<div><h4>${c[0]}</h4><ul>${c[1].map(x=>`<li><a href="#">${x}</a></li>`).join('')}</ul></div>`).join('');
+$('#footBottom').innerHTML=`<span>${t.footRights}</span><span class="disc">${t.footDisc}</span><a class="eng-dot" id="engFoot" title="·">·</a>`;
+$('#tbReaders').textContent=t.readers(NEWSROOM.readers);
+const ef=$('#engFoot');if(ef)ef.addEventListener('click',e=>{e.preventDefault();openEngine();});}
+function renderHero(){
+const t=L[lang],s=NEWSROOM.hero;
+$('#hero').dataset.story=s.id;
+$('#hero').innerHTML=`<div class="ph"><span class="stamp">${s.tag[lang].split(' ')[0]}</span><img src="${s.img}" alt=""><div class="kicker">${s.tag[lang]}<span class="cur"></span></div></div><div class="body"><h1>${s.t[lang]}</h1><p class="teaser">${s.d[lang]}</p><div class="meta"><span class="by">${t.by}</span><span class="dot"></span><span>${storyTime(s)}</span><span class="dot"></span><span>${s.place[lang]}</span><span class="dot"></span><span class="views" id="heroViews">👁 ${fmt(heroViews)}</span></div>${reactionsHTML(s.id)}<button class="read">${t.read} →</button></div>`;}
+function renderTicker(){const t=L[lang];
+const items=[...NEWSROOM.extraTicker.map(x=>x[lang]),...t.ticker];
+const tk=items.map(x=>`<span>${x}</span><span class="sep">★</span>`).join('');
+$('#ticker').innerHTML=tk+tk;}
+function renderHotlist(){$('#hotlist').innerHTML=NEWSROOM.trending.map(x=>`<li data-tag="${x.tag}"><span class="ht">${x.tag}</span><span class="hc">${fmt(x.count)}</span></li>`).join('');}
+function renderBriefs(){
+const [w,a,b]=NEWSROOM.briefs;
+$('#briefs').innerHTML=
+`<article class="b-wide" data-story="${w.id}"><div class="ph"><img src="${w.img}" alt=""></div><div class="tx"><span class="btag o">${w.tag[lang]}</span><h3>${w.t[lang]}</h3><p class="b-teaser">${w.d[lang]}</p>${reactionsHTML(w.id)}<div class="b-meta"><span>${storyTime(w)}</span><span>·</span><span>👁 ${fmt(w.views)}</span></div></div></article>`+
+`<div class="b-col">`+
+`<article class="b-small" data-story="${a.id}"><div class="ph"><img src="${a.img}" alt=""></div><div class="tx"><span class="btag">${a.tag[lang]}</span><h3>${a.t[lang]}</h3><div class="b-meta"><span>${storyTime(a)}</span></div></div></article>`+
+`<article class="b-small" data-story="${b.id}"><div class="ph"><img src="${b.img}" alt=""></div><div class="tx"><span class="btag">${b.tag[lang]}</span><h3>${b.t[lang]}</h3><div class="b-meta"><span>${storyTime(b)}</span></div></div></article></div>`;}
+function renderTop5(){
+const top=[...STORY_DB].sort((a,b)=>b.views-a.views).slice(0,5);
+$('#top5').innerHTML=top.map((s,i)=>`<article class="t5" data-story="${s.id}"><span class="rank">${i+1}</span><h4>${s.t[lang]}</h4><span class="v">👁 ${fmt(s.views)}</span></article>`).join('');}
+function renderCoverage(){
+const flags={BR:'🇧🇷',LATAM:'🌎',USA:'🇺🇸',EU:'🇪🇺'};
+const max=Math.max(...Object.values(NEWSROOM.regions),1);
+$('#coverage').innerHTML=Object.entries(NEWSROOM.regions).map(([r,c])=>`<div class="cov"><div class="top"><span class="fl">${flags[r]}</span><span class="nm">${r}</span><span class="ct">${c} notas</span></div><div class="bar"><i style="width:${Math.round(c/max*100)}%"></i></div></div>`).join('');}
+function renderDrama(){
+const t=L[lang],d=NEWSROOM.drama;
+$('#dramaLab').textContent=t.dramaLab;
+$('#dramaNum').textContent=d;
+const f=$('#dramaFill');f.style.width=d+'%';f.classList.toggle('hot',d>=55);
+$('#dramaStatus').textContent=d<40?t.dramaCold:d<60?t.dramaWarm:d<80?t.dramaHot:t.dramaBoil;
+const tr=$('#dramaTrend');tr.textContent=(NEWSROOM.dramaDelta>=0?'▲ +':'▼ ')+NEWSROOM.dramaDelta;
+tr.classList.toggle('down',NEWSROOM.dramaDelta<0);}
+function renderFeed(){
+const t=L[lang];
+$('#feed').innerHTML=NEWSROOM.feed.map((it,i)=>{const txt=it.gen?it.gen[lang]:t.feedPool[it.pool%t.feedPool.length];
+return `<li class="${i===0&&it.fresh?'new':''}"><span class="ft">${ago(it.ts)}</span><span class="fx">${txt}</span></li>`;}).join('');
+NEWSROOM.feed.forEach(it=>it.fresh=false);}
+function renderPoll(){
+const t=L[lang];const tot=pollCounts.a+pollCounts.b;
+const pa=pollVoted?Math.round(pollCounts.a/tot*100):0,pb=pollVoted?100-pa:0;
+$('#poll').innerHTML=`<span class="btag" style="color:#fff">${t.pollTag}</span><div class="q">${t.pollQ}</div>`+
+`<button class="opt" data-v="a"><span class="fill" style="width:${pa}%"></span><span class="lab"><span>${t.pollA}</span><span class="pct">${pa}%</span></span></button>`+
+`<button class="opt" data-v="b"><span class="fill" style="width:${pb}%"></span><span class="lab"><span>${t.pollB}</span><span class="pct">${pb}%</span></span></button>`+
+`<div class="total">${t.pollTotal(tot)}</div>`;
+$('#poll').classList.toggle('voted',pollVoted);}
+function renderTea(){
+const t=L[lang];
+$('#teabox').innerHTML=`<span class="btag o">${t.teaTag}</span><p class="sub">${t.teaSub}</p>`+
+`<div class="row"><input id="teaIn" maxlength="160" placeholder="${t.teaPh}"><button class="send" id="teaSend">${t.teaBtn}</button></div>`+
+`<div class="rec-h">${t.teaRec}</div><ul class="rec" id="teaList">`+
+teaRecents[lang].map(r=>`<li><b>${r[0]}</b><span>${r[1]}</span></li>`).join('')+`</ul>`;}
+function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;$('#toasts').appendChild(d);setTimeout(()=>d.remove(),3200);}
+$('#lang').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const nl=b.dataset.l;if(nl===lang)return;
+$$('#lang button').forEach(x=>x.classList.toggle('on',x===b));
+const main=document.querySelector('main');
+if(window.gsap&&!reduced){gsap.to(main,{opacity:.15,y:10,duration:.18,onComplete:()=>{lang=nl;render();gsap.to(main,{opacity:1,y:0,duration:.35,ease:'power2.out'});}});}
+else{lang=nl;render();}});
+document.addEventListener('click',e=>{const rx=e.target.closest('.rx');if(!rx)return;e.stopPropagation();
+const r=getRx(rx.dataset.id);r[rx.dataset.rx]++;rx.querySelector('b').textContent=fmt(r[rx.dataset.rx]);
+if(window.gsap&&!reduced)gsap.fromTo(rx,{scale:1.3},{scale:1,duration:.3,ease:'back.out(3)'});});
+function openStory(id){
+const s=STORY_DB.find(x=>x.id===id);if(!s)return;const t=L[lang];
+const rel=STORY_DB.filter(x=>x.id!==id).slice(0,2);
+$('#modalBody').innerHTML=
+`<div class="m-hero"><img src="${s.img}" alt="">${s.stamp?`<span class="stamp">${s.tag[lang].split(' ')[0]}</span>`:''}</div>`+
+`<span class="m-tag">${s.tag[lang]}</span><h1 class="m-title">${s.t[lang]}</h1>`+
+`<div class="m-meta"><span class="by">${t.by}</span><span>${storyTime(s)}</span><span>${s.place[lang]}</span><span>👁 ${fmt(s.views)}</span></div>`+
+`<div class="m-body">${s.b[lang].map(p=>`<p>${p}</p>`).join('')}</div>`+
+`<div class="m-share">${s.tags.map(tg=>`<span class="tag">${tg}</span>`).join('')}<button data-sh="x">𝕏</button><button data-sh="ig">IG</button><button data-sh="wa">WA</button><button data-sh="cp">🔗</button></div>`+
+`<div class="m-rel-h">${t.related}</div><div class="m-rel">`+
+rel.map(r=>`<article class="b-small" data-story="${r.id}"><div class="ph"><img src="${r.img}" alt=""></div><div class="tx"><span class="btag">${r.tag[lang]}</span><h3>${r.t[lang]}</h3></div></article>`).join('')+`</div>`;
+$('#modal').classList.add('open');document.body.classList.add('lock');
+$('#modal .sheet').scrollTop=0;
+if(window.gsap&&!reduced)gsap.from('#modal .sheet-in > *',{y:24,opacity:0,stagger:.05,duration:.5,ease:'power3.out'});}
+function closeModal(){$('#modal').classList.remove('open');document.body.classList.remove('lock');}
+$('#modal').addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeModal();
+const st=e.target.closest('[data-story]');if(st){openStory(st.dataset.story);return;}
+const sh=e.target.closest('[data-sh]');if(sh){toast(sh.dataset.sh==='cp'?'🔗 link copiado':'compartido → '+sh.dataset.sh.toUpperCase());}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeEngine();}});
+document.addEventListener('click',e=>{if($('#modal').classList.contains('open'))return;
+const card=e.target.closest('[data-story]');if(card)openStory(card.dataset.story);});
+$('#hotlist').addEventListener('click',e=>{const li=e.target.closest('li');if(!li)return;
+const tag=li.dataset.tag;
+const s=STORY_DB.find(x=>x.tags&&x.tags.includes(tag))||STORY_DB[0];
+openStory(s.id);});
+$('#tvgrid').addEventListener('click',e=>{const v=e.target.closest('.vid');if(!v)return;
+const was=v.classList.contains('playing');$$('.vid').forEach(x=>x.classList.remove('playing'));
+if(!was){v.classList.add('playing');toast('▶ '+L[lang].videos[+v.dataset.vid][1]);}});
+$('#poll').addEventListener('click',e=>{if(pollVoted)return;const o=e.target.closest('.opt');if(!o)return;
+pollVoted=true;pollCounts[o.dataset.v]+=Math.floor(Math.random()*400)+100;renderPoll();
+if(window.gsap&&!reduced)gsap.from('#poll .opt .fill',{width:0,duration:1,ease:'power2.out'});
+toast('✓ voto registrado');});
+$('#teabox').addEventListener('click',e=>{if(e.target.id==='teaSend')submitTea();});
+$('#teabox').addEventListener('keydown',e=>{if(e.target.id==='teaIn'&&e.key==='Enter')submitTea();});
+function submitTea(){const inp=$('#teaIn');const v=(inp.value||'').trim();if(!v)return;
+const id='anon_'+Math.random().toString(36).slice(2,6);
+teaRecents[lang].unshift([id,v]);if(teaRecents[lang].length>4)teaRecents[lang].pop();
+renderTea();toast(L[lang].teaToast);
+if(window.gsap&&!reduced)gsap.from('#teaList li:first-child',{x:-16,opacity:0,duration:.4,ease:'power2.out'});}
+$('#newsForm').addEventListener('submit',e=>{e.preventDefault();const m=$('#nwMail').value.trim();
+if(m.includes('@')&&m.includes('.')){$('#newsForm').classList.add('done');toast('📬 '+L[lang].nwOk);}else $('#nwMail').focus();});
+const totop=$('#totop');
+totop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+window.addEventListener('scroll',()=>{totop.classList.toggle('show',window.scrollY>700);},{passive:true});
+let brkTimer=null;
+function showBreaking(s){
+$('#brkLabel').textContent=L[lang].brk;$('#brkCta').textContent=L[lang].brkCta;
+$('#brkHead').textContent=s.t[lang].replace(/^[^\s]+\s/,'');
+const b=$('#breaking');b.classList.add('show');b.dataset.story=s.id;
+clearTimeout(brkTimer);brkTimer=setTimeout(()=>b.classList.remove('show'),4200);}
+$('#breaking').addEventListener('click',e=>{const b=$('#breaking');$('#breaking').classList.remove('show');if(b.dataset.story)openStory(b.dataset.story);});
+/* ENGINE */
+let engOpen=false,engAuto=true,engRunning=false,engRegion='BR',engPublished=[];
+function openEngine(){$('#engine').classList.add('open');engOpen=true;}
+function closeEngine(){$('#engine').classList.remove('open');engOpen=false;}
+$('#engine').addEventListener('click',e=>{if(e.target.closest('[data-engclose]'))closeEngine();});
+let dotClicks=0,dotTimer=null;
+$('#logoDot').addEventListener('click',e=>{e.stopPropagation();dotClicks++;clearTimeout(dotTimer);
+dotTimer=setTimeout(()=>dotClicks=0,1500);if(dotClicks>=5){dotClicks=0;openEngine();}});
+let ePress=0,eTimer=null;
+document.addEventListener('keydown',e=>{
+const tag=(e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='textarea')return;
+if(e.key.toLowerCase()==='e'){ePress++;clearTimeout(eTimer);eTimer=setTimeout(()=>ePress=0,1200);
+if(ePress>=3){ePress=0;engOpen?closeEngine():openEngine();}}});
+$$('.eng-tabs button').forEach(b=>b.addEventListener('click',()=>{
+$$('.eng-tabs button').forEach(x=>x.classList.toggle('on',x===b));
+['live','radar','term','bp'].forEach(t=>{$('#tab-'+t).style.display=b.dataset.tab===t?'block':'none';});}));
+$('#engRegion').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+$$('#engRegion button').forEach(x=>x.classList.toggle('on',x===b));engRegion=b.dataset.r;});
+$('#engAuto').addEventListener('click',()=>{engAuto=!engAuto;$('#engAuto').classList.toggle('on',engAuto);});
+$('#engRun').addEventListener('click',()=>{if(!engRunning)engCycle();});
+function engLog(html){const d=document.createElement('div');d.innerHTML=html;const el=$('#engLog');el.appendChild(d);el.scrollTop=el.scrollHeight;
+while(el.children.length>40)el.removeChild(el.firstChild);}
+function setStage(i,state,detail){const li=$('#pipe').children[i];if(!li)return;
+li.classList.remove('active','done');if(state)li.classList.add(state);
+li.querySelector('.pd').textContent=detail||'';
+li.querySelector('.ps').textContent=state==='active'?'▸ trabajando':state==='done'?'✓ listo':'—';}
+function setAgent(i,work){const a=$('#agents').children[i];if(a)a.classList.toggle('work',work);}
+function renderPipe(){$('#pipe').innerHTML=STAGES.map(([n,k])=>`<li><span class="pn">${n}</span><span class="pk">${k}</span><span class="ps">—</span><span class="pd"></span></li>`).join('');}
+function renderAgents(){$('#agents').innerHTML=AGENTS.map(([i,n,t])=>`<div class="agent"><span class="ai">${i}</span><span><span class="an">${n}</span><span class="at">${t}</span></span><span class="ad"></span></div>`).join('');}
+function renderMods(){$('#mods').innerHTML=MODULES.map(m=>`<span class="mod"><i></i>${m}</span>`).join('');}
+function renderPubq(){$('#pubq').innerHTML=engPublished.map(p=>`<li><div class="ph2">${p.h}</div><div class="pm"><span>${p.sent[0]} ${p.sent[1]}</span><span class="ctr">CTR ${p.ctr}%</span><span>${p.src}</span><span>${p.dest}</span></div></li>`).join('');}
+function renderKpis(){$('#engKpis').innerHTML=
+`<div class="ekpi"><b>${NEWSROOM.pubCount}</b><span>notas hoy</span></div>`+
+`<div class="ekpi"><b>$${fmt(NEWSROOM.revenue)}</b><span>revenue</span></div>`+
+`<div class="ekpi"><b>${NEWSROOM.drama}</b><span>drama index</span></div>`;}
+function renderAB(ctr){
+const a=Math.max(1,ctr-2.4),b=ctr,c=Math.max(1,ctr-1.1);
+const max=Math.max(a,b,c);
+const rows=[['VAR A',a],['VAR B',b],['VAR C',c]];
+const wi=rows.reduce((mi,r,i,arr)=>r[1]>arr[mi][1]?i:mi,0);
+$('#abviz').innerHTML=rows.map((r,i)=>`<div class="abv${i===wi?' win':''}"><span>${r[0]}${i===wi?' 👑':''}</span><div class="tr"><i data-w="${Math.round(r[1]/max*100)}"></i></div><span>${r[1].toFixed(1)}%</span></div>`).join('');
+requestAnimationFrame(()=>{$$('#abviz .tr i').forEach(el=>el.style.width=el.dataset.w+'%');});}
+function renderSentg(sent){
+$('#sentg').innerHTML=SENTS.map(s=>{const v=s[1]===sent[1]?88:Math.floor(Math.random()*40)+10;
+return `<div class="sgr"><span>${s[0]}</span><div class="tr"><i data-w="${v}"></i></div><span>${s[1]}</span></div>`;}).join('');
+requestAnimationFrame(()=>{$$('#sentg .tr i').forEach(el=>el.style.width=el.dataset.w+'%');});}
+function renderBP(){
+$('#bpStack').innerHTML=[['01','FRONTEND','Next.js 14 · Tailwind · next-intl (EN/ES/PT)'],['02','API','FastAPI · auth · rate-limit 30r/min · WebSocket'],['03','CEREBRO','CrewAI 5 agentes · GPT-4o-mini · self-healing'],['04','DATA','PostgreSQL + pgvector · Redis · Celery Beat */15min'],['05','DISTRIBUCIÓN','Nginx · TikTok · Reels · Shorts · X · PostHog']]
+.map(([i,n,c])=>`<div class="bp-layer"><span class="bi">${i}</span><span><span class="bn">${n}</span><span class="bc">${c}</span></span></div>`).join('');
+$('#bpCmd').innerHTML=`<span class="c"># 7 containers · 0 humanos</span>
+docker-compose up -d --build
+./validate.sh
+curl -X POST :8000/api/v1/run-cycle \\
+-H "X-API-Key: $SECRET" -d '{"region":"BR"}'`;
+$('#bpEp').innerHTML=[['g','GET','/api/v1/articles','feed por región'],['o','POST','/api/v1/run-cycle','dispara ciclo 🔑'],['o','POST','/api/v1/tea/submit','chisme anónimo'],['o','POST','/api/v1/webhook/metrics','PostHog→memoria'],['g','GET','/api/v1/dashboard/metrics','KPIs'],['v','WS','/ws/logs','logs en vivo']]
+.map(([c,m,p,d])=>`<tr><td><span class="m ${c}">${m}</span></td><td>${p}</td><td>${d}</td></tr>`).join('');}
+const BLIPPOS=[[24,30],[70,24],[78,62],[30,72],[50,18],[40,48],[58,40],[46,64]];
+function renderBlips(){$('#blips').innerHTML=SOURCES.map((s,i)=>`<div class="blip${s[1]?' soc':''}" data-src="${s[0]}" style="left:${BLIPPOS[i][0]}%;top:${BLIPPOS[i][1]}%"></div>`).join('');}
+function pingBlip(src){const el=$(`.blip[data-src="${src}"]`);if(!el)return;el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');}
+/* REPL */
+const replOut=$('#replOut'),replIn=$('#replIn');
+function rprint(html,cls){const d=document.createElement('div');if(cls)d.className=cls;d.innerHTML=html;replOut.appendChild(d);replOut.scrollTop=replOut.scrollHeight;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+rprint('<span class="dim">OMNIPAP shell v12 · escribe "help"</span>');
+rprint('<span class="ok">conectado · 6 agentes despiertos</span>');
+async function replCmd(raw){
+const line=raw.trim();if(!line)return;
+rprint('<span class="warn">omnipap@v12:~$</span> '+esc(line));
+const [cmd,...rest]=line.split(/\s+/);const arg=rest.join(' ');
+switch(cmd.toLowerCase()){
+case 'help':
+rprint('<span class="blu">COMANDOS:</span>');
+rprint('  status · run-cycle &lt;R&gt; · agents · tea &lt;texto&gt;');
+rprint('  leaderboard · memory · money · whoami · clear');break;
+case 'status':
+rprint('<span class="ok">┌ api :8000 ............ ✔</span>');
+rprint('<span class="ok">│ worker x4 ............ ✔</span>');
+rprint('<span class="ok">│ beat */15min ......... ✔</span>');
+rprint('<span class="ok">│ db pgvector .......... ✔ 12.480 vectores</span>');
+rprint('<span class="ok">└ scraping ............. ✔ 94% success</span>');break;
+case 'run-cycle':{
+const reg=(arg||'').toUpperCase();
+if(!['BR','LATAM','USA','EU'].includes(reg)){rprint('<span class="warn">región: BR|LATAM|USA|EU</span>');break;}
+rprint('<span class="blu">[CYCLE] disparando '+reg+' …</span>');
+await sleep(600);rprint('<span class="ok">[SCRAPE] 11 fuentes ✔</span>');
+await sleep(500);rprint('<span class="ok">[CREW] 5 agentes ✔</span>');
+await sleep(500);rprint('<span class="ok">[POST] publicado ✔</span>');
+if(!engRunning)engCycle();break;}
+case 'agents':
+rprint('<span class="ok">🔭 trend_scout ......... ACTIVE</span>');
+rprint('<span class="ok">🕵️ scraper_ninja ....... ACTIVE · 94%</span>');
+rprint('<span class="ok">✍️ copywriter_genZ .... ACTIVE · pt/es/en</span>');
+rprint('<span class="ok">📈 seo_strategist ...... ACTIVE</span>');
+rprint('<span class="ok">💸 affiliate_mgr ....... ACTIVE · $0.47</span>');
+rprint('<span class="blu">⏰ celery_beat ......... SCHEDULING</span>');break;
+case 'tea':{
+const txt=arg||'(sin texto)';const pts=Math.floor(Math.random()*30)+10;
+rprint('[RECIBIDO] tea guardado (anónimo)');
+await sleep(400);rprint('<span class="ok">[IA] plausibilidad 0.'+(Math.floor(Math.random()*3)+7)+' ✔</span>');
+rprint('<span class="ok">[PUBLICADO] +'+pts+' TeaPoints</span>');break;}
+case 'leaderboard':
+rprint('🥇 anon_8f3k · 2.450 pts');
+rprint('🥈 anon_2m9x · 1.980 pts');
+rprint('🥉 anon_7q4w · 1.215 pts');break;
+case 'memory':
+rprint('<span class="blu">vectores: 12.480</span>');
+rprint('<span class="ok">patrones virales: 1.204</span>');
+rprint('<span class="warn">anti-patrones: 3.882</span>');break;
+case 'money':
+rprint('<span class="blu">views/s: 31.4</span>');
+rprint('RPM: $0.47');
+rprint('<span class="ok">hoy: $1.607</span>');
+rprint('<span class="ok">mes: $48.210</span>');break;
+case 'whoami':rprint('humano. la máquina te observa 👀');break;
+case 'clear':replOut.innerHTML='';break;
+default:rprint('<span class="warn">comando no reconocido: '+esc(cmd)+'</span>');}}
+replIn.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=replIn.value;replIn.value='';replCmd(v);}});
+async function engCycle(){
+if(engRunning)return;engRunning=true;$('#engRun').disabled=true;
+NEWSROOM.cycle++;
+const region=engAuto?rnd(['BR','LATAM','USA','EU']):engRegion;
+const src=rnd(SOURCES);const sent=rnd(SENTS);
+const story=makeStory();const headline=story.t[lang];
+const ts=()=>new Date().toLocaleTimeString('es-ES');
+setStage(0,'active','raspando '+src[0]+' …');setAgent(1,true);pingBlip(src[0]);
+engLog(`<span class="t">${ts()}</span> <span class="src">[SCRAPE]</span> ${src[0]} → ${Math.floor(Math.random()*14)+4} items <span class="ok">✔</span>`);
+if(Math.random()<.3)engLog(`<span class="t">${ts()}</span> <span class="warn">[HEAL]</span> selector roto → reescrito por IA <span class="ok">✔</span>`);
+await sleep(850);setStage(0,'done','');setAgent(1,false);
+setStage(1,'active','analizando clima en X/TikTok…');setAgent(0,true);
+engLog(`<span class="t">${ts()}</span> <span class="soc">[SENTIMENT]</span> ${sent[0]} ${sent[1]}`);
+await sleep(750);setStage(1,'done','');setAgent(0,false);
+setStage(2,'active','redactando en 3 idiomas…');setAgent(2,true);
+engLog(`<span class="t">${ts()}</span> [CREW] copywriter_genZ → "${story.celeb}" <span class="ok">✔ es·en·pt</span>`);
+await sleep(850);setStage(2,'done','');setAgent(2,false);
+setStage(3,'active','generando 3 titulares…');setAgent(3,true);
+const ctr=+(Math.random()*5+4).toFixed(1);
+engLog(`<span class="t">${ts()}</span> [A/B] 3 variantes → ganadora CTR ${ctr}% <span class="ok">✔</span>`);
+renderAB(ctr);renderSentg(sent);
+await sleep(750);setStage(3,'done','');setAgent(3,false);
+setStage(4,'active','publicando en web + redes…');setAgent(4,true);
+engLog(`<span class="t">${ts()}</span> [POST] web + TikTok·Reels·Shorts·X · región ${region} <span class="ok">✔</span>`);
+publish(story,headline,sent,ctr,src[0],region);
+await sleep(750);setStage(4,'done','');setAgent(4,false);
+setStage(5,'active','guardando patrón en pgvector…');setAgent(5,true);
+const hook=rnd(['shock','fomo','curiosidad','humor']);
+engLog(`<span class="t">${ts()}</span> [LEARN] embedding 1536d → memoria <span class="ok">✔</span>`);
+$('#learn').innerHTML=`▸ patrón #${(Math.random()*9000+1000|0)} guardado<br>hook=${hook} · sentiment=${sent[1]} · CTR=${ctr}%<br>→ el próximo tema similar usará este gancho`;
+await sleep(650);setStage(5,'done','');setAgent(5,false);
+setTimeout(()=>{for(let i=0;i<6;i++)setStage(i,null,'');},1600);
+engRunning=false;$('#engRun').disabled=false;}
+function publish(story,headline,sent,ctr,src,region){
+NEWSROOM.pubCount++;$('#engPub').textContent=NEWSROOM.pubCount;
+NEWSROOM.revenue+=Math.floor(Math.random()*40)+12;
+NEWSROOM.readers+=Math.floor(Math.random()*300)+50;
+NEWSROOM.regions[region]=(NEWSROOM.regions[region]||0)+1;
+const tag='#'+story.celeb.replace(/\s/g,'');
+const ex=NEWSROOM.trending.find(x=>x.tag===tag);
+if(ex)ex.count+=Math.floor(Math.random()*50000)+8000;
+else{NEWSROOM.trending.push({tag,count:Math.floor(Math.random()*80000)+20000});
+NEWSROOM.trending.sort((a,b)=>b.count-a.count);if(NEWSROOM.trending.length>6)NEWSROOM.trending.pop();}
+NEWSROOM.feed.unshift({gen:story.t,ts:Date.now(),fresh:true});if(NEWSROOM.feed.length>6)NEWSROOM.feed.pop();
+NEWSROOM.extraTicker.unshift({es:story.t.es,en:story.t.en,pt:story.t.pt});if(NEWSROOM.extraTicker.length>5)NEWSROOM.extraTicker.pop();
+const c=NEWSROOM.cycle;let dest='▸ feed';
+if(c%5===0){NEWSROOM.hero=story;heroViews=story.views;dest='▸ PORTADA';showBreaking(story);
+renderHero();if(window.gsap&&!reduced)gsap.from('#hero',{scale:.97,opacity:.4,duration:.5,ease:'power2.out'});
+$('#hero').classList.add('flash');setTimeout(()=>$('#hero').classList.remove('flash'),900);}
+else if(c%3===0){NEWSROOM.briefs=[NEWSROOM.briefs[0],NEWSROOM.briefs[1],story];dest='▸ briefs';renderBriefs();}
+engPublished.unshift({h:headline,sent,ctr,src,dest});if(engPublished.length>4)engPublished.pop();renderPubq();
+NEWSROOM.dramaDelta=Math.floor(Math.random()*7)+2;
+NEWSROOM.drama=Math.min(100,NEWSROOM.drama+NEWSROOM.dramaDelta-2);
+renderTicker();renderHotlist();renderFeed();renderTop5();renderCoverage();renderDrama();renderKpis();
+toast(L[lang].pubToast);
+if(window.gsap&&!reduced)gsap.from('#feed li:first-child',{x:-22,opacity:0,duration:.5,ease:'power2.out'});}
+function seedFeed(){NEWSROOM.feed=[];for(let i=0;i<4;i++)NEWSROOM.feed.push({pool:i,ts:Date.now()-[90000,260000,520000,840000][i],fresh:false});NEWSROOM.feedPoolIdx=4;}
+seedFeed();
+setInterval(()=>{NEWSROOM.feed.unshift({pool:NEWSROOM.feedPoolIdx,ts:Date.now(),fresh:true});NEWSROOM.feedPoolIdx++;
+if(NEWSROOM.feed.length>6)NEWSROOM.feed.pop();renderFeed();
+if(window.gsap&&!reduced)gsap.from('#feed li:first-child',{x:-22,opacity:0,duration:.5,ease:'power2.out'});},11000);
+setInterval(()=>{if(!$('#modal').classList.contains('open'))renderFeed();},13000);
+setInterval(()=>{
+heroViews+=Math.floor(Math.random()*40)+8;const hv=$('#heroViews');if(hv)hv.textContent='👁 '+fmt(heroViews);
+NEWSROOM.hero.views+=Math.floor(Math.random()*30)+5;
+NEWSROOM.readers+=Math.floor(Math.random()*30)-12;if(NEWSROOM.readers<9000)NEWSROOM.readers=9000;
+$('#tbReaders').textContent=L[lang].readers(NEWSROOM.readers);
+NEWSROOM.trending.forEach(r=>{r.count+=Math.floor(Math.random()*120);});
+renderHotlist();
+if(Math.random()<.3&&NEWSROOM.drama>30){NEWSROOM.drama-=1;NEWSROOM.dramaDelta=-1;renderDrama();}},2600);
+setInterval(()=>{renderTop5();},7000);
+/* boot */
+const bootLines=[['mounting pgvector … ','ok'],['waking agents … ','5/5 ok'],['loading slang dicts … ','pt-BR es-419 en-US ok'],['connecting scrapers … ','11 fuentes ok'],['arming celery beat … ','*/15min ok'],['vector memory … ','12.480 patrones ok'],['','READY — 0 humanos requeridos']];
+const bootLog=$('#bootLog'),bootBar=$('#bootBar'),boot=$('#boot');
+let bootDone=false;
+async function runBoot(){
+if(reduced){bootLog.innerHTML=bootLines.map(l=>l[0]+'<span class="ok">'+l[1]+'</span>').join('\n');bootBar.style.width='100%';await sleep(400);closeBoot();return;}
+for(let i=0;i<bootLines.length;i++){
+const [txt,ok]=bootLines[i];
+for(let c=1;c<=txt.length;c++){bootLog.textContent+=txt[c-1];await sleep(8);}
+if(ok){const s=document.createElement('span');s.className='ok';s.textContent=ok;bootLog.appendChild(s);}
+bootLog.textContent+='\n';
+bootBar.style.width=Math.round(((i+1)/bootLines.length)*100)+'%';
+await sleep(120);}
+await sleep(500);closeBoot();}
+function closeBoot(){if(bootDone)return;bootDone=true;boot.classList.add('out');setTimeout(()=>{boot.style.display='none';},750);}
+$('#bootSkip').addEventListener('click',closeBoot);
+boot.addEventListener('click',e=>{if(e.target.id==='bootSkip')return;closeBoot();});
+setTimeout(closeBoot,4200);
+runBoot();
+/* cursor */
+const cursor=$('#cursor');
+if(window.gsap&&!reduced&&cursor){
+const xTo=gsap.quickTo(cursor,'x',{duration:.18,ease:'power3.out'});
+const yTo=gsap.quickTo(cursor,'y',{duration:.18,ease:'power3.out'});
+window.addEventListener('mousemove',e=>{xTo(e.clientX);yTo(e.clientY);});
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.swatch,.mtab,.rchip,.slang i,input,textarea'))cursor.classList.add('big');else cursor.classList.remove('big');});}
+if(window.gsap&&!reduced){
+gsap.registerPlugin(ScrollTrigger);
+gsap.from('.logo',{y:30,opacity:0,duration:.8,ease:'back.out(1.6)'});
+gsap.from('.drama',{opacity:0,duration:.6,delay:.1});
+gsap.from('.hero',{y:40,opacity:0,duration:.8,delay:.2,ease:'power3.out'});
+gsap.from('.hotbox',{y:40,opacity:0,duration:.8,delay:.32,ease:'power3.out'});
+gsap.to('.hero .ph img',{yPercent:8,ease:'none',scrollTrigger:{trigger:'.hero',start:'top bottom',end:'bottom top',scrub:1}});
+gsap.utils.toArray('.sec-bar, .b-wide, .b-small, .vid, .poll, .tea, .mcard, .t5, .cov, .news-in > *, .foot-grid > *').forEach(el=>{
+gsap.from(el,{y:34,opacity:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});});
+gsap.to('#news .star',{rotate:40,y:60,ease:'none',scrollTrigger:{trigger:'#news',start:'top bottom',end:'bottom top',scrub:1}});}
+render();renderPipe();renderAgents();renderMods();renderBP();renderBlips();renderKpis();renderAB(7.2);renderSentg(SENTS[0]);
+engLog('<span class="ok">[SYS]</span> OMNIPAP ENGINE V12 en línea · modo AUTO');
+engLog('<span class="t">[SYS]</span> 6 agentes despiertos · 8 módulos activos · beat */15min');
+setTimeout(engCycle,3200);
+setInterval(()=>{if(engAuto&&!engRunning)engCycle();},16000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>BELENTANI · SISTEMA SÓLIDO · JUDAS ERA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========== VARIABLES SÓLIDAS (SIN TRANSPARENCIAS) ========== */
+        :root {
+            --bg-solid: #000000;
+            --neon-red: #ff1a4a;
+            --neon-red-dim: #8a001a;
+            --glass-bg: #0a0a0a;      /* fondo sólido opaco */
+            --glass-border: 2px solid #ff1a4a;
+            --text-main: #f0f0f0;
+            --font-mono: 'Space Mono', monospace;
+            --font-body: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-solid);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* ========== MODO BELENTANI FREE (CLARO SÓLIDO) ========== */
+        body.free-mode {
+            background: #eaf4ff;
+            color: #011c2e;
+        }
+        body.free-mode .glass-panel { background: #ffffff; border-color: #ffb347; }
+        body.free-mode .btn-red { border-color: #ff8c42; color: #ff8c42; }
+        /* ========== ANILLO DE NEÓN FLOTANTE ========== */
+        .neon-ring {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--neon-red);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neon-red), inset 0 0 5px var(--neon-red);
+            animation: rotateRing 4s linear infinite;
+            pointer-events: none;
+            z-index: 999;
+        }
+        @keyframes rotateRing {
+            0% { transform: rotate(0deg); box-shadow: 0 0 15px var(--neon-red); }
+            50% { transform: rotate(180deg); box-shadow: 0 0 30px var(--neon-red); }
+            100% { transform: rotate(360deg); box-shadow: 0 0 15px var(--neon-red); }
+        }
+        /* ========== INTERFAZ PRINCIPAL (SÓLIDA, SIN REDONDEO) ========== */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            border-radius: 0px;           /* CUADRADO TOTAL */
+            padding: 1.2rem;
+        }
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #050505;
+            border-bottom: 2px solid var(--neon-red);
+            padding: 0.8rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--neon-red);
+            letter-spacing: 2px;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .nav-links a:hover, .active-page { color: var(--neon-red); text-shadow: 0 0 2px var(--neon-red); }
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .section.active { display: block; }
+        .btn-red {
+            background: transparent;
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 0.6rem 1.5rem;
+            border-radius: 0px;          /* CUADRADO */
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font-mono);
+        }
+        .btn-red:hover {
+            background: var(--neon-red);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+        .widget-hud {
+            background: #0a0a0a;
+            border-left: 3px solid var(--neon-red);
+            padding: 0.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            margin-bottom: 1rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        /* CHAT DEL PORTAL */
+        .chat-window {
+            height: 280px;
+            overflow-y: auto;
+            background: #0a0a0a;
+            border: 1px solid var(--neon-red);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+        .message {
+            margin: 8px 0;
+            padding: 6px 10px;
+            max-width: 85%;
+        }
+        .user-msg { background: #1e1e2e; text-align: right; margin-left: auto; border-left: none; }
+        .bot-msg { background: #15151f; border-left: 3px solid var(--neon-red); }
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            border-top: 1px solid #1a1a1a;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 0.8rem; }
+            .nav-links { justify-content: center; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ANILLO DE NEÓN FLOTANTE -->
+<div class="neon-ring"></div>
+
+<!-- CANVAS PARA LLUVIA MATRIX (ROJA/VERDE SÓLIDA) -->
+<canvas id="matrixCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.9; pointer-events: none;"></canvas>
+
+<nav class="navbar">
+    <div class="logo">BELENTANI</div>
+    <ul class="nav-links">
+        <li><a data-section="home">Home</a></li>
+        <li><a data-section="artist">The Artist</a></li>
+        <li><a data-section="music">Music</a></li>
+        <li><a data-section="studio">Studio</a></li>
+        <li><a data-section="judas">Judas</a></li>
+        <li><a data-section="portal">Portal</a></li>
+        <li><a data-section="contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ======================== HOME ======================== -->
+<div id="home-section" class="section active">
+    <div class="widget-hud">NAV-SYS // ZION ORBIT | X:12.618 Y:105.166 Z:-43.173 | ARTIFACT INTEGRITY: 99.8% | CPU:67% RAM:70%</div>
+    <div style="text-align:center; padding:2rem 1rem;">
+        <h1 style="font-size:4rem; color:var(--neon-red);">BELENTANI</h1>
+        <div style="background:#000; border:2px solid var(--neon-red); display:inline-block; padding:0.5rem;">Verified Global Artist | Entity Active</div>
+        <p style="margin:1rem 0;">A new sound is coming. Welcome to the world of Judas.</p>
+        <button class="btn-red" onclick="showSection('music')">Explore Music</button>
+        <button class="btn-red" onclick="showSection('portal')">AI Studio</button>
+    </div>
+    <div class="grid-2">
+        <div class="glass-panel"><h3>Sonic Worlds</h3><p>R&B, pop, electrónica experimental.</p></div>
+        <div class="glass-panel"><h3>Visual Concepts</h3><p>Neón, desierto, cinematografía.</p></div>
+        <div class="glass-panel"><h3>AI Creation Tools</h3><p>Genera beats, letras, visuales.</p></div>
+    </div>
+</div>
+
+<!-- ======================== THE ARTIST ======================== -->
+<div id="artist-section" class="section">
+    <div class="widget-hud">RECORD: 07-04-1995 // ORIGIN: SÃO PAULO → BARCELONA</div>
+    <div class="glass-panel">
+        <h2 style="color:var(--neon-red);">The Artist Behind the Music</h2>
+        <p>Belentani (Pedro Marcos Santos Belentani) – nacido en São Paulo, criado en Barcelona. Artista independiente. Debut 2016 con Mark Nerom. En 2022 inicia colaboración con Hey Duck (Recife). Lanzamientos: Mon Amour (2025), singles Therapist, I Wrote a Song, Judas (2026). Su música es un mecanismo de supervivencia emocional.</p>
+    </div>
+    <div class="glass-panel" style="margin-top:1rem;">
+        <h3>🔧 System Architect // Duck Prod.</h3>
+        <p>Lucas (Duck) – Aracaju, Brasil. Productor responsable del sonido y management desde 2022.</p>
+        <a href="https://www.instagram.com/duck4s" target="_blank" style="color:var(--neon-red);">Instagram</a> | <a href="https://duck.46graus.com" target="_blank" style="color:var(--neon-red);">Web</a>
+    </div>
+</div>
+
+<!-- ======================== MUSIC ======================== -->
+<div id="music-section" class="section">
+    <div class="widget-hud">SONIC ARCHIVE · Judas Era Complete</div>
+    <div class="grid-2">
+        <div class="glass-panel"><iframe style="border:1px solid var(--neon-red);" src="https://open.spotify.com/embed/artist/2bU5Ir70YHHuUnq2f3WCYl" width="100%" height="352" frameborder="0" allow="encrypted-media"></iframe></div>
+        <div class="glass-panel"><iframe style="border:1px solid var(--neon-red);" width="100%" height="315" src="https://www.youtube.com/embed/videoseries?list=OLAK5uy_m3Jv-nCg6dRq8xiejbotPjqeisAW5gh70" frameborder="0" allowfullscreen></iframe></div>
+    </div>
+</div>
+
+<!-- ======================== STUDIO ======================== -->
+<div id="studio-section" class="section">
+    <div class="widget-hud">Belentani Neural Network [Soon Free] · 30+ AI Agents</div>
+    <div class="grid-2">
+        <div class="glass-panel"><h3>Sketch Refiner</h3><button class="btn-red" onclick="alert('Simulación: boceto refinado')">Probar</button></div>
+        <div class="glass-panel"><h3>Mood Color Palette</h3><button class="btn-red" onclick="alert('Paleta rojo/negro generada')">Probar</button></div>
+        <div class="glass-panel"><h3>Music Composer</h3><button class="btn-red" onclick="alert('Beats simulados')">Probar</button></div>
+        <div class="glass-panel"><h3>Lyric Assistant</h3><button class="btn-red" onclick="alert('Letra generada')">Probar</button></div>
+    </div>
+</div>
+
+<!-- ======================== JUDAS ======================== -->
+<div id="judas-section" class="section">
+    <div class="widget-hud">SYSTEM HALT // PROTOCOL SUSPENDED</div>
+    <div class="glass-panel" style="text-align:center;">
+        <h1 style="font-size:3rem; color:var(--neon-red);">JUDAS</h1>
+        <p>The Judas era is not merely a collection of sounds. It is the raw data extraction of a shattered timeline. The betrayal was an algorithm. The healing is a hack.</p>
+        <p>SYS.WARNING: Unidentified emotional resonance detected in sector 4.</p>
+    </div>
+</div>
+
+<!-- ======================== PORTAL (CHAT + ESCÁNER + COMANDOS) ======================== -->
+<div id="portal-section" class="section">
+    <div class="widget-hud" id="scanner-data">SISTEMA OMNIPRESENCIA | IP: -- | LOC: -- | NÚCLEO ENERGÉTICO: ACTIVO</div>
+    <div class="grid-2">
+        <div class="glass-panel">
+            <h3>🌀 ORÁCULO JUDAS v4.2</h3>
+            <div id="chat-window" class="chat-window"></div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chat-input" placeholder="Escribe tu mensaje o comando..." style="flex:1; padding:10px; border:1px solid var(--neon-red); background:#000; color:#fff;">
+                <button id="chat-send" class="btn-red">Enviar</button>
+            </div>
+            <div id="energy-status" style="font-size:0.7rem; margin-top:8px;">⚡ ENERGY: 100%</div>
+        </div>
+        <div class="glass-panel">
+            <h3>SYSTEM CORE TERMINAL</h3>
+            <div style="font-family:monospace; font-size:0.8rem;">
+                <div>> SYSTEM.CORE.TERMINAL // READY.</div>
+                <div>> DEUS CERCA: ACTIVO</div>
+                <div>> LAST PATCH: SYSTEM_INIT</div>
+            </div>
+        </div>
+    </div>
+    <p style="font-size:0.7rem; margin-top:1rem;">⚡ Comandos ocultos: @lorena, @pedro, @duck, @natalia, @john, @marcos, @santos, @rafael, reset</p>
+</div>
+
+<!-- ======================== CONTACT ======================== -->
+<div id="contact-section" class="section">
+    <div class="glass-panel" style="max-width:500px; margin:0 auto;">
+        <h3>📡 Connect With Me</h3>
+        <p>Instagram: <a href="https://instagram.com/belentani_" target="_blank" style="color:var(--neon-red);">@belentani_</a></p>
+        <p>YouTube: <a href="https://youtube.com/@belentani" target="_blank" style="color:var(--neon-red);">Belentani</a></p>
+        <p>Spotify: <a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" style="color:var(--neon-red);">Belentani</a></p>
+    </div>
+</div>
+
+<footer>© 2026 Belentani — Zion Core · Judas Era · Lluvia Matrix Sólida</footer>
+
+<script>
+    // ========== LLUVIA MATRIX (ROJA/VERDE SÓLIDA) ==========
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ff1a4a';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 50);
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    // ========== NAVEGACIÓN SPA ==========
+    const sections = ['home','artist','music','studio','judas','portal','contact'];
+    function showSection(id) {
+        sections.forEach(sec => document.getElementById(`${sec}-section`).classList.remove('active'));
+        document.getElementById(`${id}-section`).classList.add('active');
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection(link.getAttribute('data-section'));
+        });
+    });
+
+    // ========== ESCÁNER DE IP (SISTEMA OMNIPRESENCIA) ==========
+    async function updateScanner() {
+        let ip = 'anon', loc = 'Zion subnet';
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            ip = data.ip || 'anon';
+            loc = `${data.city || 'Zion'}, ${data.country_name || 'Core'}`;
+        } catch(e) {}
+        const scannerDiv = document.getElementById('scanner-data');
+        if(scannerDiv) scannerDiv.innerHTML = `SISTEMA OMNIPRESENCIA | IP: ${ip} | LOC: ${loc} | NÚCLEO ENERGÉTICO: ACTIVO`;
+    }
+    updateScanner();
+    setInterval(updateScanner, 30000);
+
+    // ========== CHAT ORÁCULO (CALCULADORA + COMANDOS OCULTOS) ==========
+    const respuestasBase = {
+        "belentani": "Belentani: artista independiente, São Paulo/Barcelona. R&B, pop, electrónica. Era Judas 2026.",
+        "judas": "Judas es traición, transformación, redención. Neón rojo, desierto, futurismo líquido.",
+        "duck": "Lucas (Duck) – productor hermano. Aracaju, Sergipe. Autodidacta, arquitecto de sueños.",
+        "lorena": "🌹 Lorena – Velo púrpura. La madre que no juzga. 12 discípulos orbitan a su alrededor.",
+        "natalia": "🦅 Natalia – Halcón. Fuerza femenina, mirada implacable.",
+        "pedro": "⛰️ Pedro – La roca fundacional. El ancla a través de dimensiones.",
+        "john": "🏹 John – Sabiduría joven. Arco y flecha del guerrero digital.",
+        "marcos": "📘 Marcos – El cronista del colapso. El observador.",
+        "santos": "✨ Santos – Santidad plural. Resistencia a la corrupción viral.",
+        "rafael": "🛡️ Rafael – Escudo y rayo. El guerrero que no retrocede."
+    };
+    let energia = 100;
+    let lastTs = Date.now();
+    const energySpan = document.getElementById('energy-status');
+    function updateEnergy() {
+        const now = Date.now();
+        const sec = (now - lastTs) / 1000;
+        energia = Math.min(100, energia + sec * 0.05);
+        lastTs = now;
+        if(energySpan) energySpan.innerText = `⚡ ENERGY: ${Math.floor(energia)}%`;
+    }
+    setInterval(updateEnergy, 2000);
+
+    function applyTemporarySkin(colorHex, duracionMs, mensaje) {
+        const originalBg = document.body.style.background;
+        document.body.style.background = colorHex;
+        const msgDiv = document.createElement('div');
+        msgDiv.style.position = 'fixed'; msgDiv.style.bottom = '100px'; msgDiv.style.right = '20px';
+        msgDiv.style.background = '#000'; msgDiv.style.color = '#ff1a4a'; msgDiv.style.padding = '8px 12px';
+        msgDiv.style.border = '1px solid #ff1a4a'; msgDiv.style.zIndex = 10000;
+        msgDiv.innerText = mensaje;
+        document.body.appendChild(msgDiv);
+        setTimeout(() => { document.body.style.background = originalBg; msgDiv.remove(); }, duracionMs);
+    }
+
+    function selfDestruct() {
+        if(window._destroyed) return;
+        window._destroyed = true;
+        document.body.style.pointerEvents = 'none';
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed'; overlay.style.top = 0; overlay.style.left = 0;
+        overlay.style.width = '100%'; overlay.style.height = '100%'; overlay.style.backgroundColor = 'black';
+        overlay.style.zIndex = 10001; overlay.style.color = '#ff1a4a'; overlay.style.fontFamily = 'monospace';
+        overlay.style.display = 'flex'; overlay.style.flexDirection = 'column'; overlay.style.alignItems = 'center'; overlay.style.justifyContent = 'center';
+        overlay.innerHTML = `<div style="font-size:3rem;">⚠️ MAN‑IN‑THE‑MIDDLE ⚠️</div>
+                             <div>Dispositivo oculto interceptando el enjambre.</div>
+                             <div id="progressBar" style="width:70%; background:#222; height:10px; margin:20px;"><div id="fill" style="width:0%; background:#ff1a4a; height:100%;"></div></div>
+                             <div id="countdown">60</div>
+                             <div>El sistema colapsará...</div>`;
+        document.body.appendChild(overlay);
+        let seconds = 60;
+        const fill = document.getElementById('fill');
+        const cdSpan = document.getElementById('countdown');
+        const interval = setInterval(() => {
+            seconds--;
+            if(cdSpan) cdSpan.innerText = seconds;
+            if(fill) fill.style.width = `${(60-seconds)/60*100}%`;
+            if(seconds <= 0) { clearInterval(interval); location.reload(); }
+        }, 1000);
+    }
+
+    function belentaniFree() {
+        document.body.classList.add('free-mode');
+        setTimeout(() => { document.body.classList.remove('free-mode'); }, 10000);
+    }
+
+    const chatWindow = document.getElementById('chat-window');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+    function addMessage(text, isUser, isTyping = false) {
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'user-msg' : 'bot-msg'}`;
+        if(!isUser && isTyping) { div.innerHTML = '...'; chatWindow.appendChild(div); chatWindow.scrollTop = chatWindow.scrollHeight; return div; }
+        div.innerText = isUser ? `👤 ${text}` : `🌀 ${text}`;
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        return div;
+    }
+    async function processMessage() {
+        let msg = chatInput.value.trim().toLowerCase();
+        if(!msg) return;
+        addMessage(chatInput.value.trim(), true);
+        chatInput.value = '';
+        if(msg === 'reset') { location.reload(); return; }
+        if(msg === 'belentani free' || msg === 'free belentani') { belentaniFree(); addMessage("✨ MODO BELENTANI FREE ACTIVADO · Luz por 10 segundos ✨", false); return; }
+        if(msg === 'thiago' || msg === 'tiago') { selfDestruct(); return; }
+        if(respuestasBase[msg]) {
+            applyTemporarySkin('#2a0a0a', 8000, `🛡️ ${respuestasBase[msg].substring(0, 60)}`);
+            addMessage(respuestasBase[msg], false);
+            return;
+        }
+        energia = Math.max(0, energia - 2);
+        updateEnergy();
+        const typingDiv = addMessage('', false, true);
+        await new Promise(r => setTimeout(r, 1500 + Math.random() * 2000));
+        typingDiv.remove();
+        let respuesta = respuestasBase[msg] || "El Oráculo medita... Reformula tu pregunta, caminante.";
+        addMessage(respuesta, false);
+    }
+    sendBtn.onclick = processMessage;
+    chatInput.onkeypress = (e) => { if(e.key === 'Enter') processMessage(); };
+    addMessage("Oráculo Judas activo. Pregunta sobre Belentani, Judas, Duck o escribe @lorena, @natalia, @pedro...", false);
+</script>
+</body>
+</html>

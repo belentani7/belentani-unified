@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 PolyGlot Games 90's</title>
+  <style>
+    /* ===== ESTILO RETRO 90's ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0a0f1e;
+      background-image: radial-gradient(circle at 20% 30%, #1a2a3a 0%, #0a0f1e 80%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Press Start 2P', monospace;
+      padding: 20px;
+    }
+
+    .game-container {
+      max-width: 900px;
+      width: 100%;
+      background: #1e2a3a;
+      border: 6px solid #ff00ff;
+      box-shadow: 0 0 0 4px #00ffff, 0 0 20px #ff00ff;
+      padding: 25px;
+      border-radius: 20px;
+      image-rendering: pixelated;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffff00;
+      text-shadow: 4px 4px 0 #ff00ff, 6px 6px 0 #00ffff;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 15px;
+      word-break: break-word;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .top-bar select, .top-bar button {
+      background: #0a0f1e;
+      color: #00ffff;
+      border: 3px solid #ff00ff;
+      padding: 10px 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      text-shadow: 0 0 5px #00ffff;
+    }
+
+    .top-bar select:hover, .top-bar button:hover {
+      background: #ff00ff;
+      color: #0a0f1e;
+      box-shadow: 0 0 20px #ff00ff;
+      border-color: #ffff00;
+    }
+
+    .top-bar select option {
+      background: #1e2a3a;
+      color: #00ffff;
+    }
+
+    .game-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 15px 0 20px;
+    }
+
+    .game-nav button {
+      background: #2a3a4a;
+      border: 3px solid #00ffff;
+      color: #ffff00;
+      padding: 8px 14px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      text-shadow: 0 0 5px #ffff00;
+      flex: 1 1 auto;
+    }
+
+    .game-nav button.active {
+      background: #ff00ff;
+      border-color: #ffff00;
+      color: #0a0f1e;
+      box-shadow: 0 0 30px #ff00ff;
+    }
+
+    .game-area {
+      background: #0f1a2a;
+      border: 4px solid #00ffff;
+      padding: 25px 15px;
+      border-radius: 16px;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 0 40px #00000088;
+    }
+
+    .game-area .instructions {
+      color: #ffaa00;
+      font-size: 0.65rem;
+      text-align: center;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .word-display {
+      font-size: 2.8rem;
+      color: #ffff00;
+      text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+      margin: 10px 0;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 15px 0;
+      width: 100%;
+    }
+
+    .options-grid button {
+      background: #1e2a3a;
+      border: 3px solid #ff00ff;
+      color: #00ffff;
+      padding: 12px 20px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      flex: 1 0 120px;
+      max-width: 220px;
+      text-align: center;
+    }
+
+    .options-grid button:hover {
+      background: #ff00ff;
+      color: #0a0f1e;
+      box-shadow: 0 0 30px #ff00ff;
+    }
+
+    .options-grid button.correct {
+      background: #00ff00;
+      border-color: #ffff00;
+      color: #0a0f1e;
+    }
+
+    .options-grid button.wrong {
+      background: #ff0044;
+      border-color: #ffff00;
+      color: #fff;
+    }
+
+    .action-btn {
+      background: #ff00ff;
+      border: 3px solid #ffff00;
+      color: #0a0f1e;
+      padding: 12px 28px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: all 0.1s;
+      text-shadow: 0 0 10px #ffff00;
+    }
+
+    .action-btn:hover {
+      background: #ffff00;
+      border-color: #ff00ff;
+      box-shadow: 0 0 40px #ffff00;
+    }
+
+    .feedback {
+      font-size: 0.7rem;
+      color: #ffaa00;
+      margin: 10px 0;
+      min-height: 2em;
+      text-align: center;
+    }
+
+    .score-board {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      color: #00ffff;
+      font-size: 0.6rem;
+      margin-top: 10px;
+      border-top: 2px dashed #ff00ff;
+      padding-top: 12px;
+    }
+
+    .hangman-art {
+      font-size: 2rem;
+      line-height: 1.4;
+      color: #ffff00;
+      text-align: center;
+      white-space: pre;
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 0;
+    }
+
+    .letter-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .letter-box {
+      background: #0a0f1e;
+      border: 3px solid #00ffff;
+      width: 40px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #ffff00;
+      text-transform: uppercase;
+    }
+
+    .letter-box.revealed {
+      background: #1e3a4a;
+      border-color: #ff00ff;
+    }
+
+    .keyboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin: 12px 0;
+      max-width: 500px;
+    }
+
+    .keyboard button {
+      background: #0a0f1e;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      width: 40px;
+      height: 40px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+
+    .keyboard button:hover {
+      background: #00ffff;
+      color: #0a0f1e;
+    }
+
+    .keyboard button:disabled {
+      opacity: 0.3;
+      cursor: default;
+      background: #2a3a4a;
+    }
+
+    .pair-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .pair-item {
+      background: #1e2a3a;
+      border: 3px solid #ff00ff;
+      padding: 12px 18px;
+      color: #00ffff;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      flex: 1 0 100px;
+      text-align: center;
+    }
+
+    .pair-item.selected {
+      border-color: #ffff00;
+      background: #ff00ff;
+      color: #0a0f1e;
+    }
+
+    .pair-item.matched {
+      border-color: #00ff00;
+      background: #004400;
+      color: #00ff00;
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    .pair-item.wrong-pair {
+      border-color: #ff0044;
+      background: #440000;
+    }
+
+    .anagram-input {
+      background: #0a0f1e;
+      border: 4px solid #00ffff;
+      color: #ffff00;
+      padding: 12px 20px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.2rem;
+      text-align: center;
+      width: 80%;
+      max-width: 350px;
+      margin: 10px 0;
+    }
+
+    .anagram-input:focus {
+      outline: none;
+      border-color: #ff00ff;
+      box-shadow: 0 0 30px #ff00ff;
+    }
+
+    .mic-btn {
+      background: #00ffff;
+      border: 3px solid #ff00ff;
+      color: #0a0f1e;
+      padding: 12px 20px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .mic-btn:hover {
+      background: #ff00ff;
+      border-color: #ffff00;
+      box-shadow: 0 0 40px #ff00ff;
+    }
+
+    @media (max-width: 600px) {
+      .word-display { font-size: 2rem; }
+      .game-container { padding: 15px; }
+      .top-bar select, .top-bar button { font-size: 0.5rem; padding: 6px 10px; }
+      .game-nav button { font-size: 0.5rem; padding: 6px 8px; }
+      .options-grid button { font-size: 0.6rem; padding: 8px 12px; }
+      .letter-box { width: 30px; height: 40px; font-size: 1.2rem; }
+      .keyboard button { width: 32px; height: 32px; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <h1>🎮 POLYGLOT 90's</h1>
+
+  <!-- Barra de idiomas -->
+  <div class="top-bar">
+    <select id="srcLang">
+      <option value="en">🇬🇧 Inglés</option>
+      <option value="es" selected>🇪🇸 Español</option>
+      <option value="ca">🇦🇩 Catalán</option>
+    </select>
+    <span style="color:#ff00ff; font-size:1.5rem;">⇄</span>
+    <select id="tgtLang">
+      <option value="en">🇬🇧 Inglés</option>
+      <option value="es" selected>🇪🇸 Español</option>
+      <option value="ca">🇦🇩 Catalán</option>
+    </select>
+    <button id="speakBtn" title="Escuchar palabra">🔊</button>
+    <button id="newWordBtn">✨ Nueva</button>
+  </div>
+
+  <!-- Navegación de juegos -->
+  <div class="game-nav" id="gameNav">
+    <button data-game="flashcards" class="active">📖 Flashcards</button>
+    <button data-game="multichoice">🎯 Opción múltiple</button>
+    <button data-game="matching">🧩 Emparejar</button>
+    <button data-game="hangman">🪢 Ahorcado</button>
+    <button data-game="anagram">🔀 Anagrama</button>
+    <button data-game="listen">🎧 Escucha y escribe</button>
+  </div>
+
+  <!-- Área del juego -->
+  <div class="game-area" id="gameArea">
+    <div class="instructions" id="instructions">Selecciona un juego y empieza a aprender</div>
+    <div id="gameContent"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="score-board">
+      <span>✅ Aciertos: <span id="scoreCorrect">0</span></span>
+      <span>❌ Fallos: <span id="scoreWrong">0</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  //  BASE DE DATOS DE PALABRAS (más de 60)
+  // ============================================================
+  const WORDS = [
+    { en: 'hello', es: 'hola', ca: 'hola' },
+    { en: 'goodbye', es: 'adiós', ca: 'adeu' },
+    { en: 'thank you', es: 'gracias', ca: 'gràcies' },
+    { en: 'please', es: 'por favor', ca: 'si us plau' },
+    { en: 'yes', es: 'sí', ca: 'sí' },
+    { en: 'no', es: 'no', ca: 'no' },
+    { en: 'today', es: 'hoy', ca: 'avui' },
+    { en: 'tomorrow', es: 'mañana', ca: 'demà' },
+    { en: 'yesterday', es: 'ayer', ca: 'ahir' },
+    { en: 'water', es: 'agua', ca: 'aigua' },
+    { en: 'bread', es: 'pan', ca: 'pa' },
+    { en: 'cheese', es: 'queso', ca: 'formatge' },
+    { en: 'apple', es: 'manzana', ca: 'poma' },
+    { en: 'house', es: 'casa', ca: 'casa' },
+    { en: 'car', es: 'coche', ca: 'cotxe' },
+    { en: 'bicycle', es: 'bicicleta', ca: 'bicicleta' },
+    { en: 'dog', es: 'perro', ca: 'gos' },
+    { en: 'cat', es: 'gato', ca: 'gat' },
+    { en: 'bird', es: 'pájaro', ca: 'ocell' },
+    { en: 'fish', es: 'pez', ca: 'peix' },
+    { en: 'sun', es: 'sol', ca: 'sol' },
+    { en: 'moon', es: 'luna', ca: 'lluna' },
+    { en: 'star', es: 'estrella', ca: 'estrella' },
+    { en: 'flower', es: 'flor', ca: 'flor' },
+    { en: 'tree', es: 'árbol', ca: 'arbre' },
+    { en: 'book', es: 'libro', ca: 'llibre' },
+    { en: 'pen', es: 'bolígrafo', ca: 'bolígraf' },
+    { en: 'table', es: 'mesa', ca: 'taula' },
+    { en: 'chair', es: 'silla', ca: 'cadira' },
+    { en: 'door', es: 'puerta', ca: 'porta' },
+    { en: 'window', es: 'ventana', ca: 'finestra' },
+    { en: 'school', es: 'escuela', ca: 'escola' },
+    { en: 'teacher', es: 'profesor', ca: 'professor' },
+    { en: 'student', es: 'estudiante', ca: 'estudiant' },
+    { en: 'friend', es: 'amigo', ca: 'amic' },
+    { en: 'family', es: 'familia', ca: 'família' },
+    { en: 'love', es: 'amor', ca: 'amor' },
+    { en: 'happy', es: 'feliz', ca: 'feliç' },
+    { en: 'sad', es: 'triste', ca: 'trist' },
+    { en: 'big', es: 'grande', ca: 'gran' },
+    { en: 'small', es: 'pequeño', ca: 'petit' },
+    { en: 'fast', es: 'rápido', ca: 'ràpid' },
+    { en: 'slow', es: 'lento', ca: 'lent' },
+    { en: 'new', es: 'nuevo', ca: 'nou' },
+    { en: 'old', es: 'viejo', ca: 'vell' },
+    { en: 'good', es: 'bueno', ca: 'bo' },
+    { en: 'bad', es: 'malo', ca: 'dolent' },
+    { en: 'day', es: 'día', ca: 'dia' },
+    { en: 'night', es: 'noche', ca: 'nit' },
+    { en: 'week', es: 'semana', ca: 'setmana' },
+    { en: 'month', es: 'mes', ca: 'mes' },
+    { en: 'year', es: 'año', ca: 'any' },
+    { en: 'time', es: 'tiempo', ca: 'temps' },
+    { en: 'person', es: 'persona', ca: 'persona' },
+    { en: 'place', es: 'lugar', ca: 'lloc' },
+    { en: 'thing', es: 'cosa', ca: 'cosa' },
+    { en: 'work', es: 'trabajo', ca: 'treball' },
+    { en: 'play', es: 'jugar', ca: 'jugar' },
+    { en: 'eat', es: 'comer', ca: 'menjar' },
+    { en: 'drink', es: 'beber', ca: 'beure' },
+    { en: 'sleep', es: 'dormir', ca: 'dormir' },
+    { en: 'run', es: 'correr', ca: 'córrer' },
+    { en: 'walk', es: 'caminar', ca: 'caminar' }
+  ];
+
+  // ============================================================
+  //  ESTADO GLOBAL
+  // ============================================================
+  let srcLang = 'es';          // idioma de origen (se muestra)
+  let tgtLang = 'en';          // idioma destino (traducción)
+  let currentGame = 'flashcards';
+  let currentWord = null;
+  let currentWordObj = null;
+  let correctCount = 0;
+  let wrongCount = 0;
+  let usedWordsIndices = [];
+  let hangmanWord = '';
+  let hangmanGuessed = [];
+  let hangmanAttempts = 6;
+  let hangmanLetters = [];
+  let matchingPairs = [];
+  let matchedPairs = [];
+  let selectedPair = null;
+  let pairLock = false;
+  let anagramWord = '';
+  let anagramScrambled = '';
+  let listenWord = '';
+  let listenAttempts = 0;
+
+  // ============================================================
+  //  REFERENCIAS DOM
+  // ============================================================
+  const srcLangSel = document.getElementById('srcLang');
+  const tgtLangSel = document.getElementById('tgtLang');
+  const speakBtn = document.getElementById('speakBtn');
+  const newWordBtn = document.getElementById('newWordBtn');
+  const gameNav = document.getElementById('gameNav');
+  const gameContent = document.getElementById('gameContent');
+  const feedback = document.getElementById('feedback');
+  const scoreCorrect = document.getElementById('scoreCorrect');
+  const scoreWrong = document.getElementById('scoreWrong');
+  const instructions = document.getElementById('instructions');
+
+  // ============================================================
+  //  FUNCIONES AUXILIARES
+  // ============================================================
+  function getWordByIndex(i) { return WORDS[i]; }
+  function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function getTranslation(wordObj, lang) {
+    return wordObj[lang] || wordObj['en'];
+  }
+
+  function getRandomWord() {
+    let idx;
+    if (usedWordsIndices.length >= WORDS.length) usedWordsIndices = [];
+    do {
+      idx = randomInt(0, WORDS.length - 1);
+    } while (usedWordsIndices.includes(idx));
+    usedWordsIndices.push(idx);
+    return { index: idx, word: WORDS[idx] };
+  }
+
+  function setCurrentWordByIndex(idx) {
+    currentWordObj = WORDS[idx];
+    currentWord = currentWordObj;
+  }
+
+  // ============================================================
+  //  SÍNTESIS DE VOZ (Web Speech)
+  // ============================================================
+  function speakText(text, lang) {
+    if (!window.speechSynthesis) {
+      feedback.textContent = '⚠️ Tu navegador no soporta síntesis de voz.';
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang || 'es-ES';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    // Intentar seleccionar voz femenina o nativa
+    const voices = window.speechSynthesis.getVoices();
+    const native = voices.find(v => v.lang.startsWith(lang));
+    if (native) utterance.voice = native;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // ============================================================
+  //  ACTUALIZAR PUNTUACIÓN
+  // ============================================================
+  function updateScore() {
+    scoreCorrect.textContent = correctCount;
+    scoreWrong.textContent = wrongCount;
+  }
+
+  // ============================================================
+  //  MOSTRAR FEEDBACK
+  // ============================================================
+  function setFeedback(msg, isGood = true) {
+    feedback.textContent = msg;
+    feedback.style.color = isGood ? '#00ff00' : '#ff4444';
+  }
+
+  // ============================================================
+  //  OBTENER NUEVA PALABRA PARA EL JUEGO ACTUAL
+  // ============================================================
+  function fetchNewWord() {
+    const { index, word } = getRandomWord();
+    currentWordObj = word;
+    currentWord = word;
+    updateGame();
+  }
+
+  // ============================================================
+  //  JUEGOS
+  // ============================================================
+
+  // ---------- FLASHCARDS ----------
+  function renderFlashcards() {
+    if (!currentWordObj) { fetchNewWord(); return; }
+    const srcText = getTranslation(currentWordObj, srcLang);
+    const tgtText = getTranslation(currentWordObj, tgtLang);
+    let html = `<div class="word-display">${srcText}</div>`;
+    html += `<button class="action-btn" id="flashRevealBtn">🔍 Mostrar traducción</button>`;
+    html += `<div id="flashAnswer" style="font-size:1.8rem; color:#ff00ff; margin-top:10px; min-height:3rem;"></div>`;
+    gameContent.innerHTML = html;
+    document.getElementById('flashRevealBtn').addEventListener('click', function() {
+      const ans = document.getElementById('flashAnswer');
+      ans.textContent = tgtText;
+      speakText(tgtText, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+      setFeedback('¡Traducción mostrada!', true);
+    });
+    instructions.textContent = `📖 Aprende: ${srcText} → ${tgtText}`;
+  }
+
+  // ---------- OPCIÓN MÚLTIPLE ----------
+  function renderMultichoice() {
+    if (!currentWordObj) { fetchNewWord(); return; }
+    const srcText = getTranslation(currentWordObj, srcLang);
+    const correct = getTranslation(currentWordObj, tgtLang);
+
+    // Generar opciones (incluye correcta + 3 aleatorias)
+    let options = [correct];
+    let pool = WORDS.filter(w => getTranslation(w, tgtLang) !== correct);
+    shuffleArray(pool);
+    for (let i = 0; i < Math.min(3, pool.length); i++) {
+      options.push(getTranslation(pool[i], tgtLang));
+    }
+    shuffleArray(options);
+
+    let html = `<div class="word-display">${srcText}</div>`;
+    html += `<div class="options-grid">`;
+    options.forEach(opt => {
+      html += `<button class="choice-btn" data-value="${opt}">${opt}</button>`;
+    });
+    html += `</div>`;
+    gameContent.innerHTML = html;
+
+    const btns = document.querySelectorAll('.choice-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.dataset.value === correct) {
+          this.classList.add('correct');
+          correctCount++;
+          setFeedback('✅ ¡Correcto!', true);
+          speakText(correct, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        } else {
+          this.classList.add('wrong');
+          wrongCount++;
+          setFeedback(`❌ Incorrecto. La respuesta era: ${correct}`, false);
+          speakText(correct, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        }
+        updateScore();
+        btns.forEach(b => b.disabled = true);
+        setTimeout(() => { fetchNewWord(); }, 1500);
+      });
+    });
+    instructions.textContent = `🎯 Elige la traducción correcta de "${srcText}"`;
+  }
+
+  // ---------- EMPAREJAMIENTO (Matching) ----------
+  function renderMatching() {
+    // Tomar 6 palabras aleatorias (incluyendo la actual)
+    let selected = [];
+    let indices = [];
+    if (currentWordObj) {
+      const idx = WORDS.indexOf(currentWordObj);
+      if (idx !== -1) indices.push(idx);
+    }
+    while (indices.length < 6) {
+      let r = randomInt(0, WORDS.length - 1);
+      if (!indices.includes(r)) indices.push(r);
+    }
+    shuffleArray(indices);
+    // Para cada palabra, mostrar en origen y destino
+    const pairs = indices.map(i => {
+      const w = WORDS[i];
+      return { src: getTranslation(w, srcLang), tgt: getTranslation(w, tgtLang), word: w };
+    });
+    // Crear dos arrays: srcs y tgts, barajar ambos por separado
+    let srcItems = pairs.map(p => p.src);
+    let tgtItems = pairs.map(p => p.tgt);
+    shuffleArray(srcItems);
+    shuffleArray(tgtItems);
+
+    // Guardar para verificación
+    window._matchingPairs = pairs;
+    window._matchingSrc = srcItems;
+    window._matchingTgt = tgtItems;
+    window._matchingSelected = null;
+    window._matchingMatched = [];
+
+    let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; width:100%;">`;
+    html += `<div><h3 style="color:#ff00ff; font-size:0.7rem;">${srcLang.toUpperCase()}</h3>`;
+    srcItems.forEach((s, i) => {
+      const matched = window._matchingMatched.includes(s);
+      html += `<div class="pair-item src-item" data-src="${s}" data-idx="${i}" style="${matched ? 'display:none;' : ''}">${s}</div>`;
+    });
+    html += `</div><div><h3 style="color:#ff00ff; font-size:0.7rem;">${tgtLang.toUpperCase()}</h3>`;
+    tgtItems.forEach((t, i) => {
+      const matched = window._matchingMatched.includes(t);
+      html += `<div class="pair-item tgt-item" data-tgt="${t}" data-idx="${i}" style="${matched ? 'display:none;' : ''}">${t}</div>`;
+    });
+    html += `</div></div>`;
+    html += `<div class="feedback" id="matchFeedback"></div>`;
+    gameContent.innerHTML = html;
+
+    // Eventos
+    const srcEls = document.querySelectorAll('.src-item');
+    const tgtEls = document.querySelectorAll('.tgt-item');
+
+    function clearSelection() {
+      document.querySelectorAll('.pair-item.selected').forEach(el => el.classList.remove('selected'));
+      window._matchingSelected = null;
+    }
+
+    function checkMatch(src, tgt) {
+      const pair = window._matchingPairs.find(p => p.src === src && p.tgt === tgt);
+      if (pair) {
+        // Correcto
+        window._matchingMatched.push(src);
+        window._matchingMatched.push(tgt);
+        const srcDiv = document.querySelector(`.src-item[data-src="${src}"]`);
+        const tgtDiv = document.querySelector(`.tgt-item[data-tgt="${tgt}"]`);
+        if (srcDiv) srcDiv.style.display = 'none';
+        if (tgtDiv) tgtDiv.style.display = 'none';
+        setFeedback('✅ ¡Emparejado!', true);
+        correctCount++;
+        speakText(tgt, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        updateScore();
+        clearSelection();
+        // Verificar si terminó
+        if (window._matchingMatched.length >= pairs.length * 2) {
+          setFeedback('🎉 ¡Has emparejado todas!', true);
+          setTimeout(() => fetchNewWord(), 1500);
+        }
+      } else {
+        // Incorrecto
+        wrongCount++;
+        updateScore();
+        setFeedback('❌ No coinciden', false);
+        // Resaltar error
+        const srcDiv = document.querySelector(`.src-item[data-src="${src}"]`);
+        const tgtDiv = document.querySelector(`.tgt-item[data-tgt="${tgt}"]`);
+        if (srcDiv) srcDiv.classList.add('wrong-pair');
+        if (tgtDiv) tgtDiv.classList.add('wrong-pair');
+        setTimeout(() => {
+          if (srcDiv) srcDiv.classList.remove('wrong-pair');
+          if (tgtDiv) tgtDiv.classList.remove('wrong-pair');
+        }, 600);
+        clearSelection();
+      }
+    }
+
+    srcEls.forEach(el => {
+      el.addEventListener('click', function() {
+        if (this.style.display === 'none') return;
+        if (window._matchingSelected && window._matchingSelected.type === 'src') {
+          // Si ya hay un src seleccionado, lo deseleccionamos y seleccionamos este
+          clearSelection();
+          this.classList.add('selected');
+          window._matchingSelected = { type: 'src', value: this.dataset.src, el: this };
+        } else if (window._matchingSelected && window._matchingSelected.type === 'tgt') {
+          // Se seleccionó src después de tgt -> emparejar
+          const tgtVal = window._matchingSelected.value;
+          checkMatch(this.dataset.src, tgtVal);
+          clearSelection();
+        } else {
+          // No hay selección
+          clearSelection();
+          this.classList.add('selected');
+          window._matchingSelected = { type: 'src', value: this.dataset.src, el: this };
+        }
+      });
+    });
+
+    tgtEls.forEach(el => {
+      el.addEventListener('click', function() {
+        if (this.style.display === 'none') return;
+        if (window._matchingSelected && window._matchingSelected.type === 'tgt') {
+          clearSelection();
+          this.classList.add('selected');
+          window._matchingSelected = { type: 'tgt', value: this.dataset.tgt, el: this };
+        } else if (window._matchingSelected && window._matchingSelected.type === 'src') {
+          const srcVal = window._matchingSelected.value;
+          checkMatch(srcVal, this.dataset.tgt);
+          clearSelection();
+        } else {
+          clearSelection();
+          this.classList.add('selected');
+          window._matchingSelected = { type: 'tgt', value: this.dataset.tgt, el: this };
+        }
+      });
+    });
+
+    instructions.textContent = `🧩 Empareja cada palabra con su traducción`;
+  }
+
+  // ---------- AHORCADO ----------
+  function renderHangman() {
+    // Elegir palabra aleatoria
+    if (!currentWordObj) { fetchNewWord(); return; }
+    const target = getTranslation(currentWordObj, tgtLang).toLowerCase().replace(/[^a-záéíóúñç']/g, '');
+    if (target.length < 2) { fetchNewWord(); return; }
+    hangmanWord = target;
+    hangmanGuessed = [];
+    hangmanAttempts = 6;
+    hangmanLetters = target.split('');
+
+    let html = `<div class="hangman-art">${getHangmanArt(hangmanAttempts)}</div>`;
+    html += `<div class="letter-boxes">`;
+    hangmanLetters.forEach((letter, i) => {
+      const revealed = hangmanGuessed.includes(letter);
+      html += `<div class="letter-box ${revealed ? 'revealed' : ''}">${revealed ? letter : '_'}</div>`;
+    });
+    html += `</div>`;
+    html += `<div class="keyboard" id="hangmanKeyboard">`;
+    // Teclado QWERTY
+    const keys = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    keys.forEach(k => {
+      html += `<button data-letter="${k}" class="hangman-key">${k}</button>`;
+    });
+    html += `</div>`;
+    html += `<div style="margin-top:10px; color:#ffaa00; font-size:0.7rem;">Intentos restantes: ${hangmanAttempts}</div>`;
+    gameContent.innerHTML = html;
+
+    // Eventos teclado
+    document.querySelectorAll('.hangman-key').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const letter = this.dataset.letter;
+        if (this.disabled) return;
+        this.disabled = true;
+        if (hangmanLetters.includes(letter)) {
+          if (!hangmanGuessed.includes(letter)) hangmanGuessed.push(letter);
+          setFeedback('✅ ¡Bien!', true);
+          speakText(letter, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        } else {
+          hangmanAttempts--;
+          wrongCount++;
+          updateScore();
+          setFeedback(`❌ Letra "${letter}" incorrecta`, false);
+        }
+        // Actualizar vista
+        renderHangmanUpdate();
+      });
+    });
+
+    // Teclado físico
+    window._hangmanKeyHandler = function(e) {
+      const key = e.key.toLowerCase();
+      if (key.length === 1 && key >= 'a' && key <= 'z') {
+        const btn = document.querySelector(`.hangman-key[data-letter="${key}"]`);
+        if (btn && !btn.disabled) btn.click();
+      }
+    };
+    document.addEventListener('keydown', window._hangmanKeyHandler);
+
+    instructions.textContent = `🪢 Adivina la palabra (${tgtLang.toUpperCase()})`;
+  }
+
+  function getHangmanArt(attempts) {
+    const states = [
+      '   +---+\n   |   |\n       |\n       |\n       |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n       |\n       |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n   |   |\n       |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n  /|   |\n       |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n  /|\\  |\n       |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n  /|\\  |\n  /    |\n       |\n=========',
+      '   +---+\n   |   |\n   O   |\n  /|\\  |\n  / \\  |\n       |\n========='
+    ];
+    const index = Math.max(0, Math.min(6, 6 - attempts));
+    return states[index] || states[6];
+  }
+
+  function renderHangmanUpdate() {
+    const artDiv = document.querySelector('.hangman-art');
+    if (artDiv) artDiv.textContent = getHangmanArt(hangmanAttempts);
+    const boxes = document.querySelectorAll('.letter-box');
+    hangmanLetters.forEach((letter, i) => {
+      const revealed = hangmanGuessed.includes(letter);
+      if (boxes[i]) {
+        boxes[i].textContent = revealed ? letter : '_';
+        boxes[i].classList.toggle('revealed', revealed);
+      }
+    });
+    const attemptsSpan = document.querySelector('.hangman-art + div + div');
+    if (attemptsSpan) attemptsSpan.textContent = `Intentos restantes: ${hangmanAttempts}`;
+
+    // Verificar victoria o derrota
+    const allRevealed = hangmanLetters.every(l => hangmanGuessed.includes(l));
+    if (allRevealed) {
+      setFeedback('🎉 ¡Ganaste!', true);
+      correctCount++;
+      updateScore();
+      document.querySelectorAll('.hangman-key').forEach(b => b.disabled = true);
+      document.removeEventListener('keydown', window._hangmanKeyHandler);
+      setTimeout(() => fetchNewWord(), 2000);
+    } else if (hangmanAttempts <= 0) {
+      setFeedback(`💀 Perdiste. La palabra era: ${hangmanWord}`, false);
+      wrongCount++;
+      updateScore();
+      document.querySelectorAll('.hangman-key').forEach(b => b.disabled = true);
+      document.removeEventListener('keydown', window._hangmanKeyHandler);
+      setTimeout(() => fetchNewWord(), 3000);
+    }
+  }
+
+  // ---------- ANAGRAMA ----------
+  function renderAnagram() {
+    if (!currentWordObj) { fetchNewWord(); return; }
+    const srcText = getTranslation(currentWordObj, srcLang);
+    const target = getTranslation(currentWordObj, tgtLang).toLowerCase().replace(/[^a-záéíóúñç']/g, '');
+    if (target.length < 2) { fetchNewWord(); return; }
+    anagramWord = target;
+    // Barajar letras
+    let chars = target.split('');
+    let shuffled;
+    let attempts = 0;
+    do {
+      shuffled = shuffleArray([...chars]);
+      attempts++;
+    } while (shuffled.join('') === target && attempts < 10);
+    anagramScrambled = shuffled.join('');
+
+    let html = `<div style="color:#ff00ff; font-size:1.2rem;">📝 Ordena las letras:</div>`;
+    html += `<div class="word-display" style="font-size:2.2rem; letter-spacing:8px;">${anagramScrambled}</div>`;
+    html += `<input type="text" class="anagram-input" id="anagramInput" placeholder="Escribe aquí" autocomplete="off">`;
+    html += `<button class="action-btn" id="anagramCheckBtn">✅ Comprobar</button>`;
+    html += `<div style="margin-top:10px; color:#ffaa00; font-size:0.6rem;">Pista: significa "${srcText}"</div>`;
+    gameContent.innerHTML = html;
+
+    document.getElementById('anagramCheckBtn').addEventListener('click', function() {
+      const input = document.getElementById('anagramInput');
+      const userAns = input.value.trim().toLowerCase();
+      if (userAns === anagramWord) {
+        correctCount++;
+        updateScore();
+        setFeedback('🎉 ¡Correcto!', true);
+        speakText(anagramWord, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        setTimeout(() => fetchNewWord(), 1500);
+      } else {
+        wrongCount++;
+        updateScore();
+        setFeedback(`❌ Incorrecto. La respuesta era: ${anagramWord}`, false);
+        speakText(anagramWord, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        setTimeout(() => fetchNewWord(), 2000);
+      }
+    });
+    document.getElementById('anagramInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('anagramCheckBtn').click();
+    });
+    instructions.textContent = `🔀 Anagrama: ordena las letras para formar la palabra en ${tgtLang.toUpperCase()}`;
+  }
+
+  // ---------- ESCUCHA Y ESCRIBE ----------
+  function renderListen() {
+    if (!currentWordObj) { fetchNewWord(); return; }
+    const srcText = getTranslation(currentWordObj, srcLang);
+    const target = getTranslation(currentWordObj, tgtLang);
+    listenWord = target;
+
+    let html = `<div style="color:#ffaa00; font-size:0.8rem;">🔊 Escucha y escribe lo que oyes (${tgtLang.toUpperCase()})</div>`;
+    html += `<button class="mic-btn" id="listenPlayBtn">🔊 Reproducir</button>`;
+    html += `<input type="text" class="anagram-input" id="listenInput" placeholder="Escribe aquí" autocomplete="off">`;
+    html += `<button class="action-btn" id="listenCheckBtn">✅ Comprobar</button>`;
+    gameContent.innerHTML = html;
+
+    document.getElementById('listenPlayBtn').addEventListener('click', function() {
+      speakText(listenWord, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+      setFeedback('🔊 Escuchando...', true);
+    });
+
+    document.getElementById('listenCheckBtn').addEventListener('click', function() {
+      const input = document.getElementById('listenInput');
+      const userAns = input.value.trim().toLowerCase();
+      const normalizedTarget = listenWord.toLowerCase().replace(/[^a-záéíóúñç']/g, '');
+      const normalizedUser = userAns.replace(/[^a-záéíóúñç']/g, '');
+      if (normalizedUser === normalizedTarget) {
+        correctCount++;
+        updateScore();
+        setFeedback('🎉 ¡Correcto!', true);
+        speakText(listenWord, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        setTimeout(() => fetchNewWord(), 1500);
+      } else {
+        wrongCount++;
+        updateScore();
+        setFeedback(`❌ Incorrecto. La palabra era: ${listenWord}`, false);
+        speakText(listenWord, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+        setTimeout(() => fetchNewWord(), 2000);
+      }
+    });
+    document.getElementById('listenInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('listenCheckBtn').click();
+    });
+    instructions.textContent = `🎧 Escucha atentamente y escribe la palabra (${tgtLang.toUpperCase()})`;
+  }
+
+  // ============================================================
+  //  ACTUALIZAR JUEGO SEGÚN EL SELECCIONADO
+  // ============================================================
+  function updateGame() {
+    if (!currentWordObj) {
+      fetchNewWord();
+      return;
+    }
+    switch (currentGame) {
+      case 'flashcards': renderFlashcards(); break;
+      case 'multichoice': renderMultichoice(); break;
+      case 'matching': renderMatching(); break;
+      case 'hangman': renderHangman(); break;
+      case 'anagram': renderAnagram(); break;
+      case 'listen': renderListen(); break;
+      default: renderFlashcards();
+    }
+    // Actualizar instrucciones generales
+  }
+
+  // ============================================================
+  //  EVENTOS DE NAVEGACIÓN Y CONTROLES
+  // ============================================================
+
+  // Cambiar juego
+  gameNav.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn || !btn.dataset.game) return;
+    document.querySelectorAll('.game-nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentGame = btn.dataset.game;
+    // Reiniciar puntuación? No, mantener.
+    usedWordsIndices = [];
+    fetchNewWord();
+  });
+
+  // Cambiar idioma
+  srcLangSel.addEventListener('change', function() {
+    srcLang = this.value;
+    if (srcLang === tgtLang) {
+      // Si son iguales, cambiar destino al otro
+      const other = srcLang === 'en' ? 'es' : srcLang === 'es' ? 'ca' : 'en';
+      tgtLangSel.value = other;
+      tgtLang = other;
+    }
+    usedWordsIndices = [];
+    fetchNewWord();
+  });
+
+  tgtLangSel.addEventListener('change', function() {
+    tgtLang = this.value;
+    if (tgtLang === srcLang) {
+      const other = tgtLang === 'en' ? 'es' : tgtLang === 'es' ? 'ca' : 'en';
+      srcLangSel.value = other;
+      srcLang = other;
+    }
+    usedWordsIndices = [];
+    fetchNewWord();
+  });
+
+  // Botón hablar
+  speakBtn.addEventListener('click', function() {
+    if (currentWordObj) {
+      const text = getTranslation(currentWordObj, tgtLang);
+      speakText(text, tgtLang === 'en' ? 'en-US' : tgtLang === 'es' ? 'es-ES' : 'ca-ES');
+    }
+  });
+
+  // Botón nueva palabra
+  newWordBtn.addEventListener('click', function() {
+    usedWordsIndices = [];
+    fetchNewWord();
+  });
+
+  // ============================================================
+  //  INICIALIZACIÓN
+  // ============================================================
+  // Cargar voces de la API (puede tardar)
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+  }
+
+  // Primera palabra
+  fetchNewWord();
+  updateScore();
+
+  // ============================================================
+  //  LIMPIEZA DE EVENTOS PARA AHORCADO (cuando se cambia de juego)
+  // ============================================================
+  // No es perfecto pero se encarga el propio render.
+</script>
+</body>
+</html>

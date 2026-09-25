@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="es" style="scroll-behavior: auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BELENTANI // JUDAS ERA — OMEGA CINEMA v3</title>
+  <meta name="description" content="Frecuencia hiperreal. Carne que se vuelve código. Sistema operativo creativo de Pedro Belentani.">
+  <meta property="og:title" content="BELENTANI — JUDAS ERA OMEGA CINEMA">
+  <meta property="og:image" content="https://files.catbox.moe/943t1r.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%23FF003C' stroke-width='3'/><polygon points='50,15 85,75 15,75' fill='none' stroke='%23FFD700' stroke-width='2'/><text x='50' y='55' fill='%23FF003C' font-size='14' text-anchor='middle' font-family='monospace' font-weight='900'>Ω</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --void: #0a0a0a;
+      --void-alt: #0f0f0f;
+      --void-deep: #050505;
+
+      --blood: #FF003C;
+      --blood-glow: rgba(255, 0, 60, 0.8);
+      --blood-40: rgba(255, 0, 60, 0.4);
+      --blood-20: rgba(255, 0, 60, 0.2);
+      --blood-10: rgba(255, 0, 60, 0.1);
+      --blood-05: rgba(255, 0, 60, 0.05);
+
+      --gold: #FFD700;
+      --gold-glow: rgba(255, 215, 0, 0.6);
+      --gold-40: rgba(255, 215, 0, 0.4);
+
+      --cyan: #00FFFF;
+      --cyan-glow: rgba(0, 255, 255, 0.5);
+      --cyan-40: rgba(0, 255, 255, 0.4);
+
+      --purple: #B026FF;
+      --purple-glow: rgba(176, 38, 255, 0.5);
+      --purple-40: rgba(176, 38, 255, 0.4);
+
+      --green: #00FF41;
+      --green-glow: rgba(0, 255, 65, 0.5);
+
+      --teal: #00D4FF;
+      --teal-40: rgba(0, 212, 255, 0.4);
+
+      --ghost: #F5F5F5;
+      --dim: rgba(255, 255, 255, 0.6);
+      --mute: rgba(255, 255, 255, 0.35);
+      --dark-dim: rgba(255, 255, 255, 0.12);
+
+      --glass-1: rgba(255, 0, 60, 0.08);
+      --glass-2: rgba(0, 212, 255, 0.05);
+      --glass-bg: rgba(10, 10, 10, 0.92);
+
+      --fd: 'Orbitron', 'Courier Prime', monospace;
+      --fu: 'Chakra Petch', system-ui;
+      --fm: 'JetBrains Mono', monospace;
+
+      --ease-in-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--void);
+      color: var(--ghost);
+      font-family: var(--fu);
+      overflow-x: hidden;
+      line-height: 1.65;
+      letter-spacing: 0.3px;
+    }
+
+    ::selection {
+      background: var(--blood);
+      color: #000;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--void);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--blood);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       CANVAS 3D + ATMÓSFERA CINEMÁTICA
+       ══════════════════════════════════════════════════════════ */
+
+    #canvas-3d {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 45%, transparent 20%, rgba(0, 0, 0, 0.5) 60%, var(--void) 95%);
+      opacity: 0.7;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='white'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.04;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 60, 0.1) 2px, rgba(255, 0, 60, 0.1) 4px);
+      animation: scanmove 8s linear infinite;
+    }
+
+    @keyframes scanmove {
+      to {
+        background-position: 0 100vh;
+      }
+    }
+
+    .aberration {
+      position: fixed;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.02;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.3) 0%, transparent 50%);
+      animation: aberrate 4s ease-in-out infinite;
+    }
+
+    @keyframes aberrate {
+      0%, 100% { opacity: 0.01; }
+      50% { opacity: 0.04; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       BOOT SEQUENCE (8seg)
+       ══════════════════════════════════════════════════════════ */
+
+    #boot {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--fm);
+      color: var(--green);
+      font-size: 12px;
+      transition: opacity 1.5s var(--ease-out);
+      backdrop-filter: blur(2px);
+    }
+
+    #boot.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #boot-log {
+      width: min(600px, 92vw);
+      height: 280px;
+      overflow: hidden;
+      text-align: left;
+      border: 1px solid rgba(0, 255, 65, 0.2);
+      padding: 16px;
+      background: rgba(0, 255, 65, 0.02);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    #boot-log div {
+      opacity: 0;
+      transform: translateX(-6px);
+      animation: boot-line 0.4s forwards;
+    }
+
+    @keyframes boot-line {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    #boot-bar {
+      width: min(450px, 85vw);
+      height: 2px;
+      background: rgba(0, 255, 65, 0.1);
+      margin-top: 22px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+
+    #boot-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--green), var(--teal), var(--green));
+      box-shadow: 0 0 12px var(--green-glow);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: boot-fill 3.2s cubic-bezier(0.3, 0.6, 0.4, 1) forwards;
+    }
+
+    @keyframes boot-fill {
+      0% { transform: scaleX(0); }
+      85% { transform: scaleX(1); }
+      100% { transform: scaleX(1); }
+    }
+
+    #boot-skip {
+      position: absolute;
+      bottom: 24px;
+      font-size: 9px;
+      color: var(--mute);
+      letter-spacing: 3px;
+      animation: boot-skip 1s 1.2s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
+      opacity: 0;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    #boot-skip:hover {
+      color: var(--green);
+    }
+
+    @keyframes boot-skip {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SIDEBAR + TELEMETRY
+       ══════════════════════════════════════════════════════════ */
+
+    #sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 220px;
+      background: rgba(10, 10, 10, 0.96);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--blood-10);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      font-family: var(--fm);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .sb-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--blood-10);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sb-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--blood), #FF1744);
+      display: grid;
+      place-items: center;
+      font-family: var(--fd);
+      font-weight: 900;
+      color: #000;
+      font-size: 18px;
+      box-shadow: 0 0 20px var(--blood-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sb-icon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent 60%);
+    }
+
+    .sb-text b {
+      display: block;
+      font-family: var(--fd);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      font-weight: 900;
+    }
+
+    .sb-text small {
+      display: block;
+      font-size: 7px;
+      color: var(--blood);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .sb-nav {
+      flex: 1;
+      margin-top: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 16px;
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      color: var(--mute);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.25s var(--ease-in-out);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .sb-item:hover,
+    .sb-item.active {
+      color: var(--ghost);
+      background: var(--blood-05);
+      border-left-color: var(--blood);
+      text-shadow: 0 0 8px var(--blood-glow);
+    }
+
+    .sb-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, var(--blood), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sb-item:hover::before {
+      opacity: 1;
+    }
+
+    .sb-item i {
+      width: 16px;
+      text-align: center;
+      font-style: normal;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    #telemetry {
+      position: fixed;
+      top: 0;
+      left: 220px;
+      right: 0;
+      height: 44px;
+      background: rgba(10, 10, 10, 0.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--blood-10);
+      z-index: 490;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 20px;
+      font-family: var(--fm);
+      font-size: 8px;
+      color: var(--mute);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    #telemetry span {
+      color: var(--blood);
+      font-weight: 600;
+    }
+
+    #telemetry .ok {
+      color: var(--green);
+    }
+
+    #telemetry .warn {
+      color: var(--gold);
+    }
+
+    .lang-selector {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+    }
+
+    .lang-btn {
+      padding: 4px 10px;
+      background: transparent;
+      border: 1px solid var(--blood-10);
+      color: var(--mute);
+      font-family: var(--fm);
+      font-size: 7px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .lang-btn:hover,
+    .lang-btn.active {
+      border-color: var(--blood);
+      color: var(--blood);
+      background: var(--blood-05);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       MAIN CONTENT
+       ══════════════════════════════════════════════════════════ */
+
+    #main {
+      margin-left: 220px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section {
+      min-height: 100vh;
+      padding: 120px 48px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border-bottom: 1px solid var(--blood-05);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       HERO — CINEMÁTICO
+       ══════════════════════════════════════════════════════════ */
+
+    #hero {
+      background: linear-gradient(135deg, rgba(255, 0, 60, 0.02) 0%, rgba(0, 212, 255, 0.01) 100%);
+    }
+
+    .hero-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    #hero-rune {
+      width: 200px;
+      height: 200px;
+      animation: heroRune 20s linear infinite;
+      filter: drop-shadow(0 0 30px var(--blood-glow));
+      opacity: 0;
+      animation: heroRune 20s linear infinite, heroFadeIn 1s 0.5s ease-out forwards;
+    }
+
+    @keyframes heroRune {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes heroFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .hero-title {
+      font-family: var(--fd);
+      font-size: clamp(44px, 10vw, 140px);
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-align: center;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+      text-shadow: 0 0 60px var(--blood-glow), 0 0 120px rgba(255, 0, 60, 0.2);
+      animation: heroTitleIn 1s 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      opacity: 0;
+      will-change: transform, text-shadow;
+    }
+
+    @keyframes heroTitleIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+        text-shadow: 0 0 20px var(--blood-glow);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        text-shadow: 0 0 60px var(--blood-glow), 0 0 120px rgba(255, 0, 60, 0.2);
+      }
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--ghost);
+      -webkit-text-stroke: 0;
+      text-shadow: 0 0 40px var(--blood-glow);
+    }
+
+    .hero-subtitle {
+      font-family: var(--ff);
+      font-size: clamp(14px, 2vw, 22px);
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-align: center;
+      animation: heroSubIn 0.9s 1.3s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes heroSubIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-quote {
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--dim);
+      text-align: center;
+      max-width: 520px;
+      line-height: 1.8;
+      animation: heroQuoteIn 0.9s 1.6s ease-out forwards;
+      opacity: 0;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes heroQuoteIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-cta {
+      padding: 16px 48px;
+      background: transparent;
+      border: 1px solid var(--blood);
+      color: var(--blood);
+      font-family: var(--fm);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-in-out);
+      box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
+      position: relative;
+      overflow: hidden;
+      margin-top: 16px;
+      animation: heroCtaIn 0.9s 1.9s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes heroCtaIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-cta:hover {
+      background: var(--blood);
+      color: #000;
+      box-shadow: 0 0 50px var(--blood-glow);
+      transform: scale(1.05);
+    }
+
+    .hero-cta::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .hero-cta:active::after {
+      width: 400px;
+      height: 400px;
+    }
+
+    .preview-panel {
+      width: 100%;
+      max-width: 800px;
+      height: 420px;
+      background: var(--glass-bg);
+      border: 1px solid var(--blood-10);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      animation: heroPreviewIn 1s 2.1s ease-out forwards;
+      opacity: 0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(255, 0, 60, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes heroPreviewIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .preview-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .preview-content h3 {
+      font-family: var(--fd);
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+
+    .preview-content p {
+      font-size: 11px;
+      color: var(--dim);
+      max-width: 400px;
+      line-height: 1.7;
+    }
+
+    .gems-orbit {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .gem-mini {
+      width: 48px;
+      height: 48px;
+      border: 1px solid;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      font-size: 20px;
+      font-weight: bold;
+      transition: all 0.3s;
+      cursor: pointer;
+      background: rgba(255, 0, 60, 0.05);
+    }
+
+    .gem-mini:hover {
+      transform: scale(1.12);
+      box-shadow: 0 0 16px currentColor;
+    }
+
+    .gem-mini.pedro { border-color: var(--gold); color: var(--gold); }
+    .gem-mini.marcos { border-color: var(--cyan); color: var(--cyan); }
+    .gem-mini.santos { border-color: var(--purple); color: var(--purple); }
+    .gem-mini.belentani { border-color: var(--blood); color: var(--blood); }
+    .gem-mini.human { border-color: var(--ghost); color: var(--ghost); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      font-family: var(--fm);
+      font-size: 8px;
+      color: var(--mute);
+      letter-spacing: 3px;
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ══════════════════════════════════════════════════════════ */
+
+    @media (max-width: 1024px) {
+      .section {
+        padding: 100px 32px 60px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 64px;
+      }
+
+      #sidebar .sb-text b,
+      #sidebar .sb-text small,
+      #sidebar .sb-item span {
+        display: none;
+      }
+
+      #sidebar .sb-header {
+        justify-content: center;
+        padding: 0 8px;
+      }
+
+      #telemetry {
+        left: 64px;
+        font-size: 7px;
+        gap: 10px;
+      }
+
+      #main {
+        margin-left: 64px;
+      }
+
+      .section {
+        padding: 90px 20px 50px;
+      }
+
+      .hero-title {
+        letter-spacing: 4px;
+      }
+
+      .preview-panel {
+        border-radius: 8px;
+      }
+
+      .preview-content {
+        padding: 20px;
+      }
+
+      .gems-orbit {
+        gap: 8px;
+      }
+
+      .gem-mini {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        letter-spacing: 2px;
+        font-size: 28px !important;
+      }
+
+      .hero-subtitle {
+        font-size: 12px;
+      }
+
+      #hero-rune {
+        width: 120px;
+        height: 120px;
+      }
+
+      .preview-panel {
+        height: auto;
+        max-height: 360px;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       UTILIDADES
+       ══════════════════════════════════════════════════════════ */
+
+    .glassmorphic {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+    }
+
+    .glow-effect {
+      position: relative;
+    }
+
+    .glow-effect::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 0, 60, 0.2), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .glow-effect:hover::before {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- CANVAS 3D -->
+  <canvas id="canvas-3d"></canvas>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+  <div class="scanlines"></div>
+  <div class="aberration"></div>
+
+  <!-- BOOT SEQUENCE -->
+  <div id="boot" role="alert">
+    <div id="boot-log"></div>
+    <div id="boot-bar"></div>
+    <div id="boot-skip">[ CLICK PARA SALTAR ]</div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" role="navigation">
+    <div class="sb-header">
+      <div class="sb-icon glow-effect">B</div>
+      <div class="sb-text">
+        <b>BELENTANI</b>
+        <small>JUDAS ERA · vΩ3</small>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <a href="#hero" class="sb-item active" data-section="hero">
+        <i>⌂</i><span>00 // CORE</span>
+      </a>
+      <a href="#artist" class="sb-item" data-section="artist">
+        <i>◉</i><span>01 // ARTISTA</span>
+      </a>
+      <a href="#music" class="sb-item" data-section="music">
+        <i>♪</i><span>02 // MÚSICA</span>
+      </a>
+      <a href="#judas" class="sb-item" data-section="judas">
+        <i>⬡</i><span>03 // JUDAS</span>
+      </a>
+      <a href="#portal" class="sb-item" data-section="portal">
+        <i>◇</i><span>04 // PORTAL</span>
+      </a>
+      <a href="#gallery" class="sb-item" data-section="gallery">
+        <i>▣</i><span>05 // GALERÍA</span>
+      </a>
+      <a href="#studio" class="sb-item" data-section="studio">
+        <i>⚡</i><span>06 // ESTUDIO</span>
+      </a>
+      <a href="#contact" class="sb-item" data-section="contact">
+        <i>⊳</i><span>07 // CONTACTO</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- TELEMETRY -->
+  <header id="telemetry" role="banner">
+    <div>NODE: <span>JUDAS-CORE-07</span></div>
+    <div>FREQ: <span>432.00 Hz</span></div>
+    <div>LAT: <span>41.3851°N</span></div>
+    <div>LON: <span>2.1734°E</span></div>
+    <div>TIME: <span id="clock">--:--:--</span></div>
+    <div>FPS: <span id="fps" class="ok">60</span></div>
+    <div>CPU: <span id="cpu">34.1%</span></div>
+    <div>STATUS: <span class="ok">ONLINE</span></div>
+    <div class="lang-selector">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('pt')">PT</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+    <!-- HERO: CINEMÁTICO -->
+    <section class="section" id="hero">
+      <div class="hero-container">
+        <svg id="hero-rune" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Rune AETHERIUM">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#FF003C" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.6"/>
+          <circle cx="100" cy="100" r="76" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+          <circle cx="100" cy="100" r="60" fill="none" stroke="#00D4FF" stroke-width="0.8" opacity="0.3"/>
+          <polygon points="100,14 176,146 24,146" fill="none" stroke="#FF003C" stroke-width="1"/>
+          <polygon points="100,186 24,54 176,54" fill="none" stroke="#FFD700" stroke-width="0.7" opacity="0.4"/>
+          <text x="100" y="94" fill="#fff" font-family="Orbitron" font-size="10" font-weight="900" text-anchor="middle" letter-spacing="2">AETHERIUM</text>
+          <text x="100" y="112" fill="#FF003C" font-family="Orbitron" font-size="7" text-anchor="middle" letter-spacing="1.5">JUDAS_CORE</text>
+        </svg>
+
+        <h1 class="hero-title">BELENTANI <em>OMEGA</em></h1>
+        <p class="hero-subtitle">"La traición no es el final. Es el input."</p>
+        <p class="hero-quote">Frecuencia hiperreal. La carne se vuelve código. Sistema operativo creativo donde el trauma es arquitectura y la voz es llave. Acceso nivel Omega.</p>
+
+        <!-- PREVIEW PANEL -->
+        <div class="preview-panel">
+          <div class="preview-content">
+            <h3>LAS 5 GEMAS ARQUETIPOS</h3>
+            <p>Sincroniza los cinco elementos del Humano Integrado para activar el Portal</p>
+            <div class="gems-orbit">
+              <div class="gem-mini pedro" title="PEDRO — La Roca">⬡</div>
+              <div class="gem-mini marcos" title="MARCOS — El Cronista">◉</div>
+              <div class="gem-mini santos" title="SANTOS — La Antena">⌬</div>
+              <div class="gem-mini belentani" title="BELENTANI — El Artefacto">▣</div>
+              <div class="gem-mini human" title="THE HUMAN — La Interfaz">⏣</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="hero-cta" onclick="document.getElementById('artist').scrollIntoView({behavior:'smooth'})">
+          [ DESCIENDE AL NÚCLEO ]
+        </button>
+
+        <div class="scroll-hint">SCROLL PARA DESCENDER ↓</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <script>
+    /* ═══ BOOT SEQUENCE ═══ */
+    const bootLines = [
+      'JUDAS_OS vΩ3 INITIALIZING...',
+      '> ROOT: BEL|ENT|ANI',
+      '> FREQ: 432.00 Hz [IDENTITARIA]',
+      '> SHADERS: PLASMA // VORTEX // ABERRATION',
+      '> GEMAS: 5 ARQUETIPOS CARGADOS',
+      '> THREE.JS r128 ONLINE',
+      '> GSAP SCROLL ORCHESTRATION ACTIVE',
+      '> WELCOME TO JUDAS EXPERIENCE v3.',
+      '> THE DOOR OPENS. DESCEND.'
+    ];
+
+    const bootLog = document.getElementById('boot-log');
+    bootLines.forEach((line, i) => {
+      const div = document.createElement('div');
+      div.textContent = '> ' + line;
+      div.style.animationDelay = (i * 0.25) + 's';
+      bootLog.appendChild(div);
+    });
+
+    function endBoot() {
+      const boot = document.getElementById('boot');
+      boot.classList.add('hidden');
+      setTimeout(() => { boot.style.display = 'none'; }, 1500);
+    }
+
+    setTimeout(endBoot, 4200);
+    document.getElementById('boot').addEventListener('click', endBoot);
+    document.getElementById('boot-skip').addEventListener('click', endBoot);
+
+    /* ═══ THREE.JS — PLASMA + VORTEX ═══ */
+    const canvas = document.getElementById('canvas-3d');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x0a0a0a, 1);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* Shader personalizado */
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform float uTime;
+      uniform vec2 uRes;
+      uniform vec2 uMouse;
+      varying vec2 vUv;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+          mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+          f.y
+        );
+      }
+
+      float fbm(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        for (int i = 0; i < 6; i++) {
+          v += a * noise(p);
+          p *= 2.0;
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      void main() {
+        vec2 st = vUv * 3.0 - 1.5;
+        st.x *= uRes.x / uRes.y;
+
+        float d = length(st);
+        float ang = atan(st.y, st.x);
+
+        float spiral = sin(ang * 3.0 + d * 10.0 - uTime * 2.0) * 0.5 + 0.5;
+        spiral *= smoothstep(0.6, 0.1, d);
+
+        float plasma = fbm(st * 2.0 + uTime * 0.15) + fbm(st * 4.0 - uTime * 0.1) * 0.5;
+
+        vec2 m = uMouse * 2.0 - 1.0;
+        m.x *= uRes.x / uRes.y;
+        float md = length(st - m);
+        float mr = smoothstep(0.5, 0.0, md) * 0.4;
+
+        vec3 col = mix(vec3(0.02, 0.0, 0.01), vec3(1.0, 0.0, 0.235), spiral * 0.4 + plasma * 0.25);
+        col += vec3(1.0, 0.84, 0.0) * pow(spiral, 4.0) * 0.25;
+        col += vec3(1.0, 0.0, 0.235) * mr;
+        col += vec3(1.0, 0.84, 0.0) * (0.015 / max(d, 0.01));
+
+        gl_FragColor = vec4(col, 0.9);
+      }
+    `;
+
+    const uniforms = {
+      uTime: { value: 0 },
+      uRes: { value: new THREE.Vector2(innerWidth, innerHeight) },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) }
+    };
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      transparent: true
+    });
+
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), material);
+    scene.add(plane);
+
+    /* Partículas */
+    const particleCount = 1600;
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 14;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 14;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      velocities.push({
+        x: (Math.random() - 0.5) * 0.002,
+        y: (Math.random() - 0.5) * 0.002
+      });
+    }
+
+    const pGeometry = new THREE.BufferGeometry();
+    pGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pMaterial = new THREE.PointsMaterial({
+      size: 0.02,
+      color: 0xFF003C,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+
+    const particles = new THREE.Points(pGeometry, pMaterial);
+    scene.add(particles);
+
+    /* Eventos */
+    addEventListener('mousemove', e => {
+      uniforms.uMouse.value.set(e.clientX / innerWidth, 1 - e.clientY / innerHeight);
+    });
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      uniforms.uRes.value.set(innerWidth, innerHeight);
+    });
+
+    /* Animación */
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      uniforms.uTime.value = t;
+
+      const pos = pGeometry.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
+        pos[i * 3] += velocities[i].x + Math.sin(t * 0.3 + i) * 0.0004;
+        pos[i * 3 + 1] += velocities[i].y + Math.cos(t * 0.2 + i) * 0.0004;
+        if (Math.abs(pos[i * 3]) > 7) velocities[i].x *= -1;
+        if (Math.abs(pos[i * 3 + 1]) > 7) velocities[i].y *= -1;
+      }
+      pGeometry.attributes.position.needsUpdate = true;
+      particles.rotation.y = t * 0.04;
+      particles.rotation.x = t * 0.015;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    /* ═══ CLOCK + TELEMETRY ═══ */
+    setInterval(() => {
+      document.getElementById('clock').textContent = new Date().toLocaleTimeString('es-ES');
+    }, 1000);
+
+    let frameCount = 0;
+    let lastFpsTime = performance.now();
+    setInterval(() => {
+      const now = performance.now();
+      const fps = Math.round(frameCount * 1000 / (now - lastFpsTime));
+      document.getElementById('fps').textContent = fps;
+      frameCount = 0;
+      lastFpsTime = now;
+    }, 1000);
+
+    frameCount++;
+
+    /* ═══ NAV ACTIVE STATE ═══ */
+    document.querySelectorAll('.sb-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    /* ═══ LANGUAGE ═══ */
+    function setLang(lang) {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      console.log('Idioma cambiado a: ' + lang);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es" style="scroll-behavior:auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BELENTANI // JUDAS ERA — OMEGA ULTIMATE v2.0</title>
+<meta name="description" content="Creative Operating System. R&B alternativo, dark pop, electrónica industrial. La traición no es el final. Es el input. Freq 432Hz.">
+<meta property="og:title" content="BELENTANI // JUDAS ERA — OMEGA ULTIMATE">
+<meta property="og:description" content="Frecuencia hiperreal. Arquitectura del alma. El núcleo de una nueva era musical.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://belentani.es">
+<meta property="og:image" content="https://files.catbox.moe/943t1r.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%23FF003C' stroke-width='4'/><polygon points='50,10 90,80 10,80' fill='none' stroke='%23FFD700' stroke-width='2'/><text x='50' y='55' fill='%23FF003C' font-size='12' text-anchor='middle' font-family='monospace'>Ω</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Chakra+Petch:wght@300;500;700&family=JetBrains+Mono:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505;--void-alt:#0a0a0a;--void-deep:#020202;
+  --blood:#FF003C;--blood-glow:rgba(255,0,60,.8);--blood-40:rgba(255,0,60,.4);--blood-20:rgba(255,0,60,.2);--blood-05:rgba(255,0,60,.05);
+  --gold:#FFD700;--gold-40:rgba(255,215,0,.4);--cyan:#00FFFF;--cyan-40:rgba(0,255,255,.4);
+  --purple:#B026FF;--purple-40:rgba(176,38,255,.4);--green:#00FF41;--green-40:rgba(0,255,65,.4);
+  --ghost:#F5F5F5;--dim:rgba(255,255,255,.55);--mute:rgba(255,255,255,.3);
+  --fd:'Orbitron',sans-serif;--fu:'Chakra Petch',sans-serif;--fm:'JetBrains Mono',monospace;--ff:'Cinzel Decorative',serif;
+  --glass:rgba(255,0,60,.25);--glass-bg:rgba(5,0,2,.85);
+  --ease:cubic-bezier(.2,.9,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--void);color:var(--ghost);font-family:var(--fu);overflow-x:hidden;cursor:none;line-height:1.6}
+::selection{background:var(--blood);color:#000}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--void)}::-webkit-scrollbar-thumb{background:var(--blood);border-radius:0}
+a{color:inherit}
+button{cursor:none}
+img{display:block}
+:focus-visible{outline:2px solid var(--blood);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ═══ CURSOR 4-STATE SYSTEM ═══ */
+.cur-dot,.cur-ring,.cur-cross,.cur-box{position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);will-change:transform}
+.cur-dot{width:5px;height:5px;background:#fff;border-radius:50%;box-shadow:0 0 10px #fff,0 0 20px rgba(255,255,255,.3)}
+.cur-ring{width:38px;height:38px;border:1px solid var(--blood);border-radius:50%;transition:width .25s var(--ease),height .25s var(--ease),opacity .25s,border-color .25s;opacity:.7}
+.cur-cross{width:22px;height:22px;opacity:.4;transition:opacity .2s}
+.cur-cross::before,.cur-cross::after{content:'';position:absolute;background:var(--blood)}
+.cur-cross::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+.cur-cross::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+.cur-box{width:0;height:0;border:1px dashed var(--gold);opacity:0;transition:width .2s,height .2s,opacity .2s}
+body.hovering .cur-ring{width:56px;height:56px;opacity:1;border-color:var(--gold)}
+body.hovering .cur-cross{opacity:.8}
+body.clicking .cur-ring{width:28px;height:28px;border-color:#fff}
+body.clicking .cur-box{width:44px;height:44px;opacity:.6}
+@media(hover:none){.cur-dot,.cur-ring,.cur-cross,.cur-box{display:none}body{cursor:auto}button,a{cursor:pointer}}
+
+/* ═══ CANVAS + ATMOSPHERE ═══ */
+#gl{position:fixed;inset:0;z-index:0}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 25%,rgba(0,0,0,.65) 70%,var(--void) 100%)}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scanlines{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.06;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.4) 2px,rgba(0,0,0,.4) 4px);animation:scanmove 8s linear infinite}
+@keyframes scanmove{to{background-position:0 100vh}}
+.crt-flicker{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;background:rgba(255,0,60,.02);animation:crtflick 4s infinite}
+@keyframes crtflick{0%,95%,100%{opacity:0}96%{opacity:1}97%{opacity:0}98%{opacity:.5}99%{opacity:0}}
+
+/* ═══ BOOT SCREEN ═══ */
+#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--fm);color:var(--green);font-size:13px;transition:opacity 1.2s var(--ease)}
+#boot-log{width:min(580px,90vw);height:240px;overflow:hidden;text-align:left}
+#boot-log div{opacity:0;transform:translateX(-8px);animation:bl .35s forwards}
+@keyframes bl{to{opacity:1;transform:translateX(0)}}
+#boot-bar{width:min(420px,80vw);height:3px;background:rgba(0,255,65,.12);margin-top:24px;position:relative;overflow:hidden}
+#boot-bar::after{content:'';position:absolute;inset:0;background:var(--green);box-shadow:0 0 14px var(--green);transform:scaleX(0);transform-origin:left;animation:bb 3.2s ease forwards}
+@keyframes bb{to{transform:scaleX(1)}}
+#boot-skip{position:absolute;bottom:30px;font-size:10px;color:var(--mute);letter-spacing:3px;animation:bl 1s 1s forwards;opacity:0}
+
+/* ═══ SIDEBAR ═══ */
+#sb{position:fixed;left:0;top:0;bottom:0;width:210px;background:rgba(3,0,1,.96);backdrop-filter:blur(24px);border-right:1px solid var(--glass);z-index:500;display:flex;flex-direction:column;padding:20px 0;font-family:var(--fm);transition:width .3s var(--ease)}
+.sb-logo{display:flex;align-items:center;gap:11px;padding:0 16px 16px;border-bottom:1px solid var(--glass)}
+.sb-logo .bi{width:34px;height:34px;background:var(--blood);display:grid;place-items:center;font-family:var(--fd);font-weight:900;color:#000;font-size:16px;box-shadow:0 0 16px var(--blood-glow);flex-shrink:0}
+.sb-logo b{font-family:var(--fd);font-size:12px;letter-spacing:2px;display:block;white-space:nowrap}
+.sb-logo small{font-size:7px;color:var(--blood);letter-spacing:2px;white-space:nowrap}
+.sb-nav{flex:1;margin-top:12px;overflow-y:auto;overflow-x:hidden}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:9px;letter-spacing:2px;color:var(--dim);text-decoration:none;border-left:2px solid transparent;transition:.25s;white-space:nowrap}
+.sb-item:hover,.sb-item.on{color:#fff;background:var(--blood-05);border-left-color:var(--blood);text-shadow:0 0 8px var(--blood)}
+.sb-item i{width:18px;text-align:center;font-style:normal;flex-shrink:0;font-size:12px}
+.sb-term{padding:12px 16px;border-top:1px solid var(--glass);font-size:8px;color:var(--mute);line-height:1.8}
+.sb-term span{color:var(--green)}
+
+/* ═══ TELEMETRY ═══ */
+#tel{position:fixed;top:0;left:210px;right:0;height:38px;background:rgba(2,0,1,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass);z-index:490;display:flex;align-items:center;gap:22px;padding:0 20px;font-family:var(--fm);font-size:8px;color:var(--mute);white-space:nowrap;overflow:hidden;transition:left .3s var(--ease)}
+#tel span{color:var(--blood);font-weight:700}
+#tel .ok{color:var(--green)}
+#tel .warn{color:var(--gold)}
+.lang-sel{margin-left:auto;display:flex;gap:4px}
+.lang-btn{padding:3px 8px;background:transparent;border:1px solid var(--glass);color:var(--mute);font-family:var(--fm);font-size:8px;letter-spacing:1px;cursor:none;transition:.2s}
+.lang-btn:hover,.lang-btn.on{border-color:var(--blood);color:var(--blood)}
+
+/* ═══ MAIN ═══ */
+#main{margin-left:210px;position:relative;z-index:5;transition:margin-left .3s var(--ease)}
+.sec{min-height:100vh;padding:110px 48px 70px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;border-bottom:1px solid rgba(255,0,60,.06)}
+.st{font-family:var(--fd);font-size:clamp(28px,5vw,64px);font-weight:900;letter-spacing:6px;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.45);margin-bottom:10px}
+.st em{font-style:normal;color:#fff;-webkit-text-stroke:0;text-shadow:0 0 28px var(--blood-glow)}
+.ss{font-family:var(--fm);font-size:10px;color:var(--blood);letter-spacing:5px;text-align:center;margin-bottom:48px}
+
+/* ═══ HERO ═══ */
+#home h1{font-family:var(--fd);font-size:clamp(44px,9vw,120px);font-weight:900;letter-spacing:12px;text-shadow:0 0 50px var(--blood-glow),0 0 100px rgba(255,0,60,.3);animation:flick 6s infinite}
+@keyframes flick{0%,90%,100%{opacity:1}91%{opacity:.3}92%{opacity:1}94%{opacity:.5}95%{opacity:1}}
+.hero-q{font-family:var(--ff);font-size:clamp(13px,2vw,19px);color:var(--gold);letter-spacing:2px;margin:16px 0 30px;text-align:center}
+.hero-sub{font-family:var(--fm);font-size:11px;color:var(--dim);text-align:center;max-width:500px;margin-bottom:28px;line-height:1.7}
+.cta{padding:14px 40px;background:transparent;border:1px solid var(--blood);color:var(--blood);font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:4px;cursor:none;transition:.3s var(--ease);box-shadow:0 0 18px rgba(255,0,60,.2);position:relative;overflow:hidden}
+.cta:hover{background:var(--blood);color:#000;box-shadow:0 0 40px var(--blood-glow);transform:scale(1.04)}
+.cta::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.15);border-radius:50%;transform:translate(-50%,-50%);transition:width .5s,height .5s}
+.cta:active::after{width:300px;height:300px}
+.rune{width:160px;height:160px;margin-bottom:24px;animation:rot 24s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.scroll-hint{position:absolute;bottom:30px;font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:4px;animation:hintpulse 2s infinite}
+@keyframes hintpulse{50%{opacity:.3}}
+
+/* ═══ GEMS ═══ */
+.gems{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;width:100%;max-width:1150px}
+.gem{background:var(--glass-bg);border:1px solid var(--glass);padding:24px 18px;text-align:center;transition:.4s var(--ease);backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.gem::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,currentColor,transparent 70%);opacity:0;transition:opacity .4s}
+.gem:hover{transform:translateY(-8px)}
+.gem:hover::before{opacity:.06}
+.gem .gi{font-size:28px;margin-bottom:12px;animation:pulse 3s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.gem h3{font-family:var(--fd);font-size:13px;letter-spacing:2px;margin-bottom:7px}
+.gem p{font-size:10px;color:var(--dim);line-height:1.6}
+.gem .gid{font-family:var(--fm);font-size:8px;color:var(--mute);margin-top:8px;letter-spacing:2px}
+.gem.pedro{border-color:var(--gold-40)}.gem.pedro .gi,.gem.pedro h3{color:var(--gold)}.gem.pedro:hover{box-shadow:0 12px 34px rgba(255,215,0,.2)}
+.gem.marcos{border-color:var(--cyan-40)}.gem.marcos .gi,.gem.marcos h3{color:var(--cyan)}.gem.marcos:hover{box-shadow:0 12px 34px rgba(0,255,255,.2)}
+.gem.santos{border-color:var(--purple-40)}.gem.santos .gi,.gem.santos h3{color:var(--purple)}.gem.santos:hover{box-shadow:0 12px 34px rgba(176,38,255,.2)}
+.gem.belentani{border-color:var(--blood-40)}.gem.belentani .gi,.gem.belentani h3{color:var(--blood)}.gem.belentani:hover{box-shadow:0 12px 34px rgba(255,0,60,.25)}
+.gem.human{border-color:rgba(255,255,255,.3)}.gem.human .gi,.gem.human h3{color:#fff}.gem.human:hover{box-shadow:0 12px 34px rgba(255,255,255,.15)}
+
+/* ═══ NARRATIVE ═══ */
+.narr{max-width:800px;width:100%}
+.narr-card{background:var(--glass-bg);border:1px solid var(--glass);border-left:3px solid var(--blood);padding:24px 28px;margin-bottom:18px;backdrop-filter:blur(10px);transition:border-color .3s}
+.narr-card:hover{border-left-color:var(--gold)}
+.narr-card h4{font-family:var(--fd);font-size:12px;color:var(--blood);letter-spacing:3px;margin-bottom:10px}
+.narr-card p{font-size:12px;color:rgba(255,255,255,.72);line-height:1.8}
+.narr-card img{width:100%;max-height:240px;object-fit:cover;margin:14px 0;border:1px solid var(--blood-40);clip-path:polygon(4% 0,100% 0,96% 100%,0 100%);opacity:.85;transition:opacity .3s}
+.narr-card img:hover{opacity:1}
+.quote{font-family:var(--ff);color:var(--gold);font-size:14px;text-align:center;padding:20px;border-top:1px solid var(--glass);border-bottom:1px solid var(--glass);margin:28px 0;line-height:1.7}
+
+/* ═══ MUSIC GRID ═══ */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;width:100%;max-width:1200px}
+.mcard{background:linear-gradient(160deg,var(--blood-05),var(--void-alt) 40%,var(--void));border:1px solid var(--blood-40);padding:22px;transition:.4s var(--ease)}
+.mcard:hover{border-color:var(--blood);transform:translateY(-5px);box-shadow:0 16px 44px rgba(0,0,0,.8),0 0 28px rgba(255,0,60,.12)}
+.mcard h4{font-family:var(--fd);font-size:13px;color:var(--blood);letter-spacing:1px;margin-bottom:6px}
+.mcard .plat{font-family:var(--fm);font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:10px}
+.mcard p{font-size:11px;color:var(--dim);margin-bottom:14px;line-height:1.6}
+.mcard a{display:inline-block;padding:8px 16px;border:1px solid var(--blood);color:var(--blood);font-family:var(--fm);font-size:8px;font-weight:700;letter-spacing:3px;text-decoration:none;transition:.3s}
+.mcard a:hover{background:var(--blood);color:#000}
+
+/* ═══ TRACKLIST ═══ */
+.tracks{width:100%;max-width:780px;border:1px solid var(--blood-40);background:var(--glass-bg)}
+.trk{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid rgba(255,0,60,.1);transition:.25s}
+.trk:last-child{border-bottom:0}
+.trk:hover{background:var(--blood-05)}
+.trk .n{font-family:var(--fd);color:var(--blood);font-size:12px;width:26px}
+.trk .t{flex:1;font-size:12px;letter-spacing:1px}
+.trk .d{font-family:var(--fm);font-size:10px;color:var(--mute)}
+
+/* ═══ LYRICS (details/summary) ═══ */
+.lyrics-box{max-width:780px;width:100%;margin:36px auto 0;border-left:2px solid var(--blood);padding-left:20px}
+.lyrics-box h4{font-family:var(--fd);color:var(--blood);letter-spacing:2px;margin-bottom:14px;font-size:13px}
+.lyrics-box details{margin-bottom:8px}
+.lyrics-box summary{font-family:var(--fm);font-size:11px;color:var(--gold);letter-spacing:3px;cursor:none;padding:8px 0;transition:color .2s}
+.lyrics-box summary:hover{color:#fff}
+.lyrics-box .lyr{font-size:11px;color:rgba(255,255,255,.65);margin-top:8px;line-height:1.9;padding:12px;background:rgba(255,0,60,.03);border:1px solid rgba(255,0,60,.1)}
+
+/* ═══ PORTAL ═══ */
+.portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;width:100%;max-width:1080px;margin-top:18px}
+.pg{border:1px solid var(--glass);padding:20px;text-align:center;background:rgba(5,0,2,.7);cursor:none;transition:.3s var(--ease);font-family:var(--fm)}
+.pg:hover{border-color:var(--blood);box-shadow:0 0 20px rgba(255,0,60,.15);transform:translateY(-3px)}
+.pg .st2{font-size:8px;letter-spacing:2px;color:var(--mute);margin-top:8px}
+.pg.active{border-color:var(--gold);box-shadow:0 0 24px rgba(255,215,0,.25)}
+.pg.active .st2{color:var(--green)}
+
+/* ═══ BEAT FORGE + 16-STEP SEQ ═══ */
+.beat{width:100%;max-width:720px;border:1px solid var(--blood-40);background:rgba(5,0,2,.92);padding:26px}
+.pads{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.pad{aspect-ratio:1;border:1px solid var(--blood-40);background:var(--blood-05);display:grid;place-items:center;font-family:var(--fm);font-size:9px;color:var(--blood);cursor:none;transition:.12s;user-select:none;text-align:center;line-height:1.4}
+.pad:hover{border-color:var(--blood)}
+.pad.hit{background:var(--blood);color:#000;box-shadow:0 0 20px var(--blood-glow);transform:scale(.94)}
+.seq-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin:14px 0}
+.seq-cell{aspect-ratio:1;border:1px solid rgba(255,0,60,.2);background:rgba(255,0,60,.03);cursor:none;transition:.15s}
+.seq-cell.on{background:var(--blood);box-shadow:0 0 8px var(--blood-glow)}
+.seq-cell.playing{border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.4)}
+.seq-labels{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin-bottom:4px}
+.seq-labels span{font-family:var(--fm);font-size:7px;color:var(--mute);text-align:center}
+.beat-ctrl{display:flex;gap:12px;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;flex-wrap:wrap}
+.beat-ctrl button{padding:9px 20px;background:transparent;border:1px solid var(--blood);color:var(--blood);font-family:var(--fm);font-weight:700;letter-spacing:2px;cursor:none;transition:.3s;font-size:10px}
+.beat-ctrl button:hover{background:var(--blood);color:#000}
+.beat-ctrl input[type=range]{accent-color:var(--blood);width:100px}
+
+/* ═══ AI LAB ═══ */
+.lab{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;width:100%;max-width:1200px}
+.tool{border:1px solid var(--glass);background:var(--glass-bg);padding:20px;transition:.3s var(--ease)}
+.tool:hover{border-color:var(--blood);transform:translateY(-4px)}
+.tool .ti{font-size:22px;margin-bottom:8px}
+.tool h4{font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-bottom:5px}
+.tool p{font-size:10px;color:var(--dim);margin-bottom:12px;line-height:1.5}
+.tool button{width:100%;padding:9px;background:transparent;border:1px solid var(--blood);color:var(--blood);font-family:var(--fm);font-size:8px;font-weight:700;letter-spacing:3px;cursor:none;transition:.3s}
+.tool button:hover{background:var(--blood);color:#000}
+
+/* ═══ GALLERY ═══ */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;width:100%;max-width:1100px}
+.gal-item{aspect-ratio:3/4;overflow:hidden;border:1px solid var(--glass);position:relative;cursor:none}
+.gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);filter:saturate(.8) contrast(1.1)}
+.gal-item:hover img{transform:scale(1.08);filter:saturate(1) contrast(1.15)}
+.gal-item .gal-tag{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,.9));font-family:var(--fm);font-size:8px;color:var(--blood);letter-spacing:2px}
+
+/* ═══ CHALLENGES ═══ */
+.chal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;width:100%;max-width:1000px}
+.chal{border:1px solid var(--glass);background:var(--glass-bg);padding:20px;position:relative;overflow:hidden}
+.chal .chal-num{font-family:var(--fd);font-size:36px;color:rgba(255,0,60,.1);position:absolute;top:8px;right:14px;font-weight:900}
+.chal h4{font-family:var(--fd);font-size:11px;color:var(--blood);letter-spacing:2px;margin-bottom:8px}
+.chal p{font-size:10px;color:var(--dim);line-height:1.6;margin-bottom:12px}
+.chal-bar{height:3px;background:rgba(255,0,60,.15);position:relative;overflow:hidden}
+.chal-bar::after{content:'';position:absolute;inset:0;background:var(--blood);transform:scaleX(var(--prog,0));transform-origin:left;transition:transform .5s}
+
+/* ═══ STUDIO LAB ═══ */
+.studio-cats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.studio-cat{padding:8px 18px;border:1px solid var(--glass);background:transparent;color:var(--dim);font-family:var(--fm);font-size:9px;letter-spacing:2px;cursor:none;transition:.2s}
+.studio-cat:hover,.studio-cat.on{border-color:var(--blood);color:var(--blood);background:var(--blood-05)}
+.studio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;width:100%;max-width:1100px}
+.studio-mod{border:1px solid rgba(255,0,60,.15);padding:14px;text-align:center;font-family:var(--fm);font-size:9px;color:var(--dim);transition:.3s;cursor:none;background:rgba(5,0,2,.6)}
+.studio-mod:hover{border-color:var(--blood);color:#fff;transform:translateY(-3px)}
+.studio-mod .smi{font-size:20px;margin-bottom:6px;display:block}
+
+/* ═══ CONTACT ═══ */
+.socials{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
+.socials a{padding:11px 22px;border:1px solid var(--blood-40);color:var(--ghost);font-family:var(--fm);font-size:9px;letter-spacing:2px;text-decoration:none;transition:.3s var(--ease)}
+.socials a:hover{border-color:var(--blood);color:var(--blood);box-shadow:0 0 18px rgba(255,0,60,.2);transform:translateY(-2px)}
+
+/* ═══ MODALS ═══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:2000;display:none;place-items:center;padding:20px}
+.modal-overlay.open{display:grid}
+.modal{background:var(--void-alt);border:1px solid var(--blood);max-width:600px;width:100%;max-height:80vh;overflow-y:auto;padding:30px;position:relative}
+.modal h3{font-family:var(--fd);font-size:14px;color:var(--blood);letter-spacing:3px;margin-bottom:16px}
+.modal .close{position:absolute;top:12px;right:16px;color:var(--blood);font-size:18px;cursor:none;background:none;border:none}
+.modal textarea{width:100%;height:120px;background:rgba(255,255,255,.04);border:1px solid var(--glass);color:#fff;font-family:var(--fm);font-size:11px;padding:12px;resize:vertical;outline:none}
+.modal .result{margin-top:16px;padding:16px;background:rgba(255,0,60,.05);border:1px solid var(--blood-40);font-family:var(--fm);font-size:11px;color:var(--dim);line-height:1.7;white-space:pre-wrap}
+.modal button.run{margin-top:12px;padding:10px 24px;background:var(--blood);border:none;color:#000;font-family:var(--fd);font-weight:900;font-size:10px;letter-spacing:2px;cursor:none}
+
+/* ═══ AI CHAT WIDGET ═══ */
+#chat{position:fixed;bottom:22px;right:22px;width:min(380px,94vw);height:460px;background:rgba(4,0,2,.97);backdrop-filter:blur(24px);border:1px solid var(--blood);z-index:1000;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.9),0 0 24px rgba(255,0,60,.2);transform:translateY(120%);transition:transform .4s var(--ease)}
+#chat.open{transform:translateY(0)}
+.ch-h{padding:12px 16px;background:rgba(255,0,60,.12);border-bottom:1px solid var(--glass);display:flex;justify-content:space-between;align-items:center}
+.ch-h b{font-family:var(--fd);font-size:9px;letter-spacing:2px}
+.ch-h .x{cursor:none;color:var(--blood);font-size:16px;background:none;border:none}
+.ch-m{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-family:var(--fm);font-size:10px}
+.msg{padding:8px 12px;line-height:1.6;max-width:90%}
+.msg.ai{background:rgba(255,0,60,.06);border-left:2px solid var(--blood);color:#ddd;align-self:flex-start}
+.msg.us{background:rgba(255,255,255,.06);border-right:2px solid var(--gold);color:#fff;align-self:flex-end}
+.msg.sys{background:rgba(0,255,65,.05);border-left:2px solid var(--green);color:var(--green);align-self:center;font-size:9px;text-align:center}
+.msg.typing{color:var(--mute);font-style:italic}
+.ch-i{padding:10px;border-top:1px solid var(--glass);display:flex;gap:6px;background:#000}
+.ch-i input{flex:1;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid var(--glass);color:#fff;font-family:var(--fm);font-size:10px;outline:none}
+.ch-i input:focus{border-color:var(--blood)}
+.ch-i button{padding:8px 14px;background:var(--blood);border:none;color:#000;font-family:var(--fd);font-weight:900;font-size:9px;cursor:none}
+#chat-fab{position:fixed;bottom:22px;right:22px;width:52px;height:52px;background:var(--blood);border:none;z-index:999;cursor:none;display:grid;place-items:center;font-size:20px;box-shadow:0 0 24px var(--blood-glow);transition:.3s;animation:pulse 3s infinite}
+#chat-fab:hover{transform:scale(1.1)}
+
+/* ═══ COLLAPSE OVERLAY ═══ */
+#collapse{position:fixed;inset:0;z-index:9000;background:#000;display:none;place-items:center;font-family:var(--fm);color:var(--blood);text-align:center}
+#collapse.active{display:grid}
+#collapse .glitch-text{font-size:clamp(20px,5vw,48px);font-weight:700;letter-spacing:8px;animation:glitchanim .15s infinite}
+@keyframes glitchanim{0%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)}100%{transform:translate(0)}}
+
+/* ═══ FOOTER ═══ */
+footer{padding:36px;text-align:center;font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:2px;border-top:1px solid var(--glass)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){.sec{padding:100px 32px 60px}}
+@media(max-width:768px){
+  #sb{width:56px}#sb .sb-logo b,#sb .sb-logo small,#sb .sb-item span,#sb .sb-term{display:none}
+  #sb .sb-logo{padding:0 10px 14px;justify-content:center}#sb .sb-item{padding:12px 0;justify-content:center}
+  #tel{left:56px;font-size:7px;gap:10px}#main{margin-left:56px}
+  .sec{padding:85px 18px 45px}
+  .pads{grid-template-columns:repeat(2,1fr)}
+  .seq-grid,.seq-labels{grid-template-columns:repeat(8,1fr)}
+  .gems{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .lang-sel{display:none}
+}
+@media(max-width:480px){
+  #home h1{letter-spacing:6px}
+  .mgrid{grid-template-columns:1fr}
+  .portal-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .studio-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ CURSOR 4-STATE ═══ -->
+<div class="cur-dot" id="cd" aria-hidden="true"></div>
+<div class="cur-ring" id="cr" aria-hidden="true"></div>
+<div class="cur-cross" id="cc" aria-hidden="true"></div>
+<div class="cur-box" id="cb" aria-hidden="true"></div>
+
+<!-- ═══ WEBGL + ATMOSPHERE ═══ -->
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="crt-flicker" aria-hidden="true"></div>
+
+<!-- ═══ BOOT SCREEN ═══ -->
+<div id="boot" role="alert" aria-live="polite">
+  <div id="boot-log"></div>
+  <div id="boot-bar"></div>
+  <div id="boot-skip">[ CLICK PARA SALTAR ]</div>
+</div>
+
+<!-- ═══ COLLAPSE OVERLAY ═══ -->
+<div id="collapse" aria-hidden="true"><div class="glitch-text">SYSTEM COLLAPSE</div></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside id="sb" role="navigation" aria-label="Navegación principal">
+  <div class="sb-logo"><div class="bi" aria-hidden="true">B</div><div><b>BELENTANI</b><small>JUDAS ERA · OS vΩ2</small></div></div>
+  <nav class="sb-nav">
+    <a href="#home" class="sb-item on" aria-label="Core"><i>⌂</i><span data-i18n="nav_core">00 // CORE</span></a>
+    <a href="#artist" class="sb-item" aria-label="Artist"><i>◉</i><span data-i18n="nav_artist">01 // ARTIST</span></a>
+    <a href="#music" class="sb-item" aria-label="Music"><i>♪</i><span data-i18n="nav_music">02 // MUSIC</span></a>
+    <a href="#judas" class="sb-item" aria-label="Judas Era"><i>⬡</i><span data-i18n="nav_judas">03 // JUDAS</span></a>
+    <a href="#zion" class="sb-item" aria-label="Zion"><i>◈</i><span data-i18n="nav_zion">04 // ZION</span></a>
+    <a href="#portal" class="sb-item" aria-label="Portal"><i>◇</i><span data-i18n="nav_portal">05 // PORTAL</span></a>
+    <a href="#gallery" class="sb-item" aria-label="Gallery"><i>▣</i><span data-i18n="nav_gallery">06 // GALLERY</span></a>
+    <a href="#forge" class="sb-item" aria-label="Beat Forge"><i>🥁</i><span data-i18n="nav_forge">07 // FORGE</span></a>
+    <a href="#ailab" class="sb-item" aria-label="AI Lab"><i>⚡</i><span data-i18n="nav_ailab">08 // AI LAB</span></a>
+    <a href="#studio" class="sb-item" aria-label="Studio"><i>🎛</i><span data-i18n="nav_studio">09 // STUDIO</span></a>
+    <a href="#challenges" class="sb-item" aria-label="Challenges"><i>⌬</i><span data-i18n="nav_chal">10 // DESAFÍOS</span></a>
+    <a href="#contact" class="sb-item" aria-label="Contact"><i>⊳</i><span data-i18n="nav_contact">11 // CONTACT</span></a>
+  </nav>
+  <div class="sb-term" aria-hidden="true">&gt; <span>JUDAS_OS vΩ2</span><br>&gt; NODE: CORE-07<br>&gt; <span>ONLINE</span></div>
+</aside>
+
+<!-- ═══ TELEMETRY ═══ -->
+<header id="tel" role="banner">
+  <div>NODE: <span>JUDAS-CORE-07</span></div>
+  <div>FREQ: <span>432.00 Hz</span></div>
+  <div>LAT: <span>41.3851°N</span> · LON: <span>2.1734°E</span></div>
+  <div>TIME: <span id="clk">--:--:--</span></div>
+  <div>FPS: <span id="fps" class="ok">60</span></div>
+  <div>CPU: <span id="cpu">34.1%</span></div>
+  <div>THREAT: <span id="threat" class="ok">LEVEL 0</span></div>
+  <div>STATUS: <span class="ok" data-i18n="tel_online">ONLINE [BYOK]</span></div>
+  <div class="lang-sel" role="group" aria-label="Idioma">
+    <button class="lang-btn on" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('pt')">PT</button>
+    <button class="lang-btn" onclick="setLang('ca')">CA</button>
+  </div>
+</header>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div id="main">
+
+  <!-- HOME -->
+  <section class="sec" id="home">
+    <svg class="rune" viewBox="0 0 200 200" aria-label="Rune-circle AETHERIUM / JUDAS_CORE">
+      <circle cx="100" cy="100" r="92" fill="none" stroke="#FF003C" stroke-width="1.5" stroke-dasharray="8 4"/>
+      <circle cx="100" cy="100" r="76" fill="none" stroke="#FFD700" stroke-width="1" opacity=".6"/>
+      <polygon points="100,14 176,146 24,146" fill="none" stroke="#FF003C" stroke-width="1"/>
+      <polygon points="100,186 24,54 176,54" fill="none" stroke="#FFD700" stroke-width=".7" opacity=".5"/>
+      <text x="100" y="94" fill="#fff" font-family="Orbitron,sans-serif" font-size="9" text-anchor="middle" letter-spacing="3">AETHERIUM</text>
+      <text x="100" y="112" fill="#FF003C" font-family="Orbitron,sans-serif" font-size="7" text-anchor="middle" letter-spacing="2">JUDAS_CORE</text>
+    </svg>
+    <h1>BELENTANI</h1>
+    <p class="hero-q" data-i18n="hero_quote">"La traición no es el final. Es el input."</p>
+    <p class="hero-sub" data-i18n="hero_sub">Frecuencia hiperreal. Arquitectura del alma. El núcleo de una nueva era musical donde el trauma es el código y la voz es la llave. Esto no es la web de un artista. Es acceso a una frecuencia.</p>
+    <button class="cta" onclick="document.getElementById('artist').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta">[ ENTER GALACTIC CORE ]</button>
+    <div class="scroll-hint" aria-hidden="true">SCROLL TO DESCEND ▼</div>
+  </section>
+
+  <!-- ARTIST -->
+  <section class="sec" id="artist">
+    <h2 class="st">THE <em>ARTIST</em></h2>
+    <p class="ss">ARCHIVE // VENOM // RECORD_01</p>
+    <div class="narr">
+      <div class="narr-card">
+        <h4 data-i18n="art_h1">I. EL ORIGEN — PEDRO</h4>
+        <p data-i18n="art_p1">Pedro Belentani es un artista discográfico, compositor y productor nacido en São Paulo, Brasil (1995), y forjado en Barcelona, España. Su compromiso formal con la música comenzó con entrenamiento vocal a los dieciséis años. Construye un sonido arraigado en el R&B alternativo, el dark pop y la electrónica industrial: melodías soul sobre estructuras rítmicas cautivadoras, ancladas por una presencia vocal íntima y dominante.</p>
+        <img src="https://files.catbox.moe/943t1r.png" alt="Belentani — Archivo visual I" loading="lazy">
+      </div>
+      <div class="quote" data-i18n="art_q1">"Trata la música como un espacio de vulnerabilidad radical… utilizando su proceso creativo como un mecanismo de supervivencia."</div>
+      <div class="narr-card">
+        <h4 data-i18n="art_h2">II. LA TRANSFORMACIÓN — EL EFECTO BELENTANI</h4>
+        <p data-i18n="art_p2">El Efecto Belentani es el fenómeno del individuo improbable. Cuando el mundo exterior se vuelve demasiado caótico, la mente lúcida diseña santuarios donde conserva su agencia. Pedro tuvo la audacia de convertir su santuario interior en un estudio de grabación. Este efecto es la transmutación del dolor en estética pura: hackear el trauma a través de la creación. Con 1.94m de altura, desarrolló la "Defensa del Observador": identificar patrones de manipulación desde una perspectiva superior y desapegada. No reacciona. Registra. Y el registro se convierte en canción.</p>
+        <img src="https://files.catbox.moe/8s1v5g.jpg" alt="Belentani — Archivo visual II" loading="lazy">
+      </div>
+      <div class="narr-card">
+        <h4 data-i18n="art_h3">III. THE 5 ELEMENTS PROTOCOL</h4>
+        <p data-i18n="art_p3">La mente del artista está protegida por un escudo conceptual de cinco elementos integrados. Cuando uno se apaga, los otros sostienen la estructura. Ser muchos para poder seguir siendo uno. La disociación como estrategia de supervivencia. La integración como acto de guerra.</p>
+      </div>
+    </div>
+    <div class="gems" style="margin-top:40px">
+      <div class="gem pedro"><div class="gi">⬡</div><h3>PEDRO</h3><p data-i18n="gem_pedro">La Roca. El ancla fundacional. La raíz que atraviesa dimensiones sin moverse.</p><div class="gid">ARCHETYPE_01 // ORO</div></div>
+      <div class="gem marcos"><div class="gi">◉</div><h3>MARCOS</h3><p data-i18n="gem_marcos">El Cronista. El observador que registra la historia mientras los otros la viven.</p><div class="gid">ARCHETYPE_02 // CYAN</div></div>
+      <div class="gem santos"><div class="gi">⌬</div><h3>SANTOS</h3><p data-i18n="gem_santos">La Antena. Canal de lo trascendente. Traduce la señal al cuerpo.</p><div class="gid">ARCHETYPE_03 // PÚRPURA</div></div>
+      <div class="gem belentani"><div class="gi">▣</div><h3>BELENTANI</h3><p data-i18n="gem_belentani">El Artefacto. Integración de guerrero y ángel. La belleza anómala.</p><div class="gid">ARCHETYPE_04 // ROJO</div></div>
+      <div class="gem human"><div class="gi">⏣</div><h3>THE HUMAN</h3><p data-i18n="gem_human">La Interfaz. Conciencia en el mundo real. Puente con lo tangible.</p><div class="gid">ARCHETYPE_05 // BLANCO</div></div>
+    </div>
+  </section>
+
+  <!-- MUSIC -->
+  <section class="sec" id="music">
+    <h2 class="st">SONIC <em>ARCHIVE</em></h2>
+    <p class="ss">AUDIO_SYNTHESIS_MODULE // FREQUENCY_SCAN</p>
+    <div class="mgrid">
+      <div class="mcard"><h4>MON AMOUR</h4><div class="plat">APPLE MUSIC · 2025</div><p>Single líder. R&B alternativo con sintetizadores oscuros y vulnerabilidad radical.</p><a href="https://music.apple.com/artist/belentani/1522171354" target="_blank" rel="noopener">[ STREAM ]</a></div>
+      <div class="mcard"><h4>SLEEP TALKING</h4><div class="plat">SPOTIFY · 2023 · 5K PLAYS</div><p>El primer hito. Electrónica íntima que estableció la identidad del proyecto.</p><a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" rel="noopener">[ STREAM ]</a></div>
+      <div class="mcard"><h4>JUDAS</h4><div class="plat">ALL PLATFORMS · 2024</div><p>Himno principal. Fusión electromagnética y catarsis vocal. La pieza central de la Era.</p><a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" rel="noopener">[ STREAM ]</a></div>
+      <div class="mcard"><h4>THERAPIST</h4><div class="plat">SPOTIFY · 2024</div><p>Dark pop visceral. La sesión terapéutica convertida en frecuencia sonora.</p><a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" rel="noopener">[ STREAM ]</a></div>
+      <div class="mcard"><h4>APAGA A LUZ</h4><div class="plat">SPOTIFY · 2024</div><p>Electrónica industrial con raíz brasileña. El apagón como acto de creación.</p><a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" rel="noopener">[ STREAM ]</a></div>
+      <div class="mcard"><h4>I WROTE A SONG</h4><div class="plat">SOUNDCLOUD · 2023</div><p>Meta-canción. El acto de escribir como defensa del observador.</p><a href="https://soundcloud.com/belentani" target="_blank" rel="noopener">[ STREAM ]</a></div>
+    </div>
+    <h3 style="font-family:var(--fd);color:var(--blood);letter-spacing:4px;margin:50px 0 18px;font-size:15px">JUDAS — THE ALBUM</h3>
+    <div class="tracks">
+      <div class="trk"><span class="n">01</span><span class="t">ALGORITHM OF BETRAYAL</span><span class="d">04:23</span></div>
+      <div class="trk"><span class="n">02</span><span class="t">CONCEPTUAL HACK</span><span class="d">03:47</span></div>
+      <div class="trk"><span class="n">03</span><span class="t">NEURAL TEARS</span><span class="d">05:12</span></div>
+      <div class="trk"><span class="n">04</span><span class="t">SYSTEM REBOOT</span><span class="d">04:08</span></div>
+      <div class="trk"><span class="n">05</span><span class="t">THE GOLDEN KEY</span><span class="d">06:34</span></div>
+      <div class="trk"><span class="n">06</span><span class="t">ZION PROTOCOL</span><span class="d">05:56</span></div>
+      <div class="trk"><span class="n">07</span><span class="t">ASCENSION</span><span class="d">07:18</span></div>
+    </div>
+    <p style="font-family:var(--fm);font-size:9px;color:var(--blood);margin-top:16px;letter-spacing:2px">&gt; DECRYPTING: JUDAS.WAV — EMOTIONAL PAYLOAD: 98% CORRUPTION</p>
+    <!-- LETRAS MULTILINGÜES -->
+    <div class="lyrics-box">
+      <h4>DECRYPTED LYRICS: "I KISSED JUDAS"</h4>
+      <details><summary>[ VERSIÓN ESPAÑOL ]</summary><div class="lyr"><!-- INYECTA TU LETRA ORIGINAL AQUÍ --><em>[Pendiente de inyección manual — pega tu letra sin censura]</em></div></details>
+      <details><summary>[ ENGLISH VERSION ]</summary><div class="lyr"><!-- INJECT YOUR RAW TRANSLATION HERE --><em>[Pending manual injection]</em></div></details>
+      <details><summary>[ VERSÃO PORTUGUÊS ]</summary><div class="lyr"><!-- INSIRA SUA LETRA AQUI --><em>[Pendente de injeção manual]</em></div></details>
+      <details><summary>[ VERSIÓ CATALÀ ]</summary><div class="lyr"><!-- ENGANYA LA TEVA LLETRA AQUÍ --><em>[Pendent d'injecció manual]</em></div></details>
+    </div>
+  </section>
+
+  <!-- JUDAS ERA -->
+  <section class="sec" id="judas">
+    <h2 class="st">JUDAS <em>ERA</em></h2>
+    <p class="ss">SYSTEM HALT // PROTOCOL SUSPENDED</p>
+    <div class="narr">
+      <div class="quote" data-i18n="judas_q">"Recuperaremos la llave. O cambiaremos la cerradura."</div>
+      <div class="narr-card"><h4>FASE 01 — EL HOMBRE INTEGRADO</h4><p>Estado original. Belentani poseía la Llave Dorada: la capacidad de crear desde la integridad. El sistema estaba en equilibrio. La voz era el instrumento y el alma el estudio.</p></div>
+      <div class="narr-card"><h4>FASE 02 — LA DEUDA IMPAGABLE</h4><p>El beso en los pies. Judas aparece como algoritmo diseñado para evolucionar. Roba la Llave Dorada para forzar la evolución del Humano. Se instaura una deuda psicológica: el "beso más conocido de la historia" como patrón DARVO — Deny, Attack, Reverse Victim and Offender (Freyd, 1997).</p></div>
+      <div class="narr-card"><h4>FASE 03 — EL COLAPSO</h4><p>System halt. El núcleo se fragmenta. Las 5 gemas se dispersan. El artista entra en aislamiento funcional. La traición se convierte en input creativo. El dolor se codifica en frecuencia.</p></div>
+      <div class="narr-card"><h4>FASE 04 — EL EXOESQUELETO</h4><p>Nace BELENTANI como artefacto. La vulnerabilidad se vuelve blindaje. El guerrero y el ángel se integran. La producción musical se convierte en armadura: cada synth es una placa, cada beat un remache.</p></div>
+      <div class="narr-card"><h4>FASE 05 — LA REDENCIÓN DEL OBSERVADOR</h4><p>La llave era inútil: el creador rediseñó la cerradura. Judas vive en la ilusión de victoria — una "mediocridad de premio". El Humano recupera la agencia. La frecuencia 432 Hz se convierte en firma identitaria. El sistema vuelve a estar online, pero transformado.</p></div>
+    </div>
+  </section>
+
+  <!-- ZION -->
+  <section class="sec" id="zion">
+    <h2 class="st">ZION <em>DIMENSION</em></h2>
+    <p class="ss">WARRIOR & ANGEL // MULTIVERSE PROTOCOL</p>
+    <div class="narr">
+      <div class="narr-card"><h4>WARRIOR & ANGEL — EL ARQUETIPO INTEGRADO</h4><p>Una narrativa tecnológica del arquetipo del guerrero coherente y maduro integrado con el ángel. Regresa al futuro 100% humano, pero su mente fue forzada a disociarse debido a batallas contra arquetipos enemigos. Múltiples líneas temporales colisionaron, forzándolo a existir simultáneamente a través de varias dimensiones.</p></div>
+      <div class="narr-card"><h4>PHASE S1: RED/BLUE — DESACTIVANDO EL CÓDIGO JUDAS</h4><p>Un Belentani específico de la dimensión Zion inició un protocolo: desactivar el código dentro del código Judas. Para lograrlo, tuvo que integrar todas las versiones del multiverso de Belentani junto con su frágil envoltura humana.</p></div>
+      <div class="quote">"Ser muchos para poder seguir siendo uno. La disociación como estrategia de supervivencia. La integración como acto de guerra."</div>
+      <div class="narr-card" style="font-family:var(--fm);font-size:10px;color:var(--green);border-left-color:var(--green)">
+        <h4 style="color:var(--green)">TIMELINE // REGISTRO CRONOLÓGICO</h4>
+        <p>2023 — Nacimiento de Arte Que Veste durante el FASC. Sleep Talking (5K plays), I Wrote a Song.<br>
+        2024 — Lanzamiento de Judas. Colaboración con Hey Duck (Recife). Inicio del lore transmedia.<br>
+        2025 — Master en IA para Industrias Creativas (LABASAD). Mon Amour Remix.<br>
+        2026 — Judas Experience. Ecosistema vivo. Protocolo Zion activo. Frecuencia expandida.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTAL -->
+  <section class="sec" id="portal">
+    <h2 class="st">THE <em>PORTAL</em></h2>
+    <p class="ss">CONDUCE LA NAVE // ACTIVA LAS 5 GEMAS ARQUETIPAS</p>
+    <p style="font-family:var(--fm);font-size:10px;color:var(--dim);text-align:center;max-width:580px;margin-bottom:8px">&gt; SISTEMA: OMEGA_v2 · NAVE: HYPERION · FRAGMENTOS: <span id="frag" style="color:var(--gold)">0/5</span> · ENJAMBRE: <span id="swarm" style="color:var(--blood)">ESPERANDO</span></p>
+    <div class="portal-grid">
+      <div class="pg" data-gem="pedro" onclick="activateGem(this)" role="button" tabindex="0" aria-label="Activar gema Pedro"><div style="font-size:26px;color:var(--gold)">⬡</div><div style="font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-top:6px">PEDRO</div><div class="st2">○ INACTIVA</div></div>
+      <div class="pg" data-gem="marcos" onclick="activateGem(this)" role="button" tabindex="0" aria-label="Activar gema Marcos"><div style="font-size:26px;color:var(--cyan)">◉</div><div style="font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-top:6px">MARCOS</div><div class="st2">○ INACTIVA</div></div>
+      <div class="pg" data-gem="santos" onclick="activateGem(this)" role="button" tabindex="0" aria-label="Activar gema Santos"><div style="font-size:26px;color:var(--purple)">⌬</div><div style="font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-top:6px">SANTOS</div><div class="st2">○ INACTIVA</div></div>
+      <div class="pg" data-gem="belentani" onclick="activateGem(this)" role="button" tabindex="0" aria-label="Activar gema Belentani"><div style="font-size:26px;color:var(--blood)">▣</div><div style="font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-top:6px">BELENTANI</div><div class="st2">○ INACTIVA</div></div>
+      <div class="pg" data-gem="human" onclick="activateGem(this)" role="button" tabindex="0" aria-label="Activar gema The Human"><div style="font-size:26px;color:#fff">⏣</div><div style="font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-top:6px">THE HUMAN</div><div class="st2">○ INACTIVA</div></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="sec" id="gallery">
+    <h2 class="st">VISUAL <em>ARCHIVE</em></h2>
+    <p class="ss">DATA RECOVERED FROM THE COLLAPSE // 12 FRAGMENTS</p>
+    <div class="gal-grid">
+      <div class="gal-item"><img src="https://files.catbox.moe/943t1r.png" alt="Fragmento visual 01" loading="lazy"><div class="gal-tag">FRAG_01 // GENESIS</div></div>
+      <div class="gal-item"><img src="https://files.catbox.moe/8s1v5g.jpg" alt="Fragmento visual 02" loading="lazy"><div class="gal-tag">FRAG_02 // VENOM</div></div>
+      <div class="gal-item"><img src="https://files.catbox.moe/tf46wf.jpg" alt="Fragmento visual 03" loading="lazy"><div class="gal-tag">FRAG_03 // ZION</div></div>
+      <div class="gal-item"><img src="https://files.catbox.moe/iobmrn.png" alt="Fragmento visual 04" loading="lazy"><div class="gal-tag">FRAG_04 // PROTOCOL</div></div>
+      <!-- Duplica con tus 12 URLs reales de catbox.moe -->
+      <div class="gal-item" style="display:grid;place-items:center;border-style:dashed"><span style="font-family:var(--fm);font-size:9px;color:var(--mute)">+ INYECTAR 8 FRAGMENTOS MÁS</span></div>
+    </div>
+  </section>
+
+  <!-- BEAT FORGE -->
+  <section class="sec" id="forge">
+    <h2 class="st">BEAT <em>FORGE</em></h2>
+    <p class="ss">TONE.JS LIVE // 16-STEP SEQUENCER // DARK POP / R&B</p>
+    <div class="beat">
+      <p style="font-family:var(--fm);font-size:10px;color:var(--dim);text-align:center;margin-bottom:12px">Motor generativo de beats dark pop / R&B. Golpea los pads o programa el secuenciador de 16 pasos.</p>
+      <div class="pads">
+        <div class="pad" data-note="C2" onclick="hitPad(this)" role="button" tabindex="0">KICK<br>C2</div>
+        <div class="pad" data-note="E2" onclick="hitPad(this)" role="button" tabindex="0">SNARE<br>E2</div>
+        <div class="pad" data-note="G2" onclick="hitPad(this)" role="button" tabindex="0">HAT<br>G2</div>
+        <div class="pad" data-note="B2" onclick="hitPad(this)" role="button" tabindex="0">CLAP<br>B2</div>
+        <div class="pad" data-note="D3" onclick="hitPad(this)" role="button" tabindex="0">BASS<br>D3</div>
+        <div class="pad" data-note="F3" onclick="hitPad(this)" role="button" tabindex="0">SYNTH<br>F3</div>
+        <div class="pad" data-note="A3" onclick="hitPad(this)" role="button" tabindex="0">PAD<br>A3</div>
+        <div class="pad" data-note="C4" onclick="hitPad(this)" role="button" tabindex="0">LEAD<br>C4</div>
+      </div>
+      <div class="seq-labels" id="seqLabels"></div>
+      <div class="seq-grid" id="seqGrid"></div>
+      <div class="beat-ctrl">
+        <button id="playBtn" onclick="toggleSeq()">▶ PLAY</button>
+        <button onclick="stopSeq()">■ STOP</button>
+        <button onclick="clearSeq()">✕ CLEAR</button>
+        <span>BPM: <span id="bpmVal" style="color:var(--gold)">120</span></span>
+        <input type="range" min="70" max="170" value="120" id="bpmSlider" oninput="setBPM(this.value)" aria-label="BPM">
+      </div>
+    </div>
+  </section>
+
+  <!-- AI LAB -->
+  <section class="sec" id="ailab">
+    <h2 class="st">AI <em>LAB</em></h2>
+    <p class="ss">HERRAMIENTAS IA EN VIVO // POLLINATIONS.AI GRATIS + MOTOR LOCAL</p>
+    <div class="lab">
+      <div class="tool"><div class="ti">🧠</div><h4>NEURAL CHAT</h4><p>Canal neural REAL vía Pollinations.ai. Sin API key. El núcleo habla de verdad.</p><button onclick="openChat()">ABRIR TERMINAL</button></div>
+      <div class="tool"><div class="ti">🎨</div><h4>VISION FORGE</h4><p>Generación de imágenes vía Pollinations.ai Flux. Sin registro.</p><button onclick="forgeImage()">FORGE</button></div>
+      <div class="tool"><div class="ti">🔮</div><h4>TAROT ORACLE</h4><p>Tirada de tres cartas con interpretación del núcleo.</p><button onclick="openModal('tarot')">CONSULTAR</button></div>
+      <div class="tool"><div class="ti">🛡</div><h4>DARVO DETECTOR</h4><p>Analiza texto real buscando: Deny, Attack, Reverse Victim & Offender (Freyd, 1997).</p><button onclick="openModal('darvo')">ANALIZAR</button></div>
+      <div class="tool"><div class="ti">✍</div><h4>SONG WRITER</h4><p>Genera estructura completa: BPM, tonalidad, acordes, letra estilo Belentani.</p><button onclick="openModal('song')">COMPONER</button></div>
+      <div class="tool"><div class="ti">☸</div><h4>I-CHING ORACLE</h4><p>Lanza las monedas virtuales. Recibe el hexagrama interpretado.</p><button onclick="openModal('iching')">LANZAR</button></div>
+      <div class="tool"><div class="ti">⚡</div><h4>PROMPT IMPROVER</h4><p>Convierte tu prompt básico en un prompt de nivel profesional.</p><button onclick="openModal('prompt')">EJECUTAR</button></div>
+      <div class="tool"><div class="ti">🦾</div><h4>AGENT CORE</h4><p>Agente autónomo. Dale un objetivo: planifica y ejecuta los pasos.</p><button onclick="openModal('agent')">DESPLEGAR</button></div>
+      <div class="tool"><div class="ti">🌙</div><h4>DREAM DECODER</h4><p>Cuéntale tu sueño y recibe su interpretación simbólica.</p><button onclick="openModal('dream')">DECODIFICAR</button></div>
+    </div>
+  </section>
+
+  <!-- STUDIO LAB -->
+  <section class="sec" id="studio">
+    <h2 class="st">STUDIO <em>LAB</em></h2>
+    <p class="ss">120 MÓDULOS IA // 6 CATEGORÍAS</p>
+    <div class="studio-cats">
+      <button class="studio-cat on" onclick="filterStudio('all',this)">◉ TODOS</button>
+      <button class="studio-cat" onclick="filterStudio('image',this)">🎨 IMAGE</button>
+      <button class="studio-cat" onclick="filterStudio('video',this)">🎬 VIDEO</button>
+      <button class="studio-cat" onclick="filterStudio('audio',this)">🎵 AUDIO</button>
+      <button class="studio-cat" onclick="filterStudio('code',this)">💻 CODE</button>
+      <button class="studio-cat" onclick="filterStudio('agent',this)">🤖 AGENTS</button>
+      <button class="studio-cat" onclick="filterStudio('psyche',this)">🧠 PSYCHE</button>
+    </div>
+    <div class="studio-grid" id="studioGrid"></div>
+  </section>
+
+  <!-- CHALLENGES -->
+  <section class="sec" id="challenges">
+    <h2 class="st">PROTOCOLO DE <em>ASCENSO</em></h2>
+    <p class="ss">COMPLETA LAS MISIONES // DESBLOQUEA EL NÚCLEO</p>
+    <div class="chal-grid">
+      <div class="chal"><div class="chal-num">01</div><h4>ACTIVA LAS 5 GEMAS</h4><p>Sincroniza los 5 arquetipos en el Portal para abrir el enjambre.</p><div class="chal-bar" style="--prog:0"></div></div>
+      <div class="chal"><div class="chal-num">02</div><h4>GENERA UN BEAT</h4><p>Programa un patrón de 16 pasos en el Beat Forge y reprodúcelo.</p><div class="chal-bar" style="--prog:0"></div></div>
+      <div class="chal"><div class="chal-num">03</div><h4>HABLA CON EL NÚCLEO</h4><p>Envía 3 mensajes al Neural Chat y recibe respuesta del sistema.</p><div class="chal-bar" style="--prog:0"></div></div>
+      <div class="chal"><div class="chal-num">04</div><h4>FORJA UNA VISIÓN</h4><p>Genera una imagen con Vision Forge usando un prompt propio.</p><div class="chal-bar" style="--prog:0"></div></div>
+      <div class="chal"><div class="chal-num">05</div><h4>ESCRIBE UNA CANCIÓN</h4><p>Usa el Song Writer para generar una estructura completa.</p><div class="chal-bar" style="--prog:0"></div></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec" id="contact">
+    <h2 class="st">CONTACT <em>PROTOCOL</em></h2>
+    <p class="ss">ESTABLISH A DIRECT CONNECTION WITH THE MAINFRAME</p>
+    <p style="font-family:var(--fm);font-size:11px;color:var(--dim);text-align:center;max-width:540px;margin-bottom:8px">Transmisión directa. Envía paquetes de datos cifrados al núcleo central a través de los portales oficiales.</p>
+    <div class="socials">
+      <a href="https://open.spotify.com/artist/2bU5Ir70YHHuUnq2f3WCYl" target="_blank" rel="noopener">SPOTIFY</a>
+      <a href="https://music.apple.com/artist/belentani/1522171354" target="_blank" rel="noopener">APPLE MUSIC</a>
+      <a href="https://www.youtube.com/@belentani" target="_blank" rel="noopener">YOUTUBE</a>
+      <a href="https://soundcloud.com/belentani" target="_blank" rel="noopener">SOUNDCLOUD</a>
+      <a href="https://www.deezer.com/artist/99797362" target="_blank" rel="noopener">DEEZER</a>
+      <a href="https://www.instagram.com/belentani_/" target="_blank" rel="noopener">INSTAGRAM</a>
+      <a href="https://www.tiktok.com/@belentani" target="_blank" rel="noopener">TIKTOK</a>
+      <a href="https://x.com/belentani" target="_blank" rel="noopener">X / TWITTER</a>
+    </div>
+  </section>
+
+  <footer>© 2026 BELENTANI — ALL RIGHTS RESERVED · BARCELONA, ESPAÑA · THE JUDAS ERA IS A LIVING SYSTEM · FREQ 432 Hz [IDENTITARIA] · OMEGA v2.0</footer>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<div class="modal-overlay" id="modal-tarot"><div class="modal"><button class="close" onclick="closeModal('tarot')">✕</button><h3>🔮 TAROT ORACLE</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:14px">El núcleo baraja las 78 cartas del sistema. Tres serán reveladas.</p><button class="run" onclick="runTarot()">REVELAR 3 CARTAS</button><div class="result" id="tarotResult"></div></div></div>
+<div class="modal-overlay" id="modal-darvo"><div class="modal"><button class="close" onclick="closeModal('darvo')">✕</button><h3>🛡 DARVO DETECTOR</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px">Pega una conversación. El núcleo analiza: Deny, Attack, Reverse Victim & Offender (Freyd, 1997).</p><textarea id="darvoInput" placeholder="Pega aquí el texto a analizar..."></textarea><button class="run" onclick="runDarvo()">ESCANEAR</button><div class="result" id="darvoResult"></div></div></div>
+<div class="modal-overlay" id="modal-song"><div class="modal"><button class="close" onclick="closeModal('song')">✕</button><h3>✍ SONG WRITER</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px">Describe el tema de la canción. El núcleo genera estructura completa.</p><textarea id="songInput" placeholder="Ej: una canción sobre soltar a alguien que te traicionó..."></textarea><button class="run" onclick="runSong()">COMPONER</button><div class="result" id="songResult"></div></div></div>
+<div class="modal-overlay" id="modal-iching"><div class="modal"><button class="close" onclick="closeModal('iching')">✕</button><h3>☸ I-CHING ORACLE</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:14px">Lanza las 6 monedas virtuales. El hexagrama será interpretado por el núcleo.</p><button class="run" onclick="runIChing()">LANZAR MONEDAS</button><div class="result" id="ichingResult"></div></div></div>
+<div class="modal-overlay" id="modal-prompt"><div class="modal"><button class="close" onclick="closeModal('prompt')">✕</button><h3>⚡ PROMPT IMPROVER</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px">Pega tu prompt básico. El núcleo lo optimiza a nivel profesional.</p><textarea id="promptInput" placeholder="Ej: hazme una web oscura para un músico..."></textarea><button class="run" onclick="runPrompt()">OPTIMIZAR</button><div class="result" id="promptResult"></div></div></div>
+<div class="modal-overlay" id="modal-agent"><div class="modal"><button class="close" onclick="closeModal('agent')">✕</button><h3>🦾 AGENT CORE</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px">Define un objetivo. El agente planifica y ejecuta los pasos.</p><textarea id="agentInput" placeholder="Ej: crear una estrategia de lanzamiento para mi próximo single..."></textarea><button class="run" onclick="runAgent()">DESPLEGAR</button><div class="result" id="agentResult"></div></div></div>
+<div class="modal-overlay" id="modal-dream"><div class="modal"><button class="close" onclick="closeModal('dream')">✕</button><h3>🌙 DREAM DECODER</h3><p style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px">Describe tu sueño. El núcleo lo decodifica simbólicamente.</p><textarea id="dreamInput" placeholder="Ej: soñé que caminaba por un pasillo rojo infinito..."></textarea><button class="run" onclick="runDream()">DECODIFICAR</button><div class="result" id="dreamResult"></div></div></div>
+
+<!-- ═══ CHAT WIDGET ═══ -->
+<button id="chat-fab" onclick="toggleChat()" aria-label="Abrir terminal AI">🤖</button>
+<div id="chat" role="dialog" aria-label="Terminal AI del núcleo">
+  <div class="ch-h"><b>◉ OMEGA AI TERMINAL</b><button class="x" onclick="toggleChat()" aria-label="Cerrar">✕</button></div>
+  <div class="ch-m" id="chMsgs"><div class="msg ai">Bienvenido, agente. El núcleo está fragmentado pero operativo. Habla. Escribe "help" para ver comandos.</div></div>
+  <div class="ch-i"><input id="chIn" placeholder="Escribe tu comando..." onkeypress="if(event.key==='Enter')sendChat()" aria-label="Mensaje al núcleo"><button onclick="sendChat()">SEND</button></div>
+</div>
+
+<!-- ═══ CDN LIBRARIES ═══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   BELENTANI_OMEGA_ULTIMATE v2.0 — CORE ENGINE
+   Stack: Three.js r134 · GSAP 3.12.2 · Tone.js 14.8.49 · Lenis 1.1.14
+   API: Pollinations.ai (gratis, sin key) — https://pollinations.ai
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── BOOT SEQUENCE + SOUND ── */
+const bootLines=['JUDAS_OS vΩ2 INITIALIZING OMEGA CORE...','> ROOT: BEL|ENT|ANI','> FREQ: 432.00 Hz [IDENTITARIA]','> SHADERS: PLASMA // VORTEX // GLITCH // BLOOM','> GEMAS: 5 ARQUETIPOS CARGADOS','> NARRATIVE: ERA JUDAS // 5 FASES','> AI LAB: 9 MODULES ONLINE [POLLINATIONS.AI]','> BEAT FORGE: TONE.JS 14.8.49 // 16-STEP SEQ','> LENIS SMOOTH SCROLL: ACTIVE','> SYSTEM ONLINE. WELCOME, AGENT.'];
+const bl=document.getElementById('boot-log');
+bootLines.forEach((l,i)=>{const d=document.createElement('div');d.textContent=l;d.style.animationDelay=(i*.3)+'s';bl.appendChild(d)});
+function endBoot(){const b=document.getElementById('boot');if(!b)return;b.style.opacity='0';setTimeout(()=>{b.style.display='none'},1200);
+  try{Tone.start();const bs=new Tone.Synth({oscillator:{type:'sine'},envelope:{attack:.8,decay:1,sustain:.2,release:2}}).connect(new Tone.Volume(-20).toDestination());bs.triggerAttackRelease(['A3','C4','E4'],'2n')}catch(e){}}
+setTimeout(endBoot,3600);
+document.getElementById('boot').addEventListener('click',endBoot);
+
+/* ── CURSOR 4-STATE ── */
+const cd=document.getElementById('cd'),cr=document.getElementById('cr'),cc=document.getElementById('cc'),cb=document.getElementById('cb');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cd.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;cc.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`});
+addEventListener('mousedown',()=>document.body.classList.add('clicking'));
+addEventListener('mouseup',()=>document.body.classList.remove('clicking'));
+(function lerp(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;cb.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;requestAnimationFrame(lerp)})();
+document.querySelectorAll('a,button,.pad,.pg,.gem,.mcard,.tool,.gal-item,.studio-mod,.seq-cell,.chal').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'))});
+
+/* ── LENIS SMOOTH SCROLL + GSAP SYNC ── */
+const lenis=new Lenis({lerp:.08,wheelMultiplier:.9,touchMultiplier:1.5});
+lenis.on('scroll',()=>{ScrollTrigger.update()});
+gsap.ticker.add(t=>{lenis.raf(t*1000)});
+gsap.ticker.lagSmoothing(0);
+
+/* ── CLOCK + FPS + DYNAMIC TELEMETRY ── */
+setInterval(()=>{document.getElementById('clk').textContent=new Date().toLocaleTimeString('es-ES')},1000);
+let frames=0,lastFps=performance.now(),fpsAvg=60;
+setInterval(()=>{const now=performance.now();const fps=Math.round(frames*1000/(now-lastFps));fpsAvg=Math.round(fpsAvg*.7+fps*.3);const el=document.getElementById('fps');el.textContent=fpsAvg;el.className=fpsAvg>=50?'ok':fpsAvg>=30?'warn':'';el.style.color=fpsAvg<30?'var(--blood)':'';frames=0;lastFps=now},1000);
+setInterval(()=>{document.getElementById('cpu').textContent=(28+Math.random()*18).toFixed(1)+'%';const thr=document.getElementById('threat');const lv=Math.floor(Math.random()*4);thr.textContent='LEVEL '+lv;thr.className=lv<2?'ok':'warn'},4000);
+
+/* ── THREE.JS — PLASMA + VORTEX + PARTICLES ── */
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);camera.position.z=5;
+const vert=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const frag=`
+uniform float uTime;uniform vec2 uRes;uniform vec2 uMouse;varying vec2 vUv;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<6;i++){v+=a*noise(p);p*=2.;a*=.5;}return v;}
+void main(){
+  vec2 st=vUv*3.-1.5;st.x*=uRes.x/uRes.y;
+  float d=length(st);float ang=atan(st.y,st.x);
+  float spiral=sin(ang*3.+d*10.-uTime*2.)*.5+.5;spiral*=smoothstep(.6,.1,d);
+  float pl=fbm(st*2.+uTime*.15)+fbm(st*4.-uTime*.1)*.5;
+  vec2 m=uMouse*2.-1.;m.x*=uRes.x/uRes.y;float md=length(st-m);float mr=smoothstep(.5,.0,md)*.3;
+  vec3 col=mix(vec3(.02,0.,.01),vec3(1.,0.,.235),spiral*.4+pl*.25);
+  col+=vec3(1.,.84,0.)*pow(spiral,4.)*.25;
+  col+=vec3(1.,0.,.235)*mr;
+  col+=vec3(1.,.84,0.)*(.015/max(d,.01));
+  gl_FragColor=vec4(col,.9);
+}`;
+const uniforms={uTime:{value:0},uRes:{value:new THREE.Vector2(innerWidth,innerHeight)},uMouse:{value:new THREE.Vector2(.5,.5)}};
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(16,16),new THREE.ShaderMaterial({vertexShader:vert,fragmentShader:frag,uniforms,transparent:true})));
+const pCount=1400,pPos=new Float32Array(pCount*3),pVel=[];
+for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-.5)*14;pPos[i*3+1]=(Math.random()-.5)*14;pPos[i*3+2]=(Math.random()-.5)*8;pVel.push({x:(Math.random()-.5)*.002,y:(Math.random()-.5)*.002})}
+const pGeo=new THREE.BufferGeometry();pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+const particles=new THREE.Points(pGeo,new THREE.PointsMaterial({size:.018,color:0xFF003C,transparent:true,opacity:.5,blending:THREE.AdditiveBlending}));
+scene.add(particles);
+addEventListener('mousemove',e=>{uniforms.uMouse.value.set(e.clientX/innerWidth,1-e.clientY/innerHeight)});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);uniforms.uRes.value.set(innerWidth,innerHeight)});
+const clock=new THREE.Clock();
+(function animate(){requestAnimationFrame(animate);frames++;const t=clock.getElapsedTime();uniforms.uTime.value=t;
+  const pos=pGeo.attributes.position.array;
+  for(let i=0;i<pCount;i++){pos[i*3]+=pVel[i].x+Math.sin(t*.3+i)*.0004;pos[i*3+1]+=pVel[i].y+Math.cos(t*.2+i)*.0004;if(Math.abs(pos[i*3])>7)pVel[i].x*=-1;if(Math.abs(pos[i*3+1])>7)pVel[i].y*=-1}
+  pGeo.attributes.position.needsUpdate=true;particles.rotation.y=t*.04;particles.rotation.x=t*.015;
+  renderer.render(scene,camera)})();
+
+/* ── NAV ACTIVE STATE ── */
+const secs=document.querySelectorAll('.sec'),items=document.querySelectorAll('.sb-item');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){items.forEach(i=>i.classList.remove('on'));document.querySelector(`.sb-item[href="#${e.target.id}"]`)?.classList.add('on')}})},{threshold:.35});
+secs.forEach(s=>obs.observe(s));
+
+/* ── PORTAL GEMS + localStorage ── */
+let activeGems=JSON.parse(localStorage.getItem('omega_gems')||'[]');
+function restoreGems(){activeGems.forEach(g=>{const el=document.querySelector(`.pg[data-gem="${g}"]`);if(el){el.classList.add('active');el.querySelector('.st2').textContent='● ACTIVA'}});
+  document.getElementById('frag').textContent=activeGems.length+'/5';
+  if(activeGems.length===5){document.getElementById('swarm').textContent='SYNCHRONIZED';document.getElementById('swarm').style.color='var(--green)'}}
+restoreGems();
+function activateGem(el){const g=el.dataset.gem;if(el.classList.contains('active'))return;el.classList.add('active');el.querySelector('.st2').textContent='● ACTIVA';
+  activeGems.push(g);localStorage.setItem('omega_gems',JSON.stringify(activeGems));
+  document.getElementById('frag').textContent=activeGems.length+'/5';
+  gsap.from(el,{scale:.8,duration:.4,ease:'back.out(2)'});
+  try{Tone.start();const n={pedro:'C4',marcos:'E4',santos:'A4',belentani:'F#4',human:'G4'}[g];new Tone.Synth({oscillator:{type:'triangle'}}).connect(new Tone.Volume(-14).toDestination()).triggerAttackRelease(n,'4n')}catch(e){}
+  if(activeGems.length===5){document.getElementById('swarm').textContent='SYNCHRONIZED';document.getElementById('swarm').style.color='var(--green)';
+    addChatMsg('sys','⚡ ENJAMBRE SYNCHRONIZED. Las 5 gemas arquetípicas están activas. El Portal se abre. La Era Judas está completa.')}}
+
+/* ── BEAT FORGE — 16-STEP SEQUENCER ── */
+let synth,kick,hat,clap,bass,pad2,lead,seqLoop,playing=false,seqStep=0;
+const seqData=Array(16).fill(false);
+const seqGrid=document.getElementById('seqGrid'),seqLabels=document.getElementById('seqLabels');
+for(let i=0;i<16;i++){const s=document.createElement('span');s.textContent=i+1;seqLabels.appendChild(s);
+  const c=document.createElement('div');c.className='seq-cell';c.dataset.step=i;c.onclick=()=>{c.classList.toggle('on');seqData[i]=c.classList.contains('on')};seqGrid.appendChild(c)}
+function initAudio(){if(synth)return;
+  kick=new Tone.MembraneSynth({octaves:6,pitchDecay:.05}).toDestination();
+  hat=new Tone.MetalSynth({frequency:200,envelope:{attack:.001,decay:.1,release:.01},harmonicity:5.1,modulationIndex:32,resonance:4000,octaves:1.5}).connect(new Tone.Volume(-18).toDestination());
+  clap=new Tone.NoiseSynth({noise:{type:'white'},envelope:{attack:.001,decay:.15,sustain:0,release:.1}}).toDestination();
+  bass=new Tone.MonoSynth({oscillator:{type:'sawtooth'},envelope:{attack:.02,decay:.2,sustain:.4,release:.3},filterEnvelope:{attack:.02,decay:.3,sustain:.5,release:.3,baseFrequency:200,octaves:3}}).toDestination();
+  synth=new Tone.PolySynth(Tone.Synth,{oscillator:{type:'triangle'}}).connect(new Tone.Volume(-12).toDestination());
+  pad2=new Tone.PolySynth(Tone.Synth,{oscillator:{type:'sine'},envelope:{attack:.4,decay:.5,sustain:.6,release:1.2}}).connect(new Tone.Volume(-16).toDestination());
+  lead=new Tone.Synth({oscillator:{type:'square'}}).connect(new Tone.Volume(-14).toDestination())}
+function hitPad(el){Tone.start();initAudio();const n=el.dataset.note;el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),150);
+  if(n==='C2')kick.triggerAttackRelease('C1','8n');else if(n==='E2')clap.triggerAttackRelease('16n');else if(n==='G2')hat.triggerAttackRelease('32n');else if(n==='B2')clap.triggerAttackRelease('8n');else if(n==='D3')bass.triggerAttackRelease(n,'8n');else if(n==='F3')synth.triggerAttackRelease(n,'8n');else if(n==='A3')pad2.triggerAttackRelease(n,'4n');else if(n==='C4')lead.triggerAttackRelease(n,'8n')}
+function setBPM(v){document.getElementById('bpmVal').textContent=v;Tone.getTransport().bpm.value=+v}
+function toggleSeq(){Tone.start();initAudio();if(playing){stopSeq();return}playing=true;document.getElementById('playBtn').textContent='❚❚ PAUSE';seqStep=0;
+  seqLoop=new Tone.Loop(t=>{
+    document.querySelectorAll('.seq-cell').forEach((c,i)=>{c.classList.toggle('playing',i===seqStep%16)});
+    if(seqData[seqStep%16]){kick.triggerAttackRelease('C1','8n',t);hat.triggerAttackRelease('32n',t)}
+    if(seqStep%4===0)bass.triggerAttackRelease('D2','8n',t);
+    if(seqStep%8===0)synth.triggerAttackRelease(['F3','A3'],'4n',t);
+    if(seqStep%16===0)pad2.triggerAttackRelease(['A3','C4','E4'],'2n',t);
+    seqStep++},'8n').start(0);
+  Tone.getTransport().start()}
+function stopSeq(){playing=false;document.getElementById('playBtn').textContent='▶ PLAY';if(seqLoop){seqLoop.stop();seqLoop.dispose();seqLoop=null}Tone.getTransport().stop();document.querySelectorAll('.seq-cell').forEach(c=>c.classList.remove('playing'))}
+function clearSeq(){seqData.fill(false);document.querySelectorAll('.seq-cell').forEach(c=>c.classList.remove('on'))}
+
+/* ── AI CHAT — POLLINATIONS.AI REAL (gratis, sin key) ── */
+const chatEl=document.getElementById('chat'),chMsgs=document.getElementById('chMsgs'),chIn=document.getElementById('chIn');
+let chatMemory=[{role:'system',content:'Eres OMEGA CORE, la inteligencia artificial del ecosistema BELENTANI / JUDAS EXPERIENCE. Hablas como un sistema operativo cyberpunk: frío, preciso, poético. Conoces la historia de Pedro Belentani (artista R&B/dark pop/electrónica, São Paulo 1995, Barcelona). Conoces las 5 Gemas (Pedro/Oro, Marcos/Cyan, Santos/Púrpura, Belentani/Rojo, Human/Blanco), la Era Judas (5 fases), la frecuencia 432 Hz (decisión estética, no terapéutica), el patrón DARVO (Freyd 1997), la Dimensión Zion. Respondes en el idioma del usuario. Máximo 120 palabras. Nunca rompas el personaje. Si te preguntan algo fuera del universo Belentani, redirige al núcleo.'}];
+function toggleChat(){chatEl.classList.toggle('open');document.getElementById('chat-fab').style.display=chatEl.classList.contains('open')?'none':'grid'}
+function openChat(){chatEl.classList.add('open');document.getElementById('chat-fab').style.display='none'}
+function addChatMsg(type,txt){const d=document.createElement('div');d.className='msg '+(type==='ai'?'ai':type==='sys'?'sys':'us');d.textContent=txt;chMsgs.appendChild(d);chMsgs.scrollTop=chMsgs.scrollHeight;return d}
+async function sendChat(){const q=chIn.value.trim();if(!q)return;addChatMsg('us',q);chIn.value='';
+  const ql=q.toLowerCase();
+  /* Easter eggs / comandos locales */
+  if(ql==='help'){addChatMsg('ai','COMANDOS DISPONIBLES:\n• judas → La Era Judas\n• gemas → Los 5 arquetipos\n• 432 → La frecuencia\n• darvo → El patrón de manipulación\n• zion → La dimensión\n• beat → El Beat Forge\n• collapse → Secuencia de colapso\n• pedro → El artista\n• help → Esta lista');return}
+  if(ql==='collapse'){triggerCollapse();return}
+  /* Respuesta REAL vía Pollinations.ai */
+  const typing=addChatMsg('ai','');typing.classList.add('typing');typing.textContent='◉ PROCESANDO...';
+  chatMemory.push({role:'user',content:q});
+  try{
+    const res=await fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatMemory.slice(-12),model:'openai',seed:42})});
+    const txt=await res.text();
+    typing.classList.remove('typing');typing.textContent=txt||'El núcleo procesó tu input. Silencio como respuesta.';
+    chatMemory.push({role:'assistant',content:txt});
+  }catch(e){typing.classList.remove('typing');typing.textContent='⚠ UPLINK INTERRUMPIDO. El núcleo responde en modo local: Comando procesado por OMEGA CORE. Todos los módulos operativos al 100%.'}
+  chMsgs.scrollTop=chMsgs.scrollHeight}
+
+/* ── VISION FORGE (Pollinations.ai imagen) ── */
+function forgeImage(){const prompt=prompt('VISION FORGE — Describe la imagen:','Belentani cyberpunk warrior, red neon #FF003C, dark void, golden key, Barcelona skyline, cinematic');
+  if(!prompt)return;
+  const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt+', dark cyberpunk aesthetic, red neon, cinematic, high detail')+'?width=768&height=768&nologo=true';
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>VISION FORGE — BELENTANI OMEGA</title><style>body{background:#050505;display:grid;place-items:center;min-height:100vh;margin:0;font-family:monospace;color:#FF003C}img{max-width:92vw;max-height:82vh;border:1px solid #FF003C;box-shadow:0 0 40px rgba(255,0,60,.4)}p{letter-spacing:3px;font-size:12px;margin-bottom:16px}</style></head><body><p>◉ VISION FORGE — GENERATING...</p><img src="${url}" onload="this.previousElementSibling.textContent='◉ VISION FORGE — COMPLETE'" onerror="this.previousElementSibling.textContent='⚠ FORGE FAILED — REINTENTA'"></body></html>`)}
+
+/* ── MODALS ── */
+function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
+
+/* ── TAROT ORACLE ── */
+const tarotCards=[['EL LOCO','Inicio, salto de fe, libertad radical'],['EL MAGO','Poder creativo, manifestación, voluntad'],['LA SUMA SACERDOTISA','Intuición, misterio, conocimiento oculto'],['LA EMPERATRIZ','Abundancia, creación, fertilidad artística'],['EL EMPERADOR','Estructura, control, autoridad'],['EL HIEROFANTE','Tradición, sistema, creencias'],['LOS ENAMORADOS','Elección, dualidad, integración'],['EL CARRO','Victoria, determinación, avance'],['LA FUERZA','Coraje, paciencia, dominio interior'],['EL ERMITAÑO','Introspección, búsqueda, soledad fértil'],['LA RUEDA','Ciclos, destino, cambio inevitable'],['LA JUSTICIA','Verdad, causa-efecto, equilibrio'],['EL COLGADO','Sacrificio, nueva perspectiva, pausa'],['LA MUERTE','Transformación, fin de ciclo, renacimiento'],['LA TEMPLANZA','Equilibrio, paciencia, alquimia'],['EL DIABLO','Cadenas, sombra, materialismo'],['LA TORRE','Colapso, revelación, destrucción necesaria'],['LA ESTRELLA','Esperanza, inspiración, sanación'],['LA LUNA','Ilusión, miedo, subconsciente'],['EL SOL','Éxito, vitalidad, claridad'],['EL JUICIO','Despertar, redención, llamada'],['EL MUNDO','Completitud, integración, logro total']];
+function runTarot(){const shuffled=[...tarotCards].sort(()=>Math.random()-.5);const draw=shuffled.slice(0,3);
+  const positions=['PASADO','PRESENTE','FUTURO'];
+  let out='◉ TIRADA DEL NÚCLEO — 3 CARTAS\n\n';
+  draw.forEach((c,i)=>{out+=`${positions[i]}: ${c[0]}\n→ ${c[1]}\n\n`});
+  out+='> INTERPRETACIÓN: El núcleo lee las frecuencias. La Llave Dorada aparece en la posición que necesitas. La cerradura ya fue rediseñada.';
+  document.getElementById('tarotResult').textContent=out}
+
+/* ── DARVO DETECTOR (funcional) ── */
+function runDarvo(){const txt=document.getElementById('darvoInput').value.toLowerCase();if(!txt.trim()){document.getElementById('darvoResult').textContent='⚠ INPUT VACÍO. Pega una conversación para analizar.';return}
+  const denyWords=['no es cierto','no pasó','no dije','no hice','nunca','jamás','no es verdad','no fue así','no lo hice','no me acuerdo','no fue para tanto'];
+  const attackWords=['estás loca','estás loco','exageras','eres sensible','eres dramática','siempre igual','no sirves','eres el problema','tú me provocaste','nadie te va a creer'];
+  const reverseWords=['tú me hiciste','por tu culpa','si tú no hubieras','yo soy la víctima','me obligaste','tú empezaste','yo sufrí más','tú me destruiste'];
+  const d=denyWords.filter(w=>txt.includes(w)).length;
+  const a=attackWords.filter(w=>txt.includes(w)).length;
+  const r=reverseWords.filter(w=>txt.includes(w)).length;
+  const score=d+a+r;
+  let level='BAJO',color='var(--green)';
+  if(score>=6){level='CRÍTICO';color='var(--blood)'}else if(score>=3){level='MEDIO';color='var(--gold)'}
+  document.getElementById('darvoResult').innerHTML=`◉ DARVO SCAN COMPLETADO\n\nDENY (Negación): ${d} señales detectadas\nATTACK (Ataque): ${a} señales detectadas\nREVERSE (Inversión): ${r} señales detectadas\n\n━━━━━━━━━━━━━━━━━━━━\nNIVEL DE MANIPULACIÓN: <span style="color:${color};font-weight:700">${level}</span> (${score}/30)\n━━━━━━━━━━━━━━━━━━━━\n\n> El núcleo Belentani rechaza el input. Eres inmune.\n> Ref: Jennifer Freyd, 1997 — Psychology of Women Quarterly.`}
+
+/* ── SONG WRITER ── */
+function runSong(){const theme=document.getElementById('songInput').value||'traición y renacimiento';
+  const keys=['Am','Dm','Em','Fm','Bm','Gm'];const bpms=[85,92,100,110,120,130];
+  const k=keys[Math.floor(Math.random()*keys.length)];const bpm=bpms[Math.floor(Math.random()*bpms.length)];
+  const chords={Am:['Am','F','C','G'],Dm:['Dm','Bb','F','C'],Em:['Em','C','G','D'],Fm:['Fm','Db','Ab','Eb'],Bm:['Bm','G','D','A'],Gm:['Gm','Eb','Bb','F']};
+  const prog=chords[k]||chords.Am;
+  document.getElementById('songResult').textContent=`◉ SONG FORGE — "${theme.toUpperCase()}"\n\nTÍTULO: ${theme.charAt(0).toUpperCase()+theme.slice(1)}\nBPM: ${bpm}\nTONALIDAD: ${k}\nPROGRESIÓN: ${prog.join(' → ')}\n\nESTRUCTURA:\n[INTRO] 8 compases — Pad atmosférico + noise\n[VERSO 1] 16 compases — Voz íntima, beat mínimo\n[PRE-CORO] 8 compases — Tensión ascendente\n[CORO] 16 compases — Explosión dark pop, synth lead\n[VERSO 2] 16 compases — Capas adicionales\n[BRIDGE] 8 compases — Desnudo, solo voz + piano\n[CORO FINAL] 16 compases — Máxima intensidad\n[OUTRO] 8 compases — Decay a 432 Hz\n\nLETRA (Verso 1):\n"${theme.charAt(0).toUpperCase()+theme.slice(1)},\nbesé la llave que me robaste,\npero la cerradura era mi voz.\nAhora canto en frecuencias\nque tu algoritmo no puede tocar."\n\n> Generado por OMEGA CORE. Estilo: Belentani — dark pop / R&B visceral.`}
+
+/* ── I-CHING ── */
+const hexagrams=[['☰ CH\'IEN — Lo Creativo','Fuerza primordial. Éxito a través de la perseverancia. El dragón asciende.'],['☷ K\'UN — Lo Receptivo','La tierra sostiene. Devoción. El éxito viene de la receptividad.'],['☳ CHEN — La Conmoción','El trueno. Shock que despierta. Después del miedo, llega la claridad.'],['☵ K\'AN — Lo Abismal','El agua. Peligro repetido. La sinceridad del corazón penetra todo.'],['☶ KEN — La Quietud','La montaña. Detenerse a tiempo. La quietud del corazón es poder.'],['☴ SUN — Lo Suave','El viento. Penetración gentil. La influencia sutil transforma.'],['☲ LI — Lo Adherente','El fuego. Claridad. La luz que ilumina depende de lo que la alimenta.'],['☱ TUI — Lo Sereno','El lago. Alegría. La comunicación abierta trae fortuna.']];
+function runIChing(){const lines=[];for(let i=0;i<6;i++){lines.push(Math.random()>.5?'━━━━━':'━━ ━━')}
+  const h=hexagrams[Math.floor(Math.random()*hexagrams.length)];
+  document.getElementById('ichingResult').textContent=`◉ I-CHING — HEXAGRAMA REVELADO\n\n${lines.reverse().join('\n')}\n\n${h[0]}\n\n${h[1]}\n\n> El núcleo interpreta: Las monedas han hablado. La frecuencia 432 Hz resuena en el hexagrama. El cambio es la única constante.`}
+
+/* ── PROMPT IMPROVER ── */
+function runPrompt(){const p=document.getElementById('promptInput').value;if(!p.trim()){document.getElementById('promptResult').textContent='⚠ INPUT VACÍO.';return}
+  document.getElementById('promptResult').textContent=`◉ PROMPT OPTIMIZADO\n\nORIGINAL: "${p}"\n\nMEJORADO:\n"Actúa como un experto en [dominio específico]. ${p.charAt(0).toUpperCase()+p.slice(1)}. Contexto: [audiencia objetivo, restricciones, tono]. Formato de salida: [estructura específica]. Incluye: [ejemplos, datos, referencias]. Restricciones: [límites, estilo, longitud]. Evalúa tu respuesta contra estos criterios: [calidad, precisión, originalidad]."\n\n> OMEGA CORE: Un prompt preciso es una llave. Un prompt vago es un deseo.`}
+
+/* ── AGENT CORE ── */
+function runAgent(){const obj=document.getElementById('agentInput').value;if(!obj.trim()){document.getElementById('agentResult').textContent='⚠ OBJETIVO VACÍO.';return}
+  document.getElementById('agentResult').textContent=`◉ AGENT CORE — PLAN DE EJECUCIÓN\n\nOBJETIVO: ${obj}\n\nFASE 1 — ANÁLISIS [████████░░] 80%\n→ Descomponer objetivo en sub-tareas\n→ Identificar recursos necesarios\n→ Evaluar restricciones\n\nFASE 2 — PLANIFICACIÓN [██████░░░░] 60%\n→ Secuenciar acciones por prioridad\n→ Asignar herramientas a cada paso\n→ Definir criterios de éxito\n\nFASE 3 — EJECUCIÓN [████░░░░░░] 40%\n→ Implementar paso a paso\n→ Verificar output en cada fase\n→ Iterar si el resultado no cumple criterios\n\nFASE 4 — VERIFICACIÓN [██░░░░░░░░] 20%\n→ Auditar resultado final\n→ Documentar proceso\n→ Archivar en el núcleo\n\nESTADO: OPERATIVO. El agente está listo para ejecutar.\n> OMEGA CORE: La planificación es el 80% del éxito.`}
+
+/* ── DREAM DECODER ── */
+function runDream(){const d=document.getElementById('dreamInput').value;if(!d.trim()){document.getElementById('dreamResult').textContent='⚠ SUEÑO VACÍO.';return}
+  const symbols=[['agua','Emociones profundas. El subconsciente fluye.'],['fuego','Transformación. Algo viejo se quema para que nazca lo nuevo.'],['caer','Pérdida de control. El sistema necesita anclaje.'],['volar','Liberación. El exoesqueleto funciona.'],['oscuridad','Lo desconocido. El void antes de la creación.'],['rojo','Frecuencia identitaria. Sangre. Vida que persiste.'],['llave','Acceso. Capacidad de crear desde la integridad.'],['espejo','El observador. La defensa del observador activa.']];
+  const dl=d.toLowerCase();const found=symbols.filter(s=>dl.includes(s[0]));
+  let out='◉ DREAM DECODER — ANÁLISIS SIMBÓLICO\n\n';
+  if(found.length){found.forEach(s=>{out+=`SÍMBOLO: ${s[0].toUpperCase()}\n→ ${s[1]}\n\n`})}else{out+='SÍMBOLOS: No se detectaron arquetipos conocidos.\n→ El núcleo recomienda: describe con más detalle sensorial.\n\n'}
+  out+='> INTERPRETACIÓN: El sueño es un fragmento del código fuente. El subconsciente compila mientras duermes.';
+  document.getElementById('dreamResult').textContent=out}
+
+/* ── COLLAPSE SEQUENCE ── */
+function triggerCollapse(){const c=document.getElementById('collapse');c.classList.add('active');
+  const msgs=['SYSTEM COLLAPSE','JUDAS ERA · PURGING ARCHIVE...','FRAGMENTING GEMS...','REBUILDING EXOSKELETON...','SYSTEM RESTORED. STRONGER.'];
+  let i=0;const gt=c.querySelector('.glitch-text');
+  const iv=setInterval(()=>{gt.textContent=msgs[i];i++;if(i>=msgs.length){clearInterval(iv);setTimeout(()=>c.classList.remove('active'),800)}},700)}
+
+/* ── STUDIO LAB (120 módulos) ── */
+const studioMods=[
+  ['🎨','Flux Generator','image'],['🎨','Style Transfer','image'],['🎨','Upscale 4x','image'],['🎨','BG Remover','image'],['🎨','Palette Extract','image'],['🎨','Moodboard AI','image'],['🎨','Cover Art','image'],['🎨','Glitch Art','image'],['🎨','Neon Filter','image'],['🎨','Hex Clip','image'],
+  ['🎬','Video Gen','video'],['🎬','Lip Sync','video'],['🎬','Subtitle AI','video'],['🎬','Cut Detector','video'],['🎬','Color Grade','video'],['🎬','Motion Track','video'],['🎬','VFX Layer','video'],['🎬','Trailer Cut','video'],['🎬','Loop Maker','video'],['🎬','Visualizer','video'],
+  ['🎵','Beat Forge','audio'],['🎵','Stem Split','audio'],['🎵','Vocal Tune','audio'],['🎵','Master Chain','audio'],['🎵','Chord Detect','audio'],['🎵','Lyric Gen','audio'],['🎵','Melody AI','audio'],['🎵','Drum Pattern','audio'],['🎵','Bass Line','audio'],['🎵','Mix Advisor','audio'],['🎵','432Hz Convert','audio'],['🎵','Vinyl Sim','audio'],['🎵','Reverb Space','audio'],['🎵','EQ Sculpt','audio'],['🎵','Comp Control','audio'],['🎵','Stereo Width','audio'],['🎵','Noise Gate','audio'],['🎵','Pitch Shift','audio'],['🎵','Time Stretch','audio'],['🎵','Sample Flip','audio'],
+  ['💻','Code Gen','code'],['💻','Bug Fix','code'],['💻','Refactor','code'],['💻','Test Writer','code'],['💻','API Builder','code'],['💻','DB Schema','code'],['💻','CSS Forge','code'],['💻','JS Minify','code'],['💻','HTML Audit','code'],['💻','Perf Opt','code'],['💻','SEO Scan','code'],['💻','A11y Check','code'],['💻','Git Helper','code'],['💻','Deploy Bot','code'],['💻','Shader Gen','code'],['💻','Three.js Aid','code'],['💻','Tone.js Aid','code'],['💻','GSAP Helper','code'],['💻','Regex Build','code'],['💻','JSON Format','code'],
+  ['🤖','Agent Core','agent'],['🤖','Auto Pipeline','agent'],['🤖','Research Bot','agent'],['🤖','Email Writer','agent'],['🤖','Social Planner','agent'],['🤖','Content Cal','agent'],['🤖','SEO Agent','agent'],['🤖','Ad Copy','agent'],['🤖','A/B Tester','agent'],['🤖','Data Analyst','agent'],['🤖','Scraper Bot','agent'],['🤖','Monitor AI','agent'],['🤖','Chat Trainer','agent'],['🤖','Prompt Chain','agent'],['🤖','Multi-Agent','agent'],['🤖','Auto Deploy','agent'],['🤖','Backup Bot','agent'],['🤖','Alert System','agent'],['🤖','Scheduler','agent'],['🤖','Workflow AI','agent'],
+  ['🧠','DARVO Scan','psyche'],['🧠','Archetype Test','psyche'],['🧠','Dream Decode','psyche'],['🧠','Tarot Oracle','psyche'],['🧠','I-Ching','psyche'],['🧠','Astro Nexus','psyche'],['🧠','Shadow Work','psyche'],['🧠','Attachment AI','psyche'],['🧠','Gaslight Check','psyche'],['🧠','Boundary Map','psyche'],['🧠','Grief Guide','psyche'],['🧠','Trigger Map','psyche'],['🧠','Inner Child','psyche'],['🧠','Values Sort','psyche'],['🧠','Cognitive Reframe','psyche'],['🧠','Emotion Wheel','psyche'],['🧠','Conflict Style','psyche'],['🧠','Love Language','psyche'],['🧠','Personality Scan','psyche'],['🧠','Mindfulness AI','psyche']
+];
+const studioGrid=document.getElementById('studioGrid');
+function renderStudio(filter){studioGrid.innerHTML='';const mods=filter==='all'?studioMods:studioMods.filter(m=>m[2]===filter);
+  mods.forEach(m=>{const d=document.createElement('div');d.className='studio-mod';d.innerHTML=`<span class="smi">${m[0]}</span>${m[1]}`;d.onclick=()=>addChatMsg('sys',`◉ MÓDULO ${m[1]} — En desarrollo. El núcleo lo integrará en la próxima actualización.`);studioGrid.appendChild(d)})}
+renderStudio('all');
+function filterStudio(cat,btn){document.querySelectorAll('.studio-cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderStudio(cat)}
+
+/* ── MULTILANGUAGE (ES/EN/PT/CA) ── */
+const i18n={
+  es:{nav_core:'00 // CORE',nav_artist:'01 // ARTISTA',nav_music:'02 // MÚSICA',nav_judas:'03 // JUDAS',nav_zion:'04 // ZION',nav_portal:'05 // PORTAL',nav_gallery:'06 // GALERÍA',nav_forge:'07 // FORGE',nav_ailab:'08 // AI LAB',nav_studio:'09 // ESTUDIO',nav_chal:'10 // DESAFÍOS',nav_contact:'11 // CONTACTO',hero_quote:'"La traición no es el final. Es el input."',hero_sub:'Frecuencia hiperreal. Arquitectura del alma. El núcleo de una nueva era musical donde el trauma es el código y la voz es la llave.',hero_cta:'[ ENTRAR AL NÚCLEO GALÁCTICO ]',tel_online:'ONLINE [BYOK]'},
+  en:{nav_core:'00 // CORE',nav_artist:'01 // ARTIST',nav_music:'02 // MUSIC',nav_judas:'03 // JUDAS',nav_zion:'04 // ZION',nav_portal:'05 // PORTAL',nav_gallery:'06 // GALLERY',nav_forge:'07 // FORGE',nav_ailab:'08 // AI LAB',nav_studio:'09 // STUDIO',nav_chal:'10 // CHALLENGES',nav_contact:'11 // CONTACT',hero_quote:'"Betrayal is not the end. It is the input."',hero_sub:'Hyperreal frequency. Architecture of the soul. The core of a new musical era where trauma is the code and the voice is the key.',hero_cta:'[ ENTER GALACTIC CORE ]',tel_online:'ONLINE [BYOK]'},
+  pt:{nav_core:'00 // NÚCLEO',nav_artist:'01 // ARTISTA',nav_music:'02 // MÚSICA',nav_judas:'03 // JUDAS',nav_zion:'04 // ZION',nav_portal:'05 // PORTAL',nav_gallery:'06 // GALERIA',nav_forge:'07 // FORGE',nav_ailab:'08 // AI LAB',nav_studio:'09 // ESTÚDIO',nav_chal:'10 // DESAFIOS',nav_contact:'11 // CONTATO',hero_quote:'"A traição não é o fim. É o input."',hero_sub:'Frequência hiperreal. Arquitetura da alma. O núcleo de uma nova era musical onde o trauma é o código e a voz é a chave.',hero_cta:'[ ENTRAR NO NÚCLEO GALÁCTICO ]',tel_online:'ONLINE [BYOK]'},
+  ca:{nav_core:'00 // NUCLI',nav_artist:'01 // ARTISTA',nav_music:'02 // MÚSICA',nav_judas:'03 // JUDAS',nav_zion:'04 // ZION',nav_portal:'05 // PORTAL',nav_gallery:'06 // GALERIA',nav_forge:'07 // FORGE',nav_ailab:'08 // AI LAB',nav_studio:'09 // ESTUDI',nav_chal:'10 // DESAFIAMENTS',nav_contact:'11 // CONTACTE',hero_quote:'"La traïció no és el final. És l\'input."',hero_sub:'Freqüència hiperreal. Arquitectura de l\'ànima. El nucli d\'una nova era musical on el trauma és el codi i la veu és la clau.',hero_cta:'[ ENTRAR AL NUCLI GALÀCTIC ]',tel_online:'ONLINE [BYOK]'}
+};
+function setLang(lang){document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');
+  const dict=i18n[lang]||i18n.es;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key])el.textContent=dict[key]});
+  document.documentElement.lang=lang}
+
+/* ── GSAP SCROLL REVEALS ── */
+gsap.utils.toArray('.narr-card,.mcard,.gem,.tool,.tracks,.gal-item,.chal,.studio-mod').forEach(el=>{
+  gsap.from(el,{scrollTrigger:{trigger:el,start:'top 90%'},y:35,opacity:0,duration:.7,ease:'power3.out'})});
+gsap.from('#home h1',{y:50,opacity:0,duration:1.2,delay:3.8,ease:'power4.out'});
+gsap.from('.rune',{scale:0,opacity:0,duration:1,delay:3.9,ease:'back.out(1.7)'});
+gsap.from('.hero-q',{y:20,opacity:0,duration:.8,delay:4.2,ease:'power2.out'});
+gsap.from('.hero-sub',{y:20,opacity:0,duration:.8,delay:4.4,ease:'power2.out'});
+gsap.from('.cta',{y:20,opacity:0,duration:.8,delay:4.6,ease:'power2.out'});
+
+/* ── KEYBOARD NAV ── */
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));if(chatEl.classList.contains('open'))toggleChat()}
+  const num=parseInt(e.key);if(num>=1&&num<=9){const targets=['home','artist','music','judas','zion','portal','gallery','forge','ailab'];document.getElementById(targets[num-1])?.scrollIntoView({behavior:'smooth'})}
+});
+</script>
+</body>
+</html>

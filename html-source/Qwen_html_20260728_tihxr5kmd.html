@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NO.IA:CORE — Pedro Belentani</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        :root {
+            --black-absolute: #000000;
+            --black-deep: #030303;
+            --black-blue: #0a0a0f;
+            --blue-electric: #0066FF;
+            --cyan: #00D4FF;
+            --violet: #6B00FF;
+            --white-ice: #F0F4FF;
+            --gray-blue: #4A5568;
+            --blue-ice: #B0C4DE;
+            --phi: 1.618;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            --ease-liquid: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--black-absolute);
+            color: var(--white-ice);
+            overflow-x: hidden;
+            line-height: 1.618;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================
+           CURSOR LÍQUIDO AVANZADO
+           ============================================ */
+        .cursor-main {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transition: width 0.5s var(--ease-elastic),
+                        height 0.5s var(--ease-elastic),
+                        background 0.5s ease,
+                        border-color 0.5s ease,
+                        border-radius 0.5s ease;
+            mix-blend-mode: difference;
+            filter: blur(0px);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            opacity: 0.8;
+            filter: blur(2px);
+        }
+
+        .cursor-particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--blue-electric);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99997;
+            opacity: 0.6;
+        }
+
+        .cursor-main.hover {
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--blue-electric);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: liquidMorph 3s ease-in-out infinite;
+        }
+
+        .cursor-main.click {
+            width: 30px;
+            height: 30px;
+            border-color: var(--violet);
+        }
+
+        @keyframes liquidMorph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+        }
+
+        /* ============================================
+           PRELOADER CINEMATOGRÁFICO ENRIQUECIDO
+           ============================================ */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black-absolute);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 2s var(--ease-out-expo),
+                        visibility 2s;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-geometric {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 80px;
+        }
+
+        .preloader-hex {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border: 2px solid var(--cyan);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: hexRotate 4s linear infinite, hexPulse 2s ease-in-out infinite;
+        }
+
+        .preloader-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border: 1px solid var(--blue-electric);
+            border-radius: 50%;
+            animation: circleRotate 3s linear infinite reverse;
+        }
+
+        .preloader-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 40px var(--cyan), 0 0 80px var(--blue-electric);
+            animation: corePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes hexRotate {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes circleRotate {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes hexPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes corePulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        .preloader-logo {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: var(--white-ice);
+            margin-bottom: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preloader-logo::before {
+            content: 'NO.IA:CORE';
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: var(--cyan);
+            opacity: 0.5;
+            animation: glitchText 3s infinite;
+        }
+
+        .preloader-logo::after {
+            content: 'NO.IA:CORE';
+            position: absolute;
+            top: 0;
+            left: -2px;
+            color: var(--violet);
+            opacity: 0.5;
+            animation: glitchText 3s infinite reverse;
+        }
+
+        @keyframes glitchText {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
+            96% { transform: translate(-1px, -1px); }
+            98% { transform: translate(1px, 1px); }
+        }
+
+        .preloader-logo span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: slideUp 0.8s var(--ease-out-expo) forwards;
+        }
+
+        .preloader-logo span:nth-child(1) { animation-delay: 0.1s; }
+        .preloader-logo span:nth-child(2) { animation-delay: 0.2s; }
+        .preloader-logo span:nth-child(3) { animation-delay: 0.3s; }
+        .preloader-logo span:nth-child(4) { animation-delay: 0.4s; }
+        .preloader-logo span:nth-child(5) { animation-delay: 0.5s; }
+        .preloader-logo span:nth-child(6) { animation-delay: 0.6s; }
+        .preloader-logo span:nth-child(7) { animation-delay: 0.7s; }
+        .preloader-logo span:nth-child(8) { animation-delay: 0.8s; }
+        .preloader-logo span:nth-child(9) { animation-delay: 0.9s; }
+        .preloader-logo span:nth-child(10) { animation-delay: 1s; }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        .preloader-bar {
+            width: 300px;
+            height: 1px;
+            background: var(--gray-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preloader-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue-electric), var(--cyan));
+            width: 0%;
+            animation: load 3s var(--ease-in-out-quart) forwards;
+            box-shadow: 0 0 20px var(--cyan);
+        }
+
+        @keyframes load {
+            to { width: 100%; }
+        }
+
+        .preloader-counter {
+            position: absolute;
+            bottom: 80px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            color: var(--cyan);
+        }
+
+        .preloader-status {
+            position: absolute;
+            bottom: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            color: var(--gray-blue);
+            text-transform: uppercase;
+        }
+
+        /* ============================================
+           NAVEGACIÓN LATERAL AVANZADA
+           ============================================ */
+        .nav-sidebar {
+            position: fixed;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray-blue);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.4s var(--ease-out-expo);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-item:hover .nav-label {
+            opacity: 1;
+            transform: translateX(0);
+            color: var(--cyan);
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--gray-blue);
+            transition: all 0.4s var(--ease-elastic);
+            position: relative;
+        }
+
+        .nav-dot::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: var(--cyan);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .nav-dot.active {
+            border-color: var(--cyan);
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .nav-dot.active::before {
+            opacity: 1;
+        }
+
+        /* ============================================
+           SECCIONES GENERALES
+           ============================================ */
+        section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 120px 120px 120px 160px;
+            overflow: hidden;
+        }
+
+        .section-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.1;
+            z-index: 0;
+            filter: grayscale(100%) contrast(1.3) brightness(0.7);
+        }
+
+        .section-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ============================================
+           HERO CINEMATOGRÁFICO ENRIQUECIDO
+           ============================================ */
+        .hero {
+            background: var(--black-absolute);
+            padding: 0;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            to { background-position: 100px 100px; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1.618fr;
+            gap: 120px;
+            align-items: center;
+            padding: 0 160px;
+        }
+
+        .hero-text {
+            opacity: 0;
+            transform: translateY(60px);
+            animation: heroReveal 1.5s var(--ease-out-expo) 3.5s forwards;
+        }
+
+        @keyframes heroReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-overline {
+            font-size: 11px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hero-overline::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .hero-title {
+            font-size: clamp(64px, 8vw, 120px);
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .hero-title::before {
+            content: 'NO.IA:CORE';
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: var(--cyan);
+            opacity: 0.3;
+            animation: titleGlitch 5s infinite;
+            z-index: -1;
+        }
+
+        @keyframes titleGlitch {
+            0%, 95%, 100% { transform: translate(0); opacity: 0; }
+            96% { transform: translate(-3px, 1px); opacity: 0.3; }
+            97% { transform: translate(3px, -1px); opacity: 0.3; }
+            98% { transform: translate(-2px, -1px); opacity: 0.3; }
+            99% { transform: translate(2px, 1px); opacity: 0.3; }
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .line span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: lineReveal 1.2s var(--ease-out-expo) forwards;
+        }
+
+        .hero-title .line:nth-child(1) span { animation-delay: 3.7s; }
+        .hero-title .line:nth-child(2) span { animation-delay: 3.9s; }
+
+        @keyframes lineReveal {
+            to { transform: translateY(0); }
+        }
+
+        .hero-title .cyan {
+            color: var(--cyan);
+            font-weight: 500;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 20px;
+            color: var(--gray-blue);
+            letter-spacing: 0.02em;
+            line-height: 1.8;
+            max-width: 500px;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: imageReveal 2s var(--ease-out-expo) 2.5s forwards;
+            filter: contrast(1.2) brightness(0.8) saturate(0.5);
+            transition: all 1s var(--ease-out-expo);
+        }
+
+        .hero-image-container:hover .hero-image {
+            filter: contrast(1.1) brightness(0.9) saturate(0.8);
+            transform: scale(1.05);
+        }
+
+        @keyframes imageReveal {
+            to { opacity: 0.9; }
+        }
+
+        .hero-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                transparent 50%, 
+                rgba(0, 102, 255, 0.1) 100%);
+            z-index: 1;
+        }
+
+        .hero-image-scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 212, 255, 0.03) 2px,
+                rgba(0, 212, 255, 0.03) 4px
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 60px;
+            left: 160px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeIn 1s var(--ease-out-expo) 4.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .scroll-text {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray-blue);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .scroll-line {
+            width: 60px;
+            height: 1px;
+            background: var(--gray-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--cyan);
+            animation: scrollLine 2s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        @keyframes scrollLine {
+            to { left: 100%; }
+        }
+
+        /* ============================================
+           FILOSOFÍA - MANIFIESTO CINÉTICO ENRIQUECIDO
+           ============================================ */
+        .philosophy {
+            background: var(--black-deep);
+            min-height: 150vh;
+        }
+
+        .manifesto-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .manifesto {
+            font-size: clamp(32px, 4vw, 64px);
+            font-weight: 300;
+            line-height: 1.4;
+            letter-spacing: 0.01em;
+            max-width: 1200px;
+            text-align: center;
+            position: relative;
+        }
+
+        .manifesto .word {
+            display: inline-block;
+            opacity: 0.1;
+            transform: translateY(20px) rotateX(45deg);
+            transition: all 0.8s var(--ease-out-expo);
+            margin: 0 0.1em;
+        }
+
+        .manifesto .word.visible {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        .manifesto .word.cyan {
+            color: var(--cyan);
+            font-weight: 500;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .manifesto .word.blue {
+            color: var(--blue-electric);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           CORE - SOLUCIONES CON EFECTOS 3D ENRIQUECIDOS
+           ============================================ */
+        .core {
+            background: var(--black-absolute);
+            padding: 200px 120px;
+        }
+
+        .core-header {
+            margin-bottom: 120px;
+        }
+
+        .core-overline {
+            font-size: 11px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .core-title {
+            font-size: clamp(48px, 6vw, 80px);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+        }
+
+        .core-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+        }
+
+        .core-pillar {
+            position: relative;
+            height: 500px;
+            background: var(--black-deep);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.6s var(--ease-out-expo);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .core-pillar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(0, 212, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .core-pillar::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        .core-pillar:hover {
+            background: var(--black-blue);
+            transform: translateY(-20px) rotateX(5deg);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2);
+        }
+
+        .core-pillar:hover::before {
+            opacity: 1;
+        }
+
+        .core-pillar:hover::after {
+            opacity: 1;
+        }
+
+        .pillar-number {
+            font-size: 120px;
+            font-weight: 300;
+            color: var(--gray-blue);
+            line-height: 1;
+            opacity: 0.3;
+            transition: all 0.6s var(--ease-out-expo);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .core-pillar:hover .pillar-number {
+            color: var(--cyan);
+            opacity: 0.6;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .pillar-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pillar-title {
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--white-ice);
+        }
+
+        .pillar-desc {
+            font-size: 14px;
+            color: var(--gray-blue);
+            line-height: 1.8;
+        }
+
+        .pillar-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue-electric), var(--cyan));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s var(--ease-out-expo);
+            box-shadow: 0 0 20px var(--cyan);
+        }
+
+        .core-pillar:hover .pillar-line {
+            transform: scaleX(1);
+        }
+
+        /* ============================================
+           METODOLOGÍA - TIMELINE CINEMATOGRÁFICO ENRIQUECIDO
+           ============================================ */
+        .methodology {
+            background: var(--black-deep);
+            padding: 200px 120px;
+        }
+
+        .method-container {
+            display: grid;
+            grid-template-columns: 1fr 1.618fr;
+            gap: 120px;
+            align-items: start;
+        }
+
+        .method-sticky {
+            position: sticky;
+            top: 120px;
+        }
+
+        .method-overline {
+            font-size: 11px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .method-title {
+            font-size: clamp(36px, 4vw, 56px);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            margin-bottom: 40px;
+        }
+
+        .method-title .cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .method-desc {
+            font-size: 16px;
+            color: var(--gray-blue);
+            line-height: 1.8;
+        }
+
+        .method-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        .method-step {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 60px;
+            align-items: start;
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 1s var(--ease-out-expo);
+            position: relative;
+        }
+
+        .method-step::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--cyan), transparent);
+            opacity: 0.3;
+        }
+
+        .method-step.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-number {
+            font-size: 72px;
+            font-weight: 300;
+            color: var(--gray-blue);
+            line-height: 1;
+            position: relative;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .step-number::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 40px;
+            height: 1px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .step-content h3 {
+            font-size: 28px;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--white-ice);
+        }
+
+        .step-content p {
+            font-size: 16px;
+            color: var(--gray-blue);
+            line-height: 1.8;
+        }
+
+        /* ============================================
+           FIRMA - RETRATO CINEMATOGRÁFICO ENRIQUECIDO
+           ============================================ */
+        .signature {
+            background: var(--black-absolute);
+            padding: 200px 120px;
+        }
+
+        .signature-container {
+            display: grid;
+            grid-template-columns: 1.618fr 1fr;
+            gap: 120px;
+            align-items: center;
+        }
+
+        .signature-image-wrapper {
+            position: relative;
+            height: 700px;
+            overflow: hidden;
+        }
+
+        .signature-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.3) brightness(0.7);
+            transition: all 1s var(--ease-out-expo);
+        }
+
+        .signature-image-wrapper:hover .signature-image {
+            filter: grayscale(50%) contrast(1.2) brightness(0.8);
+            transform: scale(1.05);
+        }
+
+        .signature-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(0, 0, 0, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .signature-image-scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 212, 255, 0.05) 2px,
+                rgba(0, 212, 255, 0.05) 4px
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .signature-content {
+            padding: 40px;
+        }
+
+        .signature-overline {
+            font-size: 11px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .signature-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 48px;
+            color: var(--cyan);
+            margin-bottom: 16px;
+            line-height: 1.2;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .signature-role {
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray-blue);
+            margin-bottom: 40px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .signature-bio {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--white-ice);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* ============================================
+           CONTACTO - FORMULARIO PREMIUM ENRIQUECIDO
+           ============================================ */
+        .contact {
+            background: var(--black-deep);
+            padding: 200px 120px;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 120px;
+            align-items: center;
+        }
+
+        .contact-info h2 {
+            font-size: clamp(48px, 6vw, 80px);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+            margin-bottom: 40px;
+        }
+
+        .contact-info h2 .cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .contact-label {
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray-blue);
+            min-width: 120px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .contact-value {
+            font-size: 16px;
+            color: var(--white-ice);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--gray-blue);
+            padding: 20px 0;
+            font-size: 18px;
+            color: var(--white-ice);
+            font-family: 'Space Grotesk', sans-serif;
+            transition: border-color 0.4s var(--ease-out-expo);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--cyan);
+            box-shadow: 0 2px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 0;
+            top: 20px;
+            font-size: 14px;
+            color: var(--gray-blue);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.4s var(--ease-out-expo);
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:focus + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -8px;
+            font-size: 10px;
+            color: var(--cyan);
+            letter-spacing: 0.2em;
+        }
+
+        .submit-btn {
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 24px 60px;
+            font-size: 12px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.6s var(--ease-out-expo);
+            align-self: flex-start;
+            position: relative;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--cyan);
+            transition: left 0.6s var(--ease-out-expo);
+            z-index: -1;
+        }
+
+        .submit-btn:hover {
+            color: var(--black-absolute);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .submit-btn:hover::before {
+            left: 0;
+        }
+
+        /* ============================================
+           FOOTER TÉCNICO ENRIQUECIDO
+           ============================================ */
+        footer {
+            background: var(--black-absolute);
+            padding: 80px 120px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-label {
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gray-blue);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .footer-value {
+            font-size: 14px;
+            color: var(--white-ice);
+        }
+
+        .footer-coords {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--cyan);
+        }
+
+        .footer-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--white-ice);
+        }
+
+        /* ============================================
+           EFECTOS DE GRAIN Y RUIDO
+           ============================================ */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+        }
+
+        /* ============================================
+           EFECTO DE ABERRACIÓN CROMÁTICA
+           ============================================ */
+        .chromatic {
+            position: relative;
+        }
+
+        .chromatic::before,
+        .chromatic::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chromatic::before {
+            color: var(--cyan);
+            animation: chromaticShift 3s infinite;
+            z-index: -1;
+        }
+
+        .chromatic::after {
+            color: var(--blue-electric);
+            animation: chromaticShift 3s infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes chromaticShift {
+            0%, 90%, 100% { transform: translate(0); opacity: 0; }
+            92% { transform: translate(-2px, 1px); opacity: 0.5; }
+            94% { transform: translate(2px, -1px); opacity: 0.5; }
+            96% { transform: translate(-1px, -1px); opacity: 0.5; }
+            98% { transform: translate(1px, 1px); opacity: 0.5; }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 1440px) {
+            section {
+                padding: 120px 80px;
+            }
+
+            .hero-content {
+                padding: 0 80px;
+            }
+
+            .nav-sidebar {
+                right: 40px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .hero-content,
+            .method-container,
+            .signature-container,
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .core-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            footer {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .core-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 80px 40px;
+            }
+
+            .hero-content {
+                padding: 0 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Grain Effect -->
+    <div class="grain"></div>
+    <div class="vignette"></div>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-geometric">
+            <div class="preloader-hex"></div>
+            <div class="preloader-circle"></div>
+            <div class="preloader-core"></div>
+        </div>
+        <div class="preloader-logo">
+            <span>N</span><span>O</span><span>.</span><span>I</span><span>A</span><span>:</span><span>C</span><span>O</span><span>R</span><span>E</span>
+        </div>
+        <div class="preloader-bar">
+            <div class="preloader-progress"></div>
+        </div>
+        <div class="preloader-counter" id="preloaderCounter">0%</div>
+        <div class="preloader-status">Inicializando núcleo...</div>
+    </div>
+
+    <!-- Cursor -->
+    <div class="cursor-main" id="cursor"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-sidebar">
+        <div class="nav-item">
+            <span class="nav-label">Inicio</span>
+            <div class="nav-dot active" data-section="hero"></div>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Filosofía</span>
+            <div class="nav-dot" data-section="philosophy"></div>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Core</span>
+            <div class="nav-dot" data-section="core"></div>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Método</span>
+            <div class="nav-dot" data-section="methodology"></div>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Firma</span>
+            <div class="nav-dot" data-section="signature"></div>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Contacto</span>
+            <div class="nav-dot" data-section="contact"></div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <canvas class="hero-canvas" id="heroCanvas"></canvas>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-overline">Arquitectura de Soluciones</div>
+                <h1 class="hero-title chromatic" data-text="NO.IA:CORE">
+                    <span class="line"><span>NO.IA</span></span>
+                    <span class="line"><span class="cyan">:CORE</span></span>
+                </h1>
+                <p class="hero-subtitle">
+                    Ingeniería de soluciones en el núcleo de su operación. 
+                    La tecnología es el medio; el resultado es la única métrica.
+                </p>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80" 
+                         alt="NO.IA:CORE Isotipo" 
+                         class="hero-image">
+                    <div class="hero-image-overlay"></div>
+                    <div class="hero-image-scanlines"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span class="scroll-text">Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- FILOSOFÍA -->
+    <section class="philosophy" id="philosophy">
+        <div class="manifesto-container">
+            <p class="manifesto" id="manifesto">
+                No vendemos herramientas. 
+                <span class="cyan">Arquitectamos soluciones.</span> 
+                Cada operación tiene un núcleo. 
+                Nuestro trabajo es alcanzarlo, 
+                <span class="blue">fracturar lo innecesario,</span> 
+                y revelar la estructura pura 
+                que sostiene su negocio.
+            </p>
+        </div>
+    </section>
+
+    <!-- CORE -->
+    <section class="core" id="core">
+        <div class="section-content">
+            <div class="core-header">
+                <div class="core-overline">Los Cuatro Pilares</div>
+                <h2 class="core-title">Soluciones en el Núcleo</h2>
+            </div>
+            <div class="core-grid">
+                <div class="core-pillar">
+                    <div class="pillar-number">01</div>
+                    <div class="pillar-content">
+                        <h3 class="pillar-title">Diagnóstico Estructural</h3>
+                        <p class="pillar-desc">Identificación del núcleo operativo. Mapeo de fricciones y puntos de ruptura en su arquitectura actual.</p>
+                    </div>
+                    <div class="pillar-line"></div>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">02</div>
+                    <div class="pillar-content">
+                        <h3 class="pillar-title">Arquitectura de Solución</h3>
+                        <p class="pillar-desc">Diseño de sistemas a medida. No implementamos plantillas; construimos desde la geometría de su operación.</p>
+                    </div>
+                    <div class="pillar-line"></div>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">03</div>
+                    <div class="pillar-content">
+                        <h3 class="pillar-title">Integración Silenciosa</h3>
+                        <p class="pillar-desc">La tecnología verdadera es invisible. Integramos sin fricción, sin ruido, sin interrupción del flujo operativo.</p>
+                    </div>
+                    <div class="pillar-line"></div>
+                </div>
+                <div class="core-pillar">
+                    <div class="pillar-number">04</div>
+                    <div class="pillar-content">
+                        <h3 class="pillar-title">Optimización Continua</h3>
+                        <p class="pillar-desc">El núcleo evoluciona. Monitoreo constante y ajuste fino para mantener la eficiencia en el tiempo.</p>
+                    </div>
+                    <div class="pillar-line"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METODOLOGÍA -->
+    <section class="methodology" id="methodology">
+        <div class="section-content">
+            <div class="method-container">
+                <div class="method-sticky">
+                    <div class="method-overline">Metodología</div>
+                    <h2 class="method-title">
+                        Cuatro fases.<br>
+                        Una obsesión:<br>
+                        <span class="cyan">el resultado.</span>
+                    </h2>
+                    <p class="method-desc">
+                        Cada proyecto sigue un proceso riguroso diseñado para 
+                        alcanzar el núcleo de su operación y revelar la solución 
+                        en su forma más pura.
+                    </p>
+                </div>
+                <div class="method-timeline">
+                    <div class="method-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3>Inmersión</h3>
+                            <p>Análisis profundo de su operación. Comprender antes de actuar. Mapeamos cada variable, cada fricción, cada oportunidad oculta en su arquitectura actual.</p>
+                        </div>
+                    </div>
+                    <div class="method-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>Fractura</h3>
+                            <p>Identificación y eliminación de lo innecesario. Ruptura controlada de paradigmas obsoletos. Liberamos el núcleo de las capas que lo ocultan.</p>
+                        </div>
+                    </div>
+                    <div class="method-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Revelación</h3>
+                            <p>El núcleo emerge. La solución se hace visible en su forma pura. Diseñamos la arquitectura perfecta para su operación específica.</p>
+                        </div>
+                    </div>
+                    <div class="method-step">
+                        <div class="step-number">04</div>
+                        <div class="step-content">
+                            <h3>Consolidación</h3>
+                            <p>Integración definitiva. El sistema opera en silencio, con precisión. Monitoreo continuo y optimización perpetua del núcleo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIRMA -->
+    <section class="signature" id="signature">
+        <div class="section-content">
+            <div class="signature-container">
+                <div class="signature-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" 
+                         alt="Pedro Belentani" 
+                         class="signature-image">
+                    <div class="signature-image-overlay"></div>
+                    <div class="signature-image-scanlines"></div>
+                </div>
+                <div class="signature-content">
+                    <div class="signature-overline">La Firma</div>
+                    <h2 class="signature-name">Pedro Belentani</h2>
+                    <div class="signature-role">Arquitecto de Soluciones</div>
+                    <p class="signature-bio">
+                        Detrás de cada solución hay una intención humana. 
+                        Pedro Belentani no delega el núcleo; lo diseña. 
+                        Cada proyecto lleva su firma: precisión, 
+                        obsesión por el detalle, y la convicción 
+                        de que la tecnología debe servir, no dominar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="contact" id="contact">
+        <div class="section-content">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2>Iniciar<br><span class="cyan">Conversación</span></h2>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="contact-label">Email</span>
+                            <span class="contact-value">core@noia-core.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-label">Ubicación</span>
+                            <span class="contact-value">Operación Global</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-label">Respuesta</span>
+                            <span class="contact-value">24-48 horas</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder=" " required>
+                        <label for="name">Nombre</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder=" " required>
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="company" placeholder=" ">
+                        <label for="company">Empresa</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="4" placeholder=" " required></textarea>
+                        <label for="message">Mensaje</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-col">
+            <span class="footer-label">Ubicación</span>
+            <span class="footer-value">Operación Global</span>
+        </div>
+        <div class="footer-col">
+            <span class="footer-label">Contacto</span>
+            <span class="footer-value">core@noia-core.com</span>
+        </div>
+        <div class="footer-col">
+            <span class="footer-label">Coordenadas</span>
+            <span class="footer-coords" id="coords">00.0000° N, 00.0000° W</span>
+        </div>
+        <div class="footer-col">
+            <span class="footer-label">Hora Local</span>
+            <span class="footer-time" id="localTime">00:00:00</span>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CURSOR LÍQUIDO AVANZADO CON PARTÍCULAS
+        // ============================================
+        const cursor = document.getElementById('cursor');
+        const cursorTrail = document.getElementById('cursorTrail');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let trailX = 0, trailY = 0;
+        let particles = [];
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Crear partícula cada 5 movimientos
+            if (Math.random() > 0.7) {
+                createParticle(mouseX, mouseY);
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'cursor-particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            document.body.appendChild(particle);
+            
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 2 + 1;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity;
+            
+            let opacity = 0.6;
+            let size = 4;
+            
+            const animate = () => {
+                const currentX = parseFloat(particle.style.left);
+                const currentY = parseFloat(particle.style.top);
+                particle.style.left = currentX + vx + 'px';
+                particle.style.top = currentY + vy + 'px';
+                opacity -= 0.02;
+                size -= 0.1;
+                particle.style.opacity = opacity;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                if (opacity > 0 && size > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            };
+            requestAnimationFrame(animate);
+        }
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            trailX += (mouseX - trailX) * 0.08;
+            trailY += (mouseY - trailY) * 0.08;
+            
+            cursor.style.left = cursorX - 25 + 'px';
+            cursor.style.top = cursorY - 25 + 'px';
+            cursorTrail.style.left = trailX - 6 + 'px';
+            cursorTrail.style.top = trailY - 6 + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effect
+        const interactiveElements = document.querySelectorAll('a, button, .core-pillar, .nav-item, .form-group input, .form-group textarea');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Click effect
+        document.addEventListener('mousedown', () => cursor.classList.add('click'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+
+        // ============================================
+        // PRELOADER
+        // ============================================
+        const counter = document.getElementById('preloaderCounter');
+        const status = document.querySelector('.preloader-status');
+        const statuses = [
+            'Inicializando núcleo...',
+            'Cargando geometría...',
+            'Sincronizando frecuencias...',
+            'Calibrando precisión...',
+            'Activando sistema...',
+            'Listo.'
+        ];
+        let count = 0;
+        let statusIndex = 0;
+        
+        const counterInterval = setInterval(() => {
+            count += Math.floor(Math.random() * 8) + 2;
+            if (count > 100) count = 100;
+            counter.textContent = count + '%';
+            
+            if (count > (statusIndex + 1) * 16 && statusIndex < statuses.length - 1) {
+                statusIndex++;
+                status.textContent = statuses[statusIndex];
+            }
+            
+            if (count === 100) clearInterval(counterInterval);
+        }, 100);
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 3500);
+        });
+
+        // ============================================
+        // SCROLL REVEAL - MANIFIESTO
+        // ============================================
+        const manifesto = document.getElementById('manifesto');
+        const text = manifesto.innerHTML;
+        const words = text.split(' ');
+        manifesto.innerHTML = words.map(word => {
+            if (word.includes('cyan') || word.includes('blue')) return word;
+            return `<span class="word">${word}</span>`;
+        }).join(' ');
+
+        const wordElements = manifesto.querySelectorAll('.word:not(.cyan):not(.blue)');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const words = entry.target.querySelectorAll('.word');
+                    words.forEach((word, index) => {
+                        setTimeout(() => {
+                            word.classList.add('visible');
+                        }, index * 120);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(manifesto);
+
+        // ============================================
+        // SCROLL REVEAL - METHOD STEPS
+        // ============================================
+        const steps = document.querySelectorAll('.method-step');
+        const stepObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        steps.forEach(step => stepObserver.observe(step));
+
+        // ============================================
+        // NAVEGACIÓN ACTIVA
+        // ============================================
+        const sections = document.querySelectorAll('section');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navDots.forEach(dot => {
+                        dot.classList.remove('active');
+                        if (dot.dataset.section === id) {
+                            dot.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // Click en nav dots
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = document.getElementById(dot.dataset.section);
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // ============================================
+        // PARALLAX EN HERO
+        // ============================================
+        const heroImage = document.querySelector('.hero-image');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (heroImage && scrolled < window.innerHeight) {
+                heroImage.style.transform = `translateY(${scrolled * 0.3}px) scale(1.1)`;
+            }
+        });
+
+        // ============================================
+        // COORDENADAS DEL CURSOR EN FOOTER
+        // ============================================
+        const coordsElement = document.getElementById('coords');
+        document.addEventListener('mousemove', (e) => {
+            const x = ((e.clientX / window.innerWidth) * 180 - 90).toFixed(4);
+            const y = ((e.clientY / window.innerHeight) * 180 - 90).toFixed(4);
+            coordsElement.textContent = `${y}° N, ${x}° W`;
+        });
+
+        // ============================================
+        // RELOJ EN TIEMPO REAL
+        // ============================================
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('localTime').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ============================================
+        // FORMULARIO
+        // ============================================
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.submit-btn');
+            btn.textContent = 'Mensaje Enviado';
+            btn.style.background = 'var(--cyan)';
+            btn.style.color = 'var(--black-absolute)';
+            setTimeout(() => {
+                btn.textContent = 'Enviar Mensaje';
+                btn.style.background = '';
+                btn.style.color = '';
+                e.target.reset();
+            }, 3000);
+        });
+
+        // ============================================
+        // CANVAS HERO - PARTÍCULAS AVANZADAS
+        // ============================================
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        let canvasParticles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class CanvasParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.5 ? '0, 212, 255' : '0, 102, 255';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initCanvasParticles() {
+            canvasParticles = [];
+            for (let i = 0; i < 150; i++) {
+                canvasParticles.push(new CanvasParticle());
+            }
+        }
+        initCanvasParticles();
+
+        function animateCanvasParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            canvasParticles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Conectar partículas cercanas
+            canvasParticles.forEach((p1, i) => {
+                canvasParticles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(0, 212, 255, ${0.1 * (1 - distance / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animateCanvasParticles);
+        }
+        animateCanvasParticles();
+
+        // ============================================
+        // EFECTO 3D EN PILARES
+        // ============================================
+        const pillars = document.querySelectorAll('.core-pillar');
+        pillars.forEach(pillar => {
+            pillar.addEventListener('mousemove', (e) => {
+                const rect = pillar.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 15;
+                const rotateY = (centerX - x) / 15;
+                
+                pillar.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-20px)`;
+            });
+
+            pillar.addEventListener('mouseleave', () => {
+                pillar.style.transform = '';
+            });
+        });
+
+        // ============================================
+        // EFECTO DE RIPPLE AL HACER CLICK
+        // ============================================
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'fixed';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            ripple.style.width = '0px';
+            ripple.style.height = '0px';
+            ripple.style.border = '2px solid var(--cyan)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.zIndex = '99996';
+            ripple.style.opacity = '1';
+            document.body.appendChild(ripple);
+
+            let size = 0;
+            let opacity = 1;
+            
+            const animate = () => {
+                size += 10;
+                opacity -= 0.02;
+                ripple.style.width = size + 'px';
+                ripple.style.height = size + 'px';
+                ripple.style.opacity = opacity;
+                
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ripple.remove();
+                }
+            };
+            requestAnimationFrame(animate);
+        });
+    </script>
+</body>
+</html>

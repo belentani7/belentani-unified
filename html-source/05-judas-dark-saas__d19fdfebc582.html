@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELENTANI · JUDAS ERA · Dark SaaS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg:#09090b; --card:#18181b; --border:#27272a; --text:#fafafa; --muted:#a1a1aa; --neon:#ff1a4a; --accent:#f43f5e; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        body { background:var(--bg); color:var(--text); }
+
+        nav { position:sticky; top:0; z-index:100; background:rgba(9,9,11,0.8); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:16px 32px; display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; }
+        .container { max-width:1200px; margin:0 auto; padding:0 32px; }
+        .section { padding:100px 0; }
+        .badge { display:inline-block; padding:4px 12px; border-radius:9999px; font-size:11px; font-weight:600; letter-spacing:0.05em; }
+        .badge-red { background:rgba(244,63,94,0.1); color:var(--accent); border:1px solid rgba(244,63,94,0.2); }
+        .badge-gray { background:rgba(161,161,170,0.1); color:var(--muted); border:1px solid var(--border); }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; transition:all 0.2s; }
+        .card:hover { border-color:rgba(244,63,94,0.3); transform:translateY(-2px); }
+        .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+        .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+        .text-gradient { background:linear-gradient(135deg,#fafafa 0%,#a1a1aa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .divider { height:1px; background:var(--border); margin:60px 0; }
+        @media(max-width:768px) { .grid-3,.grid-2 { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div style="font-weight:800;font-size:1.1rem;letter-spacing:1px;">◢ <span style="color:var(--neon);">BELENTANI</span></div>
+        <div style="display:flex;gap:24px;font-size:13px;color:var(--muted);">
+            <a href="#tracks" style="color:inherit;text-decoration:none;">Tracks</a>
+            <a href="#tools" style="color:inherit;text-decoration:none;">Tools</a>
+            <a href="#about" style="color:inherit;text-decoration:none;">About</a>
+            <span class="badge badge-red">New Release</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="section" style="text-align:center;">
+            <span class="badge badge-gray" style="margin-bottom:24px;">Verified Global Artist · Entity Active</span>
+            <h1 style="font-size:clamp(48px,10vw,120px);font-weight:900;letter-spacing:-0.04em;margin:20px 0;">
+                <span class="text-gradient">BELENTANI</span>
+            </h1>
+            <p style="font-size:18px;color:var(--muted);max-width:500px;margin:0 auto 40px;">
+                Music, visuals, and technology intertwined. A new sound is coming.
+            </p>
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button style="background:var(--neon);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;">Explore Music</button>
+                <button style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:12px 28px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;">AI Studio</button>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section" id="tracks">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
+                <h2 style="font-size:28px;font-weight:800;">Sonic Worlds</h2>
+                <span style="font-size:12px;color:var(--muted);">5 tracks · 16:20 total</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px;">
+                    <span style="color:var(--neon);font-family:monospace;font-size:14px;width:30px;">01</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;">Judas</div>
+                        <div style="font-size:12px;color:var(--muted);">Intro · Neural awakening · ambient intro</div>
+                    </div>
+                    <span style="font-family:monospace;font-size:12px;color:var(--muted);">2:14</span>
+                </div>
+                <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px;">
+                    <span style="color:var(--neon);font-family:monospace;font-size:14px;width:30px;">02</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;">Pursuit</div>
+                        <div style="font-size:12px;color:var(--muted);">Synthwave / cyber chase</div>
+                    </div>
+                    <span style="font-family:monospace;font-size:12px;color:var(--muted);">3:42</span>
+                </div>
+                <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px;">
+                    <span style="color:var(--neon);font-family:monospace;font-size:14px;width:30px;">03</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;">Shatter</div>
+                        <div style="font-size:12px;color:var(--muted);">Glitchstep · breakdown</div>
+                    </div>
+                    <span style="font-family:monospace;font-size:12px;color:var(--muted);">4:08</span>
+                </div>
+                <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px;">
+                    <span style="color:var(--neon);font-family:monospace;font-size:14px;width:30px;">04</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;">Belentani Core</div>
+                        <div style="font-size:12px;color:var(--muted);">R&B / vocal layering</div>
+                    </div>
+                    <span style="font-family:monospace;font-size:12px;color:var(--muted);">3:21</span>
+                </div>
+                <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px;">
+                    <span style="color:var(--neon);font-family:monospace;font-size:14px;width:30px;">05</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;">System Online</div>
+                        <div style="font-size:12px;color:var(--muted);">Electronic · outro pulse</div>
+                    </div>
+                    <span style="font-family:monospace;font-size:12px;color:var(--muted);">2:55</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section" id="tools">
+            <h2 style="font-size:28px;font-weight:800;margin-bottom:40px;">AI Creation Tools</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div style="font-size:24px;margin-bottom:12px;">◈</div>
+                    <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">AI Mood Lyricist</h3>
+                    <p style="font-size:13px;color:var(--muted);line-height:1.6;">Genera letras basadas en el estado emocional del oyente. Personalización neural en tiempo real.</p>
+                </div>
+                <div class="card">
+                    <div style="font-size:24px;margin-bottom:12px;">◉</div>
+                    <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Song Recommendations</h3>
+                    <p style="font-size:13px;color:var(--muted);line-height:1.6;">Recomendaciones basadas en biorritmo, momento del día y archivos previos.</p>
+                </div>
+                <div class="card">
+                    <div style="font-size:24px;margin-bottom:12px;">▣</div>
+                    <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Visual Automator</h3>
+                    <p style="font-size:13px;color:var(--muted);line-height:1.6;">Genera portadas, clips visuales y loops sincronizados con cada release. Salida 4K.</p>
+                </div>
+                <div class="card">
+                    <div style="font-size:24px;margin-bottom:12px;">⌬</div>
+                    <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Email Updates</h3>
+                    <p style="font-size:13px;color:var(--muted);line-height:1.6;">Boletines automáticos a la comunidad Judas Era con tipografía monoespaciada.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section" id="about" style="text-align:center;">
+            <div style="max-width:600px;margin:0 auto;">
+                <h2 style="font-size:28px;font-weight:800;margin-bottom:20px;">About</h2>
+                <p style="font-size:15px;color:var(--muted);line-height:1.9;">
+                    BELENTANI es un proyecto artístico transmedia que combina R&B, pop y electrónica 
+                    con narrativa cyberpunk. La era Judas explora temas de traición, redención y la 
+                    frontera entre lo humano y lo sintético.
+                </p>
+                <p style="color:var(--neon);margin-top:24px;font-style:italic;font-size:14px;">
+                    "An artist blending R&B, pop, and electronic music into a world of sonic fantasy."
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <footer style="border-top:1px solid var(--border);padding:40px 32px;text-align:center;">
+        <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--muted);">© 2026 BELENTANI · ALL RIGHTS RESERVED</span>
+            <span class="badge badge-gray">System Online</span>
+        </div>
+    </footer>
+</body>
+</html>

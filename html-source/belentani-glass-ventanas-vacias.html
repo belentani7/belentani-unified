@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>BELENTANI GLASS · Ventanas Vacías</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           VARIABLES GLOBALES (máximo control)
+           ============================================================ */
+        :root {
+            /* -- COLORES BASE (CRIM / DEEP) -- */
+            --color-deep: #0a0002;
+            --color-crim: #ff2d55;
+            --color-crim2: #c8102e;
+            --color-crim-glow: rgba(255, 45, 85, 0.25);
+            --color-crim-glow-soft: rgba(255, 45, 85, 0.08);
+            --color-crim-glow-strong: rgba(255, 45, 85, 0.45);
+
+            /* -- TEXTOS -- */
+            --text-primary: #f0e0ee;
+            --text-secondary: rgba(255, 200, 210, 0.55);
+            --text-dim: rgba(255, 143, 163, 0.35);
+
+            /* -- GLASS CARD -- */
+            --glass-bg: rgba(22, 1, 4, 0.45);
+            --glass-blur: 20px;
+            --glass-saturate: 1.1;
+            --glass-border: 1px solid var(--color-crim-glow);
+            --glass-radius: 28px;
+            --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 80px var(--color-crim-glow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+            /* -- HALO / GLOW -- */
+            --glow-size: 200%;
+            --glow-blur: 60px;
+            --glow-opacity-min: 0.04;
+            --glow-opacity-max: 0.20;
+            --glow-scale-min: 0.85;
+            --glow-scale-max: 1.15;
+
+            /* -- PULSO -- */
+            --pulse-duration: 4s;
+            --pulse-easing: ease-in-out;
+
+            /* -- TIPOGRAFÍA -- */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-bold: 700;
+
+            /* -- TAMAÑOS -- */
+            --max-width: 500px;
+            --card-padding: 32px 28px 36px 28px;
+            --hud-padding: 12px 16px;
+            --option-padding: 14px 8px;
+            --option-gap: 10px;
+
+            /* -- TIEMPOS DE TRANSICIÓN -- */
+            --transition-fast: 0.2s;
+            --transition-medium: 0.5s;
+            --transition-slow: 0.9s;
+
+            /* -- CANVAS PLASMA -- */
+            --plasma-opacity: 0.9;
+            --plasma-max-light: 180;
+
+            /* -- REFLEJO / GLOSSY -- */
+            --gloss-height: 50%;
+            --gloss-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 80%);
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: var(--font-family);
+            background: var(--color-deep);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           CANVAS: LUZ LÍQUIDA (PLASMA)
+           ============================================================ */
+        #plasma-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: var(--plasma-opacity);
+        }
+
+        /* ============================================================
+           CAPAS GLOSSY (reflejos atmosféricos)
+           ============================================================ */
+        .gloss-overlay,
+        .gloss-overlay-2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 1;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        .gloss-overlay {
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(255, 45, 85, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(200, 16, 46, 0.04) 0%, transparent 50%);
+        }
+        .gloss-overlay-2 {
+            background:
+                radial-gradient(ellipse at 60% 20%, rgba(255, 45, 85, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, rgba(200, 16, 46, 0.05) 0%, transparent 55%);
+            filter: blur(60px);
+            mix-blend-mode: overlay;
+        }
+
+        /* ============================================================
+           CONTENEDOR JUEGO
+           ============================================================ */
+        .game-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: var(--max-width);
+            padding: 16px;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           HUD (cabecera)
+           ============================================================ */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--hud-padding);
+            margin-bottom: 12px;
+            background: rgba(22, 1, 4, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--color-crim-glow);
+            box-shadow: 0 0 40px var(--color-crim-glow-soft);
+            flex-shrink: 0;
+        }
+        .game-header .brand {
+            font-size: 10px;
+            font-weight: var(--font-weight-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 45, 85, 0.4);
+        }
+        .game-header .score-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .game-header .score-area .stat {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 240, 245, 0.8);
+        }
+        .game-header .score-area .stat span {
+            color: var(--color-crim);
+            font-weight: var(--font-weight-bold);
+        }
+        .lives-display {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .lives-display .heart {
+            font-size: 18px;
+            transition: all var(--transition-fast) ease;
+        }
+        .lives-display .heart.lost {
+            filter: grayscale(1) brightness(0.2);
+            transform: scale(0.8);
+        }
+        .streak-display {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 143, 163, 0.6);
+            min-width: 60px;
+            text-align: right;
+            transition: color var(--transition-fast) ease;
+        }
+        .streak-display.active {
+            color: var(--color-crim);
+            animation: streak-pulse 0.4s ease;
+        }
+        @keyframes streak-pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.4);
+                color: #ff4d7a;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* ============================================================
+           TARJETA DE PREGUNTA (CRISTAL REACTIVO)
+           ============================================================ */
+        .question-card {
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border: var(--glass-border);
+            border-radius: var(--glass-radius);
+            padding: var(--card-padding);
+            box-shadow: var(--glass-shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: card-pulse var(--pulse-duration) var(--pulse-easing) infinite;
+            min-height: 340px;
+            transition: border-color var(--transition-medium) ease,
+                box-shadow var(--transition-medium) ease;
+            overflow: hidden;
+        }
+
+        /* -- Borde interno (grosor de cristal) -- */
+        .question-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: calc(var(--glass-radius) + 2px);
+            padding: 2px;
+            background: linear-gradient(135deg,
+                    rgba(255, 45, 85, 0.20),
+                    rgba(200, 16, 46, 0.05),
+                    rgba(255, 45, 85, 0.12));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: opacity var(--transition-medium) ease;
+        }
+
+        /* -- Reflejo superior (gloss) -- */
+        .question-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--gloss-height);
+            background: var(--gloss-gradient);
+            border-radius: var(--glass-radius) var(--glass-radius) 0 0;
+            pointer-events: none;
+        }
+
+        /* -- Glow pulsante de fondo -- */
+        .question-card .glow-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: var(--glow-size);
+            height: var(--glow-size);
+            background: radial-gradient(ellipse at center, var(--color-crim-glow-soft), transparent 70%);
+            filter: blur(var(--glow-blur));
+            pointer-events: none;
+            border-radius: 50%;
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        @keyframes glow-pulse {
+            0%,
+            100% {
+                opacity: var(--glow-opacity-min);
+                transform: scale(var(--glow-scale-min));
+            }
+            50% {
+                opacity: var(--glow-opacity-max);
+                transform: scale(var(--glow-scale-max));
+            }
+        }
+
+        /* -- Estado correcto/incorrecto -- */
+        .question-card.correct {
+            border-color: rgba(140, 255, 170, 0.6) !important;
+            box-shadow: 0 0 80px rgba(140, 255, 170, 0.15) !important;
+        }
+        .question-card.wrong {
+            border-color: rgba(255, 90, 90, 0.6) !important;
+            box-shadow: 0 0 80px rgba(255, 90, 90, 0.15) !important;
+        }
+
+        @keyframes card-pulse {
+            0%,
+            100% {
+                border-color: var(--color-crim-glow);
+            }
+            50% {
+                border-color: var(--color-crim-glow-strong);
+            }
+        }
+
+        /* ============================================================
+           PREGUNTA Y OPCIONES
+           ============================================================ */
+        .question-prompt {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .question-prompt .label {
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        .question-prompt .word-pt {
+            font-size: 42px;
+            font-weight: var(--font-weight-light);
+            color: #fff;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 60px var(--color-crim-glow-soft);
+        }
+        .question-prompt .hint {
+            font-size: 13px;
+            font-weight: var(--font-weight-light);
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .options-grid {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--option-gap);
+            margin-top: 8px;
+        }
+
+        .option-btn {
+            background: rgba(10, 0, 2, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid var(--color-crim-glow);
+            border-radius: 16px;
+            padding: var(--option-padding);
+            font-size: 16px;
+            font-weight: var(--font-weight-regular);
+            color: rgba(255, 240, 245, 0.8);
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            font-family: var(--font-family);
+            text-align: center;
+            user-select: none;
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+        }
+        .option-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: 16px 16px 0 0;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 45, 85, 0.10);
+            border-color: var(--color-crim-glow-strong);
+            transform: scale(1.02);
+        }
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .option-btn.correct-answer {
+            background: rgba(140, 255, 170, 0.15);
+            border-color: #8cffaa;
+            color: #8cffaa;
+            box-shadow: 0 0 30px rgba(140, 255, 170, 0.1);
+        }
+        .option-btn.wrong-answer {
+            background: rgba(255, 90, 90, 0.15);
+            border-color: #ff5a5a;
+            color: #ff5a5a;
+            box-shadow: 0 0 30px rgba(255, 90, 90, 0.1);
+        }
+        .option-btn.reveal-correct {
+            background: rgba(140, 255, 170, 0.08);
+            border-color: rgba(140, 255, 170, 0.3);
+        }
+
+        /* ============================================================
+           BOTONES DE ACCIÓN
+           ============================================================ */
+        .action-btn {
+            position: relative;
+            z-index: 2;
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255, 45, 85, 0.08);
+            border: 1px solid var(--color-crim-glow);
+            border-radius: 16px;
+            color: rgba(255, 240, 245, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all var(--transition-medium) ease;
+            font-family: var(--font-family);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            text-align: center;
+        }
+        .action-btn:hover:not(:disabled) {
+            background: rgba(255, 45, 85, 0.15);
+            border-color: var(--color-crim-glow-strong);
+            transform: scale(1.02);
+        }
+        .action-btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        .action-btn.hidden {
+            display: none;
+        }
+
+        /* ============================================================
+           PANTALLA FINAL
+           ============================================================ */
+        .end-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 12px;
+            padding: 20px 0;
+        }
+        .end-screen.visible {
+            display: flex;
+        }
+        .end-screen .final-score {
+            font-size: 52px;
+            font-weight: var(--font-weight-light);
+            background: linear-gradient(135deg, var(--color-crim), #ff4d7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .end-screen .final-stats {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        .end-screen .final-stats span {
+            color: rgba(255, 240, 245, 0.8);
+            font-weight: 500;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 420px) {
+            :root {
+                --card-padding: 24px 16px 20px 16px;
+                --hud-padding: 10px 12px;
+                --option-padding: 12px 6px;
+                --option-gap: 8px;
+            }
+            .game-container {
+                padding: 10px;
+            }
+            .question-card {
+                min-height: 280px;
+            }
+            .question-prompt .word-pt {
+                font-size: 32px;
+            }
+            .option-btn {
+                font-size: 14px;
+            }
+            .game-header .brand {
+                font-size: 8px;
+            }
+            .game-header .score-area .stat {
+                font-size: 11px;
+            }
+            .lives-display .heart {
+                font-size: 14px;
+            }
+            .streak-display {
+                font-size: 12px;
+                min-width: 40px;
+            }
+        }
+
+        @media (min-width: 600px) {
+            :root {
+                --card-padding: 48px 40px 40px 40px;
+                --max-width: 560px;
+            }
+            .question-card {
+                min-height: 400px;
+            }
+            .question-prompt .word-pt {
+                font-size: 52px;
+            }
+            .option-btn {
+                font-size: 18px;
+                padding: 18px 12px;
+                border-radius: 20px;
+            }
+        }
+
+        /* ============================================================
+           LOADER
+           ============================================================ */
+        .entry-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: var(--color-deep);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .entry-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .entry-loader .loader-ring {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--color-crim-glow);
+            border-top-color: var(--color-crim);
+            animation: spin 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 2px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 45, 85, 0.15);
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── LOADER ─── -->
+    <div class="entry-loader" id="entryLoader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <!-- ─── CANVAS: LUZ LÍQUIDA ─── -->
+    <canvas id="plasma-canvas"></canvas>
+    <div class="gloss-overlay" aria-hidden="true"></div>
+    <div class="gloss-overlay-2" aria-hidden="true"></div>
+
+    <!-- ─── JUEGO ─── -->
+    <div class="game-container" id="app">
+
+        <!-- HUD -->
+        <header class="game-header" id="hud">
+            <div class="brand">✦ BELENTANI · GLASS</div>
+            <div class="score-area">
+                <div class="lives-display" id="livesDisplay"></div>
+                <div class="stat">Pts <span id="scoreDisplay">0</span></div>
+                <div class="streak-display" id="streakDisplay">🔥 0</div>
+            </div>
+        </header>
+
+        <!-- TARJETA DE JUEGO -->
+        <div class="question-card" id="questionCard">
+            <div class="glow-bg"></div>
+
+            <!-- Modo Juego -->
+            <div id="gameMode">
+                <div class="question-prompt">
+                    <div class="label">🇵🇹 → 🇪🇸 · Falso Amigo</div>
+                    <div class="word-pt" id="wordDisplay">Embaraçada</div>
+                    <div class="hint" id="hintDisplay">Selecciona el significado correcto en español</div>
+                </div>
+                <div class="options-grid" id="optionsContainer"></div>
+                <button class="action-btn" id="nextBtn">Siguiente →</button>
+            </div>
+
+            <!-- Modo Fin -->
+            <div class="end-screen" id="endScreen">
+                <div class="final-score" id="finalScore">0</div>
+                <div class="final-stats">
+                    Precisión: <span id="finalAcc">0%</span><br />
+                    Racha máxima: <span id="finalStreak">0</span>
+                </div>
+                <button class="action-btn" id="restartBtn">🔄 Jugar de nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── LOADER ───
+            const loader = document.getElementById('entryLoader');
+            window.addEventListener('load', () => {
+                setTimeout(() => loader.classList.add('hidden'), 400);
+            });
+            setTimeout(() => loader.classList.add('hidden'), 1200);
+
+            // ─── PLASMA CANVAS (LUZ LÍQUIDA ROJA) ───
+            const canvas = document.getElementById('plasma-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, time = 0;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const palette = [
+                [22, 1, 4],
+                [60, 5, 12],
+                [120, 15, 30],
+                [200, 30, 55],
+                [255, 45, 85],
+                [200, 16, 46],
+                [100, 8, 20],
+                [40, 3, 8]
+            ];
+
+            function plasma(t, x, y) {
+                const v1 = Math.sin(x * 0.008 + t * 0.0007) * Math.cos(y * 0.006 + t * 0.0005);
+                const v2 = Math.sin(x * 0.012 - t * 0.0009 + y * 0.01) * Math.cos(y * 0.009 + t * 0.0006);
+                const v3 = Math.sin((x + y) * 0.01 + t * 0.0011) * Math.cos((x - y) * 0.007 + t * 0.0008);
+                const v4 = Math.sin(x * 0.005 - t * 0.0004) * Math.sin(y * 0.005 + t * 0.0003);
+                const v5 = Math.sin(x * 0.015 + t * 0.0013) * Math.cos(y * 0.013 - t * 0.0007);
+                return (v1 + v2 + v3 + v4 + v5) / 5;
+            }
+
+            function drawPlasma() {
+                time += 1;
+                const imageData = ctx.createImageData(w, h);
+                const data = imageData.data;
+                const cx = w / 2,
+                    cy = h / 2;
+                const maxDist = Math.sqrt(cx * cx + cy * cy);
+
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const idx = (y * w + x) * 4;
+                        const val = plasma(time, x, y);
+                        const val2 = plasma(time + 200, x + 100, y + 50);
+                        const dx = x - cx,
+                            dy = y - cy;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const vignette = 1 - (dist / maxDist) * 0.5;
+                        const idx1 = Math.floor((val * 0.5 + 0.5) * (palette.length - 1));
+                        const idx2 = Math.min(idx1 + 1, palette.length - 1);
+                        const frac = (val * 0.5 + 0.5) * (palette.length - 1) - idx1;
+                        const c1 = palette[idx1],
+                            c2 = palette[idx2];
+                        let r = c1[0] + (c2[0] - c1[0]) * frac;
+                        let g = c1[1] + (c2[1] - c1[1]) * frac;
+                        let b = c1[2] + (c2[2] - c1[2]) * frac;
+                        const wave2 = (val2 * 0.5 + 0.5) * 0.3;
+                        r = r * (1 + wave2 * 0.25);
+                        g = g * (1 + wave2 * 0.10);
+                        b = b * (1 + wave2 * 0.20);
+                        const glow = Math.max(0, Math.sin(x * 0.004 + y * 0.003 + time * 0.0005) * 0.4 + 0.4);
+                        r = r + glow * 30;
+                        g = g + glow * 6;
+                        b = b + glow * 8;
+                        const brightness = 0.6 + vignette * 0.4;
+                        r = r * brightness;
+                        g = g * brightness;
+                        b = b * brightness;
+                        const milk = Math.exp(-dist * 0.003) * 0.12;
+                        r = r + milk * 20;
+                        g = g + milk * 6;
+                        b = b + milk * 12;
+                        const MAX = 180;
+                        data[idx] = Math.min(MAX, Math.max(0, Math.floor(r)));
+                        data[idx + 1] = Math.min(MAX, Math.max(0, Math.floor(g)));
+                        data[idx + 2] = Math.min(MAX, Math.max(0, Math.floor(b)));
+                        data[idx + 3] = 255;
+                    }
+                }
+                ctx.putImageData(imageData, 0, 0);
+                requestAnimationFrame(drawPlasma);
+            }
+            drawPlasma();
+
+            // ─── DATOS DEL JUEGO (Falsos Amigos) ───
+            const FF_DATA = [
+                { pt: "Embaraçada", es: "Avergonzada", trap: "Embarazada" },
+                { pt: "Esquisito", es: "Raro", trap: "Exquisito" },
+                { pt: "Vassoura", es: "Escoba", trap: "Basura" },
+                { pt: "Sobrenome", es: "Apellido", trap: "Sobrenombre" },
+                { pt: "Oficina", es: "Taller", trap: "Oficina" },
+                { pt: "Rato", es: "Raton", trap: "Rato" },
+                { pt: "Polvo", es: "Pulpo", trap: "Polvo" },
+                { pt: "Pasta", es: "Carpeta", trap: "Pasta" },
+                { pt: "Cena", es: "Cena", trap: "Escena" },
+                { pt: "Salada", es: "Ensalada", trap: "Salada" }
+            ];
+
+            // ─── ESTADO ───
+            let state = {
+                currentIndex: 0,
+                score: 0,
+                lives: 3,
+                streak: 0,
+                maxStreak: 0,
+                total: 0,
+                hits: 0,
+                isAnswered: false,
+                gameOver: false,
+                questions: []
+            };
+
+            // ─── DOM REFS ───
+            const wordDisplay = document.getElementById('wordDisplay');
+            const hintDisplay = document.getElementById('hintDisplay');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const nextBtn = document.getElementById('nextBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const livesDisplay = document.getElementById('livesDisplay');
+            const streakDisplay = document.getElementById('streakDisplay');
+            const questionCard = document.getElementById('questionCard');
+            const gameMode = document.getElementById('gameMode');
+            const endScreen = document.getElementById('endScreen');
+            const finalScore = document.getElementById('finalScore');
+            const finalAcc = document.getElementById('finalAcc');
+            const finalStreak = document.getElementById('finalStreak');
+
+            // ─── SONIDO (BEEP) ───
+            function playBeep(freq, duration, type = 'sine') {
+                try {
+                    const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    oscillator.type = type;
+                    oscillator.frequency.value = freq;
+                    gainNode.gain.value = 0.08;
+                    oscillator.start();
+                    setTimeout(() => {
+                        oscillator.stop();
+                        audioCtx.close();
+                    }, duration);
+                } catch (e) { /* silencio */ }
+            }
+
+            function beepCorrect() { playBeep(880, 150, 'sine'); }
+            setTimeout(() => playBeep(660, 100, 'sine'), 150);
+
+            function beepWrong() { playBeep(300, 300, 'sawtooth'); }
+
+            function beepGameOver() {
+                playBeep(400, 400, 'square');
+                setTimeout(() => playBeep(300, 400, 'square'), 450);
+            }
+
+            // ─── UTILIDADES ───
+            function shuffle(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            // ─── INICIALIZAR PREGUNTAS ───
+            function initQuestions() {
+                const qs = [];
+                FF_DATA.forEach(item => {
+                    const options = [item.es, item.trap];
+                    const pool = FF_DATA.filter(d => d.es !== item.es && d.trap !== item.trap);
+                    const shuffledPool = shuffle([...pool]);
+                    let added = 0;
+                    for (let d of shuffledPool) {
+                        if (added >= 2) break;
+                        if (!options.includes(d.es) && !options.includes(d.trap)) {
+                            options.push(d.es);
+                            added++;
+                        }
+                    }
+                    while (options.length < 4) {
+                        const fallback = ["Palabra", "Significado", "Traducción", "Término"];
+                        const f = fallback[options.length % fallback.length];
+                        if (!options.includes(f)) options.push(f);
+                    }
+                    qs.push({
+                        pt: item.pt,
+                        correct: item.es,
+                        options: shuffle([...options])
+                    });
+                });
+                return shuffle(qs);
+            }
+
+            // ─── ACTUALIZAR HUD ───
+            function updateHUD() {
+                scoreDisplay.textContent = state.score;
+                livesDisplay.innerHTML = '';
+                for (let i = 0; i < 3; i++) {
+                    const heart = document.createElement('span');
+                    heart.className = 'heart';
+                    heart.textContent = '❤️';
+                    if (i >= state.lives) heart.classList.add('lost');
+                    livesDisplay.appendChild(heart);
+                }
+                streakDisplay.textContent = `🔥 ${state.streak}`;
+                if (state.streak >= 2) {
+                    streakDisplay.classList.add('active');
+                    setTimeout(() => streakDisplay.classList.remove('active'), 500);
+                } else {
+                    streakDisplay.classList.remove('active');
+                }
+            }
+
+            // ─── RENDER PREGUNTA ───
+            function renderQuestion() {
+                if (state.gameOver || state.currentIndex >= state.questions.length) {
+                    showEndScreen();
+                    return;
+                }
+                const q = state.questions[state.currentIndex];
+                wordDisplay.textContent = q.pt;
+                hintDisplay.textContent = 'Selecciona el significado correcto en español';
+                questionCard.className = 'question-card';
+                state.isAnswered = false;
+                nextBtn.classList.add('hidden');
+
+                optionsContainer.innerHTML = '';
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt;
+                    btn.dataset.value = opt;
+                    btn.addEventListener('click', () => handleOptionClick(btn, q));
+                    optionsContainer.appendChild(btn);
+                });
+                updateHUD();
+            }
+
+            // ─── CLICK OPCIÓN ───
+            function handleOptionClick(btn, q) {
+                if (state.isAnswered || state.gameOver) return;
+                state.isAnswered = true;
+                state.total++;
+
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(b => b.disabled = true);
+
+                const isCorrect = btn.dataset.value === q.correct;
+                allBtns.forEach(b => {
+                    if (b.dataset.value === q.correct) b.classList.add('correct-answer');
+                });
+
+                if (isCorrect) {
+                    btn.classList.add('correct-answer');
+                    state.hits++;
+                    state.score += 10 + Math.floor(state.streak * 1.5);
+                    state.streak++;
+                    if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+                    questionCard.classList.add('correct');
+                    beepCorrect();
+                    setTimeout(() => questionCard.classList.remove('correct'), 600);
+                } else {
+                    btn.classList.add('wrong-answer');
+                    state.streak = 0;
+                    state.lives--;
+                    questionCard.classList.add('wrong');
+                    beepWrong();
+                    setTimeout(() => questionCard.classList.remove('wrong'), 600);
+                    if (state.lives <= 0) {
+                        state.gameOver = true;
+                        beepGameOver();
+                        showEndScreen();
+                        return;
+                    }
+                }
+                updateHUD();
+                nextBtn.classList.remove('hidden');
+            }
+
+            // ─── SIGUIENTE PREGUNTA ───
+            function nextQuestion() {
+                if (state.gameOver) return;
+                state.currentIndex++;
+                if (state.currentIndex >= state.questions.length) {
+                    state.questions = initQuestions();
+                    state.currentIndex = 0;
+                }
+                renderQuestion();
+            }
+
+            // ─── PANTALLA FIN ───
+            function showEndScreen() {
+                gameMode.classList.add('hidden');
+                endScreen.classList.add('visible');
+                const acc = state.total > 0 ? (state.hits / state.total * 100) : 0;
+                finalScore.textContent = state.score;
+                finalAcc.textContent = acc.toFixed(0) + '%';
+                finalStreak.textContent = state.maxStreak;
+                if (state.lives <= 0) {
+                    const goMsg = document.createElement('div');
+                    goMsg.style.cssText =
+                        'color: #ff2d55; font-size: 18px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: -4px;';
+                    goMsg.textContent = '💔 GAME OVER';
+                    const existing = document.querySelector('.go-msg');
+                    if (!existing) { goMsg.className = 'go-msg';
+                        endScreen.prepend(goMsg); }
+                } else {
+                    const existing = document.querySelector('.go-msg');
+                    if (existing) existing.remove();
+                }
+                try {
+                    const history = JSON.parse(localStorage.getItem('belentani_scores') || '[]');
+                    history.push({ game: 'Falsos Amigos', score: state.score, acc: acc, streak: state.maxStreak,
+                        ts: new Date().toISOString() });
+                    localStorage.setItem('belentani_scores', JSON.stringify(history.slice(-20)));
+                } catch (e) { /* ignore */ }
+            }
+
+            // ─── REINICIAR ───
+            function resetGame() {
+                state.score = 0;
+                state.lives = 3;
+                state.streak = 0;
+                state.maxStreak = 0;
+                state.total = 0;
+                state.hits = 0;
+                state.gameOver = false;
+                state.currentIndex = 0;
+                state.questions = initQuestions();
+                state.isAnswered = false;
+                endScreen.classList.remove('visible');
+                gameMode.classList.remove('hidden');
+                const goMsg = document.querySelector('.go-msg');
+                if (goMsg) goMsg.remove();
+                renderQuestion();
+            }
+
+            // ─── EVENTOS ───
+            nextBtn.addEventListener('click', nextQuestion);
+            restartBtn.addEventListener('click', resetGame);
+
+            // ─── INICIO ───
+            state.questions = initQuestions();
+            renderQuestion();
+
+            // ─── PREVENIR ZOOM ───
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) e.preventDefault();
+                lastTouchEnd = now;
+            }, { passive: false });
+
+            window.addEventListener('resize', resize);
+
+            console.log('✦ BELENTANI GLASS · Ventanas Vacías');
+            console.log('✦ Máximas variables CSS · Reflejos realistas · Juego integrado');
+
+        })();
+    </script>
+</body>
+</html>

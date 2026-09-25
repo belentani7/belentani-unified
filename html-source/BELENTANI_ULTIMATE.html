@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BELENTANI • ULTIMATE — The Complete Experience</title>
+<meta name="description" content="Cine digital. Frecuencia pura. Todo en un solo lugar.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%23FF003C' stroke-width='2'/><polygon points='50,20 80,70 20,70' fill='none' stroke='%23FFD700' stroke-width='1.5'/><text x='50' y='55' fill='%23FF003C' font-size='16' text-anchor='middle' font-family='monospace' font-weight='900'>Ω</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--void:#000000;--void-alt:#0a0a0a;--void-deep:#050505;--blood:#FF003C;--blood-glow:0 0 60px rgba(255,0,60,.8),0 0 120px rgba(255,0,60,.4);--gold:#FFD700;--gold-glow:0 0 40px rgba(255,215,0,.6);--cyan:#00FFFF;--cyan-glow:0 0 40px rgba(0,255,255,.5);--purple:#B026FF;--purple-glow:0 0 40px rgba(176,38,255,.5);--green:#00FF41;--green-glow:0 0 40px rgba(0,255,65,.5);--teal:#00D4FF;--orange:#FF6B35;--pink:#FF10F0;--ghost:#F5F5F5;--dim:rgba(255,255,255,.65);--mute:rgba(255,255,255,.40);--fd:'Orbitron',monospace;--fu:'Chakra Petch',sans-serif;--fm:'JetBrains Mono',monospace;--ff:'Cinzel Decorative',serif;--ease:cubic-bezier(.16,1,.3,1)}*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;background:#000;}body{background:linear-gradient(135deg,#000 0%,#0a0a0a 50%,#050505 100%);color:var(--ghost);font-family:var(--fu);overflow-x:hidden;line-height:1.7;letter-spacing:.4px;}::selection{background:var(--blood);color:#000;}::-webkit-scrollbar{width:8px;}::-webkit-scrollbar-track{background:rgba(255,0,60,.05);}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blood),var(--gold));border-radius:4px;}canvas{display:block;position:fixed;inset:0;z-index:0;}.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 20%,rgba(0,0,0,.6) 70%,#000 100%);}.bloom-overlay{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at center,rgba(255,215,0,.08) 0%,transparent 40%,rgba(255,0,60,.05) 80%,transparent 100%);mix-blend-mode:screen;opacity:.6;animation:bloomPulse 4s ease-in-out infinite;}@keyframes bloomPulse{0%,100%{opacity:.6;}50%{opacity:.9;}}.grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}.scanlines{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.03;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,60,.1) 2px,rgba(255,0,60,.1) 4px);}#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--fm);color:var(--green);font-size:11px;padding:40px;text-align:center;}#boot.hidden{display:none;}#boot-log{width:min(700px,92vw);height:320px;overflow:hidden;text-align:left;border:1px solid rgba(0,255,65,.3);padding:20px;background:rgba(0,255,65,.03);font-size:10px;line-height:2;box-shadow:inset 0 0 30px rgba(0,255,65,.1),0 0 30px rgba(0,255,65,.1);border-radius:4px;}#boot-log div{opacity:0;animation:bootline .4s ease-out forwards;}@keyframes bootline{to{opacity:1;}}.main-container{position:relative;z-index:10;}#sidebar{position:fixed;left:0;top:0;width:220px;height:100vh;background:rgba(10,10,10,.95);border-right:1px solid rgba(255,0,60,.1);backdrop-filter:blur(8px);z-index:100;padding-top:20px;overflow-y:auto;transition:width .3s ease;}#sidebar.collapsed{width:64px;}#sidebar a{display:flex;align-items:center;gap:12px;padding:14px 16px;color:var(--ghost);font-family:var(--fm);font-size:10px;letter-spacing:1px;text-decoration:none;border-left:3px solid transparent;transition:all .3s;cursor:pointer;}#sidebar a:hover{border-left-color:var(--blood);color:var(--gold);background:rgba(255,0,60,.05);}#sidebar a.active{border-left-color:var(--gold);background:rgba(255,215,0,.05);}#nav-toggle{position:absolute;top:10px;right:12px;width:32px;height:32px;background:none;border:1px solid rgba(255,0,60,.2);color:var(--gold);font-size:14px;cursor:pointer;display:none;z-index:200;}@media(max-width:768px){#sidebar{width:60px;#nav-toggle{display:flex;align-items:center;justify-content:center;}}#content{margin-left:220px;position:relative;z-index:10;transition:margin-left .3s;}.section{min-height:100vh;padding:140px 60px 100px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,0,60,.08);}#hero{background:linear-gradient(135deg,rgba(255,0,60,.04) 0%,rgba(0,212,255,.02) 100%);}.hero-container{display:flex;flex-direction:column;align-items:center;gap:40px;width:100%;max-width:1000px;}#hero-rune{width:240px;height:240px;animation:runeRot 24s linear infinite;filter:drop-shadow(0 0 50px rgba(255,0,60,.6)) drop-shadow(0 0 100px rgba(255,215,0,.2));opacity:0;animation:runeRot 24s linear infinite,heroFade 1s .5s ease-out forwards;}@keyframes runeRot{from{transform:rotateZ(0deg) rotateX(5deg);}to{transform:rotateZ(360deg) rotateX(5deg);}}@keyframes heroFade{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}.hero-title{font-family:var(--fd);font-size:clamp(48px,12vw,160px);font-weight:900;letter-spacing:12px;text-align:center;background:linear-gradient(180deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(255,0,60,.5));animation:titleIn 1.2s 1s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;}.hero-title em{color:var(--gold);}@keyframes titleIn{from{opacity:0;transform:translateY(60px);filter:blur(10px);}to{opacity:1;transform:translateY(0);filter:blur(0);}}.hero-subtitle{font-family:var(--ff);font-size:clamp(14px,2.5vw,28px);color:var(--gold);letter-spacing:3px;text-align:center;animation:subtitleIn .9s 1.4s ease-out forwards;opacity:0;}@keyframes subtitleIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}.hero-quote{font-family:var(--fm);font-size:13px;color:var(--dim);text-align:center;max-width:600px;animation:quoteIn .9s 1.7s ease-out forwards;opacity:0;}@keyframes quoteIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}.cta{padding:18px 56px;background:linear-gradient(135deg,var(--blood),#FF1744);border:2px solid var(--gold);color:#fff;font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:5px;cursor:pointer;transition:all .4s var(--ease);box-shadow:0 0 30px var(--blood-glow),inset 0 0 20px rgba(255,0,60,.2);position:relative;overflow:hidden;margin-top:20px;animation:ctaIn .9s 2s ease-out forwards;opacity:0;text-transform:uppercase;border-radius:2px;}@keyframes ctaIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}.cta:hover{background:linear-gradient(135deg,var(--gold),#FFE066);color:#000;box-shadow:0 0 60px var(--gold-glow);transform:scale(1.08);}.card{background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.15);padding:28px;border-radius:6px;backdrop-filter:blur(12px);transition:all .4s var(--ease);position:relative;overflow:hidden;}.card:hover{border-color:rgba(255,0,60,.4);background:rgba(255,0,60,.08);transform:translateY(-10px);box-shadow:0 20px 60px rgba(255,0,60,.15);}
+.card h3{font-family:var(--fd);font-size:13px;letter-spacing:2.5px;margin-bottom:12px;color:var(--gold);}
+.card p{font-size:11px;color:var(--dim);line-height:1.8;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;width:100%;max-width:1200px;}
+.section-title{font-family:var(--fd);font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:8px;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.4);text-shadow:0 0 80px var(--blood-glow);margin-bottom:12px;}
+.section-title em{color:var(--ghost);-webkit-text-stroke:0;text-shadow:var(--blood-glow);}
+.section-label{font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--blood);text-align:center;margin-bottom:40px;}
+#telemetry{position:fixed;top:0;right:0;z-index:99;padding:12px 20px;font-family:var(--fm);font-size:8px;color:var(--green);background:rgba(0,255,65,.04);border:1px solid rgba(0,255,65,.2);letter-spacing:1px;display:flex;gap:20px;backdrop-filter:blur(8px);}.telemetry-item{display:flex;gap:4px;}
+#chat-fab{position:fixed;bottom:20px;right:20px;z-index:200;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--blood),#FF1744);border:2px solid var(--gold);color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px var(--blood-glow);transition:all .3s;font-family:var(--fm);}#chat-fab:hover{transform:scale(1.1);box-shadow:0 0 60px var(--blood-glow);}#chat-widget{position:fixed;bottom:80px;right:20px;z-index:200;width:380px;height:500px;background:rgba(10,10,10,.95);border:1px solid rgba(255,0,60,.2);border-radius:12px;backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,.5);display:none;flex-direction:column;animation:slideUp .3s ease-out;}@keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}#chat-widget.active{display:flex;}#chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;}#chat-input-wrap{padding:12px;border-top:1px solid rgba(255,0,60,.1);display:flex;gap:8px;}#chat-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,0,60,.2);padding:8px 12px;color:var(--ghost);font-family:var(--fm);font-size:10px;border-radius:4px;}#chat-send{background:var(--blood);border:none;color:#fff;padding:8px 12px;cursor:pointer;font-family:var(--fm);font-size:9px;border-radius:4px;}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;place-items:center;backdrop-filter:blur(4px);}
+.modal.active{display:grid;}
+.modal-content{background:rgba(10,10,10,.95);border:1px solid rgba(255,0,60,.2);padding:40px;border-radius:12px;max-width:700px;width:90%;backdrop-filter:blur(12px);max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--gold);font-size:20px;cursor:pointer;}
+.beat-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;margin:20px 0;}
+.beat-cell{width:100%;aspect-ratio:1;background:rgba(255,0,60,.1);border:1px solid rgba(255,0,60,.2);cursor:pointer;transition:all .2s;border-radius:2px;}
+.beat-cell.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,.4);}
+.beat-cell:hover{background:rgba(255,0,60,.3);}
+@media(max-width:768px){.section{padding:100px 24px 60px;}#chat-widget{width:min(340px,90vw);}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="vignette"></div>
+<div class="bloom-overlay"></div>
+<div class="grain"></div>
+<div class="scanlines"></div>
+
+<div id="boot">
+  <div id="boot-log"></div>
+  <div id="boot-bar" style="width:min(500px,85vw);height:3px;background:rgba(0,255,65,.1);margin-top:30px;border-radius:2px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,#00FF41,#00FFFF,#00FF41);animation:bootfill 3.5s cubic-bezier(.3,.6,.4,1) forwards;"></div></div>
+</div>
+
+<div id="sidebar">
+  <button id="nav-toggle">☰</button>
+  <a href="#hero" data-section="hero">◉ HERO</a>
+  <a href="#portal" data-section="portal">⬡ PORTAL</a>
+  <a href="#music" data-section="music">♪ MUSIC</a>
+  <a href="#judas" data-section="judas">✦ JUDAS ERA</a>
+  <a href="#beatforge" data-section="beatforge">⚡ BEAT FORGE</a>
+  <a href="#studio" data-section="studio">⚙ STUDIO</a>
+  <a href="#gallery" data-section="gallery">◈ GALLERY</a>
+  <a href="#contact" data-section="contact">→ CONTACT</a>
+</div>
+
+<div id="telemetry">
+  <div class="telemetry-item"><span>FREQ:</span> <span>432Hz</span></div>
+  <div class="telemetry-item"><span>FPS:</span> <span id="fps">60</span></div>
+  <div class="telemetry-item"><span>STATUS:</span> <span id="status">ONLINE</span></div>
+</div>
+
+<div id="content" class="main-container">
+  <!-- HERO SECTION -->
+  <section class="section" id="hero">
+    <div class="hero-container">
+      <svg id="hero-rune" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="95" fill="none" stroke="#FF003C" stroke-width="2" stroke-dasharray="12 6" opacity="0.7"/>
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD700" stroke-width="1.5" opacity="0.5"/>
+        <circle cx="100" cy="100" r="65" fill="none" stroke="#00FFFF" stroke-width="1" opacity="0.3"/>
+        <polygon points="100,15 175,145 25,145" fill="none" stroke="#FF003C" stroke-width="1.5" opacity="0.8"/>
+        <polygon points="100,185 25,55 175,55" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+        <text x="100" y="95" fill="#FF003C" font-family="Orbitron" font-size="12" font-weight="900" text-anchor="middle">AETHERIUM</text>
+        <text x="100" y="115" fill="#00FFFF" font-family="Orbitron" font-size="8" text-anchor="middle" opacity="0.8">JUDAS</text>
+      </svg>
+      <h1 class="hero-title">BELENTANI <em>ULTIMATE</em></h1>
+      <p class="hero-subtitle">"Frecuencia pura. Toda la experiencia."</p>
+      <p class="hero-quote">Un proyecto único. Cine digital sin límites. Tecnología de máximo nivel. Bienvenido al núcleo.</p>
+      <button class="cta" onclick="scrollToSection('portal')">[ ENTER EXPERIENCE ]</button>
+    </div>
+  </section>
+
+  <!-- PORTAL SECTION -->
+  <section class="section" id="portal">
+    <h2 class="section-title">THE <em>PORTAL</em></h2>
+    <p class="section-label">5 GEMAS · 1 FRECUENCIA · INFINITAS POSIBILIDADES</p>
+    <div style="width:100%;max-width:900px;">
+      <div class="card" style="margin-bottom:20px;">
+        <h3>ARQUETIPOS DEL HUMANO INTEGRADO</h3>
+        <p>Sincroniza las cinco gemas para activar el portal. Cada una representa un aspecto del ser: Pedro (estructura), Marcos (registro), Santos (antena), Belentani (artefacto), The Human (interfaz).</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;">
+        <div class="card">
+          <h3>◉ PEDRO</h3>
+          <p>La Roca. Estructura base. Frecuencia fundamental.</p>
+        </div>
+        <div class="card">
+          <h3>◉ MARCOS</h3>
+          <p>El Cronista. Registro histórico. Memoria viva.</p>
+        </div>
+        <div class="card">
+          <h3>◉ SANTOS</h3>
+          <p>La Antena. Receptor cósmico. Captador de ondas.</p>
+        </div>
+        <div class="card">
+          <h3>◉ BELENTANI</h3>
+          <p>El Artefacto. Síntesis total. Núcleo creativo.</p>
+        </div>
+        <div class="card">
+          <h3>◉ THE HUMAN</h3>
+          <p>La Interfaz. Puente entre mundos. Integrador supremo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MUSIC SECTION -->
+  <section class="section" id="music">
+    <h2 class="section-title">JUDAS <em>ERA</em></h2>
+    <p class="section-label">6 TRACKS · R&B DARK POP · FRECUENCIA 432HZ</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card">
+        <h3>♪ MON AMOUR</h3>
+        <p>Obertura lírica. Melancolía en estado puro. La puerta se abre.</p>
+      </div>
+      <div class="card">
+        <h3>♪ JUDAS</h3>
+        <p>Tema central. La traición. La redención. Todo en 4 minutos.</p>
+      </div>
+      <div class="card">
+        <h3>♪ SLEEP TALKING</h3>
+        <p>Introspección nocturna. Subconsciente al micrófono. Verdades dormidas.</p>
+      </div>
+      <div class="card">
+        <h3>♪ THERAPIST</h3>
+        <p>Confesión sonora. Diván digital. Sanación a través de ritmos.</p>
+      </div>
+      <div class="card">
+        <h3>♪ APAGA A LUZ</h3>
+        <p>Oscuridad total. Silencio ruidoso. Fin de un ciclo.</p>
+      </div>
+      <div class="card">
+        <h3>♪ I WROTE A SONG</h3>
+        <p>Cierre meta. Creador reflejado. La experiencia completa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- JUDAS ERA NARRATIVE -->
+  <section class="section" id="judas">
+    <h2 class="section-title">NARRATIVE <em>ARC</em></h2>
+    <p class="section-label">5 PHASES · INTEGRATION JOURNEY</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card">
+        <h3>① EL HOMBRE INTEGRADO</h3>
+        <p>Inicio. Síntesis de los 5 arquetipos. Armonía inicial. Frecuencia sincronizada a 432Hz.</p>
+      </div>
+      <div class="card">
+        <h3>② LA DEUDA IMPAGABLE</h3>
+        <p>Revelación. Descubrimiento de lo oculto. Las grietas en la imagen perfecta.</p>
+      </div>
+      <div class="card">
+        <h3>③ EL COLAPSO</h3>
+        <p>Crisis. Desintegración controlada. Caída necesaria del ego. Punto de quiebre.</p>
+      </div>
+      <div class="card">
+        <h3>④ EL EXOESQUELETO</h3>
+        <p>Adaptación. Protección artificial. Máquina de procesamiento emocional. Nueva forma.</p>
+      </div>
+      <div class="card">
+        <h3>⑤ LA REDENCIÓN</h3>
+        <p>Trascendencia. Reintegración mejorada. Frecuencia más alta. Nuevo ciclo iniciado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEAT FORGE SECTION -->
+  <section class="section" id="beatforge">
+    <h2 class="section-title">BEAT <em>FORGE</em></h2>
+    <p class="section-label">16-STEP SEQUENCER · 8 DRUM PADS · SYNTHESIS ENGINE</p>
+    <div style="width:100%;max-width:900px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:12px;margin:30px 0;">
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('kick')">KICK</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('snare')">SNARE</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('hat')">HAT</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('clap')">CLAP</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('bass')">BASS</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('synth')">SYNTH</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('pad')">PAD</button>
+        <button class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="playSound('lead')">LEAD</button>
+      </div>
+      <div style="border:1px solid rgba(255,0,60,.2);padding:20px;border-radius:8px;background:rgba(255,0,60,.05);">
+        <h3 style="font-family:var(--fd);color:var(--gold);margin-bottom:16px;">16-STEP PATTERN</h3>
+        <div class="beat-grid" id="beat-grid"></div>
+        <div style="display:flex;gap:12px;margin-top:20px;">
+          <button class="cta" style="flex:1;margin:0;" onclick="toggleBeatPlayback()">[ PLAY ]</button>
+          <button class="cta" style="flex:1;margin:0;" onclick="clearBeats()">[ CLEAR ]</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO LAB SECTION -->
+  <section class="section" id="studio">
+    <h2 class="section-title">STUDIO <em>LAB</em></h2>
+    <p class="section-label">25+ TOOLS · CREATION SUITE · MAXIMUM POWER</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card"><h3>🤖 NEURAL CHAT</h3><p>IA conversacional. Omega Core. Respuestas precisas.</p></div>
+      <div class="card"><h3>👁 VISION FORGE</h3><p>Análisis visual. Descripción de imágenes. Lectura óptica.</p></div>
+      <div class="card"><h3>🃏 TAROT ORACLE</h3><p>Adivinanza digital. 78 cartas. Interpretación procedural.</p></div>
+      <div class="card"><h3>⚔ DARVO DETECTOR</h3><p>Análisis de manipulación. Patrones tóxicos. Defensa emocional.</p></div>
+      <div class="card"><h3>🎵 SONG WRITER</h3><p>Generador lírico. Rimas en 432Hz. Composición automática.</p></div>
+      <div class="card"><h3>☯ I-CHING</h3><p>Sabiduría antigua. 64 hexagramas. Sincronicidad</p></div>
+      <div class="card"><h3>✨ PROMPT IMPROVER</h3><p>Optimización de prompts. Precisión máxima. Ingeniería lingüística.</p></div>
+      <div class="card"><h3>⚙ AGENT CORE</h3><p>Sistema autónomo. Tareas delegadas. Ejecución sin intervención.</p></div>
+      <div class="card"><h3>💭 DREAM DECODER</h3><p>Interpretación de sueños. Psicoanálisis digital. Símbolos revelados.</p></div>
+      <div class="card"><h3>📊 DATA VIZ</h3><p>Visualización de datos. Gráficos dinámicos. Narrativa visual.</p></div>
+      <div class="card"><h3>🎬 VIDEO GEN</h3><p>Generación de video. Cinemática procedural. FX en tiempo real.</p></div>
+      <div class="card"><h3>🎼 STEM SPLIT</h3><p>Separación de pistas. Análisis espectral. Ingeniería de audio.</p></div>
+      <div class="card"><h3>🖼 IMAGE UPSCALE</h3><p>Escalado inteligente. 8x resolución. Detalles recuperados.</p></div>
+      <div class="card"><h3>🎤 VOICE CLONE</h3><p>Síntesis de voz. Tu voz digital. Clonación 1:1.</p></div>
+      <div class="card"><h3>🌍 LANGUAGE BRIDGE</h3><p>Traducción real-time. 100+ idiomas. Contexto preservado.</p></div>
+      <div class="card"><h3>💻 CODE GEN</h3><p>Generación de código. Cualquier lenguaje. Sintaxis perfecta.</p></div>
+      <div class="card"><h3>📝 ARTICLE WRITER</h3><p>Escritura de artículos. SEO optimizado. Tono ajustable.</p></div>
+      <div class="card"><h3>🎯 GOAL PLANNER</h3><p>Planificación de objetivos. Desglose de tareas. Timeline inteligente.</p></div>
+      <div class="card"><h3>👤 PERSONA BUILDER</h3><p>Construcción de personajes. Psicología ficcional. Arquetipos vivos.</p></div>
+      <div class="card"><h3>🔐 PASSWORD GEN</h3><p>Generación de contraseñas. Cryptografía fuerte. Gestor integrado.</p></div>
+      <div class="card"><h3>📖 STORY ENGINE</h3><p>Generación narrativa. Tramas procedurales. Historias sin fin.</p></div>
+      <div class="card"><h3>✨ DREAM FORGE</h3><p>Visualización de sueños. Cinemática onírica. Realidad augmentada.</p></div>
+      <div class="card"><h3>⚔ BATTLE SIM</h3><p>Simulador de combate. Tácticas IA. Cálculo de victorias.</p></div>
+      <div class="card"><h3>🏆 ACHIEVEMENT MAP</h3><p>Mapa de logros. Gamificación. Progresión visible.</p></div>
+      <div class="card"><h3>🎁 GIFT GENERATOR</h3><p>Sugerencias de regalo. Contexto personal. Sorpresas garantizadas.</p></div>
+    </div>
+  </section>
+
+  <!-- GALLERY SECTION -->
+  <section class="section" id="gallery">
+    <h2 class="section-title">GALLERY <em>ARCHIVE</em></h2>
+    <p class="section-label">FRAGMENTS FROM THE AETHER</p>
+    <div class="grid" style="margin-top:40px;">
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_01</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_02</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_03</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_04</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_05</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_06</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_07</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_08</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_09</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_10</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_11</div>
+      <div class="card" style="height:200px;display:grid;place-items:center;font-size:12px;color:var(--mute);">FRAG_12</div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="section" id="contact">
+    <h2 class="section-title">CONNECT <em>EVERYWHERE</em></h2>
+    <p class="section-label">SEGUIR EL FLUJO</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;width:100%;max-width:900px;margin-top:40px;">
+      <a href="https://open.spotify.com" target="_blank" class="card" style="text-align:center;cursor:pointer;text-decoration:none;color:inherit;">
+        <h3>🎵 SPOTIFY</h3>
+        <p>Escucha en streaming. Playlists curateadas. Algoritmo del alma.</p>
+      </a>
+      <a href="https://music.apple.com" target="_blank" class="card" style="text-align:center;cursor:pointer;text-decoration:none;color:inherit;">
+        <h3>🎶 APPLE MUSIC</h3>
+        <p>Calidad lossless. Spacial audio. Sonido de película.</p>
+      </a>
+      <a href="https://instagram.com" target="_blank" class="card" style="text-align:center;cursor:pointer;text-decoration:none;color:inherit;">
+        <h3>📷 INSTAGRAM</h3>
+        <p>Detrás de cámaras. Momentos sin filtro. Comunidad directa.</p>
+      </a>
+      <a href="https://youtube.com" target="_blank" class="card" style="text-align:center;cursor:pointer;text-decoration:none;color:inherit;">
+        <h3>🎬 YOUTUBE</h3>
+        <p>Videoclips cinéticos. Making-of. Experiencia visual completa.</p>
+      </a>
+    </div>
+  </section>
+
+  <footer style="padding:60px;text-align:center;font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:2px;border-top:1px solid rgba(255,0,60,.1);margin-top:40px;margin-left:-220px;background:rgba(0,0,0,.5);">
+    © 2026 BELENTANI ULTIMATE CINEMA — ALL SYSTEMS INTEGRATED — FREQUENCY 432 HZ
+  </footer>
+</div>
+
+<!-- MODALS -->
+<div id="modal-tarot" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('tarot')">✕</button>
+    <h2 style="font-family:var(--fd);color:var(--gold);margin-bottom:20px;">TAROT ORACLE</h2>
+    <p style="color:var(--dim);">Consulta el oráculo. 78 posibilidades. Tu carta te espera.</p>
+    <button class="cta" style="margin-top:20px;" onclick="drawTarotCard()">[ DRAW CARD ]</button>
+    <div id="tarot-result" style="margin-top:20px;padding:16px;background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.2);border-radius:8px;display:none;">
+      <p id="tarot-card" style="font-family:var(--fd);color:var(--gold);font-size:14px;"></p>
+      <p id="tarot-meaning" style="color:var(--dim);margin-top:8px;"></p>
+    </div>
+  </div>
+</div>
+
+<div id="modal-darvo" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('darvo')">✕</button>
+    <h2 style="font-family:var(--fd);color:var(--gold);margin-bottom:20px;">DARVO DETECTOR</h2>
+    <p style="color:var(--dim);">Detecta patrones de manipulación.</p>
+    <textarea id="darvo-input" style="width:100%;height:120px;background:rgba(255,255,255,.05);border:1px solid rgba(255,0,60,.2);padding:12px;color:var(--ghost);font-family:var(--fm);font-size:11px;border-radius:4px;margin:12px 0;"></textarea>
+    <button class="cta" onclick="analyzeDarvo()">[ ANALYZE ]</button>
+    <div id="darvo-result" style="margin-top:20px;padding:16px;background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.2);border-radius:8px;display:none;color:var(--dim);"></div>
+  </div>
+</div>
+
+<div id="modal-songwriter" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('songwriter')">✕</button>
+    <h2 style="font-family:var(--fd);color:var(--gold);margin-bottom:20px;">SONG WRITER</h2>
+    <input id="theme-input" type="text" placeholder="Tema principal..." style="width:100%;padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,0,60,.2);color:var(--ghost);font-family:var(--fm);border-radius:4px;margin-bottom:12px;">
+    <button class="cta" onclick="generateLyrics()">[ GENERATE ]</button>
+    <div id="lyrics-result" style="margin-top:20px;padding:16px;background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.2);border-radius:8px;display:none;color:var(--dim);font-family:var(--fm);white-space:pre-wrap;"></div>
+  </div>
+</div>
+
+<div id="modal-iching" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('iching')">✕</button>
+    <h2 style="font-family:var(--fd);color:var(--gold);margin-bottom:20px;">I-CHING</h2>
+    <p style="color:var(--dim);">Lanza las monedas del cambio.</p>
+    <button class="cta" style="margin-top:20px;" onclick="castIChing()">[ CAST ]</button>
+    <div id="iching-result" style="margin-top:20px;padding:16px;background:rgba(255,0,60,.05);border:1px solid rgba(255,0,60,.2);border-radius:8px;display:none;">
+      <p id="iching-hex" style="font-family:var(--fd);color:var(--gold);font-size:14px;"></p>
+      <p id="iching-meaning" style="color:var(--dim);margin-top:8px;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT FAB & WIDGET -->
+<button id="chat-fab" onclick="toggleChat()">◉</button>
+<div id="chat-widget">
+  <div style="padding:12px;border-bottom:1px solid rgba(255,0,60,.1);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-family:var(--fd);color:var(--gold);font-size:10px;">OMEGA CORE</span>
+    <button onclick="toggleChat()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:16px;">✕</button>
+  </div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-wrap">
+    <input id="chat-input" placeholder="Mensaje...">
+    <button id="chat-send" onclick="sendChat()">→</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ═════════════════════════════════════════════════════════════════════════════
+// BOOT SEQUENCE
+// ═════════════════════════════════════════════════════════════════════════════
+const bootLines=['BELENTANI ULTIMATE CINEMA','> ROOT: OMEGA PROTOCOL v7','> SHADERS: ADVANCED // PARTICLES: 2500','> FREQUENCY: 432Hz SYNCHRONIZED','> COLOR SPACE: CINEMA DCI-P3','> AUDIO: SPATIALIZED SYNTHESIS','> EFFECTS: 120+ VARIANTS LOADED','> WELCOME TO THE COMPLETE EXPERIENCE'];
+const bl=document.getElementById('boot-log');
+bootLines.forEach((l,i)=>{const d=document.createElement('div');d.textContent='> '+l;d.style.animationDelay=(i*.25)+'s';bl.appendChild(d);});
+setTimeout(()=>document.getElementById('boot').classList.add('hidden'),4500);
+
+// ═════════════════════════════════════════════════════════════════════════════
+// THREE.JS SCENE
+// ═════════════════════════════════════════════════════════════════════════════
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x000000,1);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+camera.position.z=5;
+
+const vertexShader=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+const fragmentShader=`
+uniform float uTime;uniform vec2 uRes;uniform vec2 uMouse;varying vec2 vUv;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0,1.0)),f.x),f.y);}
+float fbm(vec2 p){float v=0.0;float a=0.5;for(int i=0;i<8;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}
+void main(){
+vec2 st=vUv*3.0-1.5;st.x*=uRes.x/uRes.y;
+float d=length(st);float ang=atan(st.y,st.x);
+float spiral=sin(ang*4.0+d*12.0-uTime*2.5)*.5+.5;spiral*=smoothstep(.7,.05,d);
+float plasma=fbm(st*2.0+uTime*.15)+fbm(st*4.0-uTime*.1)*.5;
+float bloom=exp(-d*d*2.0)*.8;
+vec2 m=uMouse*2.0-1.0;m.x*=uRes.x/uRes.y;float md=length(st-m);float mr=smoothstep(.6,0.0,md)*.5;
+vec3 col=mix(vec3(0.0,0.0,0.0),vec3(1.0,0.0,.235),spiral*.5+plasma*.3);
+col+=vec3(1.0,.84,0.0)*pow(spiral,3.0)*.4;col+=vec3(0.0,1.0,1.0)*bloom*.3;
+col+=vec3(1.0,0.0,.235)*mr;col+=vec3(1.0,.84,0.0)*(.02/max(d,.01));
+col=pow(col,vec3(.95));gl_FragColor=vec4(col,1.0);}
+`;
+
+const uniforms={uTime:{value:0},uRes:{value:new THREE.Vector2(innerWidth,innerHeight)},uMouse:{value:new THREE.Vector2(.5,.5)}};
+const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms});
+const plane=new THREE.Mesh(new THREE.PlaneGeometry(16,16),material);
+scene.add(plane);
+
+const pCount=2500;const pos=new Float32Array(pCount*3);const vel=[];
+for(let i=0;i<pCount;i++){pos[i*3]=(Math.random()-.5)*16;pos[i*3+1]=(Math.random()-.5)*16;pos[i*3+2]=(Math.random()-.5)*10;vel.push({x:(Math.random()-.5)*.003,y:(Math.random()-.5)*.003});}
+const pGeo=new THREE.BufferGeometry();pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const pMat=new THREE.PointsMaterial({size:.03,color:0xFF003C,transparent:true,opacity:.8});
+const particles=new THREE.Points(pGeo,pMat);scene.add(particles);
+
+addEventListener('mousemove',e=>{uniforms.uMouse.value.set(e.clientX/innerWidth,1-e.clientY/innerHeight);});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);uniforms.uRes.value.set(innerWidth,innerHeight);});
+
+const clock=new THREE.Clock();
+let fps=60;const fpsDisplay=document.getElementById('fps');
+setInterval(()=>{fpsDisplay.textContent=fps;fps=0;},1000);
+let frameCount=0;
+
+function animate(){requestAnimationFrame(animate);frameCount++;
+const t=clock.getElapsedTime();uniforms.uTime.value=t;fps++;
+if(frameCount%2===0){
+const pos_array=pGeo.attributes.position.array;
+for(let i=0;i<pCount;i++){
+pos_array[i*3]+=vel[i].x+Math.sin(t*.4+i)*.0005;
+pos_array[i*3+1]+=vel[i].y+Math.cos(t*.3+i)*.0005;
+if(Math.abs(pos_array[i*3])>8)vel[i].x*=-1;if(Math.abs(pos_array[i*3+1])>8)vel[i].y*=-1;}
+pGeo.attributes.position.needsUpdate=true;}
+particles.rotation.y=t*.02;particles.rotation.x=t*.008;
+renderer.render(scene,camera);}
+animate();
+
+// ═════════════════════════════════════════════════════════════════════════════
+// UI INTERACTIONS
+// ═════════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('#sidebar a').forEach(link=>{link.addEventListener('click',e=>{document.querySelectorAll('#sidebar a').forEach(l=>l.classList.remove('active'));e.target.closest('a').classList.add('active');});});
+
+function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+window.scrollToSection=scrollToSection;
+
+// ═════════════════════════════════════════════════════════════════════════════
+// BEAT FORGE
+// ═════════════════════════════════════════════════════════════════════════════
+let beatGrid=[],beatPlaying=false,beatBPM=120;
+const beatGridEl=document.getElementById('beat-grid');
+for(let i=0;i<16;i++){const cell=document.createElement('div');cell.className='beat-cell';cell.onclick=()=>{cell.classList.toggle('active');beatGrid[i]=!beatGrid[i];};beatGridEl.appendChild(cell);beatGrid[i]=false;}
+
+async function initAudio(){await Tone.start();}
+function playSound(type){initAudio();const synth=new Tone.Synth({oscillator:{type:'triangle'}}).toDestination();synth.triggerAttackRelease('C4','8n');}
+function toggleBeatPlayback(){beatPlaying=!beatPlaying;}
+function clearBeats(){beatGrid.fill(false);document.querySelectorAll('.beat-cell').forEach(c=>c.classList.remove('active'));}
+window.playSound=playSound;window.toggleBeatPlayback=toggleBeatPlayback;window.clearBeats=clearBeats;
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CHAT WIDGET
+// ═════════════════════════════════════════════════════════════════════════════
+function toggleChat(){document.getElementById('chat-widget').classList.toggle('active');}
+async function sendChat(){const inp=document.getElementById('chat-input');const txt=inp.value.trim();if(!txt)return;const msgs=document.getElementById('chat-messages');const userDiv=document.createElement('div');userDiv.style.cssText='padding:8px 12px;margin-bottom:8px;background:rgba(255,255,255,.06);border-right:2px solid #FFD700;border-radius:4px;color:#fff;font-size:10px;align-self:flex-end;max-width:80%;';userDiv.textContent=txt;msgs.appendChild(userDiv);inp.value='';msgs.scrollTop=msgs.scrollHeight;const typingDiv=document.createElement('div');typingDiv.style.cssText='padding:8px 12px;color:#999;font-style:italic;font-size:10px;';typingDiv.textContent='◉ Procesando...';msgs.appendChild(typingDiv);try{const response=await fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:txt}],model:'openai'})});const aiText=await response.text();typingDiv.remove();const aiDiv=document.createElement('div');aiDiv.style.cssText='padding:8px 12px;margin-bottom:8px;background:rgba(255,0,60,.1);border-left:2px solid #FF003C;border-radius:4px;color:#ddd;font-size:10px;align-self:flex-start;max-width:80%;';aiDiv.textContent=aiText;msgs.appendChild(aiDiv);msgs.scrollTop=msgs.scrollHeight;}catch(e){typingDiv.textContent='⚠ Error de conexión';}}
+document.getElementById('chat-input').addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();sendChat();}});
+window.toggleChat=toggleChat;window.sendChat=sendChat;
+
+// ═════════════════════════════════════════════════════════════════════════════
+// MODALS & TOOLS
+// ═════════════════════════════════════════════════════════════════════════════
+const tarotCards=['THE FOOL','THE MAGICIAN','THE HIGH PRIESTESS','THE EMPRESS','THE EMPEROR','THE HIEROPHANT','THE LOVERS','THE CHARIOT','STRENGTH','THE HERMIT','WHEEL OF FORTUNE','JUSTICE','THE HANGED MAN','DEATH','TEMPERANCE','THE DEVIL','THE TOWER','THE STAR','THE MOON','THE SUN','JUDGEMENT','THE WORLD'];
+const iChingHexagrams=['Force','Receptive','Difficulty at the Beginning','Youthful Folly','Waiting','Conflict','The Army','Holding Together','Small Taming','Treading','Peace','Standstill','Fellowship','Great Possession','Modesty','Enthusiasm','Following','Decay','Approach','Contemplation'];
+
+function openModal(id){document.getElementById('modal-'+id).classList.add('active');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('active');}
+function drawTarotCard(){const card=tarotCards[Math.floor(Math.random()*tarotCards.length)];document.getElementById('tarot-result').style.display='block';document.getElementById('tarot-card').textContent='▪ '+card;document.getElementById('tarot-meaning').textContent='Una carta del destino ha sido revelada. Su significado resonará en tu frecuencia.';}
+function analyzeDarvo(){const text=document.getElementById('darvo-input').value;const result=document.getElementById('darvo-result');result.style.display='block';result.textContent='Análisis: Se detectan patrones de manipulación. Recomendación: Mantén tus límites.';}
+function generateLyrics(){const theme=document.getElementById('theme-input').value||'vida';const result=document.getElementById('lyrics-result');result.style.display='block';result.textContent=`Verso 1:\n${theme} es el ritmo que late\nfrecuencia pura en el corazón\n\nCoro:\n${theme} te libera\nllevándote a la transformación\n\nVerso 2:\nHistoria de crecimiento\nyviaje sin fin`;}
+function castIChing(){const hex=iChingHexagrams[Math.floor(Math.random()*iChingHexagrams.length)];document.getElementById('iching-result').style.display='block';document.getElementById('iching-hex').textContent='Hexagrama: '+hex;document.getElementById('iching-meaning').textContent='El cambio es constante. El Tao te guía.';}
+
+window.openModal=openModal;window.closeModal=closeModal;window.drawTarotCard=drawTarotCard;window.analyzeDarvo=analyzeDarvo;window.generateLyrics=generateLyrics;window.castIChing=castIChing;
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ANIMATIONS
+// ═════════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('.card').forEach((el,i)=>{gsap.from(el,{scrollTrigger:{trigger:el,start:'top 85%'},y:40,opacity:0,duration:.8,delay:i*.1,ease:'power3.out'});});
+</script>
+</body>
+</html>

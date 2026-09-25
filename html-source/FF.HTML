@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planeta Galáctico - Liquid Light Inmersivo</title>
+  <style>
+    /* Estilos de la Web GUI */
+    /* Controles de velocidad de rotación, intensidad de luz líquida y distorsión del terreno */
+    div {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    label {
+      display: inline-block;
+      width: 120px;
+      text-align: right;
+    }
+    input[type="range"] {
+      width: 100%;
+      margin: 10px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    /* Estilos de la interfaz de usuario */
+    /* Selecciona un patrón de color */
+    #colorBtn {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    /* Selecciona un patrón de color */
+    .patrón-de-color {
+      display: inline-block;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+  </style>
+  <!-- Carga de Three.js y OrbitControls para interactuar con la cámara -->
+  <script src="https://cloudflare.com"></script>
+  <script src="https://jsdelivr.net"></script>
+  <script>
+    // ...
+  </script>
+</head>
+<body>
+  <!-- Web GUI -->
+  <div id="gui-container">
+    <h1>Galactic GUI</h1>
+    <div class="control-group">
+      <label>Velocidad de Rotación</label>
+      <input type="range" id="speed" min="0" max="5" step="0.1" value="1">
+    </div>
+    <div class="control-group">
+      <label>Intensidad de Luz Líquida</label>
+      <input type="range" id="glow" min="1" max="3" step="0.1" value="1.5">
+    </div>
+    <div class="control-group">
+      <label>Distorsión del Terreno</label>
+      <input type="range" id="noise" min="0" max="4" step="0.1" value="1.5">
+    </div>
+    <button class="btn" id="colorBtn">Cambiar Energía</button>
+  </div>
+  <!-- Instrucciones -->
+  <div id="instrucciones">Arrastra para rotar | Rueda para zoom</div>
+  <!-- Canvas para renderizar el planeta -->
+  <div id="canvas-container"></div>
+  <script>
+    // ...
+  </script>
+</body>
+</html>

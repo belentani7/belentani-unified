@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARC VIDAL | Arquitectura de Autor · Barcelona</title>
+    <meta name="description" content="Estudio de arquitectura de lujo en Barcelona. Racionalismo mediterráneo, diseño de autor y rehabilitación patrimonial.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN TOKENS - COLOR THEORY SYSTEM
+           Blue 210° dominant | Amber 30° complement
+           Ratio: 70% cool / 20% neutral / 10% warm
+        ═══════════════════════════════════════════ */
+        :root {
+            /* Primary Blues (Monochromatic Hierarchy) */
+            --blue-900: #0A1628;
+            --blue-800: #0F2240;
+            --blue-700: #143358;
+            --blue-600: #1E5A8A;
+            --blue-500: #2674AB;
+            --blue-400: #4A9BD4;
+            --blue-300: #6BAED6;
+            --blue-200: #A8D4F0;
+            --blue-100: #D6EBF8;
+            --blue-50: #EDF5FC;
+
+            /* Complementary Amber (30° - Contrast Simultané) */
+            --amber-600: #A66B2A;
+            --amber-500: #C8843D;
+            --amber-400: #D9A05C;
+            --amber-300: #E8BF8A;
+            --amber-100: #F5E6D0;
+
+            /* Analogous Teal (188°) */
+            --teal-700: #0F4A54;
+            --teal-500: #1A6B7A;
+            --teal-300: #4DA8B8;
+
+            /* Neutrals (Warm undertone 35°) */
+            --neutral-50: #FAFAF8;
+            --neutral-100: #F4F1EC;
+            --neutral-200: #E8E3DA;
+            --neutral-300: #D4CFC4;
+            --neutral-600: #6B6560;
+            --neutral-800: #2C2826;
+            --neutral-900: #1A1816;
+
+            /* Typography */
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+
+            /* Spacing (8px grid) */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 4rem;
+            --space-xl: 8rem;
+            --space-2xl: 12rem;
+
+            /* Transitions */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESET & BASE
+        ═══════════════════════════════════════════ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--blue-900);
+            color: var(--neutral-100);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+        button { border: none; background: none; cursor: none; font-family: inherit; }
+
+        ::selection {
+            background: var(--blue-400);
+            color: var(--blue-900);
+        }
+
+        /* ═══════════════════════════════════════════
+           CUSTOM CURSOR (Perception: Haptic Feedback)
+        ═══════════════════════════════════════════ */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--amber-500);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            width: 44px;
+            height: 44px;
+            border: 1.5px solid rgba(107, 174, 214, 0.6);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.3s var(--ease-out-expo),
+                        height 0.3s var(--ease-out-expo),
+                        border-color 0.3s;
+        }
+
+        .cursor-ring.hover {
+            width: 70px;
+            height: 70px;
+            border-color: var(--amber-500);
+        }
+
+        /* ═══════════════════════════════════════════
+           PRELOADER
+        ═══════════════════════════════════════════ */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--blue-900);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .preloader-counter {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 300;
+            color: var(--blue-300);
+            line-height: 1;
+        }
+
+        .preloader-bar {
+            width: 200px;
+            height: 1px;
+            background: var(--blue-700);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preloader-bar-fill {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--amber-500);
+        }
+
+        .preloader-text {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--blue-400);
+            opacity: 0.7;
+        }
+
+        /* ═══════════════════════════════════════════
+           NAVIGATION
+        ═══════════════════════════════════════════ */
+        .nav {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.4s, padding 0.4s;
+        }
+
+        .nav.scrolled {
+            background: rgba(10, 22, 40, 0.92);
+            backdrop-filter: blur(20px);
+            padding: 1rem 3rem;
+            border-bottom: 1px solid rgba(107, 174, 214, 0.08);
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--neutral-50);
+        }
+
+        .nav-logo span {
+            color: var(--amber-500);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--blue-200);
+            position: relative;
+            padding: 0.3rem 0;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 1px;
+            background: var(--amber-500);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        .nav-menu a:hover { color: var(--neutral-50); }
+        .nav-menu a:hover::after { width: 100%; }
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--blue-400);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--blue-200);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .nav-cta:hover {
+            background: var(--amber-500);
+            border-color: var(--amber-500);
+            color: var(--blue-900);
+        }
+
+        /* Mobile Menu Toggle */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            width: 28px;
+        }
+
+        .nav-toggle span {
+            width: 100%;
+            height: 1.5px;
+            background: var(--neutral-100);
+            transition: all 0.3s;
+        }
+
+        /* ═══════════════════════════════════════════
+           HERO SECTION
+        ═══════════════════════════════════════════ */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 3rem 6rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) saturate(0.8);
+            transform: scale(1.1);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 22, 40, 0.4) 0%,
+                rgba(10, 22, 40, 0.1) 40%,
+                rgba(10, 22, 40, 0.85) 100%
+            );
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .hero-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--amber-400);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .hero-tag span {
+            display: inline-block;
+            transform: translateY(100%);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 7.5vw, 6.5rem);
+            font-weight: 300;
+            line-height: 1.05;
+            color: var(--neutral-50);
+            margin-bottom: 2rem;
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .line-inner {
+            display: block;
+            transform: translateY(110%);
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--blue-300);
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 520px;
+            color: var(--blue-200);
+            opacity: 0;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2rem;
+            right: 3rem;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .hero-scroll span {
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--blue-300);
+            writing-mode: vertical-rl;
+        }
+
+        .hero-scroll-line {
+            width: 1px;
+            height: 60px;
+            background: var(--blue-700);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-scroll-line::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--amber-500);
+            animation: scrollLine 2s infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTION COMMON
+        ═══════════════════════════════════════════ */
+        section {
+            position: relative;
+        }
+
+        .section-padding {
+            padding: var(--space-2xl) 3rem;
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--amber-500);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            font-weight: 300;
+            line-height: 1.15;
+            color: var(--neutral-50);
+            margin-bottom: 2rem;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--blue-300);
+        }
+
+        /* ═══════════════════════════════════════════
+           ABOUT / PHILOSOPHY
+        ═══════════════════════════════════════════ */
+        .about {
+            background: var(--blue-800);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-image {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease-out-expo);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--blue-400);
+            opacity: 0.2;
+            transform: translate(15px, 15px);
+            pointer-events: none;
+        }
+
+        .about-text p {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: var(--blue-200);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--blue-700);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: var(--amber-400);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--blue-300);
+            margin-top: 0.5rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           PORTFOLIO / PROJECTS (Horizontal Scroll)
+        ═══════════════════════════════════════════ */
+        .portfolio {
+            background: var(--blue-900);
+            overflow: hidden;
+        }
+
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            max-width: 1400px;
+            margin: 0 auto 4rem;
+        }
+
+        .portfolio-scroll-wrapper {
+            height: 500vh;
+            position: relative;
+        }
+
+        .portfolio-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .portfolio-track {
+            display: flex;
+            gap: 3rem;
+            padding: 0 3rem;
+            will-change: transform;
+        }
+
+        .project-card {
+            flex-shrink: 0;
+            width: 55vw;
+            max-width: 900px;
+            height: 72vh;
+            position: relative;
+            overflow: hidden;
+            background: var(--blue-800);
+        }
+
+        .project-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s var(--ease-out-expo);
+        }
+
+        .project-card:hover .project-card-img {
+            transform: scale(1.08);
+        }
+
+        .project-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                0deg,
+                rgba(10, 22, 40, 0.95) 0%,
+                rgba(10, 22, 40, 0.3) 40%,
+                transparent 100%
+            );
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem;
+        }
+
+        .project-card-number {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--amber-400);
+            opacity: 0.8;
+        }
+
+        .project-card-category {
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--blue-300);
+            margin-bottom: 0.8rem;
+        }
+
+        .project-card-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: var(--neutral-50);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-card-location {
+            font-size: 0.85rem;
+            color: var(--blue-200);
+            font-weight: 300;
+        }
+
+        .project-card-arrow {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(107, 174, 214, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .project-card-arrow svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--blue-200);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover .project-card-arrow {
+            background: var(--amber-500);
+            border-color: var(--amber-500);
+        }
+
+        .project-card:hover .project-card-arrow svg {
+            stroke: var(--blue-900);
+            transform: rotate(-45deg);
+        }
+
+        /* ═══════════════════════════════════════════
+           PROCESS / METHODOLOGY
+        ═══════════════════════════════════════════ */
+        .process {
+            background: linear-gradient(180deg, var(--blue-900) 0%, var(--blue-800) 100%);
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            max-width: 1400px;
+            margin: 4rem auto 0;
+        }
+
+        .process-step {
+            padding: 3rem 2rem;
+            border-right: 1px solid var(--blue-700);
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s;
+        }
+
+        .process-step:last-child { border-right: none; }
+
+        .process-step:hover {
+            background: rgba(30, 90, 138, 0.1);
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--amber-500);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s var(--ease-out-expo);
+        }
+
+        .process-step:hover::before {
+            transform: scaleX(1);
+        }
+
+        .process-number {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--blue-700);
+            line-height: 1;
+            margin-bottom: 2rem;
+            transition: color 0.4s;
+        }
+
+        .process-step:hover .process-number {
+            color: var(--blue-500);
+        }
+
+        .process-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--neutral-50);
+            margin-bottom: 1rem;
+        }
+
+        .process-desc {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--blue-300);
+            font-weight: 300;
+        }
+
+        /* ═══════════════════════════════════════════
+           SERVICES
+        ═══════════════════════════════════════════ */
+        .services {
+            background: var(--neutral-50);
+            color: var(--blue-900);
+        }
+
+        .services .section-label { color: var(--amber-600); }
+        .services .section-title { color: var(--blue-900); }
+        .services .section-title em { color: var(--blue-600); }
+
+        .services-list {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+        }
+
+        .service-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 3rem;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--neutral-200);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .service-item:first-child {
+            border-top: 1px solid var(--neutral-200);
+        }
+
+        .service-item:hover {
+            padding-left: 1.5rem;
+        }
+
+        .service-num {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--blue-400);
+        }
+
+        .service-name {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--blue-900);
+            transition: color 0.3s;
+        }
+
+        .service-item:hover .service-name {
+            color: var(--blue-600);
+        }
+
+        .service-arrow {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--neutral-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .service-item:hover .service-arrow {
+            background: var(--blue-900);
+            border-color: var(--blue-900);
+        }
+
+        .service-arrow svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--neutral-600);
+            transition: stroke 0.3s, transform 0.3s;
+        }
+
+        .service-item:hover .service-arrow svg {
+            stroke: white;
+            transform: rotate(-45deg);
+        }
+
+        /* ═══════════════════════════════════════════
+           TESTIMONIALS
+        ═══════════════════════════════════════════ */
+        .testimonials {
+            background: var(--blue-800);
+            text-align: center;
+        }
+
+        .testimonial-quote {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.5;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            color: var(--neutral-100);
+        }
+
+        .testimonial-author {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--amber-400);
+        }
+
+        .testimonial-role {
+            font-size: 0.75rem;
+            color: var(--blue-300);
+            margin-top: 0.3rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           CONTACT
+        ═══════════════════════════════════════════ */
+        .contact {
+            background: var(--blue-900);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--neutral-50);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info p {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--blue-300);
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .contact-detail {
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-detail-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--amber-500);
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-detail-value {
+            font-size: 0.95rem;
+            color: var(--blue-200);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1.2rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--blue-700);
+            color: var(--neutral-100);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--amber-500);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 1.2rem;
+            left: 0;
+            font-size: 0.8rem;
+            color: var(--blue-400);
+            pointer-events: none;
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:valid ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group textarea:valid ~ label {
+            top: -0.5rem;
+            font-size: 0.6rem;
+            color: var(--amber-500);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .form-submit {
+            align-self: flex-start;
+            padding: 1rem 3rem;
+            background: var(--amber-500);
+            color: var(--blue-900);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--blue-600);
+            transform: translateX(-101%);
+            transition: transform 0.5s var(--ease-out-expo);
+        }
+
+        .form-submit:hover::before {
+            transform: translateX(0);
+        }
+
+        .form-submit span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-submit:hover {
+            color: var(--neutral-50);
+        }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════ */
+        .footer {
+            background: var(--blue-900);
+            border-top: 1px solid var(--blue-800);
+            padding: 4rem 3rem 2rem;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--neutral-50);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-social a {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--blue-300);
+            transition: color 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: var(--amber-500);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 2rem;
+            border-top: 1px solid var(--blue-800);
+            font-size: 0.7rem;
+            color: var(--blue-400);
+            opacity: 0.6;
+        }
+
+        /* ═══════════════════════════════════════════
+           MAGNETIC BUTTON EFFECT
+        ═══════════════════════════════════════════ */
+        .magnetic {
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+
+        /* ═══════════════════════════════════════════
+           REVEAL ANIMATIONS (Initial States)
+        ═══════════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .process-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-step { border-right: none; border-bottom: 1px solid var(--blue-700); }
+            .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .project-card { width: 75vw; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .nav-toggle { display: flex; }
+            .hero { padding: 0 1.5rem 4rem; }
+            .section-padding { padding: var(--space-xl) 1.5rem; }
+            .process-grid { grid-template-columns: 1fr; }
+            .about-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+            .stat-number { font-size: 2rem; }
+            .project-card { width: 85vw; height: 60vh; }
+            .footer-top { flex-direction: column; }
+            .footer-bottom { flex-direction: column; gap: 0.5rem; }
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════ PRELOADER ═══════ -->
+    <div class="preloader">
+        <div class="preloader-counter">0</div>
+        <div class="preloader-bar">
+            <div class="preloader-bar-fill"></div>
+        </div>
+        <div class="preloader-text">Cargando experiencia</div>
+    </div>
+
+    <!-- ═══════ CURSOR ═══════ -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- ═══════ NAVIGATION ═══════ -->
+    <nav class="nav">
+        <a href="#" class="nav-logo magnetic">MARC <span>VIDAL</span></a>
+        <ul class="nav-menu">
+            <li><a href="#about" class="magnetic">Filosofía</a></li>
+            <li><a href="#portfolio" class="magnetic">Proyectos</a></li>
+            <li><a href="#process" class="magnetic">Proceso</a></li>
+            <li><a href="#services" class="magnetic">Servicios</a></li>
+            <li><a href="#contact" class="magnetic">Contacto</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta magnetic">Iniciar Proyecto</a>
+        <button class="nav-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ═══════ HERO ═══════ -->
+    <section class="hero">
+        <div class="hero-bg">
+            <img src="https://image.pollinations.ai/prompt/Ultra-modern%20luxury%20residential%20architecture%20in%20Barcelona%20Spain%20sleek%20white%20glass%20villa%20cantilevered%20volumes%20overlooking%20Mediterranean%20Sea%20golden%20hour%20clean%20geometric%20lines%20infinity%20pool%20deep%20blue%20sky%20architectural%20photography%208K?width=1920&height=1080&nologo=true" alt="Arquitectura moderna Barcelona" loading="eager">
+        </div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <div class="hero-tag"><span>Estudio de Arquitectura de Autor · Barcelona · Est. 2012</span></div>
+            <h1 class="hero-title">
+                <span class="line"><span class="line-inner">Diseñamos</span></span>
+                <span class="line"><span class="line-inner">espacios que</span></span>
+                <span class="line"><span class="line-inner"><em>respiran</em> luz.</span></span>
+            </h1>
+            <p class="hero-subtitle">
+                Racionalismo mediterráneo, proporción áurea y percepción humana convergen en cada proyecto. Arquitectura de lujo que trasciende la materia.
+            </p>
+        </div>
+
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="hero-scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ═══════ ABOUT ═══════ -->
+    <section class="about section-padding" id="about">
+        <div class="about-grid">
+            <div class="about-image reveal-left">
+                <img src="https://image.pollinations.ai/prompt/Modern%20luxury%20penthouse%20interior%20Barcelona%20Eixample%20district%20open%20plan%20living%20floor%20to%20ceiling%20windows%20deep%20blue%20velvet%20sofa%20natural%20oak%20floors%20white%20plastered%20walls%20minimalist%20Mediterranean%20design%20warm%20afternoon%20light%20geometric%20shadows%20architectural%20interior%20photography%208K?width=800&height=1100&nologo=true" alt="Interior arquitectura moderna">
+            </div>
+            <div class="about-text">
+                <div class="section-label reveal">Filosofía de Diseño</div>
+                <h2 class="section-title reveal">La arquitectura es <em>percepción</em> habitada</h2>
+                <p class="reveal">
+                    Cada proyecto nace de la escucha: del terreno, de la luz mediterránea, de las leyes de la Gestalt que gobiernan cómo el ser humano percibe y habita el espacio. No imponemos formas; revelamos las que el lugar ya contiene.
+                </p>
+                <p class="reveal">
+                    Trabajamos con la honestidad del material —travertino, hormigón visto, madera de roble— y la precisión del detalle constructivo. Cada encuentro entre superficies es una decisión ética. La proporción áurea no es ornamento: es estructura perceptual.
+                </p>
+                <p class="reveal">
+                    Desde Barcelona, proyectamos vivienda de lujo, rehabilitación patrimonial y espacios comerciales de alta gama. Nuestra práctica se sitúa en la intersección entre el racionalismo de Coderch y la complejidad topográfica de Miralles.
+                </p>
+
+                <div class="about-stats">
+                    <div class="reveal">
+                        <div class="stat-number" data-count="87">0</div>
+                        <div class="stat-label">Proyectos</div>
+                    </div>
+                    <div class="reveal">
+                        <div class="stat-number" data-count="14">0</div>
+                        <div class="stat-label">Años</div>
+                    </div>
+                    <div class="reveal">
+                        <div class="stat-number" data-count="12">0</div>
+                        <div class="stat-label">Premios</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ PORTFOLIO ═══════ -->
+    <section class="portfolio section-padding" id="portfolio">
+        <div class="portfolio-header">
+            <div>
+                <div class="section-label reveal">Portfolio Selecto</div>
+                <h2 class="section-title reveal">Proyectos que <em>definen</em> lugar</h2>
+            </div>
+        </div>
+
+        <div class="portfolio-scroll-wrapper">
+            <div class="portfolio-sticky">
+                <div class="portfolio-track">
+                    <!-- Project 1 -->
+                    <article class="project-card">
+                        <img class="project-card-img" src="https://image.pollinations.ai/prompt/Ultra-modern%20luxury%20residential%20architecture%20Barcelona%20sleek%20white%20glass%20villa%20cantilevered%20volumes%20Mediterranean%20Sea%20golden%20hour%20infinity%20pool%20deep%20blue%20sky%20architectural%20photography%208K?width=1200&height=900&nologo=true" alt="Casa Cerulean">
+                        <div class="project-card-overlay">
+                            <span class="project-card-number">01</span>
+                            <div class="project-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                            </div>
+                            <span class="project-card-category">Vivienda Unifamiliar</span>
+                            <h3 class="project-card-title">Casa Cerulean</h3>
+                            <p class="project-card-location">Pedralbes, Barcelona · 2024</p>
+                        </div>
+                    </article>
+
+                    <!-- Project 2 -->
+                    <article class="project-card">
+                        <img class="project-card-img" src="https://image.pollinations.ai/prompt/Modern%20luxury%20penthouse%20interior%20Barcelona%20Eixample%20open%20plan%20floor%20ceiling%20windows%20deep%20blue%20velvet%20oak%20floors%20minimalist%20Mediterranean%20warm%20light%208K%20architectural%20photography?width=1200&height=900&nologo=true" alt="Ático Eixample">
+                        <div class="project-card-overlay">
+                            <span class="project-card-number">02</span>
+                            <div class="project-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                            </div>
+                            <span class="project-card-category">Reforma Integral · Interiorismo</span>
+                            <h3 class="project-card-title">Ático Eixample 234</h3>
+                            <p class="project-card-location">Eixample Dreta, Barcelona · 2023</p>
+                        </div>
+                    </article>
+
+                    <!-- Project 3 -->
+                    <article class="project-card">
+                        <img class="project-card-img" src="https://image.pollinations.ai/prompt/Contemporary%20architectural%20facade%20Barcelona%20Gothic%20Quarter%20modern%20intervention%20medieval%20stone%20walls%20glass%20corten%20steel%20ancient%20limestone%20blue%20hour%20twilight%20amber%20glow%20interior%208K%20architectural%20photography?width=1200&height=900&nologo=true" alt="Casa Gòtica">
+                        <div class="project-card-overlay">
+                            <span class="project-card-number">03</span>
+                            <div class="project-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                            </div>
+                            <span class="project-card-category">Rehabilitación Patrimonial</span>
+                            <h3 class="project-card-title">Casa Gòtica Nova</h3>
+                            <p class="project-card-location">Barri Gòtic, Barcelona · 2023</p>
+                        </div>
+                    </article>
+
+                    <!-- Project 4 -->
+                    <article class="project-card">
+                        <img class="project-card-img" src="https://image.pollinations.ai/prompt/Aerial%20view%20luxury%20modern%20villa%20complex%20Barcelona%20hills%20Tibidabo%20white%20geometric%20volumes%20blue%20infinity%20pools%20Mediterranean%20pine%20trees%20terraced%20gardens%20Sagrada%20Familia%20background%20golden%20hour%20drone%20photography%208K?width=1200&height=900&nologo=true" alt="Villas Tibidabo">
+                        <div class="project-card-overlay">
+                            <span class="project-card-number">04</span>
+                            <div class="project-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                            </div>
+                            <span class="project-card-category">Complejo Residencial</span>
+                            <h3 class="project-card-title">Villas Tibidabo</h3>
+                            <p class="project-card-location">Vallvidrera, Barcelona · 2022</p>
+                        </div>
+                    </article>
+
+                    <!-- Project 5 -->
+                    <article class="project-card">
+                        <img class="project-card-img" src="https://image.pollinations.ai/prompt/Modern%20architectural%20detail%20luxury%20staircase%20Barcelona%20townhouse%20floating%20white%20concrete%20steps%20hidden%20LED%20blue%20ambient%20glow%20glass%20balustrade%20micro-cement%20walls%20olive%20tree%20navy%20blue%20accent%20wall%20minimalist%208K%20photography?width=1200&height=900&nologo=true" alt="Escalera Luz">
+                        <div class="project-card-overlay">
+                            <span class="project-card-number">05</span>
+                            <div class="project-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                            </div>
+                            <span class="project-card-category">Diseño de Interiores</span>
+                            <h3 class="project-card-title">Escalera de Luz</h3>
+                            <p class="project-card-location">Sarrià, Barcelona · 2024</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ PROCESS ═══════ -->
+    <section class="process section-padding" id="process">
+        <div style="text-align:center; max-width:700px; margin:0 auto 2rem;">
+            <div class="section-label reveal">Metodología</div>
+            <h2 class="section-title reveal">Del <em>análisis</em> a la materia</h2>
+        </div>
+
+        <div class="process-grid">
+            <div class="process-step reveal">
+                <div class="process-number">01</div>
+                <h3 class="process-title">Escucha & Análisis</h3>
+                <p class="process-desc">Estudio del lugar, orientación solar, vientos dominantes, normativa urbanística y programa funcional del cliente. Mapeo perceptual del entorno.</p>
+            </div>
+            <div class="process-step reveal">
+                <div class="process-number">02</div>
+                <h3 class="process-title">Concepto & Forma</h3>
+                <p class="process-desc">Generación del partido arquitectónico. Maquetas físicas, croquis analógicos y modelado 3D. Validación mediante proporción áurea y leyes de Gestalt.</p>
+            </div>
+            <div class="process-step reveal">
+                <div class="process-number">03</div>
+                <h3 class="process-title">Desarrollo Técnico</h3>
+                <p class="process-desc">Proyecto ejecutivo con BIM. Estructura, instalaciones, envolvente térmica y detalle constructivo. Coordinación de ingenierías y cumplimiento CTE.</p>
+            </div>
+            <div class="process-step reveal">
+                <div class="process-number">04</div>
+                <h3 class="process-title">Dirección & Entrega</h3>
+                <p class="process-desc">Dirección de obra con presencia semanal. Control de calidad material, supervisión de acabados y acompañamiento hasta la entrega de llaves.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ SERVICES ═══════ -->
+    <section class="services section-padding" id="services">
+        <div style="max-width:1200px; margin:0 auto;">
+            <div class="section-label reveal">Servicios</div>
+            <h2 class="section-title reveal">Disciplinas del <em>estudio</em></h2>
+        </div>
+
+        <div class="services-list">
+            <div class="service-item reveal">
+                <span class="service-num">01</span>
+                <span class="service-name">Arquitectura Residencial de Lujo</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+            <div class="service-item reveal">
+                <span class="service-num">02</span>
+                <span class="service-name">Rehabilitación Patrimonial</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+            <div class="service-item reveal">
+                <span class="service-num">03</span>
+                <span class="service-name">Interiorismo & Diseño de Mobiliario</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+            <div class="service-item reveal">
+                <span class="service-num">04</span>
+                <span class="service-name">Urbanismo & Paisajismo Mediterráneo</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+            <div class="service-item reveal">
+                <span class="service-num">05</span>
+                <span class="service-name">Consultoría de Eficiencia Energética</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+            <div class="service-item reveal">
+                <span class="service-num">06</span>
+                <span class="service-name">Dirección de Obra & Project Management</span>
+                <span class="service-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ TESTIMONIAL ═══════ -->
+    <section class="testimonials section-padding">
+        <div class="reveal">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--blue-400)" stroke-width="1" style="margin:0 auto 2rem;display:block;opacity:0.5;">
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/>
+                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/>
+            </svg>
+        </div>
+        <blockquote class="testimonial-quote reveal">
+            "Marc no diseñó una casa. Diseñó la forma en que la luz del Mediterráneo entra en nuestra vida cada mañana. Cada rincón tiene una intención que solo descubres con el tiempo."
+        </blockquote>
+        <div class="testimonial-author reveal">Elena & Jordi Puig-Sureda</div>
+        <div class="testimonial-role reveal">Clientes · Casa Cerulean, Pedralbes</div>
+    </section>
+
+    <!-- ═══════ CONTACT ═══════ -->
+    <section class="contact section-padding" id="contact">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="section-label reveal">Hablemos</div>
+                <h2 class="section-title reveal">Iniciemos su <em>proyecto</em></h2>
+                <p class="reveal">
+                    Cada conversación comienza con una escucha. Cuéntenos su visión, su terreno, sus sueños. El primer encuentro es sin compromiso.
+                </p>
+
+                <div class="contact-detail reveal">
+                    <div class="contact-detail-label">Estudio</div>
+                    <div class="contact-detail-value">Carrer de Mallorca, 234, 3r 2a<br>08008 Barcelona</div>
+                </div>
+                <div class="contact-detail reveal">
+                    <div class="contact-detail-label">Email</div>
+                    <div class="contact-detail-value">estudio@marcvidal.arq</div>
+                </div>
+                <div class="contact-detail reveal">
+                    <div class="contact-detail-label">Teléfono</div>
+                    <div class="contact-detail-value">+34 932 456 789</div>
+                </div>
+                <div class="contact-detail reveal">
+                    <div class="contact-detail-label">Horario</div>
+                    <div class="contact-detail-value">Lun – Vie · 09:00 – 19:00</div>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contactForm">
+                <div class="form-group reveal">
+                    <input type="text" id="name" name="name" required>
+                    <label for="name">Nombre completo</label>
+                </div>
+                <div class="form-group reveal">
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">Email</label>
+                </div>
+                <div class="form-group reveal">
+                    <input type="text" id="project-type" name="project-type">
+                    <label for="project-type">Tipo de proyecto</label>
+                </div>
+                <div class="form-group reveal">
+                    <textarea id="message" name="message" required></textarea>
+                    <label for="message">Describa su visión</label>
+                </div>
+                <button type="submit" class="form-submit magnetic">
+                    <span>Enviar Consulta</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-brand">MARC VIDAL</div>
+            <div class="footer-social">
+                <a href="#" class="magnetic">Instagram</a>
+                <a href="#" class="magnetic">Pinterest</a>
+                <a href="#" class="magnetic">Archdaily</a>
+                <a href="#" class="magnetic">LinkedIn</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Marc Vidal Arquitectura. COAC nº 42.891</span>
+            <span>Barcelona · Costa Brava · Mallorca</span>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT - GSAP ANIMATION ENGINE
+    ═══════════════════════════════════════════ -->
+    <script>
+        // ─── Register Plugins ───
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // ─── Lenis Smooth Scroll ───
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            smoothWheel: true,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Sync Lenis with GSAP ScrollTrigger
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+
+        // ─── Custom Cursor ───
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorRing = document.querySelector('.cursor-ring');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        gsap.ticker.add(() => {
+            gsap.set(cursorDot, { x: mouseX - 4, y: mouseY - 4 });
+            gsap.to(cursorRing, { x: mouseX - 22, y: mouseY - 22, duration: 0.4, ease: 'power2.out' });
+        });
+
+        // Cursor hover states
+        document.querySelectorAll('a, button, .project-card, .service-item').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+        });
+
+        // ─── PRELOADER ───
+        const preloaderTl = gsap.timeline();
+        const counter = { val: 0 };
+        const counterEl = document.querySelector('.preloader-counter');
+
+        preloaderTl
+            .to(counter, {
+                val: 100,
+                duration: 2.5,
+                ease: 'power2.inOut',
+                onUpdate: () => {
+                    counterEl.textContent = Math.round(counter.val);
+                }
+            })
+            .to('.preloader-bar-fill', {
+                width: '100%',
+                duration: 2.5,
+                ease: 'power2.inOut'
+            }, 0)
+            .to('.preloader', {
+                yPercent: -100,
+                duration: 1,
+                ease: 'power3.inOut',
+                delay: 0.3
+            })
+            .set('.preloader', { display: 'none' })
+            .call(() => initHeroAnimation());
+
+        // ─── HERO ANIMATION ───
+        function initHeroAnimation() {
+            const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            heroTl
+                .to('.hero-bg img', {
+                    scale: 1,
+                    duration: 2,
+                    ease: 'power2.out'
+                })
+                .to('.hero-title .line-inner', {
+                    y: 0,
+                    duration: 1.2,
+                    stagger: 0.12,
+                    ease: 'power4.out'
+                }, '-=1.5')
+                .to('.hero-tag span', {
+                    y: 0,
+                    duration: 0.8,
+                    ease: 'power3.out'
+                }, '-=0.8')
+                .to('.hero-subtitle', {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: 'power2.out'
+                }, '-=0.5');
+        }
+
+        // ─── NAV SCROLL STATE ───
+        ScrollTrigger.create({
+            start: 100,
+            onUpdate: (self) => {
+                document.querySelector('.nav').classList.toggle('scrolled', self.direction === 1 && self.scroll() > 100);
+            }
+        });
+
+        // ─── REVEAL ANIMATIONS ───
+        gsap.utils.toArray('.reveal').forEach(el => {
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        gsap.utils.toArray('.reveal-left').forEach(el => {
+            gsap.to(el, {
+                opacity: 1,
+                x: 0,
+                duration: 1.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // ─── COUNTER ANIMATION ───
+        gsap.utils.toArray('.stat-number').forEach(el => {
+            const target = parseInt(el.dataset.count);
+            const obj = { val: 0 };
+
+            ScrollTrigger.create({
+                trigger: el,
+                start: 'top 85%',
+                onEnter: () => {
+                    gsap.to(obj, {
+                        val: target,
+                        duration: 2,
+                        ease: 'power2.out',
+                        onUpdate: () => { el.textContent = Math.round(obj.val); }
+                    });
+                },
+                once: true
+            });
+        });
+
+        // ─── HORIZONTAL SCROLL PORTFOLIO ───
+        const track = document.querySelector('.portfolio-track');
+        const cards = gsap.utils.toArray('.project-card');
+        const totalWidth = cards.reduce((acc, card) => acc + card.offsetWidth + 48, 0);
+
+        gsap.to(track, {
+            x: () => -(totalWidth - window.innerWidth + 96),
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.portfolio-scroll-wrapper',
+                start: 'top top',
+                end: () => `+=${totalWidth}`,
+                scrub: 1.2,
+                pin: '.portfolio-sticky',
+                anticipatePin: 1,
+                invalidateOnRefresh: true
+            }
+        });
+
+        // Card parallax on horizontal scroll
+        cards.forEach((card, i) => {
+            gsap.from(card.querySelector('.project-card-img'), {
+                xPercent: -15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: card,
+                    containerAnimation: gsap.getById && null,
+                    start: 'left right',
+                    end: 'right left',
+                    scrub: true,
+                    horizontal: true
+                }
+            });
+        });
+
+        // ─── PROCESS STEPS STAGGER ───
+        gsap.utils.toArray('.process-step').forEach((step, i) => {
+            gsap.to(step, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: i * 0.15,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.process-grid',
+                    start: 'top 75%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // ─── SERVICES STAGGER ───
+        gsap.utils.toArray('.service-item').forEach((item, i) => {
+            gsap.to(item, {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                delay: i * 0.08,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.services-list',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // ─── MAGNETIC BUTTONS ───
+        document.querySelectorAll('.magnetic').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3, ease: 'power2.out' });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+            });
+        });
+
+        // ─── SMOOTH SCROLL NAV LINKS ───
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    lenis.scrollTo(target, { offset: -80, duration: 1.5 });
+                }
+            });
+        });
+
+        // ─── PARALLAX HERO ───
+        gsap.to('.hero-bg img', {
+            yPercent: 20,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+
+        // ─── FORM HANDLING ───
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.form-submit span');
+            btn.textContent = '✓ Enviado correctamente';
+            gsap.to(btn, { color: '#4ADE80', duration: 0.3 });
+            
+            setTimeout(() => {
+                btn.textContent = 'Enviar Consulta';
+                gsap.to(btn, { color: '', duration: 0.3 });
+                e.target.reset();
+            }, 3000);
+        });
+
+        // ─── RESIZE HANDLER ───
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 250);
+        });
+
+        // ─── PAGE VISIBILITY (Pause animations when hidden) ───
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                gsap.globalTimeline.pause();
+                lenis.stop();
+            } else {
+                gsap.globalTimeline.resume();
+                lenis.start();
+            }
+        });
+    </script>
+</body>
+</html>

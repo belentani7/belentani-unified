@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUCK — Produção Musical</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0d0d0d;
+            --cream: #efe7d0;
+            --acid-green: #9acb6b;
+            --military-green: #39582f;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--cream);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+        }
+
+        /* CORRECCIÓN: Navbar Superior Izquierda */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(13,13,13,0.8), rgba(13,13,13,0));
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-box svg {
+            width: 120px;
+            height: auto;
+            fill: var(--acid-green);
+            transition: transform 0.1s ease;
+        }
+
+        .lang-selector button {
+            background: transparent;
+            border: 1px solid var(--cream);
+            color: var(--cream);
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .lang-selector button:hover, .lang-selector button.active {
+            background: var(--acid-green);
+            color: var(--bg-dark);
+            border-color: var(--acid-green);
+        }
+
+        /* Hero Section & Sidechain Animation Placeholder */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(circle at center, #1a2915 0%, var(--bg-dark) 70%);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        /* Grid de Portfolio / Singles extraídos */
+        .portfolio-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            color: var(--acid-green);
+            font-size: 2rem;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            border-left: 4px solid var(--acid-green);
+            padding-left: 1rem;
+        }
+
+        .singles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .single-card {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .single-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--acid-green);
+        }
+
+        .image-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background-color: var(--military-green);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+        }
+
+        .card-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-info p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="nav-container">
+        <div class="logo-box" id="duck-logo">
+            <!-- LOGO VECTORIAL SVG (Evita roturas de enlaces) -->
+            <svg viewBox="0 0 100 35">
+                <text x="0" y="28" font-family="sans-serif" font-weight="900" font-size="28" letter-spacing="-1">DUCK</text>
+            </svg>
+        </div>
+        <div class="lang-selector">
+            <button onclick="setLanguage('pt')" id="btn-pt" class="active">PT</button>
+            <button onclick="setLanguage('es')" id="btn-es">ES</button>
+            <button onclick="setLanguage('en')" id="btn-en">EN</button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1 id="hero-title">Produção Musical</h1>
+        <p id="hero-subtitle">Vamos criar o seu próximo hit?</p>
+    </section>
+
+    <section class="portfolio-section">
+        <h2 class="section-title" id="port-title">Lançamentos / Singles</h2>
+        <div class="singles-grid">
+            
+            <!-- Single 1: Hancornia EP -->
+            <div class="single-card">
+                <div class="image-container" style="background-image: url('https://cdn-sites-images.46graus.com/files/photos/91513058/9b291ce9-5c3a-423b-9232-c38606562b02/capa-3-768x432.jpg');"></div>
+                <div class="card-info">
+                    <h3>EP Hancornia</h3>
+                    <p>Produção, Mix & Master</p>
+                </div>
+            </div>
+
+            <!-- Single 2: Portfolio Track Placeholder -->
+            <div class="single-card">
+                <div class="image-container" style="background-image: url('https://cdn-sites-images.46graus.com/files/photos/91513058/9ad85b7a-bf84-4cd0-9641-0564950f414d/capa-4-768x432.jpg');"></div>
+                <div class="card-info">
+                    <h3>Urban Tracks</h3>
+                    <p>Beatmaking & Coesão Sônica</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Motor i18n
+        const translations = {
+            pt: {
+                title: "Produção Musical",
+                subtitle: "Vamos criar o seu próximo hit?",
+                port: "Lançamentos / Singles"
+            },
+            es: {
+                title: "Producción Musical",
+                subtitle: "¿Vamos a crear tu próximo hit?",
+                port: "Lanzamientos / Singles"
+            },
+            en: {
+                title: "Music Production",
+                subtitle: "Let's create your next hit?",
+                port: "Releases / Singles"
+            }
+        };
+
+        function setLanguage(lang) {
+            document.getElementById('hero-title').innerText = translations[lang].title;
+            document.getElementById('hero-subtitle').innerText = translations[lang].subtitle;
+            document.getElementById('port-title').innerText = translations[lang].port;
+            
+            document.querySelectorAll('.lang-selector button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+        }
+
+        // Efecto Sidechain Scroll Trigger
+        gsap.registerPlugin(ScrollTrigger);
+        
+        gsap.to("#duck-logo", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            },
+            scale: 0.75,
+            opacity: 0.6,
+            ease: "power1.inOut"
+        });
+    </script>
+</body>
+</html>

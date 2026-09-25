@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BELENTANI — Diamond Living System</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Three.js -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- GSAP -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <style>
+    /* ===== ROOT TOKENS ===== */
+    :root {
+      --void: #030308;
+      --blood: #ff003c;
+      --gold: #ffd700;
+      --ice: #00e5ff;
+      --smoke: #1a1a2e;
+      --ash: #8a8a9a;
+      --diamond-refract: #66d9ff;
+      --diamond-prism: #b026ff;
+      --diamond-fire: #ffd700;
+      
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 40px;
+      --space-2xl: 64px;
+      
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: var(--void);
+      color: #fff;
+      font-family: 'Chakra Petch', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    /* ===== DIAMOND CANVAS ===== */
+    #diamond-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    /* ===== MATRIX RAIN ===== */
+    #matrix-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    
+    /* ===== GLITCH BORDER ===== */
+    .glitch-border {
+      position: fixed;
+      inset: 0;
+      border: 1px solid rgba(255, 0, 60, 0.2);
+      pointer-events: none;
+      z-index: 9998;
+    }
+    
+    .glitch-border::before,
+    .glitch-border::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border: 1px solid var(--blood);
+      opacity: 0;
+      animation: glitchBorder 12s infinite;
+    }
+    
+    .glitch-border::after {
+      animation-delay: 0.1s;
+    }
+    
+    @keyframes glitchBorder {
+      0%, 96%, 100% { opacity: 0; transform: translate(0); }
+      97% { opacity: 1; transform: translate(3px, -2px); }
+      98% { opacity: 0; }
+      99% { opacity: 1; transform: translate(-3px, 2px); }
+    }
+    
+    /* ===== LIVING CURSOR ===== */
+    .cursor-diamond {
+      width: 24px;
+      height: 24px;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10001;
+      transform: translate(-50%, -50%) rotate(45deg);
+      background: linear-gradient(135deg, var(--ice), var(--blood));
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      transition: transform 0.15s var(--ease-out), filter 0.3s ease;
+      filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.6));
+    }
+    
+    .cursor-diamond.hovering {
+      transform: translate(-50%, -50%) rotate(45deg) scale(1.8);
+      filter: drop-shadow(0 0 25px rgba(255, 0, 60, 0.9));
+    }
+    
+    .cursor-trail {
+      width: 8px;
+      height: 8px;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%) rotate(45deg);
+      background: var(--ice);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    
+    /* ===== VIGNETTE ===== */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 20%, rgba(3, 3, 8, 0.9) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    
+    /* ===== CONTENT ===== */
+    .content {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-2xl);
+    }
+    
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      max-width: 900px;
+    }
+    
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(48px, 12vw, 180px);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      margin-bottom: var(--space-lg);
+      background: linear-gradient(135deg, #fff 0%, var(--ice) 50%, var(--blood) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleShimmer 8s ease-in-out infinite;
+      background-size: 200% 200%;
+    }
+    
+    @keyframes titleShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .hero-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--ash);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    
+    /* ===== DIAMOND CARDS ===== */
+    .diamond-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-lg);
+      width: 100%;
+      max-width: 1200px;
+      margin-top: var(--space-3xl);
+    }
+    
+    .diamond-card {
+      position: relative;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 229, 255, 0.15);
+      padding: var(--space-xl);
+      clip-path: polygon(
+        20px 0, 
+        calc(100% - 20px) 0, 
+        100% 20px, 
+        100% calc(100% - 20px), 
+        calc(100% - 20px) 100%, 
+        20px 100%, 
+        0 calc(100% - 20px), 
+        0 20px
+      );
+      animation: diamondBreathe 4s ease-in-out infinite;
+      transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+      cursor: pointer;
+    }
+    
+    .diamond-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, 
+        rgba(0, 229, 255, 0.1) 0%, 
+        transparent 50%, 
+        rgba(255, 0, 60, 0.05) 100%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .diamond-card:hover::before {
+      opacity: 1;
+    }
+    
+    .diamond-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 229, 255, 0.2);
+      border-color: rgba(0, 229, 255, 0.4);
+    }
+    
+    @keyframes diamondBreathe {
+      0%, 100% {
+        box-shadow: 
+          0 0 20px rgba(0, 229, 255, 0.05),
+          inset 0 0 20px rgba(0, 229, 255, 0.02);
+      }
+      50% {
+        box-shadow: 
+          0 0 40px rgba(0, 229, 255, 0.1),
+          inset 0 0 30px rgba(0, 229, 255, 0.05);
+      }
+    }
+    
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--blood), #800020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: var(--space-lg);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      transition: transform 0.4s var(--ease-spring);
+    }
+    
+    .diamond-card:hover .card-icon {
+      transform: rotate(45deg) scale(1.1);
+    }
+    
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      letter-spacing: 2px;
+    }
+    
+    .card-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-bottom: var(--space-md);
+    }
+    
+    .card-desc {
+      font-size: 14px;
+      color: var(--ash);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+    
+    .card-cta {
+      width: 100%;
+      padding: var(--space-md);
+      background: transparent;
+      border: 1px solid var(--blood);
+      color: var(--blood);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-cta:hover {
+      background: var(--blood);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+    }
+    
+    .card-cta::after {
+      content: '↗';
+      font-size: 14px;
+      transition: transform 0.3s var(--ease-out);
+    }
+    
+    .card-cta:hover::after {
+      transform: translate(4px, -4px);
+    }
+    
+    /* ===== PULSE RINGS ===== */
+    .pulse-container {
+      position: absolute;
+      top: var(--space-lg);
+      right: var(--space-lg);
+    }
+    
+    .pulse-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--ice);
+      border-radius: 50%;
+      position: relative;
+    }
+    
+    .pulse-ring::before,
+    .pulse-ring::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 1px solid var(--ice);
+      border-radius: 50%;
+      animation: pulseExpand 2s ease-out infinite;
+    }
+    
+    .pulse-ring::after {
+      animation-delay: 0.5s;
+    }
+    
+    @keyframes pulseExpand {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    
+    .pulse-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: var(--ice);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px var(--ice);
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.3); }
+    }
+    
+    /* ===== SACRED SECTION ===== */
+    .sacred-section {
+      margin-top: var(--space-4xl);
+      text-align: center;
+      padding: var(--space-3xl);
+    }
+    
+    .sacred-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(32px, 6vw, 72px);
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .sacred-diamond {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto var(--space-xl);
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      animation: sacredSpin 20s linear infinite;
+      filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+    }
+    
+    @keyframes sacredSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ===== FOOTER ===== */
+    .footer {
+      position: relative;
+      z-index: 10;
+      padding: var(--space-2xl);
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .footer-diamonds {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .footer-diamond {
+      width: 12px;
+      height: 12px;
+      background: var(--blood);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      animation: footerPulse 2s ease-in-out infinite;
+    }
+    
+    .footer-diamond:nth-child(2) { animation-delay: 0.2s; background: var(--ice); }
+    .footer-diamond:nth-child(3) { animation-delay: 0.4s; background: var(--gold); }
+    .footer-diamond:nth-child(4) { animation-delay: 0.6s; background: var(--diamond-prism); }
+    .footer-diamond:nth-child(5) { animation-delay: 0.8s; }
+    
+    @keyframes footerPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+    
+    .footer-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ash);
+      letter-spacing: 2px;
+    }
+    
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      
+      .hero-title {
+        background-position: 0% 50%;
+        animation: none;
+      }
+    }
+    
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .diamond-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .hero-title {
+        font-size: clamp(36px, 10vw, 80px);
+      }
+      
+      .cursor-diamond,
+      .cursor-trail {
+        display: none;
+      }
+      
+      body {
+        cursor: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Diamond Canvas (Three.js) -->
+  <canvas id="diamond-canvas"></canvas>
+  
+  <!-- Matrix Rain -->
+  <canvas id="matrix-canvas"></canvas>
+  
+  <!-- Vignette -->
+  <div class="vignette"></div>
+  
+  <!-- Glitch Border -->
+  <div class="glitch-border"></div>
+  
+  <!-- Living Cursor -->
+  <div class="cursor-diamond"></div>
+  <div class="cursor-trail"></div>
+  
+  <!-- Content -->
+  <main class="content">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">BELENTANI</h1>
+      <p class="hero-subtitle">Creative Operating System</p>
+    </section>
+    
+    <!-- Diamond Cards -->
+    <section class="diamond-grid">
+      <!-- Card 1 -->
+      <article class="diamond-card" data-tilt>
+        <div class="pulse-container">
+          <div class="pulse-ring">
+            <div class="pulse-dot"></div>
+          </div>
+        </div>
+        <div class="card-icon">◆</div>
+        <h3 class="card-title">TRACK 01</h3>
+        <p class="card-id">JUDAS-001</p>
+        <p class="card-desc">Algorithm of Betrayal — 4:23</p>
+        <button class="card-cta">LISTEN NOW</button>
+      </article>
+      
+      <!-- Card 2 -->
+      <article class="diamond-card" data-tilt>
+        <div class="pulse-container">
+          <div class="pulse-ring">
+            <div class="pulse-dot"></div>
+          </div>
+        </div>
+        <div class="card-icon">◆</div>
+        <h3 class="card-title">TRACK 02</h3>
+        <p class="card-id">JUDAS-002</p>
+        <p class="card-desc">Conceptual Hack — 3:47</p>
+        <button class="card-cta">LISTEN NOW</button>
+      </article>
+      
+      <!-- Card 3 -->
+      <article class="diamond-card" data-tilt>
+        <div class="pulse-container">
+          <div class="pulse-ring">
+            <div class="pulse-dot"></div>
+          </div>
+        </div>
+        <div class="card-icon">◆</div>
+        <h3 class="card-title">TRACK 03</h3>
+        <p class="card-id">JUDAS-003</p>
+        <p class="card-desc">Neural Tears — 5:12</p>
+        <button class="card-cta">LISTEN NOW</button>
+      </article>
+      
+      <!-- Card 4 -->
+      <article class="diamond-card" data-tilt>
+        <div class="pulse-container">
+          <div class="pulse-ring">
+            <div class="pulse-dot"></div>
+          </div>
+        </div>
+        <div class="card-icon">◆</div>
+        <h3 class="card-title">TRACK 04</h3>
+        <p class="card-id">JUDAS-004</p>
+        <p class="card-desc">System Reboot — 4:08</p>
+        <button class="card-cta">LISTEN NOW</button>
+      </article>
+    </section>
+    
+    <!-- Sacred Section -->
+    <section class="sacred-section">
+      <div class="sacred-diamond"></div>
+      <h2 class="sacred-title">The Golden Key</h2>
+      <p class="hero-subtitle">Track 05 — 6:34</p>
+    </section>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-diamonds">
+      <div class="footer-diamond"></div>
+      <div class="footer-diamond"></div>
+      <div class="footer-diamond"></div>
+      <div class="footer-diamond"></div>
+      <div class="footer-diamond"></div>
+    </div>
+    <p class="footer-text">BELENTANI // JUDAS ERA</p>
+  </footer>
+  
+  <script>
+    // ===== MATRIX RAIN =====
+    class MatrixRain {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.columns = [];
+        this.chars = 'JUDAS0123456789BELENTANI◆◇○●';
+        this.fontSize = 14;
+        this.init();
+      }
+      
+      init() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        const columnCount = Math.floor(this.canvas.width / this.fontSize);
+        
+        for (let i = 0; i < columnCount; i++) {
+          this.columns[i] = Math.random() * this.canvas.height;
+        }
+      }
+      
+      draw() {
+        this.ctx.fillStyle = 'rgba(3, 3, 8, 0.05)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.ctx.fillStyle = '#00ff41';
+        this.ctx.font = `${this.fontSize}px JetBrains Mono`;
+        
+        for (let i = 0; i < this.columns.length; i++) {
+          const char = this.chars[Math.floor(Math.random() * this.chars.length)];
+          this.ctx.fillText(char, i * this.fontSize, this.columns[i]);
+          
+          if (this.columns[i] > this.canvas.height && Math.random() > 0.975) {
+            this.columns[i] = 0;
+          }
+          
+          this.columns[i] += this.fontSize;
+        }
+      }
+      
+      animate() {
+        this.draw();
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+    
+    // ===== DIAMOND SCENE (THREE.JS) =====
+    function createDiamondGeometry(scale = 1) {
+      const geometry = new THREE.OctahedronGeometry(scale, 0);
+      const positions = geometry.attributes.position;
+      
+      for (let i = 0; i < positions.count; i++) {
+        const y = positions.getY(i);
+        if (y > 0) {
+          positions.setY(i, y * 1.4);
+        } else {
+          positions.setY(i, y * 0.8);
+        }
+      }
+      
+      positions.needsUpdate = true;
+      geometry.computeVertexNormals();
+      return geometry;
+    }
+    
+    const vertexShader = `
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+    
+    const fragmentShader = `
+      uniform float uTime;
+      uniform vec3 uColor;
+      
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      
+      void main() {
+        float fresnel = pow(1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+        
+        float r = sin(vPosition.x * 8.0 + uTime) * 0.5 + 0.5;
+        float g = sin(vPosition.y * 8.0 + uTime * 1.3) * 0.5 + 0.5;
+        float b = sin(vPosition.z * 8.0 + uTime * 0.7) * 0.5 + 0.5;
+        
+        vec3 prismatic = vec3(r, g, b);
+        vec3 finalColor = mix(uColor, prismatic, fresnel * 0.6);
+        finalColor += fresnel * vec3(0.4, 0.7, 1.0) * 0.4;
+        
+        gl_FragColor = vec4(finalColor, 0.85 - fresnel * 0.2);
+      }
+    `;
+    
+    function initDiamondScene() {
+      const canvas = document.getElementById('diamond-canvas');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      
+      const diamonds = [];
+      const count = window.innerWidth < 768 ? 5 : 10;
+      
+      for (let i = 0; i < count; i++) {
+        const scale = 0.3 + Math.random() * 0.4;
+        const geometry = createDiamondGeometry(scale);
+        const material = new THREE.ShaderMaterial({
+          vertexShader,
+          fragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(
+              i % 3 === 0 ? 0x00e5ff : 
+              i % 3 === 1 ? 0xff003c : 0xffd700
+            )}
+          },
+          transparent: true,
+          side: THREE.DoubleSide
+        });
+        
+        const diamond = new THREE.Mesh(geometry, material);
+        diamond.position.set(
+          (Math.random() - 0.5) * 12,
+          (Math.random() - 0.5) * 8,
+          (Math.random() - 0.5) * 6
+        );
+        diamond.rotation.set(
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+          Math.random() * Math.PI
+        );
+        
+        scene.add(diamond);
+        diamonds.push({
+          mesh: diamond,
+          speed: 0.2 + Math.random() * 0.4,
+          rotSpeed: 0.005 + Math.random() * 0.01,
+          floatOffset: Math.random() * Math.PI * 2
+        });
+      }
+      
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      
+      const light1 = new THREE.PointLight(0xff003c, 1, 25);
+      light1.position.set(6, 6, 6);
+      scene.add(light1);
+      
+      const light2 = new THREE.PointLight(0x00e5ff, 1, 25);
+      light2.position.set(-6, -6, 6);
+      scene.add(light2);
+      
+      camera.position.z = 10;
+      
+      return { scene, camera, renderer, diamonds };
+    }
+    
+    function animateDiamonds(state, mouseX, mouseY) {
+      const { scene, camera, renderer, diamonds } = state;
+      
+      requestAnimationFrame(() => animateDiamonds(state, mouseX, mouseY));
+      
+      const time = Date.now() * 0.001;
+      
+      diamonds.forEach((d, i) => {
+        d.mesh.material.uniforms.uTime.value = time;
+        d.mesh.rotation.x += d.rotSpeed * 0.5;
+        d.mesh.rotation.y += d.rotSpeed;
+        d.mesh.position.y += Math.sin(time * d.speed + d.floatOffset) * 0.001;
+        
+        d.mesh.rotation.x += (mouseY * 0.00005) * (i % 2 === 0 ? 1 : -1);
+        d.mesh.rotation.y += (mouseX * 0.00005) * (i % 2 === 0 ? -1 : 1);
+      });
+      
+      camera.position.x += (mouseX * 0.0003 - camera.position.x) * 0.02;
+      camera.position.y += (mouseY * 0.0003 - camera.position.y) * 0.02;
+      camera.lookAt(scene.position);
+      
+      renderer.render(scene, camera);
+    }
+    
+    // ===== CURSOR =====
+    let mouseX = 0, mouseY = 0;
+    const cursor = document.querySelector('.cursor-diamond');
+    const trail = document.querySelector('.cursor-trail');
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX - window.innerWidth / 2;
+      mouseY = e.clientY - window.innerHeight / 2;
+      
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      setTimeout(() => {
+        trail.style.left = e.clientX + 'px';
+        trail.style.top = e.clientY + 'px';
+      }, 50);
+    });
+    
+    document.querySelectorAll('a, button, .diamond-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+    
+    // ===== TILT EFFECT =====
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+      });
+    });
+    
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+      // Matrix Rain
+      const matrixCanvas = document.getElementById('matrix-canvas');
+      const matrix = new MatrixRain(matrixCanvas);
+      matrix.animate();
+      
+      // Diamonds (wait for Three.js to load)
+      const checkThree = setInterval(() => {
+        if (typeof THREE !== 'undefined') {
+          clearInterval(checkThree);
+          const diamondState = initDiamondScene();
+          animateDiamonds(diamondState, 0, 0);
+        }
+      }, 100);
+      
+      // Resize handler
+      window.addEventListener('resize', () => {
+        matrix.init();
+      });
+    });
+  </script>
+</body>
+</html>

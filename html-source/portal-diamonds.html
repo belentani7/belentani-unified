@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Diamonds — BELENTANI OMEGA</title>
+<style>
+:root{
+--void:#050505;--blood:#ff003c;--blood-glow:rgba(255,0,60,.8);
+--gold:#ffd700;--cyan:#00ffff;--purple:#b026ff;--human:#f5f5f5;
+--fd:'Orbitron',sans-serif;--fm:'JetBrains Mono',monospace;
+--glass:rgba(12,2,6,.82);--glass-border:rgba(255,0,60,.22);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--void);color:#fff;font-family:var(--fm);overflow:hidden;height:100vh;cursor:none}
+#container{position:fixed;inset:0;z-index:0}
+canvas{display:block;width:100%;height:100%}
+
+#hud{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;display:flex;flex-direction:column;justify-content:space-between;padding:28px 36px}
+.hud-top{display:flex;justify-content:space-between;align-items:flex-start}
+.hud-bot{display:flex;justify-content:center;align-items:flex-end}
+.hud-logo{font-family:var(--fd);font-size:clamp(20px,3vw,30px);font-weight:900;letter-spacing:8px;text-shadow:0 0 25px var(--blood-glow)}
+.hud-info{font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;line-height:2;text-align:right}
+.hud-info span{color:var(--blood)}
+.hud-status{font-family:var(--fm);font-size:11px;color:var(--gold);letter-spacing:3px;text-align:center;min-height:20px}
+
+#diamonds-wrap{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);display:flex;gap:16px;z-index:20;pointer-events:auto}
+.diamond-card{width:140px;padding:14px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-border);clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);cursor:pointer;transition:all .4s;pointer-events:auto;text-align:center}
+.diamond-card:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,.3)}
+.diamond-card.active{border-color:var(--gold);box-shadow:0 0 30px rgba(255,215,0,.4);background:rgba(255,215,0,.05)}
+.diamond-card .d-label{font-size:8px;letter-spacing:3px;color:rgba(255,255,255,.4);margin-bottom:4px}
+.diamond-card .d-name{font-family:var(--fd);font-size:11px;letter-spacing:2px;margin-bottom:6px}
+.diamond-card .d-status{font-size:9px;color:rgba(255,255,255,.3)}
+.diamond-card.active .d-status{color:var(--gold)}
+
+.diamond-cols{--c-gold:#ffd700;--c-cyan:#00ffff;--c-purple:#b026ff;--c-blood:#ff003c;--c-human:#f5f5f5}
+.dc0 .d-name{color:var(--c-gold)}.dc0 .d-label{color:var(--c-gold)}
+.dc1 .d-name{color:var(--c-cyan)}.dc1 .d-label{color:var(--c-cyan)}
+.dc2 .d-name{color:var(--c-purple)}.dc2 .d-label{color:var(--c-purple)}
+.dc3 .d-name{color:var(--c-blood)}.dc3 .d-label{color:var(--c-blood)}
+.dc4 .d-name{color:var(--c-human)}.dc4 .d-label{color:var(--c-human)}
+
+#asc-flash{position:fixed;inset:0;z-index:30;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(255,215,0,.95),rgba(255,215,0,.3) 40%,transparent 75%);opacity:0}
+#asc-overlay{position:fixed;inset:0;z-index:25;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;opacity:0;transition:opacity 1s}
+#asc-overlay h1{font-family:var(--fd);font-size:clamp(32px,6vw,64px);letter-spacing:12px;color:var(--gold);text-shadow:0 0 40px var(--gold),0 0 100px rgba(255,215,0,.3)}
+#asc-overlay p{font-size:12px;letter-spacing:6px;color:rgba(255,255,255,.5);margin-top:16px}
+
+#toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fm);font-size:11px;letter-spacing:3px;color:#fff;background:rgba(0,0,0,.9);border:1px solid var(--blood);padding:12px 24px;z-index:50;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<div id="hud">
+<div class="hud-top"><div class="hud-logo">BEL<span style="color:var(--blood)">ENT</span>ANI</div><div class="hud-info">SYS: DIAMOND_PORTAL//5//WAITING<span id="hud-count">0/5</span></div></div>
+<div class="hud-bot"><div class="hud-status" id="hud-status">ACTIVATE GEMAS // CLICK DIAMONDS</div></div>
+</div>
+<div id="diamonds-wrap"></div>
+<div id="asc-flash"></div>
+<div id="asc-overlay"><h1>ASCENSION</h1><p>ENJAMBRE SINCRONIZADO</p></div>
+<div id="toast"></div>
+
+<script type="importmap">
+{
+"imports":{
+"three":"https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.webgpu.js",
+"three/webgpu":"https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.webgpu.js",
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/"
+}
+}
+</script>
+<script type="module">
+import*as THREE from'three';
+
+const container=document.getElementById('container');
+const hudCount=document.getElementById('hud-count');
+const hudStatus=document.getElementById('hud-status');
+const diamondsWrap=document.getElementById('diamonds-wrap');
+const ascFlash=document.getElementById('asc-flash');
+const ascOverlay=document.getElementById('asc-overlay');
+const toast=document.getElementById('toast');
+
+const FIRMAS=[
+{n:'PEDRO',c:'#ffd700',label:'LA ROCA'},
+{n:'MARCOS',c:'#00ffff',label:'EL CRONISTA'},
+{n:'SANTOS',c:'#b026ff',label:'LA ANTENA'},
+{n:'BELENTANI',c:'#ff003c',label:'EL ARTEFACTO'},
+{n:'HUMAN',c:'#f5f5f5',label:'LA INTERFAZ'}
+];
+
+const GEM_COLORS=[0xffd700,0x00ffff,0xb026ff,0xff003c,0xf5f5f5];
+const state={active:new Set(5)};
+
+// DIAMOND CARDS UI
+FIRMAS.forEach((f,i)=>{
+const card=document.createElement('div');
+card.className=`diamond-card dc${i}`;
+card.innerHTML=`<div class="d-label">GEMA_0${i+1}</div><div class="d-name">${f.n}</div><div class="d-status">&#9675; INACTIVA</div>`;
+card.addEventListener('click',()=>activateDiamond(i));
+diamondsWrap.appendChild(card);
+});
+
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2500)}
+
+function activateDiamond(idx){
+if(state.active.has(idx))return;
+state.active.add(idx);
+const card=diamondsWrap.children[idx];
+card.classList.add('active');
+card.querySelector('.d-status').innerHTML='&#9670; ACTIVA';
+hudCount.textContent=state.active.size+'/5';
+showToast('> FIRMA '+(idx+1)+'/5 — '+FIRMAS[idx].n);
+if(state.active.size===5){
+setTimeout(()=>{
+hudStatus.textContent='ENJAMBRE SINCRONIZADO';
+hudStatus.style.color='var(--gold)';
+ascend()
+},900)}else{
+hudStatus.textContent='CONECTANDO... '+state.active.size+'/5'
+}}
+
+// THREE.JS — DIAMOND SCENE (WebGPU with WebGL2 fallback)
+let renderer,scene,camera,composer,bloomPass;
+const diamonds=[];
+const raycaster=new THREE.Raycaster();
+const mouse=new THREE.Vector2(-9,-9);
+let hoveredDiamond=null;
+let clock=null;
+
+async function initScene(){
+scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050505);
+scene.fog=new THREE.FogExp2(0x050505,0.015);
+
+camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,200);
+camera.position.z=18;
+
+try{
+renderer=new THREE.WebGPURenderer({canvas:document.createElement('canvas'),antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.2;
+await renderer.init();
+console.log('WebGPU renderer active');
+}catch(e){
+console.warn('WebGPU failed, falling back to WebGL2:',e);
+renderer=new THREE.WebGLRenderer({canvas:document.createElement('canvas'),antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.2;
+}
+
+container.appendChild(renderer.domElement);
+
+renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();console.warn('GPU context lost')});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{console.log('GPU context restored');buildScene()});
+
+// Post-processing
+const{EffectComposer}=await import('three/addons/postprocessing/EffectComposer.js');
+const{RenderPass}=await import('three/addons/postprocessing/RenderPass.js');
+const{UnrealBloomPass}=await import('three/addons/postprocessing/UnrealBloomPass.js');
+composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),1.2,0.6,0.15);
+composer.addPass(bloomPass);
+
+clock=new THREE.Clock();
+
+buildScene();
+animate();
+
+window.addEventListener('resize',onResize);
+renderer.domElement.addEventListener('pointermove',onPointerMove);
+renderer.domElement.addEventListener('click',onClick);
+}
+
+function buildScene(){
+// Core ambient light
+scene.add(new THREE.AmbientLight(0x220011,0.4));
+
+// Point lights positioned for dramatic rim lighting
+const lights=[
+{color:0xffd700,intensity:2,pos:[6,4,6]},
+{color:0xff003c,intensity:2,pos:[-6,3,-6]},
+{color:0x00ffff,intensity:1.5,pos:[0,6,-4]},
+{color:0xb026ff,intensity:1.5,pos:[-4,-2,6]},
+{color:0xf5f5f5,intensity:1.2,pos:[4,-3,-4]}
+];
+lights.forEach(l=>{const pl=new THREE.PointLight(l.color,l.intensity,30);pl.position.set(...l.pos);scene.add(pl)});
+
+// Diamond geometry shared
+const geo=new THREE.OctahedronGeometry(1.4,0);
+
+// Diamond materials: MeshPhysicalMaterial with transmission for real refraction
+FIRMAS.forEach((f,i)=>{
+const mat=new THREE.MeshPhysicalMaterial({
+color:GEM_COLORS[i],
+emissive:GEM_COLORS[i],
+emissiveIntensity:0.15,
+metalness:0.3,
+roughness:0.05,
+clearcoat:1.0,
+clearcoatRoughness:0.03,
+transmission:0.92,
+thickness:2.5,
+ior:2.417,
+iorTexture:null,
+normalMap:null,
+environmentMapIntensity:1.0,
+});
+
+const mesh=new THREE.Mesh(geo,mat);
+mesh.position.x=(i-2)*3.4;
+mesh.position.y=Math.sin(i*1.2)*0.5;
+mesh.userData={idx:i,baseY:mesh.position.y,phase:Math.random()*Math.PI*2,isActive:false};
+mesh.scale.setScalar(0);
+scene.add(mesh);
+diamonds.push(mesh);
+
+// Wireframe overlay
+const wireGeo=new THREE.OctahedronGeometry(1.7,0);
+const wireMat=new THREE.MeshBasicMaterial({color:GEM_COLORS[i],wireframe:true,transparent:true,opacity:0.15});
+const wire=new THREE.Mesh(wireGeo,wireMat);
+mesh.add(wire);
+
+// Orbital ring
+const ringGeo=new THREE.TorusGeometry(2.2,0.02,8,64);
+const ringMat=new THREE.MeshBasicMaterial({color:GEM_COLORS[i],transparent:true,opacity:0.4});
+const ring=new THREE.Mesh(ringGeo,ringMat);
+ring.rotation.x=Math.PI/2;
+mesh.add(ring);
+mesh.userData.ring=ring;
+});
+
+// Starfield particles
+const starCount=800;
+const starPos=new Float32Array(starCount*3);
+for(let i=0;i<starCount;i++){
+starPos[i*3]=(Math.random()-0.5)*80;
+starPos[i*3+1]=(Math.random()-0.5)*80;
+starPos[i*3+2]=(Math.random()-0.5)*80;
+}
+const starGeo=new THREE.BufferGeometry();
+starGeo.setAttribute('position',new THREE.BufferAttribute(starPos,3));
+const starMat=new THREE.PointsMaterial({color:0xffffff,size:0.08,transparent:true,opacity:0.6,sizeAttenuation:true});
+const stars=new THREE.Points(starGeo,starMat);
+scene.add(stars);
+}
+
+function onResize(){
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+if(composer)composer.setSize(innerWidth,innerHeight);
+if(bloomPass)bloomPass.resolution.set(innerWidth,innerHeight);
+}
+
+function onPointerMove(e){
+mouse.x=(e.clientX/innerWidth)*2-1;
+mouse.y=-(e.clientY/innerHeight)*2+1;
+}
+
+function onClick(){
+raycaster.setFromCamera(mouse,camera);
+const hits=raycaster.intersectObjects(diamonds,false);
+if(hits.length>0){
+const obj=hits[0].object;
+const idx=obj.userData.idx;
+activateDiamond(idx);
+// Hover scale burst
+obj.scale.setScalar(1.4);
+setTimeout(()=>{if(!state.active.has(idx))obj.scale.setScalar(1);else obj.scale.setScalar(1.1)},400);
+}}
+
+function animate(){
+requestAnimationFrame(animate);
+const t=clock.getElapsedTime();
+
+diamonds.forEach((d,i)=>{
+// Idle rotation
+d.rotation.y=t*(0.3+i*0.06);
+d.rotation.x=Math.sin(t*0.4+d.userData.phase)*0.2;
+
+// Float animation
+d.position.y=d.userData.baseY+Math.sin(t*0.6+d.userData.phase)*0.3;
+
+// Scale entrance animation (staggered)
+const targetScale=state.active.has(i)?1.1:0;
+const current=d.scale.x;
+const newScale=current+(targetScale-current)*0.05;
+d.scale.setScalar(Math.max(0.01,newScale));
+
+// Ring rotation
+if(d.userData.ring){
+d.userData.ring.rotation.z=t*0.3;
+d.userData.ring.rotation.x=Math.sin(t*0.2)*0.1;
+}
+
+// Hover glow
+if(hoveredDiamond===i&&!state.active.has(i)){
+d.material.emissiveIntensity=0.5;
+d.scale.setScalar(1.1+Math.sin(t*4)*0.05);
+}else{
+d.material.emissiveIntensity=state.active.has(i)?0.6:0.15;
+}
+});
+
+// Raycaster hover
+raycaster.setFromCamera(mouse,camera);
+const hits=raycaster.intersectObjects(diamonds,false);
+if(hits.length>0){
+const idx=hits[0].object.userData.idx;
+hoveredDiamond=idx;
+renderer.domElement.style.cursor='pointer';
+}else{
+hoveredDiamond=null;
+renderer.domElement.style.cursor='none';
+}
+
+// Animate starfield slowly
+scene.children.forEach(c=>{
+if(c.isPoints&&c.geometry.type==='BufferGeometry'&&c.geometry.attributes.position.count===800){
+c.rotation.y=t*0.01;
+}});
+
+if(composer)composer.render();
+else renderer.render(scene,camera);
+}
+
+function ascend(){
+// Flash
+ascFlash.style.transition='opacity 0.3s';
+ascFlash.style.opacity='1';
+setTimeout(()=>{ascFlash.style.opacity='0'},300);
+setTimeout(()=>{ascFlash.style.opacity='1'},600);
+setTimeout(()=>{ascFlash.style.opacity='0'},900);
+setTimeout(()=>{ascFlash.style.opacity='1'},1200);
+setTimeout(()=>{ascFlash.style.opacity='0'},1500);
+
+// Bloom boost
+if(bloomPass)bloomPass.strength=3.5;
+
+// Show overlay
+ascOverlay.style.transition='opacity 1s';
+ascOverlay.style.opacity='1';
+showToast('> ASCENSION OMEGA INICIADA');
+
+// Reset bloom after
+setTimeout(()=>{if(bloomPass)bloomPass.strength=1.2;ascOverlay.style.opacity='0'},10000);
+
+// Cmaj9 chord using Web Audio API
+try{
+const ctx=new(window.AudioContext||window.webkitAudioContext)();
+const notes=[261.63,329.63,392,493.88,587.33]; // C4 E4 G4 B4 D5
+notes.forEach((freq,i)=>{
+const osc=ctx.createOscillator();
+const gain=ctx.createGain();
+osc.type='sine';osc.frequency.value=freq;
+gain.gain.setValueAtTime(0.15,ctx.currentTime+i*0.15);
+gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+3);
+osc.connect(gain);gain.connect(ctx.destination);
+osc.start(ctx.currentTime+i*0.15);osc.stop(ctx.currentTime+i*0.15+3);
+});
+}catch(e){console.warn('Audio failed:',e)}
+}
+
+initScene();
+
+// Expose for other modules
+window.__diamondPortal={state,activateDiamond,ascend};
+</script>
+</body>
+</html>

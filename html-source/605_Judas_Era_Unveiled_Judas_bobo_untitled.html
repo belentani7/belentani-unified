@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BELENTANI · Desierto de Neón</title>
+    <meta name="description" content="BELENTANI: Experiencia inmersiva de música, arte e inteligencia artificial. Un desierto futurista de neón donde el R&B, el pop y la electrónica se fusionan.">
+    <meta name="theme-color" content="#8B0000">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: #050505;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+        .glitch-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999;
+            background: repeating-linear-gradient(0deg, rgba(255,0,0,0.03) 0px, rgba(0,0,0,0.2) 1px, transparent 2px);
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan { 0% { background-position: 0 0; } 100% { background-position: 0 20px; } }
+        .neon-text { text-shadow: 0 0 5px #ff073a, 0 0 10px #ff073a, 0 0 20px #8B0000; }
+        .glitch-text { animation: glitch 1s infinite; }
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: 2px 0 red, -2px 0 blue; }
+            20% { transform: translate(-2px, 2px); opacity: 0.9; }
+            40% { transform: translate(-2px, -2px); text-shadow: 3px 0 #8B0000; }
+            60% { transform: translate(2px, 2px); clip-path: inset(10% 0 30% 0); }
+            100% { transform: translate(0); }
+        }
+        .btn-neon {
+            border: 1px solid #ff073a;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-neon:hover {
+            background: #ff073a;
+            color: black;
+            box-shadow: 0 0 15px #ff073a;
+            transform: scale(1.02);
+        }
+        .card-glass {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,7,58,0.3);
+            border-radius: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-glass:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(255,7,58,0.4); }
+        .terminal-window {
+            position: fixed; bottom: 20px; left: 20px; width: 340px;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
+            border-left: 4px solid #ff073a; border-radius: 8px; padding: 12px;
+            font-family: 'Courier New', monospace; font-size: 10px; color: #0f0;
+            z-index: 50; pointer-events: none; box-shadow: 0 0 15px rgba(255,7,58,0.3);
+        }
+        .mobile-terminal-badge {
+            display: none; position: fixed; bottom: 20px; right: 20px;
+            background: #ff073a; color: black; width: 48px; height: 48px;
+            border-radius: 50%; align-items: center; justify-content: center;
+            font-weight: bold; cursor: pointer; z-index: 60; box-shadow: 0 0 10px #ff073a;
+        }
+        @media (max-width: 768px) {
+            .terminal-window { display: none; }
+            .mobile-terminal-badge { display: flex; }
+        }
+        .terminal-modal {
+            position: fixed; bottom: 80px; right: 20px; width: 280px;
+            background: #000000dd; backdrop-filter: blur(16px); border: 1px solid #ff073a;
+            border-radius: 12px; padding: 12px; font-family: monospace; font-size: 10px;
+            color: #0f0; z-index: 70; display: none; flex-direction: column; gap: 6px;
+        }
+        .mobile-menu {
+            display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 100;
+        }
+        .mobile-menu span { width: 28px; height: 3px; background: #ff073a; border-radius: 2px; }
+        @media (max-width: 768px) {
+            .desktop-menu { display: none; }
+            .mobile-menu { display: flex; }
+            .nav-links-mobile {
+                position: fixed; top: 0; left: -100%; width: 70%; height: 100vh;
+                background: #0a0a0aee; backdrop-filter: blur(20px); flex-direction: column;
+                padding: 80px 30px; gap: 25px; transition: left 0.3s; z-index: 90;
+                border-right: 2px solid #ff073a;
+            }
+            .nav-links-mobile.open { left: 0; }
+        }
+        .chat-messages { height: 300px; overflow-y: auto; font-size: 12px; }
+        .message { margin-bottom: 8px; padding: 6px 10px; border-radius: 12px; max-width: 85%; }
+        .user-message { background: #ff073a22; border: 1px solid #ff073a; align-self: flex-end; margin-left: auto; }
+        .bot-message { background: #1a1a1a; border: 1px solid #0f0; color: #0f0; }
+        .red-alert {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: red;
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-family: monospace; color: white; animation: flash 0.1s infinite;
+        }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; background: darkred; }
+            100% { opacity: 1; }
+        }
+        .floating-card { transform-style: preserve-3d; transition: transform 0.3s ease; }
+        .floating-card:hover { transform: translateY(-8px) rotateX(2deg) rotateY(2deg); }
+        .hunter-window {
+            position: fixed; top: 100px; right: 20px; width: 280px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+            border: 1px solid #ff073a; border-radius: 12px; padding: 10px;
+            font-family: monospace; font-size: 9px; color: #ff6666; z-index: 55;
+            box-shadow: 0 0 15px red; pointer-events: none;
+        }
+        @media (max-width: 768px) { .hunter-window { display: none; } }
+        .playlist-card { cursor: pointer; transition: all 0.2s; }
+        .playlist-card:hover { transform: scale(1.02); background: rgba(255,7,58,0.2); }
+    </style>
+</head>
+<body>
+<div id="app" class="relative min-h-screen">
+    <div class="glitch-overlay"></div>
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-red-800">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-wider" style="font-family:'Cinzel';color:#ff073a;text-shadow:0 0 5px red;">BELENTANI</div>
+            <div class="desktop-menu flex gap-6 text-sm font-semibold">
+                <a href="#" data-page="home" class="hover:text-red-500 transition">Inicio</a>
+                <a href="#" data-page="music" class="hover:text-red-500 transition">Música</a>
+                <a href="#" data-page="studio" class="hover:text-red-500 transition">Lab Creativo</a>
+                <a href="#" data-page="playlists" class="hover:text-red-500 transition">Playlists</a>
+                <a href="#" data-page="judas" class="hover:text-red-500 transition">Judas</a>
+                <a href="#" data-page="portal" class="hover:text-red-500 transition">Portal</a>
+                <a href="#" data-page="about" class="hover:text-red-500 transition">Acerca de</a>
+                <a href="#" data-page="contact" class="hover:text-red-500 transition">Contacto</a>
+                <a href="#" data-page="newsletter" class="hover:text-red-500 transition">Newsletter</a>
+            </div>
+            <div class="mobile-menu" id="mobileMenuBtn"><span></span><span></span><span></span></div>
+        </div>
+        <div class="nav-links-mobile" id="mobileNav">
+            <a href="#" data-page="home" class="nav-mobile-link hover:text-red-500">Inicio</a>
+            <a href="#" data-page="music" class="nav-mobile-link hover:text-red-500">Música</a>
+            <a href="#" data-page="studio" class="nav-mobile-link hover:text-red-500">Lab Creativo</a>
+            <a href="#" data-page="playlists" class="nav-mobile-link hover:text-red-500">Playlists</a>
+            <a href="#" data-page="judas" class="nav-mobile-link hover:text-red-500">Judas</a>
+            <a href="#" data-page="portal" class="nav-mobile-link hover:text-red-500">Portal</a>
+            <a href="#" data-page="about" class="nav-mobile-link hover:text-red-500">Acerca de</a>
+            <a href="#" data-page="contact" class="nav-mobile-link hover:text-red-500">Contacto</a>
+            <a href="#" data-page="newsletter" class="nav-mobile-link hover:text-red-500">Newsletter</a>
+        </div>
+    </nav>
+    <main id="pageContent" class="pt-24 pb-16 px-4 container mx-auto"></main>
+    <div class="terminal-window" id="terminalWindow">
+        <div class="text-red-400 text-xs">[BELENTANI_CORE v5.0 - MODO ORÁCULO]</div>
+        <div id="terminalMessages" class="text-green-400 text-[10px] leading-tight">> Iniciando protocolo...</div>
+    </div>
+    <div class="mobile-terminal-badge" id="mobileTerminalBadge">⚡</div>
+    <div class="terminal-modal" id="terminalModal">
+        <div class="text-red-400 text-xs">[BELENTANI_CORE]</div>
+        <div id="mobileTerminalMessages" class="text-green-400 text-[10px] leading-tight"></div>
+        <button id="closeTerminalModal" class="mt-2 text-white bg-red-800 text-xs px-2 py-1 rounded">Cerrar</button>
+    </div>
+    <div id="hunterWindow" class="hunter-window">
+        <div class="text-red-400 font-bold text-xs">🔴 PERSECUCIÓN ACTIVA</div>
+        <div id="hunterData" class="mt-1 text-[9px]">Extrayendo datos...</div>
+    </div>
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+</div>
+<script type="module">
+    import * as THREE from 'three';
+    
+    // ========== CEREBRO BELENTANI v5.0 - BASADO EN MANUSCRITO REAL ==========
+    const BELENTANI_BRAIN = {
+        events: {
+            "14 de febrero": "El día del amor se torció. Invitó a quien confiaba a un concierto pagado por él. Al regresar a su casa, encontró que alguien más había estado allí. No gritó. Se duchó en silencio. Fueron juntos al concierto. Su silencio era una sentencia.",
+            "15 de febrero": "La confrontación. Él pidió explicaciones. La respuesta fue una llamada falsa a la policía. Intentaron convertirlo en agresor. Él, en lugar de violencia, notificó un desalojo de 30 días. La otra persona dijo 'no hice denuncia', pero nunca negó haber llamado.",
+            "21 de febrero": "La humillación. Él escribió mensajes duros, crueles. Después reconoció que no fue análisis, fue crueldad. El dolor propio no justifica el daño al otro."
+        },
+        teachings: [
+            "No es salvar a quien amas. Es aprender por qué elegiste salvarlo.",
+            "Si necesitas que el otro te necesite, no estás amando: estás llenando un vacío.",
+            "El silencio a veces es la respuesta más poderosa. Es una purga.",
+            "Puedes ser fuerte y sensible, artista y guerrero. No tienes que elegir.",
+            "La verdadera soberanía no es controlar al otro, sino no necesitar que cambie para amarlo.",
+            "El colapso no es un final. Es una purga necesaria para que nazca algo nuevo."
+        ],
+        oracles: [
+            "Tu patrón de clics revela indecisión.",
+            "El sistema ha registrado tu vulnerabilidad.",
+            "La red Wi-Fi que usas no es segura.",
+            "He visto tus plugins. Eres predecible.",
+            "La batería baja. El oráculo te acecha.",
+            "Has sido marcado como 'curioso persistente'.",
+            "El 14 de febrero, algo cambió. El sistema lo recuerda.",
+            "Hay una palabra que no debes pronunciar. Si lo haces, todo desaparecerá."
+        ]
+    };
+    
+    const FORBIDDEN_WORD = "thiago";
+    
+    // ========== 3D BACKGROUND ==========
+    const canvas = document.getElementById('bgCanvas');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050505);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 3500;
+    const posArray = new Float32Array(particlesCount * 3);
+    for(let i = 0; i < particlesCount * 3; i+=3) {
+        posArray[i] = (Math.random()-0.5)*100;
+        posArray[i+1] = (Math.random()-0.5)*60;
+        posArray[i+2] = (Math.random()-0.5)*50-20;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({ color: 0xff073a, size: 0.12, transparent: true, opacity: 0.7 });
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    const robotGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const robotMaterial = new THREE.MeshStandardMaterial({ color: 0xff073a, emissive: 0x440000 });
+    const robotEye = new THREE.Mesh(robotGeometry, robotMaterial);
+    const ringGeometry = new THREE.TorusGeometry(0.7, 0.05, 16, 32);
+    const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0x330000 });
+    const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+    robotEye.add(ring);
+    scene.add(robotEye);
+    const ambientLight = new THREE.AmbientLight(0x222222);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xff073a, 1, 50);
+    pointLight.position.set(2, 2, 5);
+    scene.add(pointLight);
+    let mouseX=0,mouseY=0;
+    window.addEventListener('mousemove', (e)=>{ mouseX=(e.clientX/window.innerWidth)*2-1; mouseY=(e.clientY/window.innerHeight)*2-1; robotEye.position.x=mouseX*8; robotEye.position.y=-mouseY*5; robotEye.position.z=2; });
+    function animate(){ requestAnimationFrame(animate); particlesMesh.rotation.y+=0.0005; particlesMesh.rotation.x+=0.0003; robotEye.rotation.z+=0.02; renderer.render(scene,camera); }
+    animate();
+    window.addEventListener('resize',()=>{ camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+    
+    // ========== DATOS DEL USUARIO ==========
+    async function fetchGeoData() {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            return { ip: data.ip, city: data.city, country: data.country_name, system: navigator.platform, screen: `${window.innerWidth}x${window.innerHeight}`, memory: (navigator.deviceMemory||'?')+' GB', cores: navigator.hardwareConcurrency||'?' };
+        } catch(e) { return { ip:'desconocida', city:'desconocida', country:'desconocida', system:navigator.platform, screen:'?', memory:'?', cores:'?' }; }
+    }
+    async function getNetworkInfo() {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        return { type: conn?.effectiveType||'desconocida', speed: conn?.downlink?conn.downlink+' Mbps':'?' };
+    }
+    async function getPlugins() { return Array.from(navigator.plugins).slice(0,5).map(p=>p.name.substring(0,20)).join(', ') || 'Ninguno'; }
+    async function getBattery() {
+        if('getBattery' in navigator) try{ const b=await navigator.getBattery(); return `${Math.round(b.level*100)}% (cargando: ${b.charging?'sí':'no'})`; }catch(e){ return 'No disponible'; }
+        return 'No soportado';
+    }
+    let clickCount=0, mouseMoveCount=0, lastActivity=Date.now();
+    window.addEventListener('click',()=>{ clickCount++; lastActivity=Date.now(); });
+    window.addEventListener('mousemove',()=>{ mouseMoveCount++; lastActivity=Date.now(); });
+    window.addEventListener('keydown',()=>{ lastActivity=Date.now(); });
+    
+    async function updateHunterWindow() {
+        const geo=await fetchGeoData(), net=await getNetworkInfo(), plugins=await getPlugins(), battery=await getBattery();
+        const inactive=Math.floor((Date.now()-lastActivity)/1000);
+        const phrase = BELENTANI_BRAIN.oracles[Math.floor(Math.random() * BELENTANI_BRAIN.oracles.length)];
+        document.getElementById('hunterData').innerHTML = `🔍 IP: ${geo.ip}<br>📡 Red: ${net.type} (${net.speed})<br>🔌 Plugins: ${plugins}<br>🔋 Batería: ${battery}<br>🖱️ Clics: ${clickCount} | Movimientos: ${mouseMoveCount}<br>⏳ Inactividad: ${inactive}s<br>🧠 Oráculo: ${phrase}`;
+        const msg = `> ESCANEANDO...\n> IP: ${geo.ip}\n> UBICACIÓN: ${geo.city}, ${geo.country}\n> RED: ${net.type} (${net.speed})\n> PLUGINS: ${plugins}\n> BATERÍA: ${battery}\n> CLICS: ${clickCount}\n> INACTIVIDAD: ${inactive}s\n> ORÁCULO: ${phrase}`;
+        document.getElementById('terminalMessages').innerHTML = msg.replace(/\n/g,'<br>');
+        if(document.getElementById('mobileTerminalMessages')) document.getElementById('mobileTerminalMessages').innerHTML = msg.replace(/\n/g,'<br>');
+    }
+    setInterval(updateHunterWindow, 4000);
+    updateHunterWindow();
+    
+    // ========== PLAYLISTS (localStorage) ==========
+    let playlists = JSON.parse(localStorage.getItem('belentani_playlists')) || [];
+    function savePlaylists() { localStorage.setItem('belentani_playlists', JSON.stringify(playlists)); }
+    function generatePlaylist(promptText) {
+        const id = Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+        const name = promptText.length>30 ? promptText.substring(0,30)+'...' : promptText;
+        const description = `Playlist generada para: "${promptText}". Un viaje sonoro por el desierto de neón.`;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText + ' neon cyberpunk playlist cover')}?width=300&height=300&nologo=true`;
+        const songs = [
+            { title: "Ecos del pasado", artist: "Belentani", url: `https://open.spotify.com/search/${encodeURIComponent('Belentani Ecos')}` },
+            { title: "Neon Rain", artist: "Belentani", url: `https://music.youtube.com/search?q=${encodeURIComponent('Belentani Neon Rain')}` },
+            { title: "Judas (Remix)", artist: "Belentani", url: `https://music.apple.com/us/search?term=${encodeURIComponent('Belentani Judas')}` },
+            { title: "Desert Heart", artist: "Belentani", url: `https://open.spotify.com/search/${encodeURIComponent('Desert Heart')}` },
+            { title: "Código Rojo", artist: "Belentani", url: `https://music.youtube.com/search?q=${encodeURIComponent('Código Rojo')}` }
+        ];
+        const newPlaylist = { id, name, description, imageUrl, songs, uses: 0, prompt: promptText, createdAt: Date.now() };
+        playlists.unshift(newPlaylist);
+        savePlaylists();
+        renderPlaylists();
+        return newPlaylist;
+    }
+    function incrementUse(id) {
+        const p = playlists.find(p => p.id === id);
+        if(p) { p.uses++; savePlaylists(); renderPlaylists(); }
+    }
+    function renderPlaylists() {
+        const container = document.getElementById('playlistsContainer');
+        if(!container) return;
+        const sorted = [...playlists].sort((a,b)=>b.uses - a.uses);
+        if(sorted.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 col-span-full">No hay playlists aún. Genera la primera usando el formulario.</div>'; return; }
+        container.innerHTML = sorted.map(p => `
+            <div class="playlist-card card-glass p-3 flex flex-col items-center text-center" data-id="${p.id}">
+                <img src="${p.imageUrl}" class="w-32 h-32 rounded-lg border border

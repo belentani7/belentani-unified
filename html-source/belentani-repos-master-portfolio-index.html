@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BELENTANI7 — GitHub Portfolio</title>
+<meta name="description" content="Portfolio interactivo de proyectos públicos de Belentani7 en GitHub.">
+<style>
+:root{
+  --bg:#050507;--panel:rgba(255,255,255,.055);--panel2:rgba(255,255,255,.085);
+  --line:rgba(255,255,255,.12);--text:#f5f5f7;--muted:#9999a6;
+  --red:#ff3158;--cyan:#6de7ff;--gold:#ffd56a;--shadow:0 30px 90px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:
+radial-gradient(circle at 10% 10%,rgba(255,49,88,.12),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(109,231,255,.08),transparent 25%),
+radial-gradient(circle at 50% 100%,rgba(255,213,106,.06),transparent 30%),var(--bg);
+color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:45px 45px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+.wrap{width:min(1450px,92vw);margin:auto}
+header{padding:70px 0 35px;position:relative}
+.eyebrow{font:600 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.22em;color:var(--cyan);text-transform:uppercase}
+h1{font-size:clamp(48px,8vw,110px);line-height:.86;margin:18px 0;letter-spacing:-.065em}
+h1 span{color:var(--red)}
+.hero{display:flex;justify-content:space-between;gap:30px;align-items:end}
+.lead{max-width:720px;color:#c5c5ce;font-size:18px;line-height:1.65}
+.profile{display:flex;gap:10px;flex-wrap:wrap}
+a{color:inherit;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.055);backdrop-filter:blur(18px);font-size:13px}
+.btn:hover{border-color:rgba(109,231,255,.55);transform:translateY(-1px)}
+.controls{position:sticky;top:12px;z-index:5;margin:25px 0 30px;padding:12px;border:1px solid var(--line);border-radius:22px;background:rgba(8,8,12,.72);backdrop-filter:blur(25px);box-shadow:var(--shadow)}
+.controls-inner{display:flex;gap:10px;flex-wrap:wrap}
+input,select{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:13px;padding:12px 14px;outline:none}
+input{flex:1;min-width:220px}select{min-width:150px}
+input:focus,select:focus{border-color:var(--cyan)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.stat{padding:10px 14px;border:1px solid var(--line);border-radius:13px;background:var(--panel);font:12px ui-monospace,monospace;color:var(--muted)}
+.stat b{color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding-bottom:80px}
+.card{position:relative;min-height:255px;padding:22px;border:1px solid var(--line);border-radius:25px;background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025));backdrop-filter:blur(22px);box-shadow:0 18px 50px rgba(0,0,0,.25);overflow:hidden;transition:.25s}
+.card:after{content:"";position:absolute;inset:auto -30% -55% 30%;height:160px;background:radial-gradient(circle,rgba(255,49,88,.12),transparent 65%);pointer-events:none}
+.card:hover{transform:translateY(-6px) rotateX(1deg);border-color:rgba(255,255,255,.25);box-shadow:0 25px 70px rgba(0,0,0,.45)}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.repo{font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-word}
+.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:end}
+.badge{font:9px ui-monospace,monospace;letter-spacing:.08em;padding:5px 7px;border-radius:7px;background:rgba(255,255,255,.07);color:#aaa}
+.badge.vercel{color:#fff;border-color:rgba(255,255,255,.25);background:#111}
+.badge.archived{color:#ff9aaa}
+.desc{color:#b9b9c3;line-height:1.55;font-size:14px;margin:18px 0;min-height:65px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;color:#777784;font-size:11px}
+.actions{position:absolute;left:22px;right:22px;bottom:20px;display:flex;gap:8px}
+.action{flex:1;text-align:center;padding:9px;border:1px solid var(--line);border-radius:10px;font-size:11px;background:rgba(255,255,255,.045)}
+.action.primary{border-color:rgba(255,49,88,.45);background:rgba(255,49,88,.08)}
+.empty{text-align:center;padding:70px;color:var(--muted);grid-column:1/-1}
+footer{padding:30px 0 60px;color:#666;font:11px ui-monospace,monospace;text-align:center}
+@media(max-width:700px){header{padding-top:45px}.hero{display:block}.profile{margin-top:20px}.controls{position:relative}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">BELENTANI7 / OPEN WORK</div>
+  <div class="hero">
+    <div>
+      <h1>PROJECTS<span>.</span></h1>
+      <p class="lead">Un índice vivo de los proyectos públicos de <b>belentani7</b>. Código, IA, herramientas, experiencias web, educación y experimentos creativos — organizados para que un visitante pueda entender rápidamente qué es cada cosa.</p>
+    </div>
+    <div class="profile">
+      <a class="btn" href="https://github.com/belentani7" target="_blank" rel="noopener">↗ GitHub</a>
+      <a class="btn" href="https://github.com/belentani7?tab=repositories" target="_blank" rel="noopener">Repositories</a>
+    </div>
+  </div>
+</header>
+
+<section class="controls">
+  <div class="controls-inner">
+    <input id="search" placeholder="Buscar proyecto, tecnología o concepto…">
+    <select id="category"><option value="">Todas las categorías</option></select>
+    <select id="sort">
+      <option value="name">Nombre</option>
+      <option value="stars">Estrellas</option>
+      <option value="updated">Actualizados</option>
+    </select>
+  </div>
+  <div class="stats" id="stats"></div>
+</section>
+
+<main id="grid" class="grid"><div class="empty">Cargando repositorios de GitHub…</div></main>
+<footer>BELENTANI7 · GitHub portfolio · generado para funcionar como HTML estático · los datos públicos se leen desde GitHub.</footer>
+</div>
+
+<script>
+const OWNER="belentani7";
+const SPECIAL={
+ "Belentani":"Portfolio/identidad web y presencia digital del artista y desarrollador.",
+ "belentani7":"Perfil público de GitHub y configuración de la identidad técnica de Belentani7.",
+ "belentani_Omega":"Sistema/experiencia experimental alrededor de BELENTANI Omega y su interfaz.",
+ "NOIACORE":"Laboratorio creativo de sistemas, IA, percepción y experiencias digitales.",
+ "CARQUIDEC":"Proyecto web experimental con una arquitectura visual y funcional de gran escala.",
+ "heyduck":"Ecosistema experimental de herramientas y experiencias alrededor de Duck.",
+ "DUCK-ZION-PREMIUM":"Versión premium del ecosistema Duck, centrada en interfaz, herramientas y experimentación.",
+ "duck-ecosystem":"Ecosistema de proyectos y utilidades construidos alrededor de Duck.",
+ "duck-full-studio-pro":"Studio experimental para centralizar herramientas y experiencias del ecosistema Duck.",
+ "manus-ai-skill-pack":"Colección de skills y recursos para ampliar flujos de trabajo con agentes de IA.",
+ "linguaforge":"Proyecto orientado a aprendizaje de idiomas y herramientas lingüísticas.",
+ "ManosAbiertas-backup-v1":"Copia pública del proyecto educativo Manos Abiertas.",
+ "ManosAbiertas":"Plataforma educativa gratuita: cursos de IA y Office, creador de CV, guias de derechos y recursos para migrantes y comunidades.",
+ "manos-abiertas-2026":"Sitio estatico de Manos Abiertas (edicion 2026): despliegue ligero de la plataforma educativa.",
+ "Belentani.cv-ai":"Herramienta de CV asistida por IA para estructurar y mejorar perfiles profesionales.",
+ "Cruzando-el-charco":"Experiencia/proyecto web relacionado con movilidad, historias y cruce cultural.",
+ "entrenador-jorge-bcn":"Web de presentación y servicio para un entrenador en Barcelona.",
+ "arte-que-veste":"Experiencia web/ecommerce alrededor del concepto Arte Que Veste.",
+ "registro-proyectos-2026":"Registro ligero para documentar y organizar proyectos de 2026.",
+ "belentaniexperience":"Experiencia personal/digital de Belentani.",
+ "belentani-omega-template":"Plantilla base para construir experiencias BELENTANI Omega.",
+ "cinematic-prompt-formatter":"Herramienta para estructurar y formatear prompts cinematográficos.",
+ "comfyui-json-compiler":"Utilidad para compilar/validar estructuras JSON relacionadas con ComfyUI.",
+ "gpu-cost-optimizer":"Herramienta experimental para analizar y optimizar costes de GPU.",
+ "llm-vfx-orchestrator":"Orquestación experimental de LLMs y procesos VFX.",
+ "latent-consistency-bench":"Benchmark experimental para evaluar consistencia en modelos generativos.",
+ "mimo-companion":"Companion experimental basado en IA.",
+ "omniagent":"Agente experimental con enfoque multi-herramienta.",
+ "pbr-validator":"Validador experimental de assets/materiales PBR.",
+ "qbp-core":"Core técnico experimental para un sistema de procesamiento/validación.",
+ "temporal-artifact-detector":"Detector experimental de artefactos temporales en contenido o procesos generativos.",
+ "oss-compass":"Herramienta para explorar y orientar proyectos/open source.",
+ "proofmesh":"Experimento técnico centrado en pruebas, trazabilidad y estructuras verificables.",
+ "claude-skills-pack":"Pack de skills y recursos reutilizables para Claude.",
+ "MetaSkill":"Experimento sobre skills/meta-habilidades para agentes.",
+ "meta-skill":"Repositorio experimental de meta-skills.",
+ "Oculus-Tv":"Proyecto experimental de experiencia/media y televisión.",
+ "Steven-renovation":"Web/proyecto de renovación y presentación de servicio.",
+ "local-agent":"Agente local experimental.",
+};
+function category(r){
+ const n=r.name.toLowerCase()+" "+(r.description||"").toLowerCase();
+ if(/duck|zion/.test(n)) return "Duck / Experiments";
+ if(/judas/.test(n)) return "Judas / Creative";
+ if(/book|libro|investigacion|research/.test(n)) return "Research / Docs";
+ if(/voice|audio|mimo/.test(n)) return "Voice / AI";
+ if(/claude|manus|qwen|llm|agent|aion|nexus|skill|mimo/.test(n)) return "AI / Agents";
+ if(/lingua|manos|mentor|taller|educ/.test(n)) return "Education";
+ if(/arte|catalonia|entrenador|steven|oculus|belentani|web/.test(n)) return "Web / Creative";
+ if(/gpu|pbr|validator|detector|compiler|toolkit|safe|proof|mesh|atlas|benchmark/.test(n)) return "Tools / Research";
+ return "Other";
+}
+function summary(r){
+ return SPECIAL[r.name] || r.description || `Proyecto experimental de ${r.name}, parte del conjunto de trabajo abierto de Belentani7.`;
+}
+function isVercel(r){
+ const h=(r.homepage||"").toLowerCase();
+ return h.includes("vercel.app") || h.includes("vercel.com");
+}
+let repos=[];
+const grid=document.querySelector("#grid"), search=document.querySelector("#search"), cat=document.querySelector("#category"), sort=document.querySelector("#sort"), stats=document.querySelector("#stats");
+async function load(){
+ try{
+  let all=[], page=1;
+  while(page<=5){
+   const res=await fetch(`https://api.github.com/users/${OWNER}/repos?per_page=100&page=${page}&sort=updated`);
+   if(!res.ok) throw new Error("GitHub API");
+   const data=await res.json(); all.push(...data);
+   if(data.length<100) break; page++;
+  }
+  repos=all.filter(r=>!r.private);
+  const cats=[...new Set(repos.map(category))].sort();
+  cats.forEach(c=>cat.insertAdjacentHTML("beforeend",`<option>${c}</option>`));
+  render();
+ }catch(e){
+  grid.innerHTML=`<div class="empty">No se pudieron cargar los repositorios desde GitHub.<br><br><a class="btn" href="https://github.com/${OWNER}?tab=repositories" target="_blank" rel="noopener">Abrir GitHub directamente ↗</a></div>`;
+ }
+}
+function render(){
+ const q=search.value.toLowerCase().trim(), c=cat.value;
+ let data=repos.filter(r=>{
+  const hay=(r.name+" "+(r.description||"")+" "+summary(r)+" "+category(r)).toLowerCase();
+  return (!q||hay.includes(q))&&(!c||category(r)===c);
+ });
+ if(sort.value==="stars") data.sort((a,b)=>b.stargazers_count-a.stargazers_count);
+ else if(sort.value==="updated") data.sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));
+ else data.sort((a,b)=>a.name.localeCompare(b.name));
+ stats.innerHTML=`<div class="stat"><b>${repos.length}</b> públicos</div><div class="stat"><b>${repos.filter(isVercel).length}</b> con enlace Vercel detectado</div><div class="stat"><b>${data.length}</b> mostrados</div>`;
+ if(!data.length){grid.innerHTML=`<div class="empty">No hay proyectos que coincidan.</div>`;return}
+ grid.innerHTML=data.map(r=>{
+  const v=isVercel(r), lang=r.language||"web", live=/^https?:\/\//i.test(r.homepage||"")?r.homepage:"";
+  return `<article class="card">
+   <div class="top"><div class="repo">${esc(r.name)}</div><div class="badges">
+    <span class="badge">${esc(category(r))}</span>${r.archived?'<span class="badge archived">ARCHIVED</span>':''}${v?'<span class="badge vercel">▲ VERCEL</span>':''}
+   </div></div>
+   <div class="desc">${esc(summary(r))}</div>
+   <div class="meta"><span>★ ${r.stargazers_count}</span><span>⑂ ${r.forks_count}</span><span>${esc(lang)}</span></div>
+   <div class="actions"><a class="action primary" href="${esc(r.html_url)}" target="_blank" rel="noopener">GitHub ↗</a>${v&&live?`<a class="action" href="${esc(live)}" target="_blank" rel="noopener">Live ↗</a>`:""}</div>
+  </article>`
+ }).join("");
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+search.oninput=render;cat.onchange=render;sort.onchange=render;load();
+</script>
+</body>
+</html>

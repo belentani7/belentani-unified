@@ -1,0 +1,23 @@
+
+<!-- TERMINAL -->
+<div class="term" id="term">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid rgba(0,255,65,.15);padding-bottom:6px">
+<span style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--green)">TERMINAL // JUDAS_OS</span>
+<span style="font-size:9px;color:rgba(255,255,255,.2);cursor:pointer" onclick="document.getElementById('term').classList.remove('on')">[ ESC ]</span>
+</div>
+<div id="termLog" style="min-height:40px;white-space:pre-wrap;word-break:break-all"></div>
+<div class="tin"><input id="termIn" placeholder="type help" autocomplete="off" autofocus /></div>
+</div>
+
+<!-- AI CHAT -->
+<div class="aichat min" id="aiChat">
+<div class="ch-head" onclick="document.getElementById('aiChat').classList.toggle('min')">
+<span style="font-family:var(--fd);font-size:10px;letter-spacing:3px;color:var(--blood)">&#9673; NEURAL CHAT</span>
+<span style="font-size:10px;color:var(--txt-dim);cursor:pointer">[ ]</span>
+</div>
+<div id="aiLog" style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px"></div>
+<div class="ch-ft" style="display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--glass-border)">
+<input id="chIn" type="text" placeholder="Send message..." style="flex:1;background:transparent;border:1px solid var(--glass-border);color:var(--txt);font-family:var(--fm);font-size:10px;padding:8px 12px;outline:none;min-width:0" autocomplete="off" />
+<button onclick="chSend()" style="background:var(--blood);border:none;color:#fff;font-family:var(--fd);font-size:9px;letter-spacing:2px;padding:8px 16px;cursor:pointer;min-width:44px">SEND</button>
+</div>
+</div>

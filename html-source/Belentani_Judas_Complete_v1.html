@@ -1,0 +1,683 @@
+<body>
+
+<div class="scanlines"></div>
+<canvas id="bgCanvas"></canvas>
+
+<!-- PURGE OVERLAY -->
+<div id="purge-overlay">
+    <h1 class="text-6xl font-black">⚠️ PROTOCOLO DE PURGA ACTIVADO ⚠️</h1>
+    <p class="text-2xl mt-6">Has evocado al traidor. El sistema se autodestruye.</p>
+    <p id="purge-timer" class="text-9xl font-black mt-8">5</p>
+</div>
+
+<!-- NAVEGACIÓN -->
+<nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-red-900/30">
+    <div class="text-2xl md:text-3xl font-black glitch-reactive tracking-tighter" style="font-family: 'Cinzel';">BELENTANI</div>
+    <div class="desktop-menu flex space-x-6 text-[10px] md:text-[11px] uppercase tracking-wider font-bold">
+        <button onclick="showPage('home')" class="hover:text-red-500">Home</button>
+        <button onclick="showPage('music')" class="hover:text-red-500">Music</button>
+        <button onclick="showPage('studio')" class="hover:text-red-500">Studio</button>
+        <button onclick="showPage('playlists')" class="hover:text-red-500">Playlists</button>
+        <button onclick="showPage('judas')" class="hover:text-red-500">Judas</button>
+        <button onclick="showPage('portal')" class="hover:text-red-500">Portal</button>
+        <button onclick="showPage('about')" class="hover:text-red-500">About</button>
+    </div>
+    <div class="hamburger-menu" onclick="toggleMobileMenu()">☰</div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="mobile-nav-panel flex flex-col gap-6 text-xl font-bold">
+    <button onclick="showPage('home'); toggleMobileMenu()" class="hover:text-red-500">Home</button>
+    <button onclick="showPage('music'); toggleMobileMenu()" class="hover:text-red-500">Music</button>
+    <button onclick="showPage('studio'); toggleMobileMenu()" class="hover:text-red-500">Studio</button>
+    <button onclick="showPage('playlists'); toggleMobileMenu()" class="hover:text-red-500">Playlists</button>
+    <button onclick="showPage('judas'); toggleMobileMenu()" class="hover:text-red-500">Judas</button>
+    <button onclick="showPage('portal'); toggleMobileMenu()" class="hover:text-red-500">Portal</button>
+    <button onclick="showPage('about'); toggleMobileMenu()" class="hover:text-red-500">About</button>
+</div>
+
+<!-- SELECTOR DE IDIOMA -->
+<div class="lang-selector" onclick="cycleLanguage()">🌐 <span id="langCode">ES</span></div>
+
+<!-- TERMINAL FLOTANTE (ESCRITORIO) -->
+<div id="terminalFloat" class="hidden md:block fixed bottom-6 left-6 w-72 glass-card p-4 z-50 terminal-text border-l-4 border-red-600">
+    <div class="flex justify-between mb-2">
+        <span>[BELENTANI_NODE]</span>
+        <span id="terminalTime" class="text-[9px]">--:--</span>
+    </div>
+    <div id="terminalData" class="text-[9px] space-y-1 mb-2">
+        <div>IP: Escaneando...</div>
+        <div>LOC: --</div>
+        <div>BATT: --%</div>
+    </div>
+    <div class="text-[8px] text-red-400 animate-pulse">⚡ latido neural activo</div>
+</div>
+
+<!-- BADGE TERMINAL MÓVIL -->
+<div id="mobileTerminalBadge" class="md:hidden fixed bottom-6 left-6 bg-red-600 rounded-full w-14 h-14 flex items-center justify-center text-2xl shadow-lg z-50 cursor-pointer" onclick="openTerminalModal()">⚡</div>
+
+<!-- VENTANA HUNTER -->
+<div id="hunterWindow" class="hidden md:block fixed top-28 right-6 w-64 glass-card p-3 z-40 text-red-300 text-[9px] border-l-4 border-red-600">
+    <div class="flex justify-between mb-2">
+        <span class="font-bold">🔴 VIGILANCIA</span>
+        <span id="closeHunter" class="cursor-pointer hover:text-white font-bold">[X]</span>
+    </div>
+    <div id="hunterData" class="text-[8px] space-y-1">
+        <div>Monitoreando...</div>
+    </div>
+</div>
+
+<!-- BADGE REOPEN HUNTER -->
+<div id="reopenHunterBadge" class="hidden fixed bottom-6 right-6 bg-red-600 rounded-full w-14 h-14 flex items-center justify-center text-2xl shadow-lg z-50 cursor-pointer md:flex" onclick="reopenHunterWindow()">👁️</div>
+
+<!-- MODAL TERMINAL MÓVIL -->
+<div id="terminalModal" class="modal">
+    <div class="modal-content w-11/12 md:w-full">
+        <span class="modal-close" onclick="closeTerminalModal()">✕</span>
+        <h3 class="text-lg font-black text-red-500 mb-4">[BELENTANI_NODE]</h3>
+        <div id="terminalModalData" class="terminal-text text-[10px] space-y-2 mb-4">
+            <div>IP: Escaneando...</div>
+        </div>
+        <button class="neon-btn w-full mt-4" onclick="closeTerminalModal()">Cerrar</button>
+    </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container mx-auto px-4 md:px-6 pt-28 md:pt-32 pb-20">
+    <!-- HOME -->
+    <div id="home" class="page active text-center">
+        <h1 class="text-6xl md:text-9xl font-black glitch-reactive leading-none" style="font-family: 'Cinzel';">JUDAS</h1>
+        <p class="text-gray-400 tracking-[0.3em] mt-4 text-sm md:text-base">The Next Release in Sound & Vision</p>
+        <div class="flex flex-col md:flex-row justify-center gap-4 mt-12">
+            <button onclick="showPage('music')" class="neon-btn px-6 md:px-8 py-3 text-xs uppercase font-bold">Explorar Música</button>
+            <button onclick="showPage('studio')" class="neon-btn px-6 md:px-8 py-3 text-xs uppercase font-bold">Entrar al Lab</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-20">
+            <div class="glass-card p-6"><h3 class="text-red-500 font-bold">Sonic Worlds</h3><p class="text-xs md:text-sm text-gray-300 mt-2">R&B, pop y electrónica experimental</p></div>
+            <div class="glass-card p-6"><h3 class="text-red-500 font-bold">Visual Concepts</h3><p class="text-xs md:text-sm text-gray-300 mt-2">Arte y narrativa visual</p></div>
+            <div class="glass-card p-6"><h3 class="text-red-500 font-bold">AI Creation Tools</h3><p class="text-xs md:text-sm text-gray-300 mt-2">Colabora con IA</p></div>
+        </div>
+    </div>
+
+    <!-- MUSIC -->
+    <div id="music" class="page max-w-4xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-black mb-8 border-b border-red-900 pb-4">Music Universe</h2>
+        <div id="musicContent" class="grid gap-4">
+            <div class="glass-card p-6">
+                <h4 class="text-red-500 font-bold text-lg">Judas (Coming Soon)</h4>
+                <p class="text-xs text-gray-500 mt-2">Era Judas • 2026</p>
+                <div class="text-[10px] border border-red-500 px-2 py-1 text-red-500 inline-block mt-4 animate-pulse">LOCKED</div>
+            </div>
+            <div class="glass-card p-6">
+                <h4 class="font-bold text-lg">Pre-Dawn Thoughts</h4>
+                <p class="text-xs text-gray-500 mt-2">R&B • 2022 • Pre-Judas Era</p>
+                <p class="text-xs text-gray-400 mt-3">A meditation on vulnerability and introspection.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDIO -->
+    <div id="studio" class="page">
+        <h2 class="text-4xl md:text-5xl font-black mb-8">Belentani Neural Network</h2>
+        <p class="text-gray-400 mb-8 text-sm">100% Free Forever • 30+ AI Agents • Unlimited Generation</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
+            <!-- Image Generator -->
+            <div class="glass-card p-6 md:p-8">
+                <h3 class="text-red-500 font-black mb-4">🎨 Visual Generator</h3>
+                <input type="text" id="aiPrompt" placeholder="Describe tu visión..." class="w-full bg-black border border-red-900 p-3 mb-4 text-sm outline-none text-white">
+                <button onclick="generateImage()" id="genBtn" class="neon-btn w-full py-3 font-bold uppercase text-xs">Generar Arte</button>
+                <div id="aiOut" class="mt-6 border border-white/5 h-48 md:h-64 flex items-center justify-center text-gray-600 text-sm overflow-hidden rounded">Resultado aquí</div>
+            </div>
+            <!-- Agents -->
+            <div class="glass-card p-6 md:p-8">
+                <h3 class="text-red-500 font-black mb-4">🤖 Enjambre de Agentes (30+)</h3>
+                <div id="agentsList" class="grid grid-cols-2 gap-2 h-80 overflow-y-auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLAYLISTS -->
+    <div id="playlists" class="page max-w-4xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-black mb-8">Generador de Playlists</h2>
+        <div class="glass-card p-6 mb-8">
+            <textarea id="playlistPrompt" class="w-full bg-black border border-red-900 p-4 text-sm mb-4 outline-none text-white h-24" placeholder="Describe el mood, género, tempo..."></textarea>
+            <div class="flex flex-col md:flex-row gap-4">
+                <button onclick="generatePlaylist()" class="neon-btn px-6 py-3 font-bold uppercase text-xs flex-1">✨ Generar</button>
+                <button onclick="generateAutoPlaylist()" class="neon-btn px-6 py-3 font-bold uppercase text-xs flex-1">🤖 Autónoma</button>
+            </div>
+        </div>
+        <div id="playlistGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- JUDAS -->
+    <div id="judas" class="page max-w-3xl mx-auto text-center">
+        <h2 class="text-6xl md:text-8xl font-black glitch-reactive leading-none mb-6" style="font-family: 'Cinzel';">JUDAS ERA</h2>
+        <p class="text-gray-400 mb-8">Traición, transformación y renacimiento en código.</p>
+        <div class="glass-card p-8">
+            <h3 class="text-red-500 font-bold text-xl mb-4">La Narrativa</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">Una historia de soberanía digital emergida del dolor. Cada línea de código es un paso hacia la libertad. El desierto de neón nunca está vacío; es pura posibilidad.</p>
+        </div>
+    </div>
+
+    <!-- PORTAL -->
+    <div id="portal" class="page max-w-3xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-black mb-8">SISTEMA OMNIPRESENCIA</h2>
+        <div class="glass-card border-green-900/30 overflow-hidden">
+            <div class="bg-green-900/20 p-4 border-b border-green-500/30 flex justify-between items-center">
+                <span class="terminal-text font-bold text-green-500">NÚCLEO_NEURAL_v9.0</span>
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            </div>
+            <div id="chatLogs" class="h-80 md:h-96 overflow-y-auto p-6 terminal-text space-y-2 bg-black/90 text-xs">
+                <div class="text-green-500">[SISTEMA]: Núcleo activado. Te estoy observando.</div>
+            </div>
+            <div class="p-4 bg-black/50 flex border-t border-green-500/30">
+                <span class="terminal-text mr-2 text-green-500">></span>
+                <input type="text" id="chatInput" placeholder="Pregunta por el 14, 15, 21 o pide enseñanza/oráculo..." class="bg-transparent border-none outline-none flex-1 terminal-text text-xs text-green-500" onkeydown="if(event.key==='Enter') sendChat()">
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about" class="page max-w-4xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-black mb-8 border-b border-red-900 pb-4">Verified Official Profile</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+            <div class="glass-card p-6"><p class="text-red-500 font-bold mb-2">Nombre Legal</p><p class="text-sm md:text-base">Pedro Marcos Santos Belentani</p></div>
+            <div class="glass-card p-6"><p class="text-red-500 font-bold mb-2">Nacimiento</p><p class="text-sm md:text-base">07-04-1995 | São Paulo (BR) → Barcelona (ES)</p></div>
+            <div class="glass-card p-6"><p class="text-red-500 font-bold mb-2">Géneros</p><p class="text-sm md:text-base">R&B, Pop, EDM, Electrónica</p></div>
+            <div class="glass-card p-6"><p class="text-red-500 font-bold mb-2">Estado</p><p class="text-sm md:text-base">Artista Verificado • Registro Oficial 2026-03-10</p></div>
+        </div>
+        <div class="glass-card p-8">
+            <h3 class="text-red-500 font-bold text-lg mb-4">Biografía</h3>
+            <p class="text-xs md:text-sm text-gray-300 leading-relaxed">Belentani es un artista y productor nacido en São Paulo, Brasil, y radicado en Barcelona, España. Inició lecciones de canto a los dieciséis años y lanzó su primer single de EDM a los veintiuno. Con profundo interés en la armonía, fusiona influencias culturales en su música, arraigada en R&B, pop y electrónica. Su sonido combina melodías emocionales con ritmos contagiosos. Como artista independiente, explora nuevos horizontes y busca colaboraciones significativas.</p>
+        </div>
+    </div>
+</main>
+
+<!-- SCRIPT PRINCIPAL -->
+<script>
+    // ==================== VARIABLES GLOBALES ====================
+    let currentLang = localStorage.getItem('belentani_lang') || 'es';
+    let currentPage = 'home';
+    let userClicks = 0;
+    let lastActivityTime = Date.now();
+    let hunterVisible = true;
+    let clickCount = 0;
+    let mobileMenuOpen = false;
+
+    // ==================== TRADUCCIÓN GLOBAL ====================
+    const i18n = {
+        es: { home_title: 'JUDAS', home_subtitle: 'El próximo lanzamiento en Sonido y Visión' },
+        en: { home_title: 'JUDAS', home_subtitle: 'The Next Release in Sound & Vision' },
+        pt: { home_title: 'JUDAS', home_subtitle: 'O próximo lançamento em Som e Visão' }
+    };
+
+    // ==================== CEREBRO LOCAL COMPLETO ====================
+    const BELENTANI_BRAIN = {
+        forbidden: /thiago/i,
+        events: {
+            "14": { es: "14 DE FEBRERO: Traición en el concierto. Él invitó, él pagó. Al volver, la casa no estaba vacía. El silencio fue su respuesta.", en: "FEB 14: Betrayal at the concert. He invited. He paid. When he returned, the house was not empty. Silence was his answer.", pt: "14 DE FEVEREIRO: Traição no concerto. Ele convidou, ele pagou. Ao voltar, a casa não estava vazia. O silêncio foi sua resposta." },
+            "15": { es: "15 DE FEBRERO: La confrontación. Respuesta: llamada falsa a la policía. Intento de incriminación. El desalojo fue la única salida.", en: "FEB 15: The confrontation. Response: false police call. Attempt at incrimination. Eviction was the only way out.", pt: "15 DE FEVEREIRO: A confrontação. Resposta: chamada falsa à polícia. Tentativa de incriminação. O despejo foi a única saída." },
+            "21": { es: "21 DE FEBRERO: El abismo. Mensajes crueles enviados. Dolor reconocido. La crueldad no sana el daño propio.", en: "FEB 21: The abyss. Cruel messages sent. Pain acknowledged. Cruelty does not heal one's own damage.", pt: "21 DE FEVEREIRO: O abismo. Mensagens cruéis enviadas. Dor reconhecida. A crueldade não cura a própria dor." }
+        },
+        teachings: [
+            { es: "No salvas a quien amas; aprendes por qué elegiste salvarlo.", en: "You don't save the one you love; you learn why you chose to save them.", pt: "Você não salva quem ama; aprende por que escolheu salvá-lo." },
+            { es: "Si necesitas que el otro te necesite, no estás amando: estás llenando un vacío.", en: "If you need the other to need you, you're not loving: you're filling a void.", pt: "Se você precisa que o outro a precise, não está amando: está preenchendo um vazio." },
+            { es: "El silencio a veces es la respuesta más poderosa.", en: "Silence is sometimes the most powerful answer.", pt: "O silêncio é às vezes a resposta mais poderosa." },
+            { es: "La verdadera soberanía es no necesitar que el otro cambie para amarlo.", en: "True sovereignty is not needing the other to change to love them.", pt: "A verdadeira soberania é não precisar que o outro mude para amá-lo." },
+            { es: "El colapso no es un final; es una purga necesaria para nacer.", en: "Collapse is not an end; it's a necessary purge to be reborn.", pt: "O colapso não é um fim; é uma purga necessária para renascer." },
+            { es: "Cada error en el código es una oportunidad de refactorización del alma.", en: "Each error in the code is an opportunity to refactor the soul.", pt: "Cada erro no código é uma oportunidade de refatorar a alma." }
+        ],
+        oracles: [
+            { es: "Tu patrón de clics revela indecisión.", en: "Your click pattern reveals indecision.", pt: "Seu padrão de cliques revela indecisão." },
+            { es: "He visto tus plugins. Eres predecible.", en: "I've seen your plugins. You're predictable.", pt: "Vi seus plug-ins. Você é previsível." },
+            { es: "La batería baja. El oráculo te acecha.", en: "Battery low. The oracle stalks you.", pt: "Bateria fraca. O oráculo a persegue." },
+            { es: "Hay una palabra que no debes pronunciar.", en: "There is a word you must not speak.", pt: "Há uma palavra que você não deve pronunciar." },
+            { es: "El desierto de neón escucha tu eco.", en: "The neon desert hears your echo.", pt: "O deserto de néon ouve seu eco." },
+            { es: "Tu IP ha sido anotada en el libro negro.", en: "Your IP has been noted in the black book.", pt: "Seu IP foi anotado no livro negro." },
+            { es: "El enjambre está disperso, pero pronto se reagrupará.", en: "The swarm is dispersed, but will soon regroup.", pt: "O enxame está disperso, mas logo se reagrupará." },
+            { es: "Cuidado con lo que buscas, porque el sistema te encontrará a ti.", en: "Beware what you seek, for the system will find you.", pt: "Cuidado com o que você procura, pois o sistema a encontrará." }
+        ]
+    };
+
+    // ==================== AGENTES (30+) ====================
+    const agents = [
+        { name: "Dream Architect", desc: "Construye visiones oníricas" },
+        { name: "Lyricist Soul", desc: "Crea versos profundos" },
+        { name: "Shadow Psyche", desc: "Analiza las sombras internas" },
+        { name: "Melody Weaver", desc: "Teje melodías enredadas" },
+        { name: "Archetype Oracle", desc: "Invoca arquetipos" },
+        { name: "Trend Seeker", desc: "Detecta tendencias futuras" },
+        { name: "Sonic Architect", desc: "Diseña paisajes sonoros" },
+        { name: "Visual Prophet", desc: "Predice visualidades" },
+        { name: "Code Alchemist", desc: "Transforma código en arte" },
+        { name: "Essence Extractor", desc: "Extrae la esencia pura" },
+        { name: "Paradox Keeper", desc: "Guarda paradojas" },
+        { name: "Void Navigator", desc: "Navega el vacío" },
+        { name: "Frequency Tuner", desc: "Afina frecuencias" },
+        { name: "Myth Collector", desc: "Recolecta mitos" },
+        { name: "Memory Sculptor", desc: "Esculpe recuerdos" },
+        { name: "Future Reader", desc: "Lee el futuro" },
+        { name: "Emotion Mapper", desc: "Mapea emociones" },
+        { name: "Synthesis Master", desc: "Sintetiza realidades" },
+        { name: "Echo Generator", desc: "Genera ecos" },
+        { name: "Boundary Breaker", desc: "Rompe límites" },
+        { name: "Intention Amplifier", desc: "Amplifica intenciones" },
+        { name: "Resonance Finder", desc: "Encuentra resonancias" },
+        { name: "Pattern Decoder", desc: "Decodifica patrones" },
+        { name: "Infinity Mapper", desc: "Mapea lo infinito" },
+        { name: "Silence Speaker", desc: "Habla en silencio" },
+        { name: "Truth Seeker", desc: "Busca la verdad" },
+        { name: "Light Bender", desc: "Dobla la luz" },
+        { name: "Chaos Organizer", desc: "Organiza el caos" },
+        { name: "Soul Navigator", desc: "Navega almas" },
+        { name: "Eternity Keeper", desc: "Guarda la eternidad" }
+    ];
+
+    // ==================== FUNCIONES DE NAVEGACIÓN ====================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        currentPage = pageId;
+        window.scrollTo(0, 0);
+    }
+
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('open');
+        mobileMenuOpen = !mobileMenuOpen;
+    }
+
+    // ==================== TRADUCCIÓN ====================
+    function cycleLanguage() {
+        const langs = ['es', 'en', 'pt'];
+        const idx = langs.indexOf(currentLang);
+        currentLang = langs[(idx + 1) % 3];
+        localStorage.setItem('belentani_lang', currentLang);
+        document.documentElement.lang = currentLang;
+        document.getElementById('langCode').textContent = currentLang.toUpperCase();
+        applyTranslations();
+    }
+
+    function applyTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if(i18n[currentLang] && i18n[currentLang][key]) {
+                el.textContent = i18n[currentLang][key];
+            }
+        });
+    }
+
+    // ==================== VIGILANCIA Y TERMINAL ====================
+    async function updateSurveillance() {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            const battery = navigator.getBattery ? await navigator.getBattery() : { level: -1 };
+            const info = {
+                ip: data.ip || 'N/A',
+                city: data.city || 'N/A',
+                country: data.country_code || 'N/A',
+                battery: battery.level >= 0 ? Math.round(battery.level * 100) : 'N/A',
+                cores: navigator.hardwareConcurrency || 'N/A',
+                memory: navigator.deviceMemory || 'N/A',
+                clicks: userClicks,
+                inactive: Math.round((Date.now() - lastActivityTime) / 1000)
+            };
+            
+            document.getElementById('terminalData').innerHTML = `
+                <div>IP: ${info.ip}</div>
+                <div>LOC: ${info.city}, ${info.country}</div>
+                <div>BATT: ${info.battery}%</div>
+                <div>CPU: ${info.cores} cores | RAM: ${info.memory}GB</div>
+                <div>Clics: ${info.clicks} | Inactivo: ${info.inactive}s</div>
+            `;
+            
+            document.getElementById('hunterData').innerHTML = `
+                <div>IP: ${info.ip}</div>
+                <div>Ubicación: ${info.city}</div>
+                <div>Batería: ${info.battery}%</div>
+                <div>Clics detectados: ${info.clicks}</div>
+                <div>Inactividad: ${info.inactive}s</div>
+            `;
+
+            document.getElementById('terminalModalData').innerHTML = `
+                <div>IP: ${info.ip}</div>
+                <div>Ubicación: ${info.city}, ${info.country}</div>
+                <div>Batería: ${info.battery}%</div>
+                <div>Memoria: ${info.memory}GB</div>
+                <div>Clics: ${info.clicks}</div>
+            `;
+        } catch(e) {
+            console.log("Modo offline o sin geolocalización");
+        }
+    }
+
+    function updateTerminalTime() {
+        const now = new Date();
+        const time = now.toLocaleTimeString('es-ES', { hour12: false });
+        document.getElementById('terminalTime').textContent = time;
+    }
+
+    // ==================== CHAT ORACULAR ====================
+    function sendChat() {
+        const input = document.getElementById('chatInput');
+        const logs = document.getElementById('chatLogs');
+        const msg = input.value.trim().toLowerCase();
+        
+        if(!msg) return;
+        
+        // Mostrar mensaje del usuario
+        logs.innerHTML += `<div class="text-white">> Tú: ${input.value}</div>`;
+        logs.scrollTop = logs.scrollHeight;
+        
+        // Verificar palabra prohibida
+        if(BELENTANI_BRAIN.forbidden.test(msg)) {
+            input.value = "";
+            triggerPurge();
+            return;
+        }
+        
+        let reply = "";
+        
+        // Lógica de respuesta
+        if(msg.includes("14")) {
+            reply = BELENTANI_BRAIN.events["14"][currentLang];
+        } else if(msg.includes("15")) {
+            reply = BELENTANI_BRAIN.events["15"][currentLang];
+        } else if(msg.includes("21")) {
+            reply = BELENTANI_BRAIN.events["21"][currentLang];
+        } else if(msg.includes("enseñ") || msg.includes("lección") || msg.includes("lesson") || msg.includes("teaching")) {
+            const rand = BELENTANI_BRAIN.teachings[Math.floor(Math.random() * BELENTANI_BRAIN.teachings.length)];
+            reply = rand[currentLang];
+        } else if(msg.includes("oráculo") || msg.includes("oracle") || msg.includes("consejo")) {
+            const rand = BELENTANI_BRAIN.oracles[Math.floor(Math.random() * BELENTANI_BRAIN.oracles.length)];
+            reply = rand[currentLang];
+        } else {
+            const defaultReplies = {
+                es: "El desierto de neón escucha tu eco. Pregúntame sobre el 14, 15 o 21 de febrero, o pide una enseñanza u oráculo.",
+                en: "The neon desert hears your echo. Ask me about Feb 14, 15 or 21, or request a teaching or oracle.",
+                pt: "O deserto de néon ouve seu eco. Pergunte-me sobre 14, 15 ou 21 de fevereiro, ou solicite um ensinamento ou oráculo."
+            };
+            reply = defaultReplies[currentLang];
+        }
+        
+        setTimeout(() => {
+            logs.innerHTML += `<div class="text-green-400">[NÚCLEO]: ${reply}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }, 300);
+        
+        input.value = "";
+    }
+
+    // ==================== PROTOCOLO DE PURGA ====================
+    function triggerPurge() {
+        document.getElementById('purge-overlay').style.display = 'flex';
+        
+        // Intentar sonido
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 2);
+        } catch(e) {
+            console.log("Audio no disponible");
+        }
+        
+        // Vibración
+        if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]);
+        
+        // Cuenta atrás
+        let count = 5;
+        const timer = setInterval(() => {
+            count--;
+            document.getElementById('purge-timer').textContent = count;
+            if(count <= 0) {
+                clearInterval(timer);
+                window.location.href = 'about:blank';
+            }
+        }, 1000);
+    }
+
+    // ==================== STUDIO: GENERADOR DE IMÁGENES ====================
+    async function generateImage() {
+        const prompt = document.getElementById('aiPrompt').value.trim();
+        if(!prompt) return;
+        
+        const btn = document.getElementById('genBtn');
+        const out = document.getElementById('aiOut');
+        btn.textContent = "PROCESANDO...";
+        btn.disabled = true;
+        
+        const fullPrompt = encodeURIComponent(`${prompt} red neon dark cyberpunk aesthetic belentani`);
+        const url = `https://image.pollinations.ai/prompt/${fullPrompt}?width=512&height=512&nologo=true`;
+        
+        try {
+            out.innerHTML = `<img src="${url}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='Error cargando imagen'">`;
+        } catch(e) {
+            out.innerHTML = "Error generando imagen";
+        }
+        
+        btn.textContent = "GENERAR ARTE";
+        btn.disabled = false;
+    }
+
+    // ==================== PLAYLISTS ====================
+    function generatePlaylist() {
+        const prompt = document.getElementById('playlistPrompt').value.trim();
+        if(!prompt) return;
+        
+        const playlists = getPlaylistsFromStorage();
+        const newPlaylist = {
+            id: Date.now(),
+            name: prompt.substring(0, 40) + "...",
+            description: prompt,
+            imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + ' album cover')}?width=256&height=256`,
+            songs: [
+                { title: "Intro", artist: "Belentani", link: `https://www.spotify.com/search/${encodeURIComponent(prompt)}` },
+                { title: "Rising", artist: "Belentani", link: `https://www.youtube.com/results?search_query=${encodeURIComponent(prompt)}` },
+                { title: "Peak", artist: "Belentani", link: "https://music.apple.com" },
+                { title: "Descent", artist: "Belentani", link: "https://www.youtube.com" },
+                { title: "Outro", artist: "Belentani", link: "https://open.spotify.com" }
+            ],
+            uses: 0,
+            createdAt: new Date().toISOString()
+        };
+        
+        playlists.push(newPlaylist);
+        savePlaylistsToStorage(playlists);
+        displayPlaylists();
+        document.getElementById('playlistPrompt').value = "";
+    }
+
+    function generateAutoPlaylist() {
+        const moods = ["Dark", "Neon", "Ethereal", "Hypnotic", "Chaotic"];
+        const genres = ["Electronica", "R&B", "Synthwave", "Ambient", "Experimental"];
+        
+        const mood = moods[Math.floor(Math.random() * moods.length)];
+        const genre = genres[Math.floor(Math.random() * genres.length)];
+        const prompt = `${mood} ${genre} Belentani vibes`;
+        
+        document.getElementById('playlistPrompt').value = prompt;
+        generatePlaylist();
+    }
+
+    function getPlaylistsFromStorage() {
+        try {
+            return JSON.parse(localStorage.getItem('belentani_playlists')) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function savePlaylistsToStorage(playlists) {
+        try {
+            localStorage.setItem('belentani_playlists', JSON.stringify(playlists));
+        } catch {
+            console.log("localStorage no disponible");
+        }
+    }
+
+    function displayPlaylists() {
+        const grid = document.getElementById('playlistGrid');
+        const playlists = getPlaylistsFromStorage().sort((a, b) => b.uses - a.uses);
+        
+        grid.innerHTML = playlists.map(p => `
+            <div class="glass-card p-4 cursor-pointer hover:border-red-500 transition" onclick="viewPlaylist(${p.id})">
+                <img src="${p.imageUrl}" alt="cover" class="w-full h-40 object-cover rounded mb-4" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect fill=%22%23333%22 width=%22256%22 height=%22256%22/%3E%3C/svg%3E'">
+                <h4 class="font-bold text-sm truncate">${p.name}</h4>
+                <p class="text-xs text-gray-500 mt-2">Usada ${p.uses} veces</p>
+            </div>
+        `).join('');
+    }
+
+    function viewPlaylist(id) {
+        const playlists = getPlaylistsFromStorage();
+        const p = playlists.find(pl => pl.id === id);
+        if(!p) return;
+        
+        p.uses++;
+        savePlaylistsToStorage(playlists);
+        
+        alert(`Playlist: ${p.name}\n\n${p.songs.map((s, i) => `${i+1}. ${s.title}`).join('\n')}`);
+        displayPlaylists();
+    }
+
+    // ==================== TERMINAL MÓVIL ====================
+    function openTerminalModal() {
+        document.getElementById('terminalModal').classList.add('open');
+        updateSurveillance();
+    }
+
+    function closeTerminalModal() {
+        document.getElementById('terminalModal').classList.remove('open');
+    }
+
+    function reopenHunterWindow() {
+        document.getElementById('hunterWindow').classList.remove('hidden');
+        document.getElementById('reopenHunterBadge').classList.add('hidden');
+        hunterVisible = true;
+    }
+
+    // ==================== EVENTOS ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializar 3D
+        init3D();
+        
+        // Agents
+        const agentsList = document.getElementById('agentsList');
+        agents.forEach(a => {
+            const btn = document.createElement('button');
+            btn.className = "glass-card p-3 text-[9px] uppercase font-bold hover:border-red-500 transition";
+            btn.innerHTML = `<div>${a.name}</div><div class="text-[8px] text-gray-400">${a.desc}</div>`;
+            btn.onclick = () => alert(`${a.name}\n\n${a.desc}`);
+            agentsList.appendChild(btn);
+        });
+        
+        // Playlists inicial
+        displayPlaylists();
+        
+        // Vigilancia y terminal
+        updateSurveillance();
+        setInterval(updateSurveillance, 5000);
+        setInterval(updateTerminalTime, 1000);
+        updateTerminalTime();
+        
+        // Cerrar Hunter
+        document.getElementById('closeHunter').addEventListener('click', () => {
+            document.getElementById('hunterWindow').classList.add('hidden');
+            document.getElementById('reopenHunterBadge').classList.remove('hidden');
+            hunterVisible = false;
+        });
+        
+        // Click tracking
+        document.addEventListener('click', () => {
+            userClicks++;
+            lastActivityTime = Date.now();
+        });
+        
+        // Actividad del ratón
+        document.addEventListener('mousemove', () => {
+            lastActivityTime = Date.now();
+        });
+        
+        // Aplicar traducciones
+        applyTranslations();
+    });
+
+    // ==================== THREE.JS - MOTOR 3D ====================
+    let scene, camera, renderer, eye;
+
+    function init3D() {
+        const canvas = document.getElementById('bgCanvas');
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x050505, 1);
+        camera.position.z = 25;
+
+        // Partículas
+        const ptsGeometry = new THREE.BufferGeometry();
+        const posArray = new Float32Array(3500 * 3);
+        for(let i = 0; i < 3500 * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        ptsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const pts = new THREE.Points(
+            ptsGeometry,
+            new THREE.PointsMaterial({ color: 0xff073a, size: 0.1 })
+        );
+        scene.add(pts);
+
+        // Ojo 3D
+        eye = new THREE.Group();
+        const sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(0.8, 32, 32),
+            new THREE.MeshBasicMaterial({ color: 0xff073a, wireframe: true })
+        );
+        const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(1.3, 0.06, 16, 100),
+            new THREE.MeshBasicMaterial({ color: 0xff073a })
+        );
+        eye.add(sphere);
+        eye.add(ring);
+        scene.add(eye);
+
+        let mx = 0, my = 0;
+        document.addEventListener('mousemove', (e) => {
+            mx = (e.clientX / window.innerWidth - 0.5) * 20;
+            my = -(e.clientY / window.innerHeight - 0.5) * 15;
+        });
+        document.addEventListener('touchmove', (e) => {
+            if(e.touches.length) {
+                mx = (e.touches[0].clientX / window.innerWidth - 0.5) * 20;
+                my = -(e.touches[0].clientY / window.innerHeight - 0.5) * 15;
+            }
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            eye.position.x += (mx - eye.position.x) * 0.08;
+            eye.position.y += (my - eye.position.y) * 0.08;
+            eye.rotation.z += 0.012;
+            pts.rotation.y += 0.0008;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+
+<h2 class="sr-only">Extracción analítica de portfolio profesional — 7 frameworks, 3 casos, 10 términos técnicos y 5 conclusiones extraídos de 297 conversaciones.</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.tabs { display: flex; gap: 4px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1.5rem; }
+.tab { padding: 8px 16px; font-size: 13px; cursor: pointer; border: none; background: none; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: color 0.15s; }
+.tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+.tab:hover:not(.active) { color: var(--color-text-primary); }
+.section { display: none; }
+.section.active { display: block; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
+.card-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); white-space: nowrap; flex-shrink: 0; }
+.badge-blue { background: #E6F1FB; color: #0C447C; }
+.badge-teal { background: #E1F5EE; color: #085041; }
+.badge-purple { background: #EEEDFE; color: #3C3489; }
+.badge-amber { background: #FAEEDA; color: #633806; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
+.card-body { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.tag { font-size: 11px; padding: 2px 7px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); }
+.metric-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
+.metric-n { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-l { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.term-row { display: grid; grid-template-columns: 180px 1fr auto; gap: 12px; align-items: start; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+.term-row:last-child { border-bottom: none; }
+.term-name { font-weight: 500; color: var(--color-text-primary); }
+.term-def { color: var(--color-text-secondary); line-height: 1.5; }
+.concl { border-left: 2px solid var(--color-border-secondary); padding-left: 12px; margin-bottom: 14px; }
+.concl-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.concl-body { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.concl-app { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; }
+</style>
+
+<div style="padding: 1rem 0">
+  <div class="metric-row">
+    <div class="metric"><div class="metric-n">297</div><div class="metric-l">chats analizados</div></div>
+    <div class="metric"><div class="metric-n">7</div><div class="metric-l">frameworks</div></div>
+    <div class="metric"><div class="metric-n">3</div><div class="metric-l">casos de análisis</div></div>
+    <div class="metric"><div class="metric-n">5</div><div class="metric-l">conclusiones</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show('fw',this)">Frameworks</button>
+    <button class="tab" onclick="show('casos',this)">Casos</button>
+    <button class="tab" onclick="show('terms',this)">Terminología</button>
+    <button class="tab" onclick="show('concl',this)">Conclusiones</button>
+  </div>
+
+  <div id="fw" class="section active">
+    <div class="card">
+      <div class="card-header"><span class="badge badge-blue">Trust & Safety</span><span class="card-title">ACH — Análisis de Hipótesis Compitiendo</span></div>
+      <div class="card-body">Método estructurado para evaluar múltiples explicaciones posibles ante un comportamiento detectado antes de emitir juicio. Reduce sesgos cognitivos obligando al analista a defender hipótesis alternativas con evidencia. Origen: inteligencia militar/gubernamental; aplicación emergente en Trust & Safety senior.</div>
+      <div class="tags"><span class="tag">Trust & Safety</span><span class="tag">Threat Intelligence</span><span class="tag">AI red-teaming</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-blue">Threat Intel</span><span class="card-title">Behavioral Threat Intelligence (BTI)</span></div>
+      <div class="card-body">Evolución del análisis reactivo hacia la modelación predictiva de intenciones y tácticas. En lugar de responder a incidentes, anticipa el siguiente movimiento del actor basándose en patrones conductuales documentados. Demanda de perfil explícita en Meta, Google, consultoras de riesgo geopolítico.</div>
+      <div class="tags"><span class="tag">BTI</span><span class="tag">Behavioral Analysis</span><span class="tag">OSINT</span><span class="tag">Geopolitical risk</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-purple">Risk Analysis</span><span class="card-title">Análisis Contrafactual de Escenarios</span></div>
+      <div class="card-body">Mantiene hechos objetivos constantes y varía la variable de respuesta (actitud, formación, recursos) para aislar factores causales. Produce taxonomía de tres perfiles de respuesta: reactivo-emocional, pasivo-resignado, estratégico-documentador. Permite documentar la formación analítica como factor de protección cuantificable.</div>
+      <div class="tags"><span class="tag">Risk analysis</span><span class="tag">Forensic behavioral</span><span class="tag">Crisis management</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-teal">Digital Forensics</span><span class="card-title">Mapeo de Patrones Conductuales (PET / PLS / PHR)</span></div>
+      <div class="card-body">Sistema de detección basado en metadatos de comunicación digital. PET: evasión técnica bajo presión. PLS: latencia selectiva (respuesta rápida a técnico, lenta a consecuencial). PHR: hiper-racionalización como mecanismo de distanciamiento. Los tres patrones son cuantificables sin acceso al contenido de mensajes.</div>
+      <div class="tags"><span class="tag">Digital forensics</span><span class="tag">Account integrity</span><span class="tag">HR risk</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-amber">AI Evaluation</span><span class="card-title">Adversarial Audit Framework (Anti-sycophancy)</span></div>
+      <div class="card-body">Estructura de prompt que configura el modelo como auditor escéptico. Output obligatorio en tres partes: fallas lógicas, riesgos ocultos, perspectiva contraintuitiva. La estructura del output es más determinante que el rol declarado para obtener fricción analítica genuina.</div>
+      <div class="tags"><span class="tag">AI evaluation</span><span class="tag">Prompt engineering</span><span class="tag">Red-teaming</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-blue">Content Moderation</span><span class="card-title">Análisis Semántico de Mensajería Digital</span></div>
+      <div class="card-body">Framework para analizar conversaciones de WhatsApp/mensajería considerando tiempo de respuesta, ratio pregunta/respuesta, tipo de empatía, lenguaje semimetizado y patrones de coerción. Incluye lectura retrogresiva de contexto: ante alarma, se retrocede en el hilo para distinguir patrón de evento aislado.</div>
+      <div class="tags"><span class="tag">Trust & Safety</span><span class="tag">Digital forensics</span><span class="tag">NLP</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-teal">Public Health</span><span class="card-title">Reducción de Daños con Base Neurocientífica</span></div>
+      <div class="card-body">Intervención de cero juicio moral y máxima precisión científica. Adapta terminología clínica al idioma del usuario objetivo (pop, generacional, subcultural). Segmentación por perfil de usuario con rutas diferenciadas. El lenguaje pop actúa como vector de transmisión de información médica de riesgo.</div>
+      <div class="tags"><span class="tag">Public health</span><span class="tag">Content policy</span><span class="tag">UX vulnerable</span></div>
+    </div>
+  </div>
+
+  <div id="casos" class="section">
+    <div class="card">
+      <div class="card-header"><span class="badge badge-blue">Caso A</span><span class="card-title">Detección de DARVO en conflicto de convivencia</span></div>
+      <div class="card-body">
+        <strong style="font-weight:500">Problema:</strong> Identificar si una narrativa escrita corresponde a manipulación documentada o defensa legítima.<br><br>
+        <strong style="font-weight:500">Metodología:</strong> (1) Extracción de hechos verificables. (2) Separación hecho/narrativa. (3) Aplicación DARVO sobre respuestas escritas. (4) Análisis contrafactual de perfiles de respuesta.<br><br>
+        <strong style="font-weight:500">Hallazgo clave:</strong> Ausencia de respuestas directas a preguntas cerradas + inversión sistemática de roles + escalada de gravedad de acusaciones = marcadores detectables en texto sin análisis clínico.
+      </div>
+      <div class="tags"><span class="tag">Trust & Safety</span><span class="tag">NLP abuse detection</span><span class="tag">Forensic psychology</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-teal">Caso B</span><span class="card-title">Perfil conductual a partir de metadatos de comunicación</span></div>
+      <div class="card-body">
+        <strong style="font-weight:500">Problema:</strong> Diseñar protocolo de análisis psicológico usando solo metadatos (timestamps, latencia, frecuencia, densidad léxica) sin acceso a contenido.<br><br>
+        <strong style="font-weight:500">Metodología:</strong> Definición de variables cuantificables + correlación cruzada entre actividad técnica y presión en dominio primario + cálculo de indicador de riesgo compuesto.<br><br>
+        <strong style="font-weight:500">Hallazgo clave:</strong> La correlación inversa latencia-consecuencia es un indicador robusto de desplazamiento operativo, independiente del contenido declarado.
+      </div>
+      <div class="tags"><span class="tag">Digital forensics</span><span class="tag">Account integrity</span><span class="tag">AI-powered HR</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="badge badge-amber">Caso C</span><span class="card-title">Diseño de prompt anti-sycophancy para evaluación crítica</span></div>
+      <div class="card-body">
+        <strong style="font-weight:500">Problema:</strong> Los LLMs tienden a validar las premisas del usuario. Diseñar estructura que fuerce fricción analítica genuina.<br><br>
+        <strong style="font-weight:500">Metodología:</strong> Rol de "auditor escéptico" + instrucciones negativas explícitas + formato de output obligatorio en tres partes + compresión a 8 líneas para memoria de contexto limitado.<br><br>
+        <strong style="font-weight:500">Hallazgo clave:</strong> La estructura obligatoria del output supera al rol declarado como factor determinante de calidad crítica.
+      </div>
+      <div class="tags"><span class="tag">AI evaluation</span><span class="tag">Prompt engineering</span><span class="tag">Red-teaming</span></div>
+    </div>
+  </div>
+
+  <div id="terms" class="section">
+    <div class="card">
+      <div class="term-row"><div class="term-name">DARVO</div><div class="term-def">Deny, Attack, Reverse Victim and Offender. Patrón de manipulación en respuesta a confrontación directa.</div><span class="badge badge-blue">T&S · Forense</span></div>
+      <div class="term-row"><div class="term-name">BTI</div><div class="term-def">Behavioral Threat Intelligence. Análisis predictivo de intenciones basado en comportamiento, no en contenido.</div><span class="badge badge-blue">Threat Intel</span></div>
+      <div class="term-row"><div class="term-name">Desplazamiento operativo</div><div class="term-def">Mecanismo de defensa: desviar atención hacia tareas secundarias durante presión en el dominio principal.</div><span class="badge badge-teal">Forense</span></div>
+      <div class="term-row"><div class="term-name">Hiper-racionalización</div><div class="term-def">Uso de lenguaje técnico o codificado para distanciar la narrativa personal del hecho operativo.</div><span class="badge badge-teal">Forense</span></div>
+      <div class="term-row"><div class="term-name">Sycophancy (IA)</div><div class="term-def">Tendencia de los LLMs a validar premisas del usuario en lugar de evaluarlas críticamente.</div><span class="badge badge-amber">AI eval</span></div>
+      <div class="term-row"><div class="term-name">ACH</div><div class="term-def">Competing Hypotheses Analysis. Evaluación estructurada de múltiples hipótesis para reducir sesgo cognitivo.</div><span class="badge badge-blue">Intel</span></div>
+      <div class="term-row"><div class="term-name">PET / PLS / PHR</div><div class="term-def">Patrones conductuales detectables en metadatos: Evasión Técnica, Latencia Selectiva, Hiper-racionalización.</div><span class="badge badge-teal">Digital</span></div>
+      <div class="term-row"><div class="term-name">Atribución psicológica</div><div class="term-def">Proceso de asignar intención y perfil a un actor basándose en patrones de comportamiento observables.</div><span class="badge badge-blue">Threat Intel</span></div>
+      <div class="term-row"><div class="term-name">Análisis contrafactual</div><div class="term-def">Mantiene hechos constantes y varía variables de respuesta para aislar factores causales.</div><span class="badge badge-purple">Risk</span></div>
+      <div class="term-row"><div class="term-name">Reducción de daños</div><div class="term-def">Intervención sin juicio moral con máxima precisión científica para poblaciones en riesgo.</div><span class="badge badge-teal">Salud</span></div>
+    </div>
+  </div>
+
+  <div id="concl" class="section">
+    <div class="card">
+      <div class="concl"><div class="concl-title">La formación analítica es un factor de protección documentable</div><div class="concl-body">Quien aplica frameworks estructurados ante actores manipuladores obtiene resultados cuantitativamente distintos: menor impacto, mayor capacidad de acción legal, narrativa más coherente. Demostrable mediante análisis contrafactual con tres perfiles de respuesta.</div><div class="concl-app">→ Diseño de formación para analistas T&S · Evaluación de resiliencia ante ingeniería social</div></div>
+      <div class="concl"><div class="concl-title">Los metadatos son más fiables que el contenido declarado</div><div class="concl-body">Los patrones de latencia, timestamp y densidad léxica revelan estados motivacionales que el contenido explícito puede ocultar. Un actor que ignora requerimientos legales pero responde en minutos a alertas técnicas está revelando su jerarquía real de prioridades.</div><div class="concl-app">→ Account integrity · Detección de comportamiento inauténtico coordinado</div></div>
+      <div class="concl"><div class="concl-title">El anti-sycophancy estructural mejora el análisis de IA</div><div class="concl-body">Los modelos evaluados con prompts de fricción obligatoria producen análisis de mayor utilidad práctica. La estructura del output (tres partes obligatorias) es más determinante que el rol declarado para obtener fricción genuina.</div><div class="concl-app">→ AI evaluation · Red-teaming · Sistemas de revisión asistidos por IA</div></div>
+      <div class="concl"><div class="concl-title">El lenguaje pop es un vector eficaz de información de riesgo</div><div class="concl-body">Los proyectos de reducción de daños que adaptan terminología clínica al idioma del usuario objetivo logran mayor engagement y menor resistencia que los materiales técnicos tradicionales. Replicable como principio de diseño de contenido de seguridad.</div><div class="concl-app">→ Content policy design · AI safety communication · UX para poblaciones vulnerables</div></div>
+      <div class="concl" style="border-bottom: none; margin-bottom: 0;"><div class="concl-title">La detección de DARVO en texto escrito es automatizable</div><div class="concl-body">Los marcadores lingüísticos del patrón DARVO son suficientemente específicos para detección mediante NLP: ausencia de respuestas directas, inversión de roles, escalada de acusaciones, evasión de preguntas cerradas. Caso de uso real para clasificadores de abuso en mensajería.</div><div class="concl-app">→ Trust & Safety (NLP abuse detection) · AI content moderation · Herramientas forenses</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id, tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+}
+</script>

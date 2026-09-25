@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIHound Scan Report</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: #0a0e1a;
+        color: #e0e6f0;
+        line-height: 1.6;
+    }
+    .banner {
+        text-align: center;
+        padding: 30px 20px 10px;
+        background: linear-gradient(135deg, #0d1224 0%, #1a1f3a 100%);
+    }
+    .banner img {
+        max-width: 600px;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+    }
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 20px 0;
+        padding: 15px 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.08);
+        font-size: 14px;
+    }
+    .meta span { color: #8892b0; }
+    .meta strong { color: #ccd6f6; }
+    .summary {
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .summary h2 {
+        font-size: 20px;
+        color: #ccd6f6;
+        margin-right: 8px;
+    }
+    .badge {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 13px;
+    }
+    th {
+        background: rgba(255,255,255,0.08);
+        color: #8892b0;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 2px solid rgba(255,255,255,0.1);
+        position: sticky;
+        top: 0;
+    }
+    td {
+        padding: 10px 14px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        vertical-align: top;
+    }
+    tr:hover { background: rgba(255,255,255,0.03) !important; }
+    .tool { font-weight: 600; color: #ccd6f6; white-space: nowrap; }
+    .cred-type { color: #a8b2d1; }
+    .storage { color: #8892b0; font-size: 12px; }
+    .location {
+        font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        font-size: 12px;
+        color: #64ffda;
+        max-width: 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .value {
+        font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        font-size: 12px;
+        color: #e6db74;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .risk { text-align: center; font-size: 12px; white-space: nowrap; }
+    .details { font-size: 11px; color: #8892b0; }
+    .note { display: block; }
+    .perms, .expiry { display: block; color: #5a6580; }
+    .file-modified { display: block; color: #b0b0b0; font-size: 0.85em; margin-top: 2px; }
+    .remediation { display: block; color: #2ecc71; font-style: italic; margin-top: 4px; }
+    .errors {
+        margin: 20px 0;
+        padding: 15px 20px;
+        background: rgba(231,76,60,0.1);
+        border: 1px solid rgba(231,76,60,0.3);
+        border-radius: 8px;
+    }
+    .errors h3 { color: #e74c3c; margin-bottom: 8px; font-size: 14px; }
+    .errors li { font-size: 13px; color: #e0a8a1; margin-left: 20px; }
+    .footer {
+        text-align: center;
+        padding: 30px;
+        color: #5a6580;
+        font-size: 12px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        margin-top: 40px;
+    }
+    @media (max-width: 900px) {
+        .location, .value { max-width: 180px; }
+        td, th { padding: 8px 8px; }
+    }
+</style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="meta">
+            <span>Platform: <strong>windows</strong></span>
+            <span>Scan Time: <strong>2026-07-30 20:38:27 UTC</strong></span>
+            <span>Version: <strong>AIHound 3.2.1</strong></span>
+            <span>Total Findings: <strong>112</strong></span>
+        </div>
+
+        <div class="summary">
+            <h2>Findings</h2>
+            <span class="badge" style="background:#e74c3c">67 CRITICAL</span> <span class="badge" style="background:#e67e22">23 HIGH</span> <span class="badge" style="background:#f1c40f">16 MEDIUM</span> <span class="badge" style="background:#3498db">6 INFO</span> 
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tool</th>
+                    <th>Credential Type</th>
+                    <th>Storage</th>
+                    <th>Location</th>
+                    <th>Value Preview</th>
+                    <th>Risk</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Aider</td>
+            <td class="cred-type">aider:openai-api-key</td>
+            <td class="storage">plaintext_yaml</td>
+            <td class="location" title="C:\Users\USER\.aider.conf.yml">C:\Users\USER\.aider.conf.yml</td>
+            <td class="value">gsk_Ah...nueL</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Aider config key: openai-api-key</span><br><span class="note">File last modified: 4 hours ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (4 hours ago)</span><span class="remediation">Fix: Use environment variables (OPENAI_API_KEY, ANTHROPIC_API_KEY) instead of config file</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Claude Code CLI</td>
+            <td class="cred-type">oauth_access_token</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\.claude\.credentials.json">C:\Users\USER\.claude\.credentials.json</td>
+            <td class="value">sk-ant-oat01-4...0wAA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">File last modified: 7 hours ago</span><br><span class="note">Expires: 2026-07-30 20:44 UTC</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span> <span class="expiry">Expires: 2026-07-30 20:44 UTC</span><span class="file-modified">Modified: 2026-07-30 (7 hours ago)</span><span class="remediation">Fix: Restrict file permissions: chmod 600 C:\Users\USER\.claude\.credentials.json</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Claude Code CLI</td>
+            <td class="cred-type">oauth_refresh_token</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\.claude\.credentials.json">C:\Users\USER\.claude\.credentials.json</td>
+            <td class="value">sk-ant-ort01-V...sgAA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">File last modified: 7 hours ago</span><br><span class="note">Expires: 2026-07-30 20:44 UTC</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span> <span class="expiry">Expires: 2026-07-30 20:44 UTC</span><span class="file-modified">Modified: 2026-07-30 (7 hours ago)</span><span class="remediation">Fix: Restrict file permissions: chmod 600 C:\Users\USER\.claude\.credentials.json</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Claude Desktop</td>
+            <td class="cred-type">mcp_env:GITHUB_PERSONAL_ACCESS_TOKEN</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Claude\claude_desktop_config.json">C:\Users\USER\AppData\Roaming\Claude\claude_desktop_config.json</td>
+            <td class="value">github_pat_11CJ...pXRH</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">MCP server: github</span><br><span class="note">Inline secret in config</span><br><span class="note">Config last modified 1 day ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-29 (1 day ago)</span><span class="remediation">Fix: Move secret to environment variable or secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Gemini CLI / GCloud</td>
+            <td class="cred-type">gcloud_client_secret</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\gcloud\application_default_credentials.json">C:\Users\USER\AppData\Roaming\gcloud\application_default_credentials.json</td>
+            <td class="value">d-FL95...D0Ty</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Credential type: authorized_user</span><br><span class="note">File last modified: 15 days ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-15 (15 days ago)</span><span class="remediation">Fix: Rotate Application Default Credentials regularly</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Gemini CLI / GCloud</td>
+            <td class="cred-type">gcloud_refresh_token</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\gcloud\application_default_credentials.json">C:\Users\USER\AppData\Roaming\gcloud\application_default_credentials.json</td>
+            <td class="value">1//03J...Y7yM</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Credential type: authorized_user</span><br><span class="note">File last modified: 15 days ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-15 (15 days ago)</span><span class="remediation">Fix: Rotate Application Default Credentials regularly</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">OpenAI/Codex CLI</td>
+            <td class="cred-type">openai:OPENAI_API_KEY</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\.codex\auth.json">C:\Users\USER\.codex\auth.json</td>
+            <td class="value">sk-ws-H...IR5A</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">JSON key path: OPENAI_API_KEY</span><br><span class="note">File last modified: 1 day ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-29 (1 day ago)</span><span class="remediation">Fix: Use OPENAI_API_KEY environment variable instead of plaintext file</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Google Gemini API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\GEMINI_API_KEY">HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\GEMINI_API_KEY</td>
+            <td class="value">AQ.Ab8...mWHg</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Registry key: HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Google API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\GOOGLE_API_KEY">HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\GOOGLE_API_KEY</td>
+            <td class="value">AQ.Ab8...mWHg</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Registry key: HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">Google API Key</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:731">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:731</td>
+            <td class="value">AIzaSyCH...bZy8</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 731: $env:GEMINI_API_KEY="AIzaSyCH...bZy8"</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">Anthropic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:1654">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:1654</td>
+            <td class="value">sk-ant-api0...jQAA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 1654: sk-ant-api0...jQAA</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2429">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2429</td>
+            <td class="value">sk-da5e...4335</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 2429: $env:ALIBABA_API_KEY = "sk-da5e...4335"; $env:ALIBABA_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode...</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2784">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2784</td>
+            <td class="value">sk-or-v...REAL</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 2784: curl https://openrouter.ai/api/v1/chat/completions -H "Authorization: Bearer sk-or-v...REAL" -H "Content-Type: applic...</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2785">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2785</td>
+            <td class="value">sk-or-v...7772</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 2785: $env:OR_KEY="sk-or-v...7772 "; $resp=Invoke-RestMethod -Uri "https://openrouter.ai/api/v1/chat/completions" -Method P...</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5467">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5467</td>
+            <td class="value">sk-ws-H...44Ig</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 5467: $env:DASHSCOPE_API_KEY="sk-ws-H...44Ig"</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5493">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5493</td>
+            <td class="value">sk-or-v...8271</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 5493: [Environment]::SetEnvironmentVariable("sk-or-v...8271", $null, "User")`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">Anthropic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:8291">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:8291</td>
+            <td class="value">sk-ant-api0...ewAA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 8291: --header "x-api-key: sk-ant-api0...ewAA" \</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:8886">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:8886</td>
+            <td class="value">sk-or-v...aqui</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 8886: $env:OPENROUTER_API_KEY="sk-or-v...aqui"</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9417">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9417</td>
+            <td class="value">sk-2eea...90d0</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 9417: $env:DEEPSEEK_API_KEY="sk-2eea...90d0`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9584">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9584</td>
+            <td class="value">sk-ezmq...0qou</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 9584: hermes sk-ezmq...0qou</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11565">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11565</td>
+            <td class="value">sk-or-v..._AQU</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 11565: $Env:OPENAI_API_KEY = "sk-or-v..._AQUÍ"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11991">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11991</td>
+            <td class="value">sk-et9f...7i5l</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 11991: --header "sk-et9f...7i5l" \`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12530">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12530</td>
+            <td class="value">sk-proj...mAAi</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12530: $env:OPENAI_API_KEY="sk-proj...mAAi"</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12533">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12533</td>
+            <td class="value">sk-proj...5S8A</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12533: -H "Authorization: Bearer sk-proj...5S8A" \`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12875">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12875</td>
+            <td class="value">sk-dumm...cion</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12875: $env:ANTHROPIC_API_KEY="sk-dumm...cion"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">GitHub PAT (fine-grained)</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:13242">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:13242</td>
+            <td class="value">github_pat_11BX...JFov</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 13242: $env:OPENAI_API_KEY=github_pat_11BX...JFov`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14278">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14278</td>
+            <td class="value">sk-or-v...334e</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 14278: setx OPENROUTER_API_KEY "sk-or-v...334e"</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">Google API Key</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14950">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14950</td>
+            <td class="value">AIzaSyYo...e...</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 14950: $Env:GEMINI_API_KEY="AIzaSyYo...e..."`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15881">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15881</td>
+            <td class="value">sk-proj...ZL4A</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15881: api_key: "sk-proj...ZL4A"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15899">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15899</td>
+            <td class="value">sk-or-v...178e</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15899: api_key: "sk-or-v...178e"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15905">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15905</td>
+            <td class="value">sk-or-v...eddc</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15905: api_key: "sk-or-v...eddc"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15911">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15911</td>
+            <td class="value">sk-or-v...2e5e</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15911: api_key: "sk-or-v...2e5e"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16062">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16062</td>
+            <td class="value">sk-or-v...b045</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16062: -H "Authorization: Bearer $sk-or-v...b045" \`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16852">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16852</td>
+            <td class="value">sk-ws-H...rQlw</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16852: api_key: "sk-ws-H...rQlw"`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:17510">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:17510</td>
+            <td class="value">sk-or-v...81ce</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 17510: Authorization: 'Bearer sk-or-v...81ce',`</span><br><span class="note">File last modified: just now</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2426">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:2426</td>
+            <td class="value">tu_api...aqui</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 2426: $env:ALIBABA_API_KEY = tu_api...aqui`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:3601">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:3601</td>
+            <td class="value">meta-l...ruct</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 3601: $env:OPENAI_MODEL = "meta-llama/llama-3.3-70b-instruct:free"</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:3613">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:3613</td>
+            <td class="value">google...b-it</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 3613: $env:OPENAI_MODEL = "google/gemma-2-9b-it:free"`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:4036">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:4036</td>
+            <td class="value">AQ.Ab8...LySw</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 4036: $env:GEMINI_API_KEY = AQ.Ab8...LySw</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5535">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:5535</td>
+            <td class="value">tp-ee3...ymse</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 5535: $env:XIAOMI_API_KEY = tp-ee3...ymse</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9126">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9126</td>
+            <td class="value">AQ.Ab8...TMdQ</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 9126: -H 'X-goog-api-key: AQ.Ab8...TMdQ \</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9666">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:9666</td>
+            <td class="value">AQ.Ab8...Gk4Q</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 9666: -H 'X-goog-api-key: AQ.Ab8...Gk4Q \`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11563">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:11563</td>
+            <td class="value">qwen/q...ruct</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 11563: $Env:OPENAI_MODEL = "qwen/qwen-2.5-coder-32b-instruct:free"`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12340">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12340</td>
+            <td class="value">xai-HY...4EWo</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12340: export GROQ_API_KEY=xai-HY...4EWo</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12458">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12458</td>
+            <td class="value">gsk_Ao...JeUm</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12458: -H "Authorization: Bearer gsk_Ao...JeUm \`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12630">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12630</td>
+            <td class="value">gsk_XA...ZUqA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12630: -H "Authorization: Bearer gsk_XA...ZUqA \</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12673">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12673</td>
+            <td class="value">72ff23...JFWb</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12673: npm install -g @guizmo-ai/zai-cli; $env:ZAI_API_KEY=72ff23...JFWb`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12873">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:12873</td>
+            <td class="value">AQ.Ab8...xSKg</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 12873: $env:GEMINI_API_KEY=AQ.Ab8...xSKg</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:13157">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:13157</td>
+            <td class="value">LuPpz1...TElp</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 13157: $env:MISTRAL_API_KEY=LuPpz1...TElp; vibe "Hola, responde con un saludo corto para confirmar que me escuchas"`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14875">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14875</td>
+            <td class="value">gsk_Ug...yYJY</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 14875: $env:GROQ_API_KEY=gsk_Ug...yYJY`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14904">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14904</td>
+            <td class="value">vhv_8f...770K</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 14904: -H "Authorization: Bearer vhv_8f...770K \`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14946">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:14946</td>
+            <td class="value">AQ.Ab8..._KQI</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 14946: v $env:GEMINI_API_KEY=AQ.Ab8..._KQI; code .`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15315">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15315</td>
+            <td class="value">gsk_OE...CdsN</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15315: $TOGETHER_API_KEY = gsk_OE...CdsN`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15615">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15615</td>
+            <td class="value">AQ.Ab8...jIzA</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15615: $env:GEMINI_API_KEY=AQ.Ab8...jIzA</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15848">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15848</td>
+            <td class="value">tpee30...ymse</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15848: export MIMO_API_KEY=tpee30...ymseexport MIMO_BASE_URL="https://api.mimo.run/v1"export MIMO_DEFAULT_MODEL="mimo-v2.5-l...</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15893">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15893</td>
+            <td class="value">csk-jd...dxe3</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15893: api_key: csk-jd...dxe3 f3wRJZkJGGJaz5y1Ljy0C3MlbcgTm4j8"`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15917">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15917</td>
+            <td class="value">nvapi-...PGxI</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15917: api_key: nvapi-...PGxI`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15923">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15923</td>
+            <td class="value">nvapi-...M2sL</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15923: api_key: nvapi-...M2sL`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15954">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:15954</td>
+            <td class="value">csk-jd...m4j8</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 15954: api_key: csk-jd...m4j8`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16103">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16103</td>
+            <td class="value">gsk_Ah...nueL</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16103: -H "Authorization: Bearer gsk_Ah...nueL ``</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16588">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16588</td>
+            <td class="value">freell...bbb6</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16588: $env:OPENAI_API_KEY=freell...bbb6`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16718">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16718</td>
+            <td class="value">os.env..._KEY</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16718: api_key: os.env..._KEY`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16723">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16723</td>
+            <td class="value">os.env..._KEY</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16723: api_key: os.env..._KEY`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16730">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16730</td>
+            <td class="value">os.env..._KEY</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16730: api_key: os.env..._KEY`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16737">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16737</td>
+            <td class="value">os.env..._KEY</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16737: api_key: os.env..._KEY`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16762">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:16762</td>
+            <td class="value">AQ.Ab8...TK0g</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 16762: anthropic-api-key: AQ.Ab8...TK0g`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(231,76,60,0.15)">
+            <td class="tool">PowerShell Logs</td>
+            <td class="cred-type">command-line-secret</td>
+            <td class="storage">plaintext_file</td>
+            <td class="location" title="C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:17362">C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt:17362</td>
+            <td class="value">groq/l...tant</td>
+            <td class="risk" style="color:#e74c3c;font-weight:700">CRITICAL</td>
+            <td class="details"><span class="note">Line 17362: $env:OPENAI_MODEL = "groq/llama-3.1-8b-instant"`</span><br><span class="note">File last modified: just now</span><br><span class="note">Detected via context pattern (medium confidence)</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (just now)</span><span class="remediation">Fix: Clear PowerShell history (Remove-Item (Get-PSReadLineOption).HistorySavePath), rotate the exposed credential, and consider Set-PSReadLineOption -HistorySaveStyle SaveNothing for sessions that handle secrets</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Anthropic API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\ANTHROPIC_API_KEY">HKCU\Environment\ANTHROPIC_API_KEY</td>
+            <td class="value">AQ.Ab8...TK0g</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENROUTER_API_KEY">HKCU\Environment\OPENROUTER_API_KEY</td>
+            <td class="value">sk-or-v...178e</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\DASHSCOPE_API_KEY">HKCU\Environment\DASHSCOPE_API_KEY</td>
+            <td class="value">sk-ws-H...rQlw</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Ollama API key (auth proxy)</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OLLAMA_API_KEY">HKCU\Environment\OLLAMA_API_KEY</td>
+            <td class="value">***REDACTED***</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Google Gemini API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\GEMINI_API_KEY">HKCU\Environment\GEMINI_API_KEY</td>
+            <td class="value">AQ.Ab8...jIzA</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENAI_API_KEY">HKCU\Environment\OPENAI_API_KEY</td>
+            <td class="value">sk-proj...ZL4A</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Groq API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\GROQ_API_KEY">HKCU\Environment\GROQ_API_KEY</td>
+            <td class="value">gsk_Ah...nueL</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\DEEPSEEK_API_KEY">HKCU\Environment\DEEPSEEK_API_KEY</td>
+            <td class="value">sk-2eea...90d0</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Google API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\GOOGLE_API_KEY">HKCU\Environment\GOOGLE_API_KEY</td>
+            <td class="value">AQ.Ab8...mWHg</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\QWEN_API_KEY">HKCU\Environment\QWEN_API_KEY</td>
+            <td class="value">sk-mr-5...lder</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">GitHub PAT (fine-grained)</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\GITHUB_TOKEN">HKCU\Environment\GITHUB_TOKEN</td>
+            <td class="value">github_pat_11CJ...pXRH</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">xAI/Grok API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\XAI_API_KEY">HKCU\Environment\XAI_API_KEY</td>
+            <td class="value">xai-HY...4EWo</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Fireworks AI API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\FIREWORKS_API_KEY">HKCU\Environment\FIREWORKS_API_KEY</td>
+            <td class="value">fw_HPv...lder</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Mistral AI API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\MISTRAL_API_KEY">HKCU\Environment\MISTRAL_API_KEY</td>
+            <td class="value">LuPpz1...TElp</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\SILICONFLOW_API_KEY">HKCU\Environment\SILICONFLOW_API_KEY</td>
+            <td class="value">sk-plac...lder</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Claude Code Vertex flag (indicates GCP auth)</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\CLAUDE_CODE_USE_VERTEX">HKCU\Environment\CLAUDE_CODE_USE_VERTEX</td>
+            <td class="value">***REDACTED***</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Together AI API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\TOGETHER_API_KEY">HKCU\Environment\TOGETHER_API_KEY</td>
+            <td class="value">gsk_OE...CdsN</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Hugging Face token</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\HF_TOKEN">HKCU\Environment\HF_TOKEN</td>
+            <td class="value">hf-pla...lder</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">Cohere API key</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\COHERE_API_KEY">HKCU\Environment\COHERE_API_KEY</td>
+            <td class="value">coh-pl...lder</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENAI_DEMO_KEY">HKCU\Environment\OPENAI_DEMO_KEY</td>
+            <td class="value">sk-ws-H...IR5A</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENROUTER_KEY_1">HKCU\Environment\OPENROUTER_KEY_1</td>
+            <td class="value">sk-or-v...178e</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENROUTER_KEY_2">HKCU\Environment\OPENROUTER_KEY_2</td>
+            <td class="value">sk-or-v...eddc</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(230,126,34,0.15)">
+            <td class="tool">Persistent Environment</td>
+            <td class="cred-type">OpenAI/Generic</td>
+            <td class="storage">plaintext_ini</td>
+            <td class="location" title="HKCU\Environment\OPENROUTER_KEY_3">HKCU\Environment\OPENROUTER_KEY_3</td>
+            <td class="value">sk-or-v...2e5e</td>
+            <td class="risk" style="color:#e67e22;font-weight:700">HIGH</td>
+            <td class="details"><span class="note">Registry key: HKCU\Environment</span><span class="remediation">Fix: Remove credential from Windows registry environment and use a secret manager</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Claude Sessions</td>
+            <td class="cred-type">live_oauth_session</td>
+            <td class="storage">plaintext_json</td>
+            <td class="location" title="C:\Users\USER\.claude\.credentials.json">C:\Users\USER\.claude\.credentials.json</td>
+            <td class="value">sk-ant-oat01-4...0wAA</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="note">OAuth access token is live (expires: 2026-07-30 20:44 UTC)</span><br><span class="note">No claude process found — token is live but may be unused</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (7 hours ago)</span><span class="remediation">Fix: Token is actively in use. To revoke, log out of Claude Code (`claude logout`) or wait for token expiry.</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Anthropic API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$ANTHROPIC_API_KEY">$ANTHROPIC_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">OpenAI API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$OPENAI_API_KEY">$OPENAI_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Google Gemini API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$GEMINI_API_KEY">$GEMINI_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Google API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$GOOGLE_API_KEY">$GOOGLE_API_KEY</td>
+            <td class="value">AQ.Ab8...mWHg</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">GitHub token</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$GITHUB_TOKEN">$GITHUB_TOKEN</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Hugging Face token</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$HF_TOKEN">$HF_TOKEN</td>
+            <td class="value">hf-pla...lder</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Cohere API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$COHERE_API_KEY">$COHERE_API_KEY</td>
+            <td class="value">coh-pl...lder</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Together AI API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$TOGETHER_API_KEY">$TOGETHER_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Groq API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$GROQ_API_KEY">$GROQ_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Mistral AI API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$MISTRAL_API_KEY">$MISTRAL_API_KEY</td>
+            <td class="value">LuPpz1...TElp</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">DeepSeek API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$DEEPSEEK_API_KEY">$DEEPSEEK_API_KEY</td>
+            <td class="value">PEGA_A...AQUI</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">xAI/Grok API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$XAI_API_KEY">$XAI_API_KEY</td>
+            <td class="value">xai-HY...4EWo</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Fireworks AI API key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$FIREWORKS_API_KEY">$FIREWORKS_API_KEY</td>
+            <td class="value">fw_HPv...lder</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Ollama API key (auth proxy)</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$OLLAMA_API_KEY">$OLLAMA_API_KEY</td>
+            <td class="value">***REDACTED***</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="remediation">Fix: Use a secret manager instead of environment variables</span></td>
+        </tr>
+        <tr style="background:rgba(241,196,15,0.10)">
+            <td class="tool">Ollama</td>
+            <td class="cred-type">api_key</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$OLLAMA_API_KEY">$OLLAMA_API_KEY</td>
+            <td class="value">***REDACTED***</td>
+            <td class="risk" style="color:#f1c40f;font-weight:700">MEDIUM</td>
+            <td class="details"><span class="note">Ollama API key (likely for auth proxy)</span><span class="remediation">Fix: Use environment variables securely</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Google Chrome (not scanned)</td>
+            <td class="cred-type">browser_localstorage</td>
+            <td class="storage">encrypted_db</td>
+            <td class="location" title="C:\Users\USER\AppData\Local\Google\Chrome\User Data\Default\Local Storage">C:\Users\USER\AppData\Local\Google\Chrome\User Data\Default\Local Storage</td>
+            <td class="value"></td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Chromium LevelDB requires optional dependency to parse</span><br><span class="note">AI session tokens may exist in this storage</span><br><span class="note">Directory last modified: 12 days ago</span><span class="file-modified">Modified: 2026-07-18 (12 days ago)</span><span class="remediation">Fix: Review browser storage manually or use dedicated Chromium LevelDB tools.</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Microsoft Edge (not scanned)</td>
+            <td class="cred-type">browser_localstorage</td>
+            <td class="storage">encrypted_db</td>
+            <td class="location" title="C:\Users\USER\AppData\Local\Microsoft\Edge\User Data\Default\Local Storage">C:\Users\USER\AppData\Local\Microsoft\Edge\User Data\Default\Local Storage</td>
+            <td class="value"></td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Chromium LevelDB requires optional dependency to parse</span><br><span class="note">AI session tokens may exist in this storage</span><br><span class="note">Directory last modified: 26 days ago</span><span class="file-modified">Modified: 2026-07-04 (26 days ago)</span><span class="remediation">Fix: Review browser storage manually or use dedicated Chromium LevelDB tools.</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Brave (not scanned)</td>
+            <td class="cred-type">browser_localstorage</td>
+            <td class="storage">encrypted_db</td>
+            <td class="location" title="C:\Users\USER\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Local Storage">C:\Users\USER\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Local Storage</td>
+            <td class="value"></td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Chromium LevelDB requires optional dependency to parse</span><br><span class="note">AI session tokens may exist in this storage</span><br><span class="note">Directory last modified: 8 days ago</span><span class="file-modified">Modified: 2026-07-22 (8 days ago)</span><span class="remediation">Fix: Review browser storage manually or use dedicated Chromium LevelDB tools.</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Docker</td>
+            <td class="cred-type">credsStore</td>
+            <td class="storage">unknown</td>
+            <td class="location" title="C:\Users\USER\.docker\config.json">C:\Users\USER\.docker\config.json</td>
+            <td class="value">desktop</td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Using credential helper: docker-credential-desktop</span><br><span class="note">Credentials stored outside config.json (likely in OS keystore)</span><br><span class="note">File last modified: 5 hours ago</span> <span class="perms">Perms: 0666 (world-writable, world-readable, DANGEROUS)</span><span class="file-modified">Modified: 2026-07-30 (5 hours ago)</span><span class="remediation">Fix: Use docker credential helpers (credsStore) instead of storing tokens in config.json. See: docker login --help</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Environment Variables</td>
+            <td class="cred-type">Claude Code Vertex flag (indicates GCP auth)</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$CLAUDE_CODE_USE_VERTEX">$CLAUDE_CODE_USE_VERTEX</td>
+            <td class="value">1</td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Configuration flag, not a secret</span></td>
+        </tr>
+        <tr style="background:rgba(52,152,219,0.10)">
+            <td class="tool">Ollama</td>
+            <td class="cred-type">Ollama server bind address (default: 127.0.0.1:11434)</td>
+            <td class="storage">env_var</td>
+            <td class="location" title="$OLLAMA_HOST">$OLLAMA_HOST</td>
+            <td class="value">http://localhost:11434</td>
+            <td class="risk" style="color:#3498db;font-weight:700">INFO</td>
+            <td class="details"><span class="note">Configuration flag</span></td>
+        </tr>
+            </tbody>
+        </table>
+
+        
+        <div class="errors">
+            <h3>Errors</h3>
+            <ul><li>Failed to parse C:\Users\USER\.continue\config.yaml: Expecting value: line 1 column 1 (char 0)</li><li>Failed to parse C:\Users\USER\.groq\config.json: Expecting value: line 1 column 1 (char 0)</li></ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        Generated by AIHound 3.2.1 &mdash; AI Credential &amp; Secrets Scanner
+    </div>
+</body>
+</html>

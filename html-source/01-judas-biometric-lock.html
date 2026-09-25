@@ -1,0 +1,132 @@
+<body>
+
+<!-- BIOMETRIC LOCK SCREEN -->
+<div id="lock-screen">
+    <div class="scanlines"></div>
+
+    <!-- Corner data -->
+    <div class="corner-data top-left">
+        SYS: JUDAS_CORE v4.0<br>
+        NODE: ZION-PRIMARY<br>
+        STATUS: LOCKED
+    </div>
+    <div class="corner-data top-right">
+        PROTOCOL: BIOMETRIC_v3<br>
+        ENCRYPTION: AES-256-GCM<br>
+        UPTIME: <span id="uptime">00:00:00</span>
+    </div>
+    <div class="corner-data bottom-left">
+        ENTROPY: 0.9847<br>
+        SHANNON: 7.21 bits<br>
+        RANDOM: PASS
+    </div>
+    <div class="corner-data bottom-right">
+        LAT: 41.3596° N<br>
+        LON: 2.1083° E<br>
+        LOC: HOSPITALET
+    </div>
+
+    <!-- Laser scanning area -->
+    <div class="laser-container">
+        <div></div><div class="center-icon">◢</div>
+    </div>
+
+    <!-- Status messages -->
+    <div class="status-container">
+        <div class="status-title">BIOMETRIC VERIFICATION</div>
+        <div class="status-item" id="s1">▸ Initializing scan protocol...</div>
+        <div class="status-item" id="s2">▸ Fingerprint: SCANNING...</div>
+        <div class="status-item" id="s3">▸ Voice pattern: ANALYZING...</div>
+        <div class="status-item" id="s4">▸ Iris recognition: CALIBRATING...</div>
+        <div class="status-item" id="s5">▸ Neural hash: COMPUTING...</div>
+        <div class="status-item" id="s6">▸ Identity: <span style="color:var(--neon)">BELENTANI</span></div>
+        <div class="status-item" id="s7">▸ Access level: <span style="color:var(--green)">FULL</span></div>
+        <div class="status-item" id="s8">▸ <span style="color:var(--green)">✓ BIOMETRIC VERIFIED — UNLOCKING</span></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT (hidden until unlock) -->
+<div id="main-content" style="display:none; opacity:0; transition: opacity 1s ease;">
+    <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,7,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--glass-border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--neon);letter-spacing:2px;">◢ BELENTANI</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--green);letter-spacing:2px;">● SYSTEM ONLINE</div>
+    </nav>
+
+    <div style="padding-top:120px;text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--gray);letter-spacing:4px;margin-bottom:20px;">VERIFIED GLOBAL ARTIST · ENTITY ACTIVE</div>
+        <h1 style="font-size:clamp(50px,12vw,160px);font-weight:900;color:var(--neon);text-shadow:0 0 40px var(--neon),0 0 80px var(--neon);letter-spacing:-0.03em;">BELENTANI</h1>
+        <p style="margin:20px 0;font-size:clamp(14px,2vw,20px);color:var(--gray);font-weight:300;">Music, visuals, and technology intertwined.</p>
+        <div style="display:flex;gap:15px;margin-top:30px;">
+            <button style="background:transparent;border:2px solid var(--neon);color:var(--neon);padding:12px 28px;border-radius:40px;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer;font-size:13px;" onmouseover="this.style.background='var(--neon)';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='var(--neon)'">Explore Music</button>
+            <button style="background:transparent;border:2px solid var(--cyan);color:var(--cyan);padding:12px 28px;border-radius:40px;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer;font-size:13px;" onmouseover="this.style.background='var(--cyan)';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='var(--cyan)'">AI Studio</button>
+        </div>
+        <div style="margin-top:40px;font-family:'Space Mono',monospace;font-size:10px;color:var(--gray);opacity:0.5;">3000 particles in motion · <span id="clock">00:00:00</span></div>
+    </div>
+</div>
+
+<script>
+// === BIOMETRIC SCANNING SEQUENCE ===
+const statusMessages = [
+    { id: 's1', text: '▸ Initializing scan protocol...', delay: 500, class: 'scanning' },
+    { id: 's2', text: '▸ Fingerprint: SCANNING...', delay: 1200, class: 'scanning' },
+    { id: 's3', text: '▸ Voice pattern: ANALYZING...', delay: 2000, class: 'scanning' },
+    { id: 's4', text: '▸ Iris recognition: CALIBRATING...', delay: 2800, class: 'scanning' },
+    { id: 's5', text: '▸ Neural hash: COMPUTING...', delay: 3500, class: 'scanning' },
+    { id: 's6', text: '▸ Identity: BELENTANI', delay: 4200, class: 'active' },
+    { id: 's7', text: '▸ Access level: FULL', delay: 5000, class: 'active' },
+    { id: 's8', text: '▸ ✓ BIOMETRIC VERIFIED — UNLOCKING', delay: 5800, class: 'active' }
+];
+
+let progress = 0;
+const progressEl = document.getElementById('progress');
+
+statusMessages.forEach(msg => {
+    setTimeout(() => {
+        const el = document.getElementById(msg.id);
+        el.classList.add(msg.class);
+        el.innerHTML = msg.text.replace('SCANNING...', '<span style="color:var(--cyan)">SCANNING...</span>')
+                               .replace('ANALYZING...', '<span style="color:var(--cyan)">ANALYZING...</span>')
+                               .replace('CALIBRATING...', '<span style="color:var(--cyan)">CALIBRATING...</span>')
+                               .replace('COMPUTING...', '<span style="color:var(--cyan)">COMPUTING...</span>')
+                               .replace('BELENTANI', '<span style="color:var(--neon)">BELENTANI</span>')
+                               .replace('FULL', '<span style="color:var(--green)">FULL</span>')
+                               .replace('✓', '<span style="color:var(--green)">✓</span>');
+        progress = Math.min(100, progress + 14);
+        progressEl.style.width = progress + '%';
+    }, msg.delay);
+});
+
+// Unlock after sequence
+setTimeout(() => {
+    const lockScreen = document.getElementById('lock-screen');
+    const mainContent = document.getElementById('main-content');
+    lockScreen.classList.add('unlocked');
+    mainContent.style.display = 'block';
+    setTimeout(() => {
+        mainContent.style.opacity = '1';
+    }, 100);
+    setTimeout(() => {
+        lockScreen.remove();
+    }, 2000);
+}, 6800);
+
+// Clock
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const time = `${h}:${m}:${s}`;
+    document.querySelectorAll('#clock, #uptime').forEach(el => el.textContent = time);
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>

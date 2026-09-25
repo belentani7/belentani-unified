@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOIACORE — LAB</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{--bg:#030907;--ink:#e7fff0;--dim:#5f7d6d;--ph:#00ff9d;--cy:#00e5ff;--vi:#8a5cff;
+  --mono:'JetBrains Mono',ui-monospace,monospace;--sans:'Inter',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
+::selection{background:var(--ph);color:#001}
+#shader{position:fixed;inset:0;z-index:-2}
+.scan{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.06;
+ background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,255,157,.6) 2px 3px)}
+.grain{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.05;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.glow{font-family:var(--mono);font-weight:700;letter-spacing:-.01em;color:var(--ph);text-shadow:0 0 18px rgba(0,255,157,.55),0 0 42px rgba(0,255,157,.25)}
+.glass{position:relative;border-radius:16px;background:linear-gradient(180deg,rgba(0,255,157,.05),rgba(0,0,0,.2));
+ backdrop-filter:blur(18px);border:1px solid rgba(0,255,157,.14);box-shadow:inset 0 1px 0 rgba(0,255,157,.18),0 20px 50px -20px rgba(0,0,0,.8)}
+.glass::after{content:"";position:absolute;inset:0 0 auto 0;height:1px;border-radius:16px 16px 0 0;background:linear-gradient(90deg,transparent,rgba(0,255,157,.4),transparent)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 30px}
+nav{position:fixed;top:0;left:0;right:0;z-index:30;padding:16px 0;font-family:var(--mono)}
+nav .in{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.22em}
+#search{position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:29;width:min(560px,90vw);padding:13px 22px;border-radius:40px;background:rgba(3,9,7,.75);backdrop-filter:blur(18px);border:1px solid rgba(0,255,157,.16);color:#fff;font-size:14px;outline:none;font-family:var(--sans)}
+#search:focus{border-color:var(--ph)}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:110px}
+.kick{font-family:var(--mono);font-size:12px;letter-spacing:.34em;color:var(--cy);text-transform:uppercase;display:flex;gap:12px;align-items:center}
+.kick::before{content:"";width:44px;height:1px;background:var(--cy)}
+h1{font-size:clamp(3rem,11vw,10rem);line-height:.88;font-weight:800;letter-spacing:-.05em;margin-top:14px;font-family:var(--mono)}
+h1 .ghost{color:transparent;-webkit-text-stroke:2px rgba(0,255,157,.25)}
+.bio{max-width:620px;margin-top:26px;color:var(--dim);line-height:1.65}
+.metrics{display:flex;gap:44px;margin-top:42px;flex-wrap:wrap;font-family:var(--mono)}
+.metrics .n{font-size:2.5rem;font-weight:700;color:var(--ph)}
+.metrics .l{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+
+.sec{padding:70px 0 20px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:30px;padding-bottom:16px;border-bottom:1px solid rgba(0,255,157,.1);font-family:var(--mono)}
+.sec-head h2{font-size:clamp(1.5rem,3.5vw,2.4rem);letter-spacing:-.02em;color:var(--ph)}
+.sec-head .c{margin-left:auto;color:var(--dim);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{padding:20px;min-height:130px;display:flex;flex-direction:column;position:relative;transition:.3s}
+.card:hover{transform:translateY(-4px);border-color:rgba(0,255,157,.4);box-shadow:0 0 30px -8px rgba(0,255,157,.35)}
+.card a{position:absolute;inset:0;z-index:1}
+.card .nm{font-family:var(--mono);font-size:15px;color:var(--ph);word-break:break-word}
+.card .ds{color:var(--dim);font-size:.85rem;line-height:1.5;margin-top:8px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(0,229,255,.08);color:var(--cy);border:1px solid rgba(0,229,255,.16)}
+.tag.lang{background:rgba(255,255,255,.05);color:var(--dim);border-color:rgba(255,255,255,.1)}
+#empty{display:none;text-align:center;padding:80px;color:var(--dim);font-family:var(--mono);letter-spacing:.2em}
+.foot{text-align:center;padding:60px;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.metrics{gap:22px}}
+</style>
+</head>
+<body>
+<canvas id="shader"></canvas><div class="scan"></div><div class="grain"></div>
+<nav><div class="wrap in"><div>NOIACORE<span style="color:var(--ph)">/</span>LAB</div><div style="opacity:.5">NEURAL ARCHITECTURE</div></div></nav>
+<input id="search" placeholder="Buscar en los 166 sistemas neurales…">
+<div class="wrap">
+<header class="hero">
+  <div class="kick">Noiacore · división neural</div>
+  <h1><span class="glow">Noiacore</span><br><span class="ghost">LAB</span></h1>
+  <p class="bio">Neural Architect · Voice cloning · Zero-token AI routing. El laboratorio vivo: 166 sistemas de voz, agentes y cómputo neural extraídos de la galaxia Belentani.</p>
+  <div class="metrics">
+    <div><div class="n" data-c="166">0</div><div class="l">Sistemas</div></div>
+    <div><div class="n" data-c="15">0</div><div class="l">Lenguajes</div></div>
+    <div><div class="n" data-c="9">0</div><div class="l">Dominios</div></div>
+  </div>
+</header>
+<div id="grid" class="grid sec"></div>
+<div id="empty">Nada coincide</div>
+</div>
+<!-- ═══════ DASHBOARD SECTION ═══════ -->
+<div style="padding:70px 0 20px;border-top:1px solid rgba(255,0,63,.2)">
+  <div class="sec-head" style="border-bottom:1px solid rgba(255,0,63,.1)">
+    <h2 style="font-family:var(--mono);font-size:clamp(1.5rem,3.5vw,2.4rem);letter-spacing:-.02em;background:linear-gradient(135deg,#ff003f,#ff6b6b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Dashboard</h2>
+    <span class="c" style="margin-left:auto;color:var(--dim);font-size:12px">MCP SERVER STATUS</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:20px 0">
+    <div class="glass" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:700;color:#ff003f">24/7</div><div style="color:var(--dim);font-size:12px;margin-top:8px">Uptime</div></div>
+    <div class="glass" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:700;color:#00ff88">99.9%</div><div style="color:var(--dim);font-size:12px;margin-top:8px">Availability</div></div>
+    <div class="glass" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:700;color:var(--dim)">7,092</div><div style="color:var(--dim);font-size:12px;margin-top:8px">Media Assets</div></div>
+    <div class="glass" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:700;color:var(--ph)">$0</div><div style="color:var(--dim);font-size:12px;margin-top:8px">Monthly Cost</div></div>
+  </div>
+</div>
+
+<!-- ═══════ HUB STATS SECTION ═══════ -->
+<div style="padding:70px 0 20px;border-top:1px solid rgba(232,179,77,.2)">
+  <div class="sec-head" style="border-bottom:1px solid rgba(232,179,77,.1)">
+    <h2 style="font-family:var(--mono);font-size:clamp(1.5rem,3.5vw,2.4rem);letter-spacing:-.02em;background:linear-gradient(90deg,#e8b34d,#00e5ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Lenguajes</h2>
+    <span class="c" style="margin-left:auto;color:var(--dim);font-size:12px">DISTRIBUCIÓN</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px" id="langStats"></div>
+</div>
+
+<div class="foot">NOIACORE UNIFIED · <span class="glow">neural systems</span> · 2026 · scroll infinito</div>
+
+<script src="noiacore.js"></script>
+<script>
+const R = window.NOIACORE.repos;
+const grid = document.getElementById("grid");
+R.forEach(r=>{
+  const c=document.createElement("div");c.className="card glass";
+  const tags=(r.cats||[]).slice(0,2).map(x=>'<span class="tag">#'+x+'</span>').join('')+'<span class="tag lang">'+r.lang+'</span>';
+  c.innerHTML='<a href="'+r.url+'" target="_blank"></a><div class="nm">'+r.name+'</div>'+(r.desc?'<div class="ds">'+r.desc+'</div>':'')+'<div class="tags">'+tags+'</div>';
+  grid.appendChild(c);
+});
+
+/* WEBGL — neural phosfor / gasoline */
+const cv=document.getElementById("shader"),gl=cv.getContext("webgl");
+function rz(){cv.width=innerWidth;cv.height=innerHeight;gl.viewport(0,0,cv.width,cv.height)}rz();addEventListener("resize",rz);
+const V=gl.createShader(gl.VERTEX_SHADER),F=gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(V,"attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}");
+gl.shaderSource(F,`precision highp float;uniform vec2 r;uniform float t;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.03;a*=.5;}return v;}
+void main(){vec2 uv=(gl_FragCoord.xy*2.-r)/min(r.x,r.y);float t2=t*.05;
+float f=fbm(uv*1.4+vec2(t2,-t2*.5));float m=fbm(uv*3.1+vec2(-t2*.4,t2*.7)+f);
+float x=f+m;vec3 c=.5+.5*cos(6.28318*(x+vec3(0.,.35,.7)));c=c*c;
+c=mix(c,vec3(0.,.9,.5),.25);gl_FragColor=vec4(c*.5,1.);}`);
+gl.compileShader(V);gl.compileShader(F);
+const P=gl.createProgram();gl.attachShader(P,V);gl.attachShader(P,F);gl.linkProgram(P);gl.useProgram(P);
+const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+const l=gl.getAttribLocation(P,"p");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
+const ur=gl.getUniformLocation(P,"r"),ut=gl.getUniformLocation(P,"t");
+function fr(ms){gl.uniform2f(ur,cv.width,cv.height);gl.uniform1f(ut,ms*.001);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(fr)}requestAnimationFrame(fr);
+
+/* GSAP */
+gsap.registerPlugin(ScrollTrigger);
+gsap.timeline().from(".kick",{y:30,opacity:0,duration:.8}).from("h1 span",{y:90,opacity:0,duration:1.1,stagger:.12,ease:"power4.out"},.1).from(".bio",{y:30,opacity:0,duration:.8},.4).from(".metrics>div",{y:30,opacity:0,duration:.6,stagger:.08},.6);
+gsap.utils.toArray(".card").forEach(el=>gsap.from(el,{y:34,opacity:0,scale:.97,duration:.6,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 96%"}}));
+document.querySelectorAll("[data-c]").forEach(el=>{const e=parseFloat(el.dataset.c);gsap.to(el,{innerText:e,duration:2,ease:"power2.out",snap:{innerText:1}})});
+
+/* Language stats */
+const ls = document.getElementById("langStats");
+if (ls && window.NOIACORE && window.NOIACORE.meta) {
+  const langs = Object.entries(window.NOIACORE.meta.languages).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  langs.forEach(([name,count])=>{
+    const bar = document.createElement("div");
+    bar.style.cssText = "flex:1;min-width:100px;padding:12px 16px;border-radius:10px;background:var(--panel);border:1px solid var(--line)";
+    bar.innerHTML = `<div style="font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:1px">${name}</div><div style="font-size:1.6rem;font-weight:700;color:var(--ph);margin-top:2px">${count}</div>`;
+    ls.appendChild(bar);
+  });
+}
+
+const si=document.getElementById("search");
+si.addEventListener("input",()=>{const q=si.value.toLowerCase();let s=0;document.querySelectorAll(".card").forEach(c=>{const v=c.textContent.toLowerCase().includes(q);c.style.display=v?"":"none";if(v)s++});document.getElementById("empty").style.display=s?"none":"block"});
+</script>
+</body>
+</html>

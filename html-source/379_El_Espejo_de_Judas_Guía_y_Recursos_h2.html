@@ -1,0 +1,623 @@
+Yes. Entendido perfectamente.
+
+He analizado los enlaces que proporcionaste (que son plantillas vacías de BuildAI) y el contexto previo. El objetivo es transformar **"El Espejo de Judas"** en una plataforma **vibrante, inclusiva (LGBTQ+ friendly), juvenil y con "flow" de Barcelona**, alejándose del tono clínico o institucional aburrido.
+
+Aquí tienes la versión **2.0 "Barcelona Vibe"**. He cambiado el lenguaje para que sea cercano, usado referencias culturales actuales (sin caer en lo cursi), integrado la perspectiva queer y mantenido la seguridad técnica al 100% gratuita.
+
+### 🏳️‍🌈 CAMBIOS CLAVE EN EL BRANDING & TONO
+1.  **De "Víctima" a "Superviviente/Guerrero":** Lenguaje empoderador.
+2.  **Inclusividad Real:** Uso de lenguaje neutro (-e, -x) donde fluya natural, y reconocimiento específico de violencias en relaciones LGBTQ+ (ej. *outing* forzado, abuso basado en identidad).
+3.  **Referencias Pop:** Analogías con series (*Euphoria*, *Heartstopper*), música y redes sociales (TikTok/Instagram) para explicar conceptos psicológicos.
+4.  **Estética:** Colores más vivos (Neón suave, Morado Pride, Azul Eléctrico), emojis estratégicos, diseño tipo "App móvil".
+
+---
+
+### 💻 CÓDIGO COMPLETO ACTUALIZADO (`index.html`)
+
+Copia y pega esto. Es una web completa, interactiva y segura.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judas Mirror | BCN Edition 🏳️‍🌈</title>
+    <style>
+        :root {
+            --bg: #0f172a; /* Fondo oscuro moderno */
+            --card-bg: #1e293b;
+            --primary: #8b5cf6; /* Morado eléctrico */
+            --accent: #ec4899; /* Rosa neón */
+            --safe: #10b981; /* Verde menta */
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            line-height: 1.6; 
+            padding-bottom: 100px; /* Espacio para barra fija */
+        }
+
+        /* --- BOTÓN SALIDA RÁPIDA (ESTILO ALERTA) --- */
+        #quick-exit {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: var(--danger);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #quick-exit:hover { transform: scale(1.05); background: #dc2626; }
+        #quick-exit::before { content: "🚪"; font-size: 1.2rem; }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #334155;
+        }
+        h1 { 
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem; 
+            font-weight: 900;
+            margin-bottom: 5px; 
+        }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; max-width: 600px; margin: 0 auto; }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        nav button {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        nav button.active, nav button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+
+        /* --- CONTENEDORES --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CARDS MODERNAS --- */
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .card.highlight { border-left: 4px solid var(--accent); }
+        .card.safe { border-left: 4px solid var(--safe); }
+
+        h2 { color: var(--text); margin-bottom: 15px; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h3 { color: var(--primary); margin: 15px 0 10px 0; font-size: 1.2rem; }
+        p { margin-bottom: 10px; color: #cbd5e1; }
+
+        /* --- DICCIONARIO ESTILO TIKTOK/REELS --- */
+        .term {
+            background: #2d3748;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .term-header {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .term-header:hover { background: #374151; }
+        .term-body {
+            padding: 0 15px 15px 15px;
+            display: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            border-top: 1px solid #4a5568;
+            padding-top: 10px;
+        }
+        .term.open .term-body { display: block; }
+        .term.open .term-header { color: var(--accent); }
+        .tag { 
+            font-size: 0.7rem; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            background: #4c1d95; 
+            color: white; 
+            margin-left: 10px;
+        }
+
+        /* --- TESTS GAMIFICADOS --- */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #334155;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            color: white;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .quiz-option:hover { 
+            background: #475569; 
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+        .result-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+            animation: popIn 0.3s;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .res-green { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--safe); color: var(--safe); }
+        .res-yellow { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fbbf24; }
+        .res-red { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
+
+        /* --- CHAT SIMULADO --- */
+        #chat-window {
+            height: 350px;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #0f172a;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .msg { padding: 10px 15px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; }
+        .msg.bot { background: #334155; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        
+        .chat-input-area { display: flex; gap: 10px; }
+        input[type="text"] { 
+            flex: 1; 
+            padding: 12px; 
+            background: #1e293b; 
+            border: 1px solid #334155; 
+            border-radius: 25px; 
+            color: white;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button.send-btn { 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 0 25px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        /* --- FOOTER RECURSOS --- */
+        .emergency-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 900;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .emergency-bar a { 
+            color: var(--accent); 
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 5px 10px;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            nav { gap: 5px; }
+            nav button { padding: 8px 12px; font-size: 0.8rem; }
+            .emergency-bar { flex-direction: column; gap: 5px; padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SALIDA RÁPIDA -->
+    <button id="quick-exit" onclick="quickExit()">SALIR YA (ESC)</button>
+
+    <header>
+        <h1>JUDAS MIRROR 🏳️‍🌈</h1>
+        <p class="subtitle">Desmontando el teatro. Reconoce el rollo tóxico, sana tu vibra y recupera tu poder. BCN & Global.</p>
+        <nav>
+            <button onclick="showSection('inicio')" class="active">Inicio</button>
+            <button onclick="showSection('diccionario')">Diccionario</button>
+            <button onclick="showSection('tests')">Tests</button>
+            <button onclick="showSection('sanacion')">Sanación</button>
+            <button onclick="showSection('recursos')">Recursos</button>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- SECCIÓN INICIO -->
+        <div id="inicio" class="section active">
+            <div class="card highlight">
+                <h2>✨ Hola, survivor</h2>
+                <p>Si has llegado aquí, algo no te cuadra. Quizás sientes que caminas sobre cáscaras de huevo, o que tu realidad se distorsiona como en un episodio de <em>Black Mirror</em>.</p>
+                <p><strong>No estás loco/a/e.</strong> Estás siendo manipulado/a/e.</p>
+                <p>Esta web es tu caja de herramientas. Sin juicios, sin datos guardados, 100% anónimo. Aquí hablamos claro, sin filtros institucionales.</p>
+            </div>
+            
+            <div class="card safe">
+                <h3>🆘 ¿Peligro Real?</h3>
+                <p>Si hay violencia física o amenazas graves AHORA:</p>
+                <div style="text-align: center; margin: 15px 0;">
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--danger);">112</span> 
+                    <span style="margin: 0 10px;">|</span>
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--accent);">016</span>
+                </div>
+                <p style="font-size: 0.8rem; text-align: center;">(El 016 no deja rastro en la factura. Borra la llamada después).</p>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DICCIONARIO -->
+        <div id="diccionario" class="section">
+            <h2>📖 Diccionario Sin Filtros</h2>
+            <p style="margin-bottom: 20px;">Traduciendo el "gaslighting" al castellano de la calle.</p>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Gaslighting (Luz de Gas) <span class="tag">PSICO</span> <span>▼</span></div>
+                <div class="term-body">
+                    Cuando te hacen dudar de tu propia cordura. "Eso nunca pasó", "Estás exagerando", "Qué sensible eres". Es como si te cambiaran el guion de la película a mitad de escena y te dijeran que tú lo escribiste mal.
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Love Bombing <span class="tag">INICIO</span> <span>▼</span></div>
+                <div class="term-body">
+                    Te inundan de likes, regalos y "te amo" a las 48 horas de conoceros. Parece un sueño de Disney, pero es una trampa para engancharte rápido. Luego, retiran el cariño para que supliques por migajas.
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Stonewalling (Ley del Hielo) <span class="tag">CONTROL</span> <span>▼</span></div>
+                <div class="term-body">
+                    Te dejan de hablar, te ignoran o se van sin avisar cuando hay conflicto. No es "necesitar espacio", es castigarte con silencio hasta que te arrastres pidiendo perdón por algo que no hiciste.
+                </div>
+            </div>
+
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Outing Forzado <span class="tag">LGBTQ+</span> <span>▼</span></div>
+                <div class="term-body">
+                    Amenazar con revelar tu orientación sexual o identidad de género a tu familia, trabajo o amigos sin tu consentimiento. Es una forma brutal de coerción específica de nuestra comunidad.
+                </div>
+            </div>
+            
+            <div class="term" onclick="toggleTerm(this)">
+                <div class="term-header">Trauma Bonding <span class="tag">ADICCIÓN</span> <span>▼</span></div>
+                <div class="term-body">
+                    Ese vínculo adictivo con quien te hace daño. Es como una montaña rusa química: el miedo baja, el alivio sube. Tu cerebro se engancha a los momentos buenos (que son pocos) para sobrevivir a los malos.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN TESTS -->
+        <div id="tests" class="section">
+            <h2>🧭 Check Your Vibe</h2>
+            <p style="margin-bottom: 20px; font-size: 0.9rem;">Tests rápidos. Cero datos guardados. Solo para ti.</p>
+
+            <!-- TEST 1: RELACIÓN -->
+            <div class="card">
+                <h3>❤️‍🔥 Test: ¿Amor o Toxicidad?</h3>
+                
+                <div id="quiz-container">
+                    <div class="question-block" id="q1">
+                        <p><strong>1. Quieres salir con tus amigues. Su reacción es:</strong></p>
+                        <button class="quiz-option" onclick="nextQuestion(1, 0)">"¡Genial! Pásalo bien, mándame fotos."</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, 1)">"Vale... pero contesta rápido, eh."</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, 2)">"Otra vez con esa gente? Me haces sentir mal."</button>
+                    </div>
+
+                    <div class="question-block" id="q2" style="display:none;">
+                        <p><strong>2. Discuten. ¿Cómo termina?</strong></p>
+                        <button class="quiz-option" onclick="nextQuestion(2, 0)">Hablamos, nos escuchamos y solucionamos.</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 1)">Me ignora durante horas/días.</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 2)">Grita, rompe cosas o me culpa de todo.</button>
+                    </div>
+
+                    <div class="question-block" id="q3" style="display:none;">
+                        <p><strong>3. ¿Revisa tu móvil?</strong></p>
+                        <button class="quiz-option" onclick="calculateResult(0)">No, respeta mi privacidad 100%.</button>
+                        <button class="quiz-option" onclick="calculateResult(1)">A veces pregunta quién escribe.</button>
+                        <button class="quiz-option" onclick="calculateResult(2)">Exige contraseñas o revisa sin permiso.</button>
+                    </div>
+                </div>
+
+                <div id="result-relacion" class="result-box"></div>
+                <button onclick="resetQuiz()" style="margin-top:10px; display:none; background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;" id="reset-btn">Repetir Test</button>
+            </div>
+
+            <!-- TEST 2: DIGITAL -->
+            <div class="card">
+                <h3>📱 Detector de Red Flags Digitales</h3>
+                <p>Marca lo que te suene familiar:</p>
+                <form id="digital-checklist" style="margin-top:15px;">
+                    <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="checkbox" value="1"> Me pide ubicación 24/7 "por seguridad".</label>
+                    <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="checkbox" value="1"> Se enfada si tardo >5 min en contestar.</label>
+                    <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="checkbox" value="1"> Amenaza con filtrar chats/fotos si corto.</label>
+                    <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="checkbox" value="1"> Critica mis outfits o fotos en redes.</label>
+                    <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="checkbox" value="1"> Usa cuentas falsas para stalkearme.</label>
+                </form>
+                <button onclick="checkDigitalFlags()" style="margin-top:15px; padding:10px 20px; background:var(--accent); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Ver Resultado</button>
+                <div id="result-digital" class="result-box"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN SANACIÓN -->
+        <div id="sanacion" class="section">
+            <h2>🌱 Safe Space & Healing</h2>
+            
+            <div class="card">
+                <h3>💬 Roleplay: Pon Límites</h3>
+                <p>Practica qué decir cuando alguien cruza la línea. La IA te responde con validación.</p>
+                <div id="chat-window">
+                    <div class="msg bot">Hola. Soy tu wingman virtual. ¿Qué situación quieres practicar? Ej: "Mi pareja me cela mucho" o "Quiero cortar pero tengo miedo".</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Escribe aquí..." onkeypress="handleChatEnter(event)">
+                    <button class="send-btn" onclick="sendMessage()">Enviar</button>
+                </div>
+                <p style="font-size:0.7rem; color:#64748b; margin-top:5px;">*Chat local. Nada se guarda en servidores.</p>
+            </div>
+
+            <div class="card safe">
+                <h3>🧘 Técnica 5-4-3-2-1 (Grounding)</h3>
+                <p>Si la ansiedad te sube por las paredes, vuelve a tu cuerpo:</p>
+                <ul style="margin-left: 20px; margin-top: 10px; color: #cbd5e1;">
+                    <li>👀 <strong>5</strong> cosas que ves (una lámpara, un poster...).</li>
+                    <li>✋ <strong>4</strong> cosas que tocas (la tela del sofá, tu pelo...).</li>
+                    <li>👂 <strong>3</strong> sonidos (tráfico, ventilador...).</li>
+                    <li>👃 <strong>2</strong> olores (café, aire fresco...).</li>
+                    <li>👅 <strong>1</strong> cosa que saboreas o una cualidad tuya.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECCIÓN RECURSOS -->
+        <div id="recursos" class="section">
+            <h2>🎒 Kit de Supervivencia BCN</h2>
+            
+            <div class="card danger" style="border-left: 4px solid var(--danger);">
+                <h3>📞 Ayuda Inmediata</h3>
+                <p><strong>016:</strong> Violencia de género. <br><em>No deja rastro. Gratuito. 24h.</em></p>
+                <hr style="margin: 10px 0; border-color: #334155;">
+                <p><strong>112:</strong> Emergencias vitales.</p>
+                <hr style="margin: 10px 0; border-color: #334155;">
+                <p><strong>Servei d'Atenció LGBTI (BCN):</strong> 900 900 120 (Gratuito y confidencial).</p>
+            </div>
+
+            <div class="card">
+                <h3>🛡️ Limpieza Digital Express</h3>
+                <ul style="padding-left: 20px; color: #cbd5e1;">
+                    <li>Cambia contraseñas desde un PC seguro (biblioteca, amigo).</li>
+                    <li>Activa 2FA (doble factor) en Insta, TikTok y WhatsApp.</li>
+                    <li>Revisa apps instaladas: borra cualquier cosa rara.</li>
+                    <li>Desactiva "Ubicación en tiempo real" en Google Maps/WhatsApp.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BARRA EMERGENCIA FIJA -->
+    <div class="emergency-bar">
+        <span>🆘 ¿Peligro?</span>
+        <a href="tel:112">Llama 112</a>
+        <a href="tel:016">Ayuda 016</a>
+        <a href="#" onclick="quickExit()">Salir Web</a>
+    </div>
+
+    <script>
+        // --- NAVEGACIÓN ---
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // --- SALIDA RÁPIDA ---
+        function quickExit() {
+            window.location.href = "https://www.google.com";
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                quickExit();
+            }
+        });
+
+        // --- ACORDEÓN ---
+        function toggleTerm(element) {
+            element.classList.toggle('open');
+        }
+
+        // --- TEST 1 ---
+        let score = 0;
+        function nextQuestion(qNum, points) {
+            score += points;
+            document.getElementById('q' + qNum).style.display = 'none';
+            if (document.getElementById('q' + (qNum + 1))) {
+                document.getElementById('q' + (qNum + 1)).style.display = 'block';
+            } else {
+                calculateResult(score);
+            }
+        }
+
+        function calculateResult(finalScore) {
+            const resultBox = document.getElementById('result-relacion');
+            const resetBtn = document.getElementById('reset-btn');
+            document.getElementById('q3').style.display = 'none';
+            
+            resultBox.style.display = 'block';
+            resetBtn.style.display = 'inline-block';
+
+            if (finalScore <= 1) {
+                resultBox.className = 'result-box res-green';
+                resultBox.innerHTML = "✅ VIBE CHECK: PASSED.<br>Relación sana. Hay respeto y comunicación. Keep it up! ✨";
+            } else if (finalScore <= 3) {
+                resultBox.className = 'result-box res-yellow';
+                resultBox.innerHTML = "⚠️ VIBE CHECK: CAUTION.<br>Hay banderas amarillas. Control, celos o falta de respeto. Pon límites claros.";
+            } else {
+                resultBox.className = 'result-box res-red';
+                resultBox.innerHTML = "🚩 VIBE CHECK: FAILED.<br>Señales claras de abuso o manipulación. No es amor, es control. Contacta ayuda (016/LGBTI).";
+            }
+        }
+
+        function resetQuiz() {
+            score = 0;
+            document.getElementById('result-relacion').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
+            document.getElementById('q1').style.display = 'block';
+            document.getElementById('q2').style.display = 'none';
+            document.getElementById('q3').style.display = 'none';
+        }
+
+        // --- TEST 2 ---
+        function checkDigitalFlags() {
+            const checkboxes = document.querySelectorAll('#digital-checklist input:checked');
+            const count = checkboxes.length;
+            const resultBox = document.getElementById('result-digital');
+            
+            resultBox.style.display = 'block';
+            
+            if (count === 0) {
+                resultBox.className = 'result-box res-green';
+                resultBox.innerHTML = "Tu entorno digital es seguro. ¡Bien!";
+            } else if (count <= 2) {
+                resultBox.className = 'result-box res-yellow';
+                resultBox.innerHTML = "Algunas invasiones de privacidad. Revisa ajustes.";
+            } else {
+                resultBox.className = 'result-box res-red';
+                resultBox.innerHTML = "⚠️ Acoso Digital. Bloquea, guarda pruebas y busca ayuda.";
+            }
+        }
+
+        // --- CHAT SIMULADO ---
+        function handleChatEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            addMessage(txt, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                let reply = "";
+                const lowerTxt = txt.toLowerCase();
+
+                if (lowerTxt.includes("miedo") || lowerTxt.includes("pegar") || lowerTxt.includes("amenaza")) {
+                    reply = "Esto es grave. Tu seguridad es lo primero. Por favor, contacta al 016 o 112 ahora mismo. No estás sole.";
+                } else if (lowerTxt.includes("culpa")) {
+                    reply = "La culpa es del agresor, nunca tuya. No eres responsable de sus actos ni de sus emociones.";
+                } else if (lowerTxt.includes("celos") || lowerTxt.includes("controla")) {
+                    reply = "Los celos no son románticos, son posesión. Tienes derecho a tu espacio y amistades.";
+                } else if (lowerTxt.includes("salir") || lowerTxt.includes("amigos")) {
+                    reply = "Tu vida social es tuya. Una pareja sana celebra que tengas tu propio mundo.";
+                } else {
+                    reply = "Te escucho. Es normal sentirse confundide. ¿Quieres practicar cómo poner un límite en esta situación?";
+                }
+                addMessage(reply, 'bot');
+            }, 800);
+        }
+
+        function addMessage(text, sender) {
+            const win = document.getElementById('chat-window');
+            const div = document.createElement('div');
+            div.className = 'msg ' + sender;
+            div.innerText = text;
+            win.appendChild(div);
+            win.scrollTop = win.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+```
+
+### 🚀 CÓMO USARLO (GRATIS Y SIN CRÉDITOS)
+
+1.  Copia el código de arriba.
+2.  Guárdalo como `index.html`.
+3.  Ábrelo en tu navegador.
+4.  Para publicarlo online gratis: Súbelo a **Netlify Drop** (arrastra el archivo y listo, te da un link).
+
+Esta versión es **mucho más atractiva para jóvenes**, usa su lenguaje ("vibe check", "red flags", "stalkear"), es visualmente moderna (modo oscuro/neón) y mantiene toda la funcionalidad de seguridad y tests sin coste alguno.

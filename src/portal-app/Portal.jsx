@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import CosmicScene from './CosmicScene.jsx'
+import Viewer from './Viewer.jsx'
 
 const PER_PAGE = 10
 
@@ -17,11 +18,33 @@ function normalize(s) {
     .replace(/[\u0300-\u036f]/g, '')
 }
 
+function readHash() {
+  const m = window.location.hash.match(/^#doc=(.+)$/)
+  return m ? decodeURIComponent(m[1]) : null
+}
+
 export default function Portal() {
   const [pages, setPages] = useState([])
   const [ready, setReady] = useState(false)
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
+  const [doc, setDoc] = useState(() => readHash())
+
+  // Deep-link: opening a document sets the hash; closing clears it.
+  useEffect(() => {
+    const onHash = () => setDoc(readHash())
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  const openDoc = useCallback((path) => {
+    window.location.hash = `doc=${encodeURIComponent(path)}`
+  }, [])
+
+  const closeDoc = useCallback(() => {
+    history.pushState(null, '', window.location.pathname)
+    setDoc(null)
+  }, [])
 
   useEffect(() => {
     let alive = true
@@ -52,6 +75,14 @@ export default function Portal() {
   const current = page > pageCount ? 1 : page
   const slice = filtered.slice((current - 1) * PER_PAGE, current * PER_PAGE)
 
+  // Freeze page scroll while the viewer is open
+  useEffect(() => {
+    document.body.style.overflow = doc ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [doc])
+
   return (
     <div className="portal">
       <div className="cosmos" aria-hidden="true">
@@ -65,7 +96,7 @@ export default function Portal() {
       </header>
 
       <main>
-        {/* The library — the actual substance of the universe */}
+        {/* The library — documents open INSIDE the app */}
         <section className="library" aria-label="Biblioteca">
           <div className="searchline">
             <input
@@ -86,23 +117,29 @@ export default function Portal() {
 
           {query === '' && (
             <div className="into">
-              <a className="door" href={`html-source/${encodeURIComponent(HIGHLIGHTS[0].path)}`}>
-                {HIGHLIGHTS[0].label}
-              </a>
-              <a className="door" href={`html-source/${encodeURIComponent(HIGHLIGHTS[1].path)}`}>
-                {HIGHLIGHTS[1].label}
-              </a>
-              <a className="door" href={`html-source/${encodeURIComponent(HIGHLIGHTS[2].path)}`}>
-                {HIGHLIGHTS[2].label}
-              </a>
+              {HIGHLIGHTS.map((h) => (
+                <button
+                  key={h.path}
+                  type="button"
+                  className="door"
+                  onClick={() => openDoc(h.path)}
+                >
+                  {h.label}
+                </button>
+              ))}
             </div>
           )}
 
           <div className="results">
             {slice.map((p) => (
-              <a key={p.path} className="hit" href={`html-source/${encodeURIComponent(p.path)}`}>
+              <button
+                key={p.path}
+                type="button"
+                className="hit"
+                onClick={() => openDoc(p.path)}
+              >
                 {p.title}
-              </a>
+              </button>
             ))}
           </div>
 
@@ -134,6 +171,8 @@ export default function Portal() {
           <span className="sep"> — </span>432 Hz
         </p>
       </footer>
+
+      <Viewer path={doc} onClose={closeDoc} />
     </div>
   )
 }

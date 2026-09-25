@@ -27,18 +27,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = REPO_ROOT / "content" / "html-source"
 DIST_DIR = REPO_ROOT / "dist"
 EXCLUSIONS_FILE = REPO_ROOT / "scripts" / "exclusions.txt"
+EXCLUSIONS_GENERATED = REPO_ROOT / "scripts" / "exclusions.generated.txt"
 
 TITLE_SUFFIX = " · Belentani"
 
 
 def load_exclusions() -> list[str]:
-    if not EXCLUSIONS_FILE.exists():
-        return []
     patterns: list[str] = []
-    for raw in EXCLUSIONS_FILE.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if line and not line.startswith("#"):
-            patterns.append(line)
+    for f in (EXCLUSIONS_FILE, EXCLUSIONS_GENERATED):
+        if not f.exists():
+            continue
+        for raw in f.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if line and not line.startswith("#"):
+                patterns.append(line)
     return patterns
 
 

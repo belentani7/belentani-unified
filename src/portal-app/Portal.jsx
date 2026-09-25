@@ -6,9 +6,9 @@ const PER_PAGE = 10
 
 // Real documents from the public index — the substance, not decoration.
 const HIGHLIGHTS = [
-  { path: '077_Proyecto-Belentani-Completo.html', label: 'La experiencia completa' },
-  { path: '078_Proyecto-Belentani-Completo.html', label: 'El núcleo Omega' },
-  { path: '079_Proyecto-Belentani-Completo.html', label: 'Eras y gemas' },
+  { path: '01-BELENTANI-Completo-v1-69KB.html', label: 'La experiencia completa' },
+  { path: '063_Ecosistema-Belentani-Omega.html', label: 'El núcleo Omega' },
+  { path: '02_mascara.html', label: 'La máscara' },
 ]
 
 function normalize(s) {

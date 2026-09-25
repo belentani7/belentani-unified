@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Convertidor de moneda · Manos Abiertas</title>
+<style>
+  :root{--brand:#0f766e;--bg:#f6f7fb;--fg:#1c2230;--card:#fff;--line:#e3e7f0}
+  [data-theme="dark"]{--bg:#11151c;--fg:#e8ecf4;--card:#1a2029;--line:#2a3240;--brand:#2dd4bf}
+  *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px}
+  h1{font-size:24px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
+  label{display:block;font-size:13px;color:var(--muted,#5b6472);margin:10px 0 3px}
+  input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);font-size:16px}
+  .out{background:var(--line);border-radius:9px;padding:14px;margin-top:14px;font-size:17px;font-weight:700}
+  .swap{width:100%;margin-top:10px;padding:11px;border:none;border-radius:9px;background:var(--brand);color:#fff;cursor:pointer;font-size:15px}
+  .note{font-size:12px;color:var(--muted,#5b6472);margin-top:10px}
+</style>
+<script>
+  // Tasas aproximadas: 1 EUR -> monedas origen (2024). Edítalas si cambian.
+  const RATES = {
+    "EUR (Euro)":1,"MAD (Dirham)":10.85,"RON (Leu)":4.97,"CNY (Yuan)":7.85,"INR (Rupia)":90.5,
+    "PEN (Sol)":4.05,"COP (Peso)":4250,"BRL (Real)":5.45,"ARS (Peso arg)":950,"VES (Bolívar)":40.5,
+    "UAH (Grivna)":42.5,"RUB (Rublo)":100.5,"TRY (Lira)":35.5,"DZD (Dinar)":145,"EGP (Libra)":51.5,
+    "MXN (Peso mex)":20.5,"PKR (Rupia paq)":305,"NGN (Naira)":1650,"GHS (Cedi)":16.5
+  };
+  const fmt = (n) => n.toLocaleString("es-ES", { maximumFractionDigits: 2 });
+  function opts(sel, all){ return Object.keys(RATES).map(k => `<option value="${k}" ${k===sel?"selected":""}>${k}</option>`).join(""); }
+  function build(){ selFrom=selFrom||"EUR (Euro)"; selTo=selTo||"MAD (Dirham)";
+    document.getElementById("wrap").innerHTML = `
+    <div class="card">
+      <label>Cantidad</label><input id="amt" type="number" value="100" step="0.01" min="0">
+      <label>De</label><select id="f">${opts(selFrom)}</select>
+      <button class="swap" id="swp">⤵ Cambiar orden</button>
+      <label>A</label><select id="t">${opts(selTo)}</select>
+      <div class="out" id="out">—</div>
+      <p class="note">Tasas aproximadas, educativo. Confirma el tipo de cambio antes de operar.</p>
+    </div>`;
+    bind();
+  }
+  let selFrom=""; let selTo="";
+  function bind(){
+    const upd=()=>{ const a=parseFloat(document.getElementById("amt").value)||0;
+      const rf=RATES[document.getElementById("f").value], rt=RATES[document.getElementById("t").value];
+      const eur= a/rf; document.getElementById("out").textContent = `${fmt(a)} → ${fmt(eur*rt)}`; };
+    document.getElementById("amt").oninput=upd;
+    document.getElementById("f").onchange=()=>{selFrom=document.getElementById("f").value;upd()};
+    document.getElementById("t").onchange=()=>{selTo=document.getElementById("t").value;upd()};
+    document.getElementById("swp").onclick=()=>{ const sf=document.getElementById("f").value, st=document.getElementById("t").value;
+      document.getElementById("f").value=st; document.getElementById("t").value=sf; selFrom=st; selTo=sf; upd(); };
+    upd();
+  }
+</script>
+</head>
+<body>
+<div class="wrap"><h1>💱 Convertidor de moneda</h1><div id="wrap"></div></div>
+<script>build()</script>
+</body>
+</html>

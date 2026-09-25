@@ -1,47 +1,51 @@
-# BELENTANI UNIFIED
+# BELENTANI UNIFIED — el monorepo del universo
 
-Portal único del ecosistema **Belentani · Judas Experience**: una aplicación que unifica los 5.845 HTMLs únicos de la biblioteca, la obra del artista y el OS lírico-neón en un solo punto de entrada coherente.
+Una sola aplicación, un solo universo. **JUDAS · Belentani galactic experience**:
+el portal del artista y la capa que unifica todas las apps del ecosistema.
 
-> Plan maestro: [`docs/PLAN-MAESTRO-UNIFICACION.md`](docs/PLAN-MAESTRO-UNIFICACION.md)
+> «El caos es el material; el sistema es la forma.» — *La traición como arte supremo*
 
-## Estructura
+## El portal (app principal)
 
+`src/portal-app/` — React 18 + SASS + Three.js (Vite). Una ventana al cosmos:
+hero de nebulosa y estrellas, búsqueda en vivo sobre la biblioteca pública y
+documentos que se abren **dentro** de la aplicación.
+
+```bash
+cd src/portal-app
+npm install
+npm run dev      # desarrollo
+npm run build    # compila a dist/ (portal + biblioteca servida)
 ```
-belentani-unified/
-├── .cursor/rules/      # Reglas del ecosistema para agentes IA
-├── AGENTS.md           # Instrucciones para agentes (Cursor, aider, etc.)
-├── src/
-│   ├── portal/         # App principal: buscador + navegación
-│   ├── os/             # os.html — GUI lírico-neón (escritorio, dock, terminal CAOS)
-│   ├── obra/           # La Judas Experience (interfaz CONGELADA — regla de oro)
-│   └── shared/         # Design system: tokens.css, base.css, app.js
-├── content/
-│   ├── html-source/    # Los 5.845 HTMLs únicos (contenido, tratado como datos)
-│   ├── catalogo/       # catalogo.json — fuente única de verdad de las obras
-│   └── manifiesto/     # Lore canónico (L0)
-├── scripts/            # dedupe, build_portal, index, deploy (Python)
-└── docs/               # Plan maestro, auditorías, decisiones
+
+### Regenerar la biblioteca pública
+
+```bash
+python scripts/build_portal.py --copy --max-mb 45
 ```
+
+- Indexa `content/html-source/` (los HTMLs únicos del universo, sha256).
+- Aplica exclusiones de privacidad (`scripts/exclusions.txt`).
+- `--max-mb` deja los archivos gigantes fuera del despliegue (límite de hosting).
+- Genera `dist/search-index.json`, `dist/collections.json`, `dist/sitemap.xml` y copia las páginas públicas a `dist/html-source/`.
+
+## Ecosistema (apps del monorepo)
+
+| Ruta | Qué es |
+|---|---|
+| `apps/judas-experience/` | La experiencia del artista |
+| `apps/manos-abiertas/` | Educación y herramientas de inclusión |
+| `apps/duck-html/` | HTML y web creativa |
+| `apps/instituto-universal/` | Campus educativo |
+| `artist/` · `skills/` · `campus/` · `neon-mantra/` | Capas del universo |
 
 ## Principios
 
-1. **Contenido ≠ código**: los HTMLs viven en `content/` y se sirven; la app vive en `src/`.
-2. **Fuente única de verdad**: `catalogo.json` y `manifest.json` se regeneran por script — nunca se editan a mano.
-3. **Regla de oro**: la interfaz de `src/obra/index.html` no se toca; el OS enlaza, no reescribe.
-4. **Un design system**: toda página nueva consume `src/shared/tokens.css` — prohibido CSS inline.
-
-## Comandos
-
-```bash
-python scripts/build_portal.py    # regenera índice + portal
-npm run build                     # build completo (cuando exista package.json)
-```
-
-## Idiomas
-
-Conversación y docs: español · Código y comentarios: inglés
-UI del portal: PT · ES · EN · CA
+1. **Aplicación, no biblioteca**: el contenido se abre dentro del portal.
+2. **Fuente única de verdad**: índice y catálogo regenerados por script, nunca a mano.
+3. **Privacidad primero**: exclusiones antes de publicar; nada personal en el índice público.
+4. **Regla de oro de la obra**: la interfaz de la Judas Experience original no se reescribe; el portal la integra.
 
 ## Licencia
 
-MIT (código) — © Belentani (obra artística y contenido)
+MIT (código) · © Belentani (obra y contenido) · 432 Hz

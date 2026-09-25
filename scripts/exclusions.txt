@@ -1,0 +1,7 @@
+# Lista de exclusión del índice público (privacidad)
+# Un patrón por línea (glob sobre la ruta original del HTML).
+# El build NO publicará ningún archivo que coincida.
+# EJEMPLOS (editar con criterio del propietario antes de publicar):
+# *privado*
+# *contrasena*
+# *personal*

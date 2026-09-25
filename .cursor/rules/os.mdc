@@ -1,0 +1,15 @@
+---
+description: Convenciones del OS lírico-neón (GUI web del ecosistema)
+globs: src/os/**
+alwaysApply: false
+---
+
+# OS lírico-neón
+
+- Ventanas arrastrables sin dependencias externas (vanilla JS).
+- Navegación por teclado obligatoria: focus visible, Escape cierra ventanas, fallback completo sin ratón.
+- Estética fijada: vidrio + néon rojo/cian, tipografía del sistema, grano y scanlines (tokens de `src/shared/tokens.css`).
+- Barra de estado: 432 Hz · bio-pulse · hora local.
+- Dock de apps: LORE, OBRAS, AUDIO, VÍDEO, BIBLIOTECA (buscador), PRENSA, BOOKING, CAOS (terminal).
+- Terminal "CAOS": comandos líricos → respuestas poéticas + acciones reales (abrir ventana, cambiar frecuencia).
+- `prefers-reduced-motion` respetado en todas las animaciones.

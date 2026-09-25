@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+# Core — ecosistema Belentani Unified
+
+- Conversación en español; código y comentarios en inglés.
+- El contenido vive en `content/`; la app en `src/`. Nunca mezclar.
+- `content/catalogo/catalogo.json` y el manifiesto de HTMLs son fuente única de verdad: regenerar por script, nunca editar a mano los listados.
+- Regla de oro: NO tocar la interfaz de `src/obra/index.html` (la Judas Experience). El OS enlaza, no reescribe.
+- Toda página nueva consume `src/shared/tokens.css`; prohibido CSS inline.
+- Nunca commitear secretos (`.env*` está en `.gitignore`).
+- Commits con Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
+- Ante dudas de implementación, leer primero los archivos fuente relevantes antes de proponer cambios.

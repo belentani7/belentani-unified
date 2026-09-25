@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Build output
+dist/
+build/
+.portal-build/
+
+# Logs & databases
+*.log
+*.db
+*.sqlite
+
+# Tooling
+.aider*
+.cursor/cache/
+.DS_Store
+Thumbs.db

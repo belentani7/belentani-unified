@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELENTANI · Judas Experience — Portal Oficial</title>
+<meta name="description" content="Portal oficial de Belentani — Judas Experience. Artista y Neural Architect. El caos es el material; el sistema es la forma. Biblioteca de 790 documentos, obra y OS lírico-neón.">
+<meta property="og:title" content="BELENTANI · Judas Experience — Portal Oficial">
+<meta property="og:description" content="El caos es el material; el sistema es la forma. Biblioteca, obra y OS de Belentani.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://belentani7.github.io/belentani-unified/">
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  /* Portal-specific styles (tokens come from src/shared/tokens.css) */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-system);
+    background: var(--bg-void);
+    color: var(--text-primary);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,45,85,.12), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(0,229,255,.10), transparent);
+  }
+  a { color: var(--neon-cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .grain::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,.02) 2px 3px);
+    opacity: var(--scanline-opacity);
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; gap: var(--space-4); align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+  }
+  nav .brand { font-weight: 700; letter-spacing: .18em; color: var(--text-primary); }
+  nav .brand span { color: var(--neon-red); }
+  nav a.link { font-size: var(--text-sm); color: var(--text-secondary); }
+  nav a.link:hover { color: var(--neon-cyan); text-decoration: none; }
+
+  main { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: var(--space-5) var(--space-4); }
+
+  .hero { text-align: center; padding: var(--space-6) 0 var(--space-5); }
+  .hero h1 {
+    font-size: clamp(2.6rem, 8vw, 5rem); letter-spacing: .22em; font-weight: 800;
+    color: var(--text-primary);
+    text-shadow: 0 0 32px var(--neon-red-dim), 0 0 64px var(--neon-cyan-dim);
+  }
+  .hero .tagline {
+    margin-top: var(--space-3); font-size: var(--text-lg); color: var(--text-secondary);
+    font-style: italic;
+  }
+  .hero .alt { margin-top: var(--space-2); font-size: var(--text-sm); letter-spacing: .3em; color: var(--neon-cyan); text-transform: uppercase; }
+
+  section.card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg); padding: var(--space-4);
+    backdrop-filter: blur(var(--glass-blur)); margin-bottom: var(--space-4);
+  }
+  section.card h2 {
+    font-size: var(--text-xl); margin-bottom: var(--space-3); letter-spacing: .08em;
+  }
+  section.card h2::before { content: "◆ "; color: var(--neon-red); }
+  section.card p { color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-2); }
+
+  .bio b { color: var(--text-primary); }
+
+  /* Search */
+  .search-box { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
+  .search-box input {
+    flex: 1; padding: var(--space-3); font-size: var(--text-md);
+    background: rgba(0,0,0,.35); color: var(--text-primary);
+    border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+    outline: none;
+  }
+  .search-box input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 12px var(--neon-cyan-dim); }
+  .search-status { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-3); }
+  .results { display: grid; gap: var(--space-2); }
+  .result {
+    display: block; padding: var(--space-3);
+    background: rgba(0,0,0,.25); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+  }
+  .result:hover { border-color: var(--neon-cyan); }
+  .result .t { color: var(--text-primary); font-size: var(--text-md); }
+  .result .p { color: var(--text-secondary); font-size: var(--text-xs); margin-top: 2px; word-break: break-all; }
+  .pager { display: flex; gap: var(--space-2); justify-content: center; margin-top: var(--space-3); flex-wrap: wrap; }
+  .pager button {
+    padding: 6px 12px; background: transparent; color: var(--text-secondary);
+    border: 1px solid var(--glass-border); border-radius: var(--radius-sm); cursor: pointer;
+    font-family: inherit;
+  }
+  .pager button[aria-current="true"] { color: var(--neon-red); border-color: var(--neon-red); }
+  .pager button:hover { color: var(--neon-cyan); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); }
+  .tile {
+    padding: var(--space-3); border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+    background: rgba(0,0,0,.25);
+  }
+  .tile:hover { border-color: var(--neon-cyan); }
+  .tile h3 { font-size: var(--text-md); color: var(--text-primary); margin-bottom: var(--space-1); }
+  .tile p { font-size: var(--text-xs); margin: 0; }
+
+  footer {
+    position: relative; z-index: 1; text-align: center; padding: var(--space-5) var(--space-4);
+    color: var(--text-secondary); font-size: var(--text-sm); border-top: 1px solid var(--glass-border);
+  }
+  footer .hz { color: var(--neon-red); letter-spacing: .2em; }
+
+  .skip-link { position: absolute; left: -9999px; }
+  .skip-link:focus { left: var(--space-2); top: var(--space-2); background: var(--bg-void); padding: var(--space-2); z-index: 100; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body class="grain">
+<a class="skip-link" href="#main">Saltar al contenido</a>
+
+<nav aria-label="Navegación principal">
+  <a class="brand" href="#">BELENTANI<span>·</span>JUDAS</a>
+  <a class="link" href="#quien">Quién es</a>
+  <a class="link" href="#biblioteca">Biblioteca</a>
+  <a class="link" href="#obra">Obra</a>
+  <a class="link" href="#os">OS</a>
+  <a class="link" href="https://github.com/belentani7">GitHub</a>
+</nav>
+
+<main id="main">
+  <header class="hero">
+    <h1>BELENTANI</h1>
+    <p class="tagline">«El caos es el material; el sistema es la forma.»</p>
+    <p class="alt">Judas Experience · 432 Hz</p>
+  </header>
+
+  <section class="card bio" id="quien" aria-labelledby="h-quien">
+    <h2 id="h-quien">Quién es Belentani</h2>
+    <p><b>Belentani es Judas.</b> Mismo artista, mismo sistema: el alter ego con el que firma la obra.
+    Artista y <b>Neural Architect</b> de L'Hospitalet de Llobregat (Barcelona). Construye sistemas
+    multi-agente (<b>NOIACORE</b>), trabaja la <b>voz clonada</b> como material sonoro y una filosofía de
+    <b>educación abierta</b> en portugués, español, inglés y catalán.</p>
+    <p>Su obra —la <b>Judas Experience</b>— explora la identidad, la privacidad y el caos creativo:
+    eras, gemas y elementos compilados en una experiencia navegable a 432 Hz.
+    «El caos es el material; el sistema es la forma. Todo lo que entra, se compila.»</p>
+  </section>
+
+  <section class="card" id="biblioteca" aria-labelledby="h-biblio">
+    <h2 id="h-biblio">La Biblioteca</h2>
+    <p>Los 790 documentos públicos del universo Belentani · Judas Experience: eras, obra, lore,
+    interfaces y experiencias. Busca por título y abre cualquier documento directamente.</p>
+    <div class="search-box">
+      <input id="q" type="search" placeholder="Buscar en la biblioteca… (p. ej. «Judas Era», «Omega»)" aria-label="Buscar en la biblioteca">
+    </div>
+    <p class="search-status" id="status" role="status">Índice cargando…</p>
+    <div class="results" id="results"></div>
+    <div class="pager" id="pager" role="navigation" aria-label="Paginación de resultados"></div>
+  </section>
+
+  <section class="card" id="obra" aria-labelledby="h-obra">
+    <h2 id="h-obra">La Obra</h2>
+    <div class="grid">
+      <a class="tile" href="html-source/077_Proyecto-Belentani-Completo.html"><h3>Judas Experience</h3><p>La experiencia completa del artista.</p></a>
+      <a class="tile" href="html-source/078_Proyecto-Belentani-Completo.html"><h3>Omega Core</h3><p>El núcleo de la era Omega.</p></a>
+      <a class="tile" href="html-source/079_Proyecto-Belentani-Completo.html"><h3>Eras y gemas</h3><p>El lore canónico navegable.</p></a>
+      <a class="tile" href="https://github.com/belentani7/judas-experience-galactic"><h3>Galactic</h3><p>La experiencia en GitHub.</p></a>
+    </div>
+  </section>
+
+  <section class="card" id="os" aria-labelledby="h-os">
+    <h2 id="h-os">El OS lírico-neón</h2>
+    <p>Un escritorio ficticio que opera el universo: dock, ventanas, terminal CAOS y radio a 432 Hz.
+    En construcción — el sistema que lo compila todo.</p>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Belentani · Judas Experience — <span class="hz">432 Hz</span></p>
+  <p><a href="https://github.com/belentani7">github.com/belentani7</a></p>
+</footer>
+
+<script>
+/* Portal search — pre-compiled JSON index, no backend needed. */
+(function () {
+  "use strict";
+  var PAGES = [];
+  var PER_PAGE = 20;
+  var state = { query: "", page: 1 };
+  var $q = document.getElementById("q");
+  var $status = document.getElementById("status");
+  var $results = document.getElementById("results");
+  var $pager = document.getElementById("pager");
+
+  function normalize(s) {
+    return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function filtered() {
+    var q = normalize(state.query.trim());
+    if (!q) return PAGES;
+    var terms = q.split(/\s+/);
+    return PAGES.filter(function (p) {
+      var hay = normalize(p.title + " " + p.path);
+      return terms.every(function (t) { return hay.indexOf(t) !== -1; });
+    });
+  }
+
+  function render() {
+    var list = filtered();
+    var pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    if (state.page > pages) state.page = 1;
+    var start = (state.page - 1) * PER_PAGE;
+    var slice = list.slice(start, start + PER_PAGE);
+
+    $status.textContent = list.length === 0
+      ? "Sin resultados para «" + state.query + "»"
+      : list.length + " documentos" + (list.length === PAGES && !state.query ? " públicos" : "") + " · página " + state.page + " de " + pages;
+
+    $results.innerHTML = "";
+    var frag = document.createDocumentFragment();
+    slice.forEach(function (p) {
+      var a = document.createElement("a");
+      a.className = "result";
+      a.href = "html-source/" + encodeURIComponent(p.path);
+      var t = document.createElement("span"); t.className = "t"; t.textContent = p.title;
+      var pa = document.createElement("span"); pa.className = "p"; pa.textContent = p.path;
+      a.appendChild(t); a.appendChild(pa);
+      frag.appendChild(a);
+    });
+    $results.appendChild(frag);
+
+    $pager.innerHTML = "";
+    var pf = document.createDocumentFragment();
+    var maxBtns = 9, from = Math.max(1, state.page - 4), to = Math.min(pages, from + maxBtns - 1);
+    for (var i = from; i <= to; i++) {
+      (function (n) {
+        var b = document.createElement("button");
+        b.textContent = String(n);
+        b.setAttribute("aria-current", n === state.page ? "true" : "false");
+        b.addEventListener("click", function () { state.page = n; render(); window.scrollTo(0, 0); });
+        pf.appendChild(b);
+      })(i);
+    }
+    $pager.appendChild(pf);
+  }
+
+  var timer = null;
+  $q.addEventListener("input", function () {
+    state.query = $q.value; state.page = 1;
+    clearTimeout(timer); timer = setTimeout(render, 120);
+  });
+
+  fetch("search-index.json")
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      PAGES = d.pages || [];
+      $status.textContent = PAGES.length + " documentos públicos listos.";
+      render();
+    })
+    .catch(function () {
+      $status.textContent = "No se pudo cargar el índice (search-index.json). Genera la biblioteca con scripts/build_portal.py --copy.";
+    });
+})();
+</script>
+</body>
+</html>

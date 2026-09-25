@@ -26,3 +26,7 @@ build/
 .cursor/cache/
 .DS_Store
 Thumbs.db
+
+# Heavy content & build output stay local-only (git holds the app code)
+content/html-source/
+dist/

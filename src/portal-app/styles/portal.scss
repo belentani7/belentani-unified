@@ -1,0 +1,226 @@
+// JUDAS — a window into the universe. One loud element (the window);
+// everything else quiet. Serif carries the myth, sans carries the interface.
+// Skill applied: anthropics/frontend-design (plan first, no AI-default tells).
+@use '../../shared/tokens' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #050208;
+  color: $text-primary;
+  font-family: Georgia, 'Times New Roman', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.portal {
+  position: relative;
+  min-height: 100vh;
+}
+
+.cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+
+  .cosmic-scene {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// ── The window (hero) ──────────────────────────────────
+.window {
+  position: relative;
+  z-index: 1;
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $space-5 $space-4;
+
+  .word {
+    font-size: clamp(4.5rem, 18vw, 13rem);
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    margin-right: -0.22em;
+    color: $neon-red;
+    text-shadow:
+      0 0 50px rgba(255, 45, 85, 0.7),
+      0 0 160px rgba(255, 45, 85, 0.3);
+  }
+
+  .motto {
+    margin-top: $space-3;
+    font-style: italic;
+    font-size: clamp(1rem, 2.4vw, 1.4rem);
+    color: rgba(232, 234, 240, 0.72);
+    letter-spacing: 0.04em;
+  }
+}
+
+// ── Library ────────────────────────────────────────────
+.library {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: $space-5 $space-4 $space-6;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.searchline {
+  display: flex;
+  align-items: baseline;
+  gap: $space-3;
+
+  .search {
+    flex: 1;
+    padding: $space-2 $space-3;
+    font-family: inherit;
+    font-size: 1.05rem;
+    color: $text-primary;
+    background: rgba(10, 5, 15, 0.6);
+    border: 0;
+    border-bottom: 1px solid rgba(255, 45, 85, 0.4);
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-bottom-color: $neon-red;
+    }
+
+    &::placeholder {
+      color: rgba(154, 160, 174, 0.45);
+      font-style: italic;
+    }
+  }
+
+  .count {
+    font-family: $font-system;
+    font-size: $text-sm;
+    color: rgba(154, 160, 174, 0.6);
+    white-space: nowrap;
+  }
+}
+
+// Three doors into the universe (real documents)
+.into {
+  display: flex;
+  flex-direction: column;
+  margin: $space-4 0 $space-3;
+
+  .door {
+    padding: $space-3 0;
+    font-size: clamp(1.15rem, 3vw, 1.6rem);
+    color: $text-primary;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: color 0.2s ease, padding-left 0.25s ease;
+
+    &:hover {
+      color: $neon-red;
+      padding-left: $space-2;
+      text-decoration: none;
+    }
+
+    &:hover::after {
+      content: ' →';
+      color: $neon-red;
+    }
+  }
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+}
+
+.hit {
+  padding: $space-2 0;
+  font-size: 1rem;
+  color: rgba(232, 234, 240, 0.8);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    color: $neon-cyan;
+    text-decoration: none;
+  }
+}
+
+.pager {
+  display: flex;
+  gap: $space-2;
+  justify-content: center;
+  margin-top: $space-4;
+
+  button {
+    min-width: 34px;
+    padding: 5px 10px;
+    font-family: $font-system;
+    font-size: $text-sm;
+    color: rgba(154, 160, 174, 0.7);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    &[aria-current='true'] {
+      color: $neon-red;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
+
+    &:hover {
+      color: $text-primary;
+    }
+  }
+}
+
+// ── Footer ─────────────────────────────────────────────
+footer {
+  position: relative;
+  z-index: 1;
+  padding: $space-4;
+  padding-bottom: $space-5;
+  text-align: center;
+  font-family: $font-system;
+  font-size: $text-sm;
+  color: rgba(154, 160, 174, 0.55);
+
+  a {
+    color: rgba(232, 234, 240, 0.7);
+
+    &:hover {
+      color: $neon-cyan;
+    }
+  }
+
+  .sep {
+    color: rgba(255, 45, 85, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -17,6 +17,7 @@ import argparse
 import fnmatch
 import hashlib
 import json
+import shutil
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -52,7 +53,7 @@ def derive_collection(rel_path: str) -> str:
     return parts[0] if len(parts) > 1 else "raiz"
 
 
-def build() -> int:
+def build(copy_pages: bool = False, max_mb: float = 0) -> int:
     if not CONTENT_DIR.exists():
         print(f"[build] Missing content dir: {CONTENT_DIR}")
         print("[build] Nothing to index yet — creating empty dist/ skeleton.")
@@ -74,6 +75,10 @@ def build() -> int:
         content_bytes = html_path.read_bytes()
         sha = hashlib.sha256(content_bytes).hexdigest()
 
+        # Size gate: files above max_mb stay local-only (hosting limits).
+        if max_mb and len(content_bytes) > max_mb * 1_000_000:
+            excluded.append(rel_path)
+            continue
         if sha in seen_hashes:
             continue  # dedupe safety net (should already be deduped)
         seen_hashes.add(sha)
@@ -105,6 +110,17 @@ def build() -> int:
     )
 
     write_sitemap([p["path"] for p in pages])
+
+    if copy_pages:
+        copied = 0
+        dest_root = DIST_DIR / "html-source"
+        for p in pages:
+            src = CONTENT_DIR / p["path"]
+            dst = dest_root / p["path"]
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+            copied += 1
+        print(f"[build] Pages copied to dist/html-source: {copied}")
 
     print(f"[build] Pages indexed: {len(pages)}")
     print(f"[build] Pages excluded (privacy): {len(excluded)}")
@@ -140,8 +156,10 @@ def write_sitemap(paths: list[str]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build the Belentani Unified portal index.")
-    parser.parse_args()
-    return build()
+    parser.add_argument("--copy", action="store_true", help="Copy public pages into dist/html-source (deployable site).")
+    parser.add_argument("--max-mb", type=float, default=0, help="Skip files larger than this size in MB (0 = no limit).")
+    args = parser.parse_args()
+    return build(copy_pages=args.copy, max_mb=args.max_mb)
 
 
 if __name__ == "__main__":

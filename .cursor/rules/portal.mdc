@@ -1,0 +1,15 @@
+---
+description: Convenciones del portal unificado (buscador, navegación, i18n)
+globs: src/portal/**
+alwaysApply: false
+---
+
+# Portal
+
+- Buscador con índice JSON pre-compilado (search-as-you-type, sin backend).
+- Nunca renderizar el listado completo (5.845 HTMLs) sin paginar o filtrar.
+- Navegación única: Inicio → Biblioteca → Obra → OS → Currículum → Contacto/Booking.
+- Colecciones temáticas generadas desde el manifiesto (rutas/nombres originales), no a mano.
+- Toda página lleva `<title>`, `meta description` y Open Graph completos; patrón de título: `«Título» · Belentani`.
+- i18n PT · ES · EN · CA en `src/portal/i18n/`; idioma persistente (localStorage).
+- 404 propia del portal; `sitemap.xml` y `robots.txt` generados por script.

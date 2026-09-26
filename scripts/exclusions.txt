@@ -1,0 +1,16 @@
+# Lista de exclusión del índice público (privacidad)
+# Un patrón por línea (glob sobre la ruta relativa del HTML en content/html-source).
+# El build NO indexará ni publicará ningún archivo que coincida.
+
+# Logs internos de la herramienta "Manos Abiertas" (ma-tool): artefactos de
+# trabajo, no obra artística. ~4.419 archivos.
+ma-tool-*.html
+*ma-tool-*.html
+
+# Logs de sesiones de IA (rollouts): artefactos internos, no obra.
+# ~1.067 archivos.
+output_rollout-*.html
+*output_rollout-*.html
+
+# Cualquier dato personal detectable: por criterio del propietario.
+# Añadir patrones aquí si se detecta algo privado en el resto de la biblioteca.

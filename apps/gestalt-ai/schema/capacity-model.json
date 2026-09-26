@@ -1,0 +1,110 @@
+{
+  "system": "belentani-unified",
+  "timestamp": "2026-08-26",
+  "layers": {
+    "identity": {
+      "name": "Narrative Coherence",
+      "repos": [
+        "belentani7",
+        "judas-experience",
+        "judas-omega-static",
+        "belentani-omega-template",
+        "belentani_Omega"
+      ],
+      "signal": "Coherent creative voice",
+      "maturity": "stable"
+    },
+    "motor": {
+      "name": "Technical Orchestration",
+      "local": [
+        "freellmapi",
+        "OpenManus",
+        "open-generative-ai",
+        "CODEX-OMEGA-SKILL"
+      ],
+      "remote": [
+        "meta-skill",
+        "claude-skills-pack",
+        "nexus-chat"
+      ],
+      "providers": {
+        "llm": 28,
+        "llm_endpoints": 339,
+        "media_models": 400,
+        "agents": 1
+      },
+      "signal": "Routing intelligence + autonomous delegation",
+      "maturity": "production"
+    },
+    "production": {
+      "name": "Execution & Scale",
+      "verticals": {
+        "music": 6,
+        "education": 4,
+        "social_impact": 1,
+        "creative": 2,
+        "commercial": 1
+      },
+      "signal": "Multi-vertical capability",
+      "maturity": "production"
+    },
+    "infrastructure": {
+      "name": "Scale Operations",
+      "repos": [
+        "zen-proxy",
+        "qwencloud-generator"
+      ],
+      "capabilities": [
+        "proxy_rotation",
+        "multi_threading",
+        "account_automation",
+        "scenario_detection"
+      ],
+      "signal": "N-concurrent distribution",
+      "maturity": "early"
+    }
+  },
+  "connectors": {
+    "authenticated": [
+      "github",
+      "figma",
+      "notion",
+      "slack",
+      "linear",
+      "datadog",
+      "atlassian"
+    ],
+    "missing": [
+      "linkedin",
+      "indeed",
+      "google_drive"
+    ]
+  },
+  "repos": {
+    "total": 37,
+    "local": 7,
+    "remote": 30,
+    "by_type": {
+      "identity": 5,
+      "tooling": 3,
+      "media_production": 6,
+      "creative": 3,
+      "web_frontend": 3,
+      "social_impact": 4,
+      "commercial": 3,
+      "infrastructure": 3
+    }
+  },
+  "signal_density": {
+    "identity_coherence": 0.95,
+    "technical_sophistication": 0.85,
+    "production_maturity": 0.80,
+    "scale_readiness": 0.65
+  },
+  "gaps": [
+    "Career narrative (LinkedIn/Indeed)",
+    "Strategic intent (Drive docs)",
+    "GitHub MCP auth",
+    "Connector orchestration"
+  ]
+}

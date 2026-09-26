@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Guía de Office en una página · Manos Abiertas</title>
+<style>
+  :root{--brand:#d97706;--tint:#fdf0dd;--ink:#1c2230;--muted:#5b6472}
+  *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;color:var(--ink);line-height:1.6;padding:24px}
+  header{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .eyebrow{color:var(--muted);margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+  h1{margin:4px 0;font-size:28px}.promise{max-width:48ch;color:var(--muted)}
+  button{padding:10px 16px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;cursor:pointer;font-size:14px}
+  .grid{max-width:900px;margin:20px auto;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tool{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center}
+  .tool .ic{font-size:32px}.tool h3{margin:8px 0 4px;font-size:15px}.tool p{margin:0;font-size:13px;color:var(--muted)}
+  .free{max-width:900px;margin:16px auto;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:8px;font-size:14px}
+  footer{max-width:900px;margin:24px auto;color:var(--muted);font-size:12px;display:flex;justify-content:space-between}
+  @media(max-width:640px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><p class="eyebrow">Ofimática · una página</p><h1>Office y alternativas gratis</h1><p class="promise">Los programas más usados para trabajar: Word, Excel y presentaciones, con versiones gratuitas.</p></div>
+  <button onclick="window.print()">Imprimir A4</button>
+</header>
+<div class="grid">
+  <div class="tool"><div class="ic">📝</div><h3>Word</h3><p>Cartas, currículums, documentos. Alternativa gratis: Google Docs o LibreOffice.</p></div>
+  <div class="tool"><div class="ic">📊</div><h3>Excel</h3><p>Cuentas, presupuestos, tablas. Alternativa gratis: Google Sheets o LibreOffice Calc.</p></div>
+  <div class="tool"><div class="ic">📽️</div><h3>PowerPoint</h3><p>Presentaciones. Alternativa gratis: Google Slides o LibreOffice Impress.</p></div>
+  <div class="tool"><div class="ic">📧</div><h3>Email (Gmail)</h3><p>Correo electrónico y comunicación con empresas e instituciones. Gratis.</p></div>
+</div>
+<div class="free"><strong>💡 Truco:</strong> si no tienes Office, usa <strong>Google Docs / Sheets / Slides</strong> (gratis en drive.google.com) o instala <strong>LibreOffice</strong> (gratis, libreoffice.org). Por lo general abren y guardan los mismos archivos de Office.</div>
+<footer><span>Manos Abiertas · uso educativo y gratuito</span><span>MA-GUIAOFFICE · 2026</span></footer>
+</body>
+</html>

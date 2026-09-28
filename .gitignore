@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+.pnpm-store/
 
 # Environment & secrets
 .env
@@ -10,23 +11,34 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+venv/
+*.egg-info/
+.pytest_cache/
 
 # Build output
 dist/
 build/
 .portal-build/
+.next/
+out/
 
 # Logs & databases
 *.log
 *.db
 *.sqlite
+*.sqlite3
 
-# Tooling
+# Tooling & Editors
 .aider*
 .cursor/cache/
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Heavy content & build output stay local-only (git holds the app code)
 content/html-source/
-dist/
+coverage/
+.nyc_output/
